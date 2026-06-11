@@ -9,7 +9,7 @@ Before introducing these formally, we fix notation for the standard number syste
 provide the raw material for all numerical computation.
 
 \textBox{%
-\textbf{Standard Number Systems.}\enspace Throughout these notes, $\fR$ denotes
+\textbf{(Standard Number Systems)}\enspace Throughout these notes, $\fR$ denotes
 the set of all real numbers, $\fZ$ the set of all integers, and $\fC$ the
 set of all complex numbers.  Our primary focus is real-valued computation; complex numbers
 arise naturally in eigenvalue analysis and signal processing.
@@ -39,7 +39,7 @@ in encoding data and linear relationships.
 }
 \label{def:vector}
 
-\addNote{%
+\addRemark{%
 Vectors may be written as row vectors or column vectors.  Although both forms carry the
 same information, the distinction matters when applying linear transformations and
 computing inner products. \textbf{In these notes, we assume vectors are column vectors by default.}
@@ -84,7 +84,7 @@ has $n$ real entries.  Vectors in $\fR^n$ take one of the following forms:
 }
 \label{def:Rn}
 
-\addNote{%
+\addRemark{%
 These notes focus on finite-dimensional spaces.  Infinite-dimensional vector spaces, central
 to functional analysis, arise in differential equations and quantum mechanics but are beyond
 our scope here.
@@ -134,8 +134,8 @@ Two-dimensional matrices include:
 \end{equation*}
 }
 
-\addNote{%
-\textbf{Structural Intuition: Matrix Columns.}\enspace
+\addRemark{%
+\textbf{(Structural Intuition: Matrix Columns)}\enspace
 Matrices can be interpreted as vectors whose entries are themselves vectors:
 \begin{equation*}
 \bA = \printmatrow{r} = \printmatcol{c},
@@ -177,7 +177,7 @@ A square matrix $\bA \in \fR^{n \times n}$ is:
 }
 \label{def:symmetric}
 
-\addNote{%
+\addRemark{%
 Every square matrix $\bA$ decomposes uniquely into a symmetric part and a skew-symmetric part:
 \begin{align*}
     \bA = \underbrace{\tfrac{1}{2}(\bA + \bA^T)}_{\text{symmetric}} +

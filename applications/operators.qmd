@@ -95,6 +95,7 @@ An operator is **bounded** if $\|\mathcal{A}u\|_Y \leq C \|u\|_X$ for some $C < 
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Numerical Consequence:**  Because the continuous Laplacian is unbounded, its discretization $\bT$ becomes increasingly ill-conditioned as $h \to 0$:
 $$
 \begin{align}

@@ -70,6 +70,7 @@ Computes the DFT in **$O(n \log n)$** flops for $n = 2^p$.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Spectral Differentiation:**  For smooth periodic signals, differentiate by multiplying frequency components $\hat{x}_k$ by $ik$. Provides exponential accuracy compared to polynomial accuracy of finite differences.
 :::
 

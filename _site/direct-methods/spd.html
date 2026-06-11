@@ -701,9 +701,11 @@ window.Quarto = {
 
 
 <p>Symmetric Positive Definite (SPD) matrices form one of the most important classes of matrices in scientific computing. They possess several remarkable properties that allow for algorithms that are twice as fast and significantly more stable than those for general matrices.</p>
+<p>An SPD matrix is the matrix version of positive curvature or positive energy. The quadratic form <span class="math inline">\(\bx^T\bA\bx\)</span> is always positive away from the origin, so it defines a geometry, a convex energy landscape, and a stable class of linear systems.</p>
 <section id="definitions-and-properties" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="definitions-and-properties"><span class="header-section-number">11.1</span> Definitions and Properties</h2>
 <p>SPD matrices arise naturally in a wide variety of engineering contexts, including optimization (as Hessian matrices of convex functions), statistics (as covariance matrices), and physical simulations (as stiffness matrices in structural mechanics).</p>
+<p>The expression <span class="math inline">\(\bx^T\bA\bx\)</span> is called a <strong>quadratic form</strong>. It converts a vector into a scalar. If <span class="math inline">\(\bA\)</span> is symmetric, then this scalar measures the energy of <span class="math inline">\(\bx\)</span> in the geometry defined by <span class="math inline">\(\bA\)</span>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -719,6 +721,43 @@ window.Quarto = {
 \bx^T\bA\bx &gt; 0 \quad \text{for every nonzero } \bx \in \fR^n.
 \end{align}
 \]</span> If <span class="math inline">\(\bA\)</span> is both symmetric and PD, it is <strong>SPD</strong>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Positive Semidefinite
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A symmetric matrix <span class="math inline">\(\bA\)</span> is <strong>positive semidefinite</strong> (PSD) if <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx \geq 0 \quad \text{for every } \bx \in \fR^n.
+\end{align}
+\]</span> Positive definite means strictly positive for every nonzero vector. Positive semidefinite allows flat directions where <span class="math inline">\(\bx^T\bA\bx=0\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Definite vs.&nbsp;semidefinite)</strong> <span class="math display">\[
+\begin{align}
+\begin{pmatrix}2&amp;0\\0&amp;1\end{pmatrix}
+    \quad \text{is SPD, while} \quad
+    \begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}
+    \quad \text{is PSD but not PD.}
+\end{align}
+\]</span> The second matrix has a flat direction: <span class="math inline">\((0,1)^T\)</span> has zero quadratic energy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -743,11 +782,31 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Spectral Characterization.</strong> A symmetric matrix is PD iff <strong>all its eigenvalues are strictly positive</strong>. Every SPD matrix is invertible (<span class="math inline">\(\det \bA = \prod \lambda_i &gt; 0\)</span>).</p>
+<p><strong>(Spectral Characterization)</strong> A symmetric matrix is PD iff <strong>all its eigenvalues are strictly positive</strong>. Every SPD matrix is invertible (<span class="math inline">\(\det \bA = \prod \lambda_i &gt; 0\)</span>).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Equivalent tests for SPD)</strong> For a symmetric matrix <span class="math inline">\(\bA\)</span>, the following are equivalent:</p>
+<ol type="1">
+<li><p><span class="math inline">\(\bx^T\bA\bx&gt;0\)</span> for every nonzero <span class="math inline">\(\bx\)</span>.</p></li>
+<li><p>Every eigenvalue of <span class="math inline">\(\bA\)</span> is positive.</p></li>
+<li><p>Cholesky factorization succeeds with positive pivots.</p></li>
+<li><p>All leading principal minors are positive.</p></li>
+</ol>
+<p>The eigenvalue and Cholesky tests are the most useful computationally.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -770,6 +829,12 @@ Tip
 <section id="geometry-and-metric" class="level2" data-number="11.2">
 <h2 data-number="11.2" class="anchored" data-anchor-id="geometry-and-metric"><span class="header-section-number">11.2</span> Geometry and Metric</h2>
 <p>An SPD matrix <span class="math inline">\(\bA\)</span> can be thought of as defining a new geometry or “metric” on <span class="math inline">\(\fR^n\)</span>, where the distance and angle between vectors are weighted by the entries of <span class="math inline">\(\bA\)</span>. This perspective is fundamental to understanding the behavior of iterative solvers like the Conjugate Gradient method.</p>
+<p>If <span class="math inline">\(\bA=\bQ\boldsymbol{\Lambda}\bQ^T\)</span>, then <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx = \sum_{i=1}^n \lambda_i z_i^2,
+    \qquad \bz=\bQ^T\bx.
+\end{align}
+\]</span> The eigenvectors give the principal directions of the geometry, and the eigenvalues determine how expensive motion is in each direction.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -793,11 +858,32 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Physical Meaning:</strong> Directions with large eigenvalues are <code>stiff'' or</code>expensive’’ (small axes in the unit ellipsoid); small eigenvalues represent ``sensitive’’ directions.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Ellipse)</strong> For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;0\\0&amp;1\end{pmatrix},
+\end{align}
+\]</span> the unit <span class="math inline">\(\bA\)</span>-norm curve is <span class="math display">\[
+\begin{align}
+4x_1^2+x_2^2=1.
+\end{align}
+\]</span> The axis in the <span class="math inline">\(x_1\)</span> direction is shorter because that direction has larger eigenvalue. Moving in that direction costs more energy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -820,6 +906,7 @@ Tip
 <section id="cholesky-decomposition" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="cholesky-decomposition"><span class="header-section-number">11.3</span> Cholesky Decomposition</h2>
 <p>The symmetry and positive definiteness of <span class="math inline">\(\bA\)</span> allow for a specialized version of the LU factorization known as the <strong>Cholesky decomposition</strong>. The decomposition can be interpreted as a generalized square root for SPD matrices, where <span class="math inline">\(\bA = \bL\bL^T\)</span>.</p>
+<p>Cholesky is the natural direct solver for SPD systems. It stores only one triangular factor instead of two, avoids pivoting, and preserves the symmetry of the problem.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -833,17 +920,29 @@ Tip
 <p>Every SPD matrix <span class="math inline">\(\bA\)</span> admits a unique decomposition <span class="math inline">\(\bA = \bL\bL^T\)</span>, where <span class="math inline">\(\bL\)</span> is lower triangular with strictly positive diagonal entries.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Note</span>Example
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Flop Cost.</strong> The computational cost of the Cholesky decomposition is , approximately half that of a general LU factorization.</p>
+<p><strong>(A <span class="math inline">\(2\times2\)</span> Cholesky factor)</strong> Let <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;2\\2&amp;3\end{pmatrix}.
+\end{align}
+\]</span> Assume <span class="math display">\[
+\begin{align}
+\bL=\begin{pmatrix}\ell_{11}&amp;0\\\ell_{21}&amp;\ell_{22}\end{pmatrix}.
+\end{align}
+\]</span> Matching <span class="math inline">\(\bA=\bL\bL^T\)</span> gives <span class="math inline">\(\ell_{11}=2\)</span>, <span class="math inline">\(\ell_{21}=1\)</span>, and <span class="math inline">\(\ell_{22}=\sqrt{2}\)</span>, so <span class="math display">\[
+\begin{align}
+\bL=\begin{pmatrix}2&amp;0\\1&amp;\sqrt{2}\end{pmatrix}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -852,11 +951,42 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Flop Cost)</strong> The computational cost of the Cholesky decomposition is , approximately half that of a general LU factorization.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Stability Advantage:</strong> Unlike general LU, Cholesky is <strong>guaranteed to be stable without pivoting</strong>. In code, <code>np.linalg.cholesky</code> is the standard numerical test for positive definiteness; if it raises a <code>LinAlgError</code>, the matrix is not PD.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Solving with Cholesky)</strong> If <span class="math inline">\(\bA=\bL\bL^T\)</span>, then solving <span class="math inline">\(\bA\bx=\bb\)</span> requires two triangular solves:</p>
+<ol type="1">
+<li><p>Solve <span class="math inline">\(\bL\by=\bb\)</span>.</p></li>
+<li><p>Solve <span class="math inline">\(\bL^T\bx=\by\)</span>.</p></li>
+</ol>
+<p>The factorization costs <span class="math inline">\(O(n^3)\)</span>, but each solve costs only <span class="math inline">\(O(n^2)\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -894,7 +1024,43 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Where SPD matrices appear)</strong></p>
+<ul>
+<li><p><strong>Optimization:</strong> Hessians of strictly convex quadratic functions.</p></li>
+<li><p><strong>Statistics:</strong> Covariance and Gram matrices, often PSD and SPD when data are full rank.</p></li>
+<li><p><strong>PDEs:</strong> Discrete Laplacians and stiffness matrices for elliptic problems.</p></li>
+<li><p><strong>Least squares:</strong> Normal equations <span class="math inline">\(\bA^T\bA\bx=\bA^T\bb\)</span> are SPD when <span class="math inline">\(\bA\)</span> has full column rank.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Connection to CG)</strong> Conjugate Gradient is designed for large sparse SPD systems. It minimizes the quadratic energy <span class="math display">\[
+\begin{align}
+\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx,
+\end{align}
+\]</span> whose unique minimizer satisfies <span class="math inline">\(\bA\bx=\bb\)</span> when <span class="math inline">\(\bA\)</span> is SPD.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -903,7 +1069,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>For any nonzero vector <span class="math inline">\(\bv \in \fR^n\)</span>, consider the quadratic form: <span class="math display">\[
 \begin{align}

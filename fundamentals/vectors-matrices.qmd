@@ -5,7 +5,7 @@ Before introducing these formally, we fix notation for the standard number syste
 provide the raw material for all numerical computation.
 
 
-**Standard Number Systems.**  Throughout these notes, $\fR$ denotes
+**(Standard Number Systems)**  Throughout these notes, $\fR$ denotes
 the set of all real numbers, $\fZ$ the set of all integers, and $\fC$ the
 set of all complex numbers.  Our primary focus is real-valued computation; complex numbers
 arise naturally in eigenvalue analysis and signal processing.
@@ -41,6 +41,7 @@ in encoding data and linear relationships.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 Vectors may be written as row vectors or column vectors.  Although both forms carry the
 same information, the distinction matters when applying linear transformations and
 computing inner products. **In these notes, we assume vectors are column vectors by default.**
@@ -94,6 +95,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 These notes focus on finite-dimensional spaces.  Infinite-dimensional vector spaces, central
 to functional analysis, arise in differential equations and quantum mechanics but are beyond
 our scope here.
@@ -151,7 +153,8 @@ $$
 :::
 
 ::: {.callout-tip icon=false}
-**Structural Intuition: Matrix Columns.** 
+## Remark
+**(Structural Intuition: Matrix Columns)** 
 Matrices can be interpreted as vectors whose entries are themselves vectors:
 $$
 \bA = \printmatrow{r} = \printmatcol{c},
@@ -204,6 +207,7 @@ A square matrix $\bA \in \fR^{n \times n}$ is:
 
 
 ::: {.callout-tip icon=false}
+## Remark
 Every square matrix $\bA$ decomposes uniquely into a symmetric part and a skew-symmetric part:
 $$
 \begin{align}

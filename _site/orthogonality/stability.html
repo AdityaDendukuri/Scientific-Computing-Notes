@@ -671,10 +671,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#why-factorize-instead-of-invert" id="toc-why-factorize-instead-of-invert" class="nav-link active" data-scroll-target="#why-factorize-instead-of-invert"><span class="header-section-number">14.1</span> Why Factorize instead of Invert?</a></li>
-  <li><a href="#numerical-stability" id="toc-numerical-stability" class="nav-link" data-scroll-target="#numerical-stability"><span class="header-section-number">14.2</span> Numerical Stability</a></li>
-  <li><a href="#condition-number" id="toc-condition-number" class="nav-link" data-scroll-target="#condition-number"><span class="header-section-number">14.3</span> Condition Number</a></li>
-  <li><a href="#solver-selection-hierarchy" id="toc-solver-selection-hierarchy" class="nav-link" data-scroll-target="#solver-selection-hierarchy"><span class="header-section-number">14.4</span> Solver Selection Hierarchy</a></li>
+  <li><a href="#residual-forward-error-and-backward-error" id="toc-residual-forward-error-and-backward-error" class="nav-link active" data-scroll-target="#residual-forward-error-and-backward-error"><span class="header-section-number">14.1</span> Residual, Forward Error, and Backward Error</a></li>
+  <li><a href="#why-factorize-instead-of-invert" id="toc-why-factorize-instead-of-invert" class="nav-link" data-scroll-target="#why-factorize-instead-of-invert"><span class="header-section-number">14.2</span> Why Factorize instead of Invert?</a></li>
+  <li><a href="#numerical-stability" id="toc-numerical-stability" class="nav-link" data-scroll-target="#numerical-stability"><span class="header-section-number">14.3</span> Numerical Stability</a></li>
+  <li><a href="#condition-number" id="toc-condition-number" class="nav-link" data-scroll-target="#condition-number"><span class="header-section-number">14.4</span> Condition Number</a></li>
+  <li><a href="#solver-selection-hierarchy" id="toc-solver-selection-hierarchy" class="nav-link" data-scroll-target="#solver-selection-hierarchy"><span class="header-section-number">14.5</span> Solver Selection Hierarchy</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/stability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -702,19 +703,123 @@ window.Quarto = {
 
 
 <p>Sensitivity of problems vs.&nbsp;robustness of algorithms.</p>
-<section id="why-factorize-instead-of-invert" class="level2" data-number="14.1">
-<h2 data-number="14.1" class="anchored" data-anchor-id="why-factorize-instead-of-invert"><span class="header-section-number">14.1</span> Why Factorize instead of Invert?</h2>
+<p>Conditioning asks whether the mathematical problem is sensitive to small changes in the data. Stability asks whether the algorithm introduces only small changes to the problem. A good computation needs both: a well-conditioned problem and a stable algorithm.</p>
+<section id="residual-forward-error-and-backward-error" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="residual-forward-error-and-backward-error"><span class="header-section-number">14.1</span> Residual, Forward Error, and Backward Error</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Residual and Forward Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a computed solution <span class="math inline">\(\hat{\bx}\)</span> to the linear system in the result above: <span class="math display">\[
+\begin{align}
+\br = \bb-\bA\hat{\bx}
+    \qquad \text{and} \qquad
+    \be = \hat{\bx}-\bx^*,
+\end{align}
+\]</span> where <span class="math inline">\(\bx^*\)</span> is the exact solution.</p>
+<ul>
+<li><p><strong>Residual:</strong> How well the computed answer satisfies the equations.</p></li>
+<li><p><strong>Forward error:</strong> How close the computed answer is to the exact answer.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Small residual, large error)</strong> Let <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}1&amp;0\\0&amp;10^{-8}\end{pmatrix},
+    \qquad
+    \bb=\begin{pmatrix}1\\10^{-8}\end{pmatrix}.
+\end{align}
+\]</span> The exact solution is <span class="math inline">\(\bx^*=(1,1)^T\)</span>. The approximation <span class="math inline">\(\hat{\bx}=(1,0)^T\)</span> has residual <span class="math display">\[
+\begin{align}
+\br=\bb-\bA\hat{\bx}=(0,10^{-8})^T,
+\end{align}
+\]</span> which is tiny in absolute norm, but the solution error is <span class="math inline">\((0,-1)^T\)</span>. The small singular value makes one direction hard to determine accurately.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Return to the result above. Explain why the residual in the result above is computable but the forward error usually is not.</p></li>
+<li><p>Verify every number in the small-residual example above.</p></li>
+<li><p>Change the small diagonal entry from <span class="math inline">\(10^{-8}\)</span> to <span class="math inline">\(10^{-12}\)</span>. How do the residual and forward error change?</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Residual-Error Bound
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be nonsingular, <span class="math inline">\(\bx^*\)</span> solve <span class="math inline">\(\bA\bx=\bb\)</span>, and <span class="math inline">\(\hat{\bx}\)</span> have residual <span class="math inline">\(\br=\bb-\bA\hat{\bx}\)</span>. If <span class="math inline">\(\bb\neq\bzero\)</span>, then <span class="math display">\[
+\begin{align}
+\frac{\|\hat{\bx}-\bx^*\|}{\|\bx^*\|}
+    \leq
+    \kappa(\bA)\frac{\|\br\|}{\|\bb\|}.
+\end{align}
+\]</span> Thus a small relative residual guarantees a small relative forward error only when the problem is well-conditioned.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Starting from <span class="math inline">\(\br=\bb-\bA\hat{\bx}\)</span> and <span class="math inline">\(\bb=\bA\bx^*\)</span>, show that <span class="math inline">\(\br=\bA(\bx^*-\hat{\bx})\)</span>.</p></li>
+<li><p>Use the previous step to prove <span class="math inline">\(\|\hat{\bx}-\bx^*\|\leq \|\bA^{-1}\|\|\br\|\)</span>.</p></li>
+<li><p>Use <span class="math inline">\(\|\bb\|\leq \|\bA\|\|\bx^*\|\)</span> to finish the proof of the result above.</p></li>
+<li><p>Apply the bound to the small-residual example above. Is the bound sharp?</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="why-factorize-instead-of-invert" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="why-factorize-instead-of-invert"><span class="header-section-number">14.2</span> Why Factorize instead of Invert?</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Rule:</strong> Never compute <span class="math inline">\(\bA^{-1}\)</span> explicitly.</p>
+<p><strong>(Explicit inverse rule)</strong> Never compute <span class="math inline">\(\bA^{-1}\)</span> explicitly.</p>
 <ul>
 <li><p><strong>Cost:</strong> Computing <span class="math inline">\(\bA^{-1}\)</span> takes <span class="math inline">\(3\times\)</span> longer than LU (<span class="math inline">\(\frac{8}{3}n^3\)</span> vs.&nbsp;<span class="math inline">\(\frac{2}{3}n^3\)</span>).</p></li>
 <li><p><strong>Stability:</strong> Round-off in <span class="math inline">\(\bA^{-1}\)</span> propagates into the entire product <span class="math inline">\(\bA^{-1}\bb\)</span>. Stable factorizations confine errors.</p></li>
@@ -733,14 +838,15 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>For <span class="math inline">\(n=500\)</span>, compare total flops for solving 10 systems via <span class="math inline">\(\bA^{-1}\)</span> vs.&nbsp;LU.</p></li>
-<li><p>Construct <span class="math inline">\(\bA = \text{diag}(1, 1, 10^{-12})\)</span>. Compare residuals of <code>inv(A) @ b</code> and <code>solve(A, b)</code>.</p></li>
+<li><p>Use the LU factorization costs from the LU chapter to compare total flops for solving 10 systems via <span class="math inline">\(\bA^{-1}\)</span> vs.&nbsp;LU when <span class="math inline">\(n=500\)</span>.</p></li>
+<li><p>Construct <span class="math inline">\(\bA = \text{diag}(1, 1, 10^{-12})\)</span>. Compare residuals of <code>inv(A) @ b</code> and <code>solve(A, b)</code> using the result above.</p></li>
+<li><p>Explain the result using the distinction between residual and forward error from the result above.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="numerical-stability" class="level2" data-number="14.2">
-<h2 data-number="14.2" class="anchored" data-anchor-id="numerical-stability"><span class="header-section-number">14.2</span> Numerical Stability</h2>
+<section id="numerical-stability" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="numerical-stability"><span class="header-section-number">14.3</span> Numerical Stability</h2>
 <p>A property of the <strong>algorithm</strong>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -755,17 +861,24 @@ Tip
 <p>An algorithm is backward stable if its computed <span class="math inline">\(\hat{\bx}\)</span> is the <strong>exact solution to a nearby problem</strong>: <span class="math inline">\((\bA + \delta \bA)\hat{\bx} = \bb + \delta \bb\)</span>, with <span class="math inline">\(\|\delta \bA\|/\|\bA\| = O(\varepsilon_{\text{mach}})\)</span>.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Note</span>Theorem: Normwise Backward Error for Linear Systems
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>GEPP Stability:</strong> Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor <span class="math inline">\(\rho\)</span> stays small, preventing exponential error amplification.</p>
+<p>For a computed vector <span class="math inline">\(\hat{\bx}\)</span> with residual <span class="math inline">\(\br=\bb-\bA\hat{\bx}\)</span>, the normwise relative backward error for the linear system <span class="math inline">\(\bA\bx=\bb\)</span> is <span class="math display">\[
+\begin{align}
+\eta(\hat{\bx})
+    =
+    \frac{\|\br\|}
+    {\|\bA\|\|\hat{\bx}\|+\|\bb\|}.
+\end{align}
+\]</span> This is the smallest relative perturbation size, measured normwise in both <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bb\)</span>, that makes <span class="math inline">\(\hat{\bx}\)</span> an exact solution of a nearby system.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -779,14 +892,61 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Explain why a small residual doesn’t always guarantee a small error (Forward Error).</p></li>
+<li><p>Suppose <span class="math inline">\((\bA+\delta\bA)\hat{\bx}=\bb+\delta\bb\)</span>. Show that <span class="math inline">\(\br=\delta\bb-\delta\bA\hat{\bx}\)</span>.</p></li>
+<li><p>Use the triangle inequality to prove the lower bound <span class="math display">\[\|\br\|\leq \|\delta\bA\|\|\hat{\bx}\|+\|\delta\bb\|.\]</span></p></li>
+<li><p>Divide by <span class="math inline">\(\|\bA\|\|\hat{\bx}\|+\|\bb\|\)</span> to obtain the denominator in the result above.</p></li>
+<li><p>Construct a rank-one perturbation in the direction of <span class="math inline">\(\br\)</span> to see why the bound can be attained.</p></li>
+<li><p>Compare this computable backward error with the residual-error bound in the result above.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>GEPP Stability:</strong> Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor <span class="math inline">\(\rho\)</span> stays small, preventing exponential error amplification.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Stable algorithms)</strong> Householder QR and Cholesky for SPD systems are backward stable under their usual assumptions. LU with partial pivoting is reliable in practice, though its worst-case growth factor can be large.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to explain why backward stability is a natural standard when input data are already uncertain.</p></li>
+<li><p>Explain why a small residual does not always guarantee a small forward error. Use the result above.</p></li>
+<li><p>Compute <span class="math inline">\(\eta(\hat{\bx})\)</span> from the result above for the small-residual example above.</p></li>
 <li><p>Histogram growth factors for 100 random matrices via <code>scipy.linalg.lu</code>.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="condition-number" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="condition-number"><span class="header-section-number">14.3</span> Condition Number</h2>
+<section id="condition-number" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="condition-number"><span class="header-section-number">14.4</span> Condition Number</h2>
 <p>A property of the <strong>problem</strong>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -806,7 +966,7 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -815,7 +975,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Let <span class="math inline">\(\bA\bx = \bb\)</span> be the original system and <span class="math inline">\(\bA(\bx+\delta\bx) = \bb+\delta\bb\)</span> the perturbed system. Subtracting gives <span class="math inline">\(\bA \delta\bx = \delta\bb\)</span>, so <span class="math inline">\(\delta\bx = \bA^{-1} \delta\bb\)</span>. Taking norms: <span class="math display">\[
 \begin{align}
@@ -842,22 +1002,56 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
+<li><p>Reproduce the perturbation argument above without looking.</p></li>
 <li><p>Compute <span class="math inline">\(\kappa_2(H_n)\)</span> for Hilbert matrices <span class="math inline">\(n=3, ..., 10\)</span>. How fast does it grow?</p></li>
+<li><p>Use the result above, the result above, and the result above to explain why a stable algorithm on an ill-conditioned problem may still lose many digits.</p></li>
 <li><p><strong>The Neumann Series:</strong> Use it to prove the perturbation bound: <span class="math inline">\(\frac{\|\delta \bx\|}{\|\bx\|} \leq \frac{\kappa(\bA)}{1 - ...}\)</span>.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="solver-selection-hierarchy" class="level2" data-number="14.4">
-<h2 data-number="14.4" class="anchored" data-anchor-id="solver-selection-hierarchy"><span class="header-section-number">14.4</span> Solver Selection Hierarchy</h2>
-<p>Algorithms are typically selected based on a trade-off between numerical stability and computational efficiency:</p>
+<section id="solver-selection-hierarchy" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="solver-selection-hierarchy"><span class="header-section-number">14.5</span> Solver Selection Hierarchy</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Solver Selection by Structure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Choose a solver from the most specific trustworthy structure in the problem:</p>
 <ol type="1">
-<li><p><strong>SVD:</strong> Most stable, most expensive (<span class="math inline">\(O(n^3)\)</span> with large constant).</p></li>
-<li><p><strong>Householder QR:</strong> Very stable, no growth factor (<span class="math inline">\(O(mn^2)\)</span>).</p></li>
-<li><p><strong>Cholesky:</strong> Stable for SPD systems, half the cost of LU.</p></li>
-<li><p><strong>GEPP (LU with Pivoting):</strong> Standard for general systems.</p></li>
-<li><p><strong>LU without Pivoting:</strong> Dangerously unstable; avoid.</p></li>
+<li><p>If <span class="math inline">\(\bA\)</span> is SPD and dense, use Cholesky; if it is SPD and large sparse, use CG with a preconditioner.</p></li>
+<li><p>If <span class="math inline">\(\bA\)</span> is general, square, dense, and nonsingular, use LU with partial pivoting.</p></li>
+<li><p>If the problem is full-rank least squares, use Householder QR.</p></li>
+<li><p>If the problem is rank-deficient, nearly rank-deficient, or requires numerical rank information, use the SVD.</p></li>
+<li><p>If <span class="math inline">\(\bA\)</span> is large, sparse, nonsymmetric, and only matrix-vector products are practical, use GMRES or another nonsymmetric Krylov method.</p></li>
 </ol>
+<p>The more structure a solver exploits, the cheaper it can be; the less trustworthy the structure, the more robust the solver must be.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>For each case in the result above, identify the mathematical structure being used: symmetry, positive definiteness, sparsity, full column rank, or numerical rank.</p></li>
+<li><p>Explain why Cholesky is inappropriate if the SPD assumption fails.</p></li>
+<li><p>Explain why QR is preferred to normal equations for full-rank least squares, using the result above.</p></li>
+<li><p>Explain why the SVD is the natural fallback when rank is uncertain, using the result above.</p></li>
+<li><p>Explain why CG and GMRES fit the Krylov approximation principle from the result above.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -877,6 +1071,19 @@ Tip
 <p>Each step recovers digits lost due to ill-conditioning, up to the limits of machine precision.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Limitations)</strong> Iterative refinement helps when the residual can be computed accurately and the correction equation can be solved reliably. It cannot overcome a problem whose condition number is so large that the desired digits are not present in the data.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -888,8 +1095,9 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Solve <span class="math inline">\(H_{10}\bx = H_{10}\mathbf{1}\)</span>. Apply one step of iterative refinement. How many digits are recovered?</p></li>
-<li><p>Compare forward errors of <code>solve</code> (LU) vs <code>lstsq</code> (QR) on a Hilbert system.</p></li>
+<li><p>Solve <span class="math inline">\(H_{10}\bx = H_{10}\mathbf{1}\)</span>. Apply one step of iterative refinement from the result above. How many digits are recovered?</p></li>
+<li><p>Compare forward errors of <code>solve</code> (LU) vs <code>lstsq</code> (QR) on a Hilbert system. Interpret the result using the result above.</p></li>
+<li><p>Choose a solver for each case in the result above: SPD, dense general square, full-rank least squares, rank-deficient least squares, large sparse SPD, and large sparse nonsymmetric. Justify each choice by citing one earlier result or exercise.</p></li>
 </ol>
 </div>
 </div>

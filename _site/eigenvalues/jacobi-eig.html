@@ -672,7 +672,8 @@ window.Quarto = {
    
   <ul>
   <li><a href="#givens-rotations" id="toc-givens-rotations" class="nav-link active" data-scroll-target="#givens-rotations"><span class="header-section-number">20.1</span> Givens Rotations</a></li>
-  <li><a href="#convergence-and-cost" id="toc-convergence-and-cost" class="nav-link" data-scroll-target="#convergence-and-cost"><span class="header-section-number">20.2</span> Convergence and Cost</a></li>
+  <li><a href="#the-jacobi-algorithm" id="toc-the-jacobi-algorithm" class="nav-link" data-scroll-target="#the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</a></li>
+  <li><a href="#convergence-and-cost" id="toc-convergence-and-cost" class="nav-link" data-scroll-target="#convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/jacobi-eig.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -737,8 +738,79 @@ t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sq
 </div>
 </div>
 </section>
-<section id="convergence-and-cost" class="level2" data-number="20.2">
-<h2 data-number="20.2" class="anchored" data-anchor-id="convergence-and-cost"><span class="header-section-number">20.2</span> Convergence and Cost</h2>
+<section id="the-jacobi-algorithm" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</h2>
+<p>The Jacobi eigenvalue algorithm repeatedly applies orthogonal similarity transformations <span class="math display">\[
+\begin{align}
+\bA^{(k+1)} = \bG_k^T \bA^{(k)} \bG_k
+\end{align}
+\]</span> to a symmetric matrix. Each rotation zeros one off-diagonal entry while preserving eigenvalues. As the off-diagonal entries converge to zero, <span class="math inline">\(\bA^{(k)}\)</span> converges to a diagonal matrix whose diagonal entries are the eigenvalues.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Jacobi Eigenvalue Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Input:</strong> Symmetric matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> and tolerance <code>tol</code>.\ <strong>Initialize:</strong> <span class="math inline">\(\bA^{(0)}=\bA\)</span>, <span class="math inline">\(\bV^{(0)}=\bI\)</span>.\ <strong>Repeat:</strong></p>
+<ol type="1">
+<li><p>Choose an off-diagonal pivot <span class="math inline">\((p,q)\)</span> with <span class="math inline">\(p&lt;q\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(c=\cos\theta\)</span> and <span class="math inline">\(s=\sin\theta\)</span> using the stable tangent formula so that <span class="math inline">\((\bG^T\bA^{(k)}\bG)_{pq}=0\)</span>.</p></li>
+<li><p>Update the matrix by orthogonal similarity: <span class="math display">\[
+\begin{align}
+\bA^{(k+1)}=\bG^T\bA^{(k)}\bG.
+\end{align}
+\]</span></p></li>
+<li><p>Accumulate eigenvectors: <span class="math display">\[
+\begin{align}
+\bV^{(k+1)}=\bV^{(k)}\bG.
+\end{align}
+\]</span></p></li>
+</ol>
+<p><strong>Stop:</strong> when <span class="math inline">\(\sigma_{\text{off}}(\bA^{(k)}) \leq `tol`\|\bA^{(k)}\|_F\)</span>.\ <strong>Output:</strong> Diagonal entries of <span class="math inline">\(\bA^{(k)}\)</span> approximate eigenvalues; columns of <span class="math inline">\(\bV^{(k)}\)</span> approximate eigenvectors.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Pivot choices)</strong></p>
+<ul>
+<li><p><strong>Classical Jacobi:</strong> choose the largest off-diagonal entry <span class="math inline">\(|A_{pq}|\)</span>.</p></li>
+<li><p><strong>Cyclic Jacobi:</strong> sweep through all pairs <span class="math inline">\((p,q)\)</span> in a fixed order.</p></li>
+</ul>
+<p>The largest-entry rule gives the clearest convergence proof. Cyclic sweeps are simpler to implement and often used in practice.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Why eigenvectors accumulate)</strong> After <span class="math inline">\(k\)</span> rotations, <span class="math display">\[
+\begin{align}
+\bA^{(k)} = (\bV^{(k)})^T \bA \bV^{(k)}.
+\end{align}
+\]</span> If <span class="math inline">\(\bA^{(k)}\)</span> is nearly diagonal, then <span class="math inline">\(\bA \bV^{(k)} \approx \bV^{(k)}\boldsymbol{\Lambda}\)</span>, so the columns of <span class="math inline">\(\bV^{(k)}\)</span> are approximate eigenvectors of the original matrix.</p>
+</div>
+</div>
+</section>
+<section id="convergence-and-cost" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -757,7 +829,7 @@ t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sq
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -766,7 +838,7 @@ t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sq
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>The orthogonal transform <span class="math inline">\(\bA' = G^T\bA G\)</span> preserves the Frobenius norm: <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>. Let <span class="math inline">\(d(\bA) = \sum A_{ii}^2\)</span> be the sum of squares of diagonal entries. Then: <span class="math display">\[
 \begin{align}
@@ -793,7 +865,7 @@ d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\b
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">

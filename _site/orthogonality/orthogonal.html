@@ -702,6 +702,7 @@ window.Quarto = {
 
 
 <p>Transformations that preserve lengths and angles. Numerically ideal due to optimal conditioning (<span class="math inline">\(\kappa_2(\bQ) = 1\)</span>).</p>
+<p>Orthogonal transformations rotate or reflect space without stretching it. Because they preserve lengths, they do not amplify errors in the Euclidean norm. This is why stable numerical linear algebra tries to use orthogonal transformations whenever possible.</p>
 <section id="orthogonality-and-orthonormal-bases" class="level2" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="orthogonality-and-orthonormal-bases"><span class="header-section-number">12.1</span> Orthogonality and Orthonormal Bases</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -742,11 +743,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Efficiency in Orthonormal Bases.</strong> In an orthonormal basis, the coefficients of a vector <span class="math inline">\(\bv = \sum c_i \bq_i\)</span> are given by standard inner products: <span class="math inline">\(c_i = \bq_i^T\bv\)</span>. This allows the solution of a linear system, which generally requires <span class="math inline">\(O(n^3)\)</span> operations, to be computed using a sequence of inner products in <span class="math inline">\(O(n^2)\)</span> time.</p>
+<p><strong>(Efficiency in Orthonormal Bases)</strong> In an orthonormal basis, the coefficients of a vector <span class="math inline">\(\bv = \sum c_i \bq_i\)</span> are given by standard inner products: <span class="math inline">\(c_i = \bq_i^T\bv\)</span>. This allows the solution of a linear system, which generally requires <span class="math inline">\(O(n^3)\)</span> operations, to be computed using a sequence of inner products in <span class="math inline">\(O(n^2)\)</span> time.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -760,8 +761,8 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Verify <span class="math inline">\(\bq_1 = \frac{1}{\sqrt{2}}(1, 1)^T, \bq_2 = \frac{1}{\sqrt{2}}(1, -1)^T\)</span> is an orthonormal basis for <span class="math inline">\(\fR^2\)</span>.</p></li>
-<li><p>Express <span class="math inline">\(\bv = (3, -1)^T\)</span> in this basis.</p></li>
+<li><p>Verify <span class="math inline">\(\bq_1 = \frac{1}{\sqrt{2}}(1, 1)^T, \bq_2 = \frac{1}{\sqrt{2}}(1, -1)^T\)</span> is an orthonormal basis using the result above.</p></li>
+<li><p>Express <span class="math inline">\(\bv = (3, -1)^T\)</span> in this basis using the result above.</p></li>
 <li><p>Prove that any set of <span class="math inline">\(n\)</span> mutually orthogonal nonzero vectors is linearly independent.</p></li>
 </ol>
 </div>
@@ -785,11 +786,31 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Rotation and reflection)</strong> In <span class="math inline">\(\fR^2\)</span>, <span class="math display">\[
+\begin{align}
+\begin{pmatrix}\cos\theta&amp;-\sin\theta\\ \sin\theta&amp;\cos\theta\end{pmatrix}
+    \quad \text{rotates, while} \quad
+    \begin{pmatrix}1&amp;0\\0&amp;-1\end{pmatrix}
+    \quad \text{reflects.}
+\end{align}
+\]</span> Both are orthogonal. The determinant distinguishes orientation: rotations have determinant <span class="math inline">\(1\)</span>, reflections have determinant <span class="math inline">\(-1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Theorem: Invariance Properties
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For any orthogonal <span class="math inline">\(\bQ\)</span> and vectors <span class="math inline">\(\bx, \by\)</span>:</p>
+<p>For any orthogonal <span class="math inline">\(\bQ\)</span> from the result above and vectors <span class="math inline">\(\bx, \by\)</span>:</p>
 <ol type="1">
 <li><p><strong>Inner Product Preserving:</strong> <span class="math inline">\((\bQ\bx)^T(\bQ\by) = \bx^T\by\)</span>.</p></li>
 <li><p><strong>Isometry:</strong> <span class="math inline">\(\|\bQ\bx\|_2 = \|\bx\|_2\)</span>.</p></li>
@@ -798,7 +819,7 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -807,7 +828,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><strong>(1):</strong> Applying the Reversal Law for transposes and the fact that <span class="math inline">\(\bQ^T\bQ = \bI\)</span>: <span class="math display">\[
 \begin{align}
@@ -841,7 +862,8 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Verify rotation matrix <span class="math inline">\(\bQ = \begin{pmatrix}\cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta\end{pmatrix}\)</span> is orthogonal.</p></li>
+<li><p>Verify rotation matrix <span class="math inline">\(\bQ = \begin{pmatrix}\cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta\end{pmatrix}\)</span> is orthogonal using the result above.</p></li>
+<li><p>Use the result above to explain why rotations preserve Euclidean distance.</p></li>
 <li><p>Prove that the product of two orthogonal matrices is orthogonal.</p></li>
 <li><p>If <span class="math inline">\(\bQ\)</span> is orthogonal, show <span class="math inline">\(\det(\bQ) = \pm 1\)</span>.</p></li>
 </ol>
@@ -851,6 +873,7 @@ Tip
 <section id="qr-decomposition" class="level2" data-number="12.2">
 <h2 data-number="12.2" class="anchored" data-anchor-id="qr-decomposition"><span class="header-section-number">12.2</span> QR Decomposition</h2>
 <p>Factors <span class="math inline">\(\bA\)</span> into an orthogonal <span class="math inline">\(\bQ\)</span> and upper triangular <span class="math inline">\(\bR\)</span>. Default choice for least squares and eigenvalue algorithms.</p>
+<p>QR factorization builds an orthonormal basis for the column space of <span class="math inline">\(\bA\)</span>. Once the columns have been replaced by an orthonormal basis, projections and least squares problems become much easier because coefficients are computed by inner products.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -861,11 +884,28 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> (<span class="math inline">\(m \geq n\)</span>): <span class="math inline">\(\bA = \bQ\bR\)</span>.</p>
+<p>For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> (<span class="math inline">\(m \geq n\)</span>): <span class="math inline">\(\bA = \bQ\bR\)</span>. The columns of <span class="math inline">\(\bQ\)</span> form an orthonormal basis for the column space introduced in the result above.</p>
 <ul>
 <li><p><strong>Full QR:</strong> <span class="math inline">\(\bQ \in \fR^{m \times m}, \bR \in \fR^{m \times n}\)</span>.</p></li>
 <li><p><strong>Thin QR:</strong> <span class="math inline">\(\bQ_1 \in \fR^{m \times n}, \bR_1 \in \fR^{n \times n}\)</span>. Columns of <span class="math inline">\(\bQ_1\)</span> span <span class="math inline">\(\mathcal{R}(\bA)\)</span>.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Thin and full QR)</strong> For least squares with <span class="math inline">\(m\geq n\)</span>, the thin QR is usually the useful one: <span class="math display">\[
+\begin{align}
+\bA=\bQ_1\bR_1,\qquad \bQ_1\in\fR^{m\times n},\quad \bR_1\in\fR^{n\times n}.
+\end{align}
+\]</span> The remaining <span class="math inline">\(m-n\)</span> columns in full QR span the orthogonal complement of <span class="math inline">\(\mathcal{R}(\bA)\)</span>, but they are often unnecessary to store.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -891,11 +931,24 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Flop Cost.</strong> For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> via Householder: <span class="math inline">\(\text{Cost} \approx 2mn^2 - \frac{2}{3}n^3\)</span>. Square case (<span class="math inline">\(m=n\)</span>): <span class="math inline">\(\frac{4}{3}n^3\)</span> (twice the cost of LU).</p>
+<p><strong>(Householder QR cost)</strong> For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> via Householder: <span class="math inline">\(\text{Cost} \approx 2mn^2 - \frac{2}{3}n^3\)</span>. Square case (<span class="math inline">\(m=n\)</span>): <span class="math inline">\(\frac{4}{3}n^3\)</span> (twice the cost of LU).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Householder stability)</strong> A Householder reflector is orthogonal, so applying it preserves vector norms. QR by Householder is a sequence of orthogonal transformations, which avoids the error amplification caused by subtracting nearly dependent projections in classical Gram-Schmidt.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -909,8 +962,9 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Find <span class="math inline">\(\bv\)</span> s.t. <span class="math inline">\(\bH(3, 4)^T = (-5, 0)^T\)</span>.</p></li>
-<li><p>Use Householder to triangularize <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 3 \\ 2 &amp; 4 \end{pmatrix}\)</span>.</p></li>
+<li><p>Find <span class="math inline">\(\bv\)</span> so that the reflector in the result above satisfies <span class="math inline">\(\bH(3, 4)^T = (-5, 0)^T\)</span>.</p></li>
+<li><p>Use Householder reflectors to triangularize <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 3 \\ 2 &amp; 4 \end{pmatrix}\)</span> and identify the resulting <span class="math inline">\(\bQ\)</span> and <span class="math inline">\(\bR\)</span> from the result above.</p></li>
+<li><p>Use the result above to explain the result above.</p></li>
 <li><p>Compare thin vs.&nbsp;full QR shapes in NumPy for a <span class="math inline">\(5 \times 3\)</span> matrix.</p></li>
 </ol>
 </div>
@@ -918,17 +972,18 @@ Tip
 </section>
 <section id="gram-schmidt-process" class="level2" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="gram-schmidt-process"><span class="header-section-number">12.3</span> Gram-Schmidt Process</h2>
+<p>Gram-Schmidt constructs an orthonormal basis by taking the columns of <span class="math inline">\(\bA\)</span> one at a time and removing the components already explained by previous basis vectors. It is conceptually simple, but finite precision can destroy orthogonality when the original columns are nearly linearly dependent.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Classical vs.&nbsp;Modified Gram-Schmidt.</strong></p>
+<p><strong>(Classical and modified Gram-Schmidt)</strong></p>
 <ul>
 <li><p><strong>Classical (CGS):</strong> <span class="math inline">\(\bu_k = \bv_k - \sum_{j &lt; k} \text{proj}_{\bu_j}(\bv_k)\)</span>. Numerically unstable for ill-conditioned <span class="math inline">\(\bA\)</span> (<span class="math inline">\(\text{Error} \propto \kappa(\bA)^2\)</span>).</p></li>
 <li><p><strong>Modified (MGS):</strong> Orthogonalize sequentially against partially updated vectors. Better stability (<span class="math inline">\(\text{Error} \propto \kappa(\bA)\)</span>).</p></li>
@@ -941,46 +996,28 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Numerical Hierarchy:</strong> Householder QR is the most stable (<span class="math inline">\(O(\varepsilon_{\text{mach}})\)</span> loss of orthogonality) and is used by <code>np.linalg.qr</code>. MGS is used when <span class="math inline">\(\bQ\)</span> columns are needed one by one (e.g., Arnoldi/GMRES).</p>
+<p><strong>(Orthogonalization hierarchy)</strong> Householder QR is the most stable (<span class="math inline">\(O(\varepsilon_{\text{mach}})\)</span> loss of orthogonality) and is used by <code>np.linalg.qr</code>. MGS is used when <span class="math inline">\(\bQ\)</span> columns are needed one by one (e.g., Arnoldi/GMRES).</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Apply hand CGS to columns of <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 2 \\ 0 &amp; 1 \end{pmatrix}\)</span>.</p></li>
-<li><p><strong>Stability Experiment:</strong> Construct a nearly singular Vandermonde matrix. Compare loss of orthogonality (<span class="math inline">\(\|\bQ^T\bQ - \bI\|_F\)</span>) for CGS, MGS, and Householder.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="orthogonal-projection" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="orthogonal-projection"><span class="header-section-number">12.4</span> Orthogonal Projection</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Orthogonal Projector
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For a subspace <span class="math inline">\(S\)</span> with orthonormal basis <span class="math inline">\(\bQ\)</span>: <span class="math inline">\(\bP = \bQ\bQ^T\)</span>.</p>
+<p><strong>(Orthogonalization method comparison)</strong></p>
 <ul>
-<li><p><strong>Properties:</strong> <span class="math inline">\(\bP^2 = \bP\)</span> (Idempotent), <span class="math inline">\(\bP^T = \bP\)</span> (Symmetric).</p></li>
-<li><p><strong>Geometric View:</strong> <span class="math inline">\(\bP\bx\)</span> is the closest vector in <span class="math inline">\(S\)</span> to <span class="math inline">\(\bx\)</span>. Residual <span class="math inline">\(\br = \bx - \bP\bx\)</span> lies in <span class="math inline">\(S^\perp = \mathcal{N}(\bQ^T)\)</span>.</p></li>
+<li><p><strong>Classical Gram-Schmidt:</strong> Best for deriving the idea; weakest numerically.</p></li>
+<li><p><strong>Modified Gram-Schmidt:</strong> Better when basis vectors must be generated sequentially.</p></li>
+<li><p><strong>Householder QR:</strong> Default dense QR method; most stable for least squares.</p></li>
 </ul>
 </div>
 </div>
@@ -995,8 +1032,67 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Show that for any projector <span class="math inline">\(\bP\)</span>, the residual <span class="math inline">\(\bx - \bP\bx\)</span> is orthogonal to <span class="math inline">\(\bP\bx\)</span>.</p></li>
+<li><p>Apply hand CGS to columns of <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 2 \\ 0 &amp; 1 \end{pmatrix}\)</span> and compare the resulting basis with the result above.</p></li>
+<li><p>Construct a nearly singular Vandermonde matrix. Compare loss of orthogonality (<span class="math inline">\(\|\bQ^T\bQ - \bI\|_F\)</span>) for CGS, MGS, and Householder.</p></li>
+<li><p>Explain the experiment using the result above.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="orthogonal-projection" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="orthogonal-projection"><span class="header-section-number">12.4</span> Orthogonal Projection</h2>
+<p>Projection is the geometric operation behind least squares. If <span class="math inline">\(\bb\)</span> is not in a subspace <span class="math inline">\(S\)</span>, the best approximation from <span class="math inline">\(S\)</span> is the vector in <span class="math inline">\(S\)</span> closest to <span class="math inline">\(\bb\)</span>. The error vector must be orthogonal to <span class="math inline">\(S\)</span>; otherwise one could move within <span class="math inline">\(S\)</span> and reduce the error.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Orthogonal Projector
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a subspace <span class="math inline">\(S\)</span> with orthonormal basis <span class="math inline">\(\bQ\)</span> from the result above: <span class="math inline">\(\bP = \bQ\bQ^T\)</span>.</p>
+<ul>
+<li><p><strong>Properties:</strong> <span class="math inline">\(\bP^2 = \bP\)</span> (Idempotent), <span class="math inline">\(\bP^T = \bP\)</span> (Symmetric).</p></li>
+<li><p><strong>Geometric View:</strong> <span class="math inline">\(\bP\bx\)</span> is the closest vector in <span class="math inline">\(S\)</span> to <span class="math inline">\(\bx\)</span>. Residual <span class="math inline">\(\br = \bx - \bP\bx\)</span> lies in <span class="math inline">\(S^\perp = \mathcal{N}(\bQ^T)\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Closest Point Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(S\)</span> be a subspace of <span class="math inline">\(\fR^m\)</span> and let <span class="math inline">\(\bP\)</span> be the orthogonal projector onto <span class="math inline">\(S\)</span> from the result above. For every <span class="math inline">\(\bb\in\fR^m\)</span>, <span class="math inline">\(\bP\bb\)</span> is the unique vector in <span class="math inline">\(S\)</span> closest to <span class="math inline">\(\bb\)</span> in the Euclidean norm: <span class="math display">\[
+\begin{align}
+\|\bb-\bP\bb\|_2 \leq \|\bb-\bs\|_2
+    \qquad \text{for every } \bs\in S.
+\end{align}
+\]</span> Moreover, the residual <span class="math inline">\(\bb-\bP\bb\)</span> is orthogonal to <span class="math inline">\(S\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to show that <span class="math inline">\(\bP^2=\bP\)</span> and <span class="math inline">\(\bP^T=\bP\)</span>.</p></li>
+<li><p>Show that the residual <span class="math inline">\(\bx-\bP\bx\)</span> is orthogonal to every vector in the target subspace.</p></li>
 <li><p>Project <span class="math inline">\(\bx = (1, 2, 3)^T\)</span> onto the span of <span class="math inline">\((1, 1, 1)^T\)</span>.</p></li>
+<li><p>Prove the result above: write any <span class="math inline">\(\bs\in S\)</span> as <span class="math inline">\(\bs=\bP\bb+\bw\)</span> with <span class="math inline">\(\bw\in S\)</span>, then use the Pythagorean theorem.</p></li>
+<li><p>Relate this residual orthogonality to the result above.</p></li>
 </ol>
 </div>
 </div>

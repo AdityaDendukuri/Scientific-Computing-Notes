@@ -9,9 +9,17 @@
 Symmetric Positive Definite (SPD) matrices form one of the most important classes of matrices in scientific computing. They possess several remarkable properties that allow for algorithms that are twice as fast and significantly more stable than those for general matrices.
 }
 
+\textBox{%
+An SPD matrix is the matrix version of positive curvature or positive energy. The quadratic form $\bx^T\bA\bx$ is always positive away from the origin, so it defines a geometry, a convex energy landscape, and a stable class of linear systems.
+}
+
 \subsubsection{Definitions and Properties}
 
 SPD matrices arise naturally in a wide variety of engineering contexts, including optimization (as Hessian matrices of convex functions), statistics (as covariance matrices), and physical simulations (as stiffness matrices in structural mechanics).
+
+\textBox{%
+The expression $\bx^T\bA\bx$ is called a \textbf{quadratic form}. It converts a vector into a scalar. If $\bA$ is symmetric, then this scalar measures the energy of $\bx$ in the geometry defined by $\bA$.
+}
 
 \addDef{Positive Definite}{%
 A symmetric matrix $\bA \in \fR^{n \times n}$ is \textbf{positive definite} (PD) if the quadratic form $\bx^T\bA\bx$ is strictly positive for every nonzero vector $\bx \in \fR^n$:
@@ -22,6 +30,26 @@ If $\bA$ is both symmetric and PD, it is \textbf{SPD}.
 }
 \label{def:positive-definite}
 
+\addDef{Positive Semidefinite}{%
+A symmetric matrix $\bA$ is \textbf{positive semidefinite} (PSD) if
+\begin{align*}
+    \bx^T\bA\bx \geq 0 \quad \text{for every } \bx \in \fR^n.
+\end{align*}
+Positive definite means strictly positive for every nonzero vector. Positive semidefinite allows flat directions where $\bx^T\bA\bx=0$.
+}
+\label{def:positive-semidefinite}
+
+\addExmpl{%
+\textbf{(Definite vs.\ semidefinite)}\enspace
+\begin{align*}
+    \begin{pmatrix}2&0\\0&1\end{pmatrix}
+    \quad \text{is SPD, while} \quad
+    \begin{pmatrix}1&0\\0&0\end{pmatrix}
+    \quad \text{is PSD but not PD.}
+\end{align*}
+The second matrix has a flat direction: $(0,1)^T$ has zero quadratic energy.
+}
+
 \addExcr{%
 \begin{enumerate}
     \item Test $\bA = \begin{pmatrix}2 & 1 \\ 1 & 2\end{pmatrix}$ for PD property by expanding $\bx^T\bA\bx$.
@@ -29,10 +57,21 @@ If $\bA$ is both symmetric and PD, it is \textbf{SPD}.
 \end{enumerate}
 }
 
-\addNote{%
-\textbf{Spectral Characterization.}\enspace
+\addRemark{%
+\textbf{(Spectral Characterization)}\enspace
 A symmetric matrix is PD iff \textbf{all its eigenvalues are strictly positive}.
 Every SPD matrix is invertible ($\det \bA = \prod \lambda_i > 0$).
+}
+
+\addRemark{%
+\textbf{(Equivalent tests for SPD)}\enspace For a symmetric matrix $\bA$, the following are equivalent:
+\begin{enumerate}
+    \item $\bx^T\bA\bx>0$ for every nonzero $\bx$.
+    \item Every eigenvalue of $\bA$ is positive.
+    \item Cholesky factorization succeeds with positive pivots.
+    \item All leading principal minors are positive.
+\end{enumerate}
+The eigenvalue and Cholesky tests are the most useful computationally.
 }
 
 \addExcr{%
@@ -48,6 +87,15 @@ Every SPD matrix is invertible ($\det \bA = \prod \lambda_i > 0$).
 An SPD matrix $\bA$ can be thought of as defining a new geometry or "metric" on $\fR^n$, where the distance and angle between vectors are weighted by the entries of $\bA$. This perspective is fundamental to understanding the behavior of iterative solvers like the Conjugate Gradient method.
 }
 
+\textBox{%
+If $\bA=\bQ\boldsymbol{\Lambda}\bQ^T$, then
+\begin{align*}
+    \bx^T\bA\bx = \sum_{i=1}^n \lambda_i z_i^2,
+    \qquad \bz=\bQ^T\bx.
+\end{align*}
+The eigenvectors give the principal directions of the geometry, and the eigenvalues determine how expensive motion is in each direction.
+}
+
 \addDef{$\bA$-Inner Product}{%
 For SPD $\bA$, the mapping $\langle \bx, \by \rangle_\bA = \bx^T\bA\by$ satisfies the axioms of an inner product.
 \begin{itemize}
@@ -57,8 +105,20 @@ For SPD $\bA$, the mapping $\langle \bx, \by \rangle_\bA = \bx^T\bA\by$ satisfie
 }
 \label{def:a-metric}
 
-\addNote{%
+\addRemark{%
 \textbf{Physical Meaning:}\enspace Directions with large eigenvalues are ``stiff'' or ``expensive'' (small axes in the unit ellipsoid); small eigenvalues represent ``sensitive'' directions.
+}
+
+\addExmpl{%
+\textbf{(Ellipse)}\enspace For
+\begin{align*}
+    \bA=\begin{pmatrix}4&0\\0&1\end{pmatrix},
+\end{align*}
+the unit $\bA$-norm curve is
+\begin{align*}
+    4x_1^2+x_2^2=1.
+\end{align*}
+The axis in the $x_1$ direction is shorter because that direction has larger eigenvalue. Moving in that direction costs more energy.
 }
 
 \addExcr{%
@@ -74,19 +134,47 @@ For SPD $\bA$, the mapping $\langle \bx, \by \rangle_\bA = \bx^T\bA\by$ satisfie
 The symmetry and positive definiteness of $\bA$ allow for a specialized version of the LU factorization known as the \textbf{Cholesky decomposition}. The decomposition can be interpreted as a generalized square root for SPD matrices, where $\bA = \bL\bL^T$.
 }
 
+\textBox{%
+Cholesky is the natural direct solver for SPD systems. It stores only one triangular factor instead of two, avoids pivoting, and preserves the symmetry of the problem.
+}
+
 \addDef{Cholesky Decomposition}{%
 Every SPD matrix $\bA$ admits a unique decomposition $\bA = \bL\bL^T$, where $\bL$ is lower triangular with strictly positive diagonal entries.
 }
 \label{def:cholesky}
 
-\addNote{%
-\textbf{Flop Cost.}\enspace
+\addExmpl{%
+\textbf{(A $2\times2$ Cholesky factor)}\enspace Let
+\begin{align*}
+    \bA=\begin{pmatrix}4&2\\2&3\end{pmatrix}.
+\end{align*}
+Assume
+\begin{align*}
+    \bL=\begin{pmatrix}\ell_{11}&0\\\ell_{21}&\ell_{22}\end{pmatrix}.
+\end{align*}
+Matching $\bA=\bL\bL^T$ gives $\ell_{11}=2$, $\ell_{21}=1$, and $\ell_{22}=\sqrt{2}$, so
+\begin{align*}
+    \bL=\begin{pmatrix}2&0\\1&\sqrt{2}\end{pmatrix}.
+\end{align*}
+}
+
+\addRemark{%
+\textbf{(Flop Cost)}\enspace
 The computational cost of the Cholesky decomposition is \textbf{$\frac{1}{3}n^3$ flops}, approximately half that of a general LU factorization.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Stability Advantage:}\enspace
 Unlike general LU, Cholesky is \textbf{guaranteed to be stable without pivoting}. In code, \texttt{np.linalg.cholesky} is the standard numerical test for positive definiteness; if it raises a \texttt{LinAlgError}, the matrix is not PD.
+}
+
+\addRemark{%
+\textbf{(Solving with Cholesky)}\enspace If $\bA=\bL\bL^T$, then solving $\bA\bx=\bb$ requires two triangular solves:
+\begin{enumerate}
+    \item Solve $\bL\by=\bb$.
+    \item Solve $\bL^T\bx=\by$.
+\end{enumerate}
+The factorization costs $O(n^3)$, but each solve costs only $O(n^2)$.
 }
 
 \addExcr{%
@@ -103,6 +191,24 @@ Unlike general LU, Cholesky is \textbf{guaranteed to be stable without pivoting}
     \item \textbf{Covariance:}\enspace Generate \texttt{X = np.random.randn(100, 4)}. Verify \texttt{X.T @ X} is SPD via Cholesky.
     \item \textbf{Gram Matrix:}\enspace Prove that $\mathbf{G} = \bX^T\bX$ is at least positive semi-definite for any $\bX$, and PD if $\bX$ has full column rank.
 \end{enumerate}
+}
+
+\addRemark{%
+\textbf{(Where SPD matrices appear)}\enspace
+\begin{itemize}
+    \item \textbf{Optimization:}\enspace Hessians of strictly convex quadratic functions.
+    \item \textbf{Statistics:}\enspace Covariance and Gram matrices, often PSD and SPD when data are full rank.
+    \item \textbf{PDEs:}\enspace Discrete Laplacians and stiffness matrices for elliptic problems.
+    \item \textbf{Least squares:}\enspace Normal equations $\bA^T\bA\bx=\bA^T\bb$ are SPD when $\bA$ has full column rank.
+\end{itemize}
+}
+
+\addRemark{%
+\textbf{(Connection to CG)}\enspace Conjugate Gradient is designed for large sparse SPD systems. It minimizes the quadratic energy
+\begin{align*}
+    \phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx,
+\end{align*}
+whose unique minimizer satisfies $\bA\bx=\bb$ when $\bA$ is SPD.
 }
 
 \addPrf{%

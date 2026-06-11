@@ -18,7 +18,8 @@ The `ndarray` is the fundamental structure.
 
 
 ::: {.callout-tip icon=false}
-**Shapes and Rank-1 Arrays.** 
+## Remark
+**(Shapes and Rank-1 Arrays)** 
 `A.shape` returns `(m, n)`. Note that a 1D array has shape `(n,)`, which is **not** equivalent to a column vector `(n, 1)`. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use `x[:, None]` or `x.reshape(-1, 1)` to convert to 2D.
 :::
 
@@ -54,13 +55,15 @@ Core routines in `numpy.linalg`:
 
 
 ::: {.callout-tip icon=false}
-**Performance Law: Vectorization.** 
+## Remark
+**(Performance Law: Vectorization)** 
 Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by **vectorizing** operations. For example, use `A @ B` instead of triple-nested loops.
 :::
 
 
 ::: {.callout-tip icon=false}
-**Stability: solve vs inv.** 
+## Remark
+**(Stability: solve vs inv)** 
 `np.linalg.solve(A, b)` is faster and more stable than `np.linalg.inv(A) @ b`. Explicit inversion is almost never desirable in scientific computation.
 :::
 

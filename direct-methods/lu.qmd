@@ -4,10 +4,13 @@
 Most direct methods for solving linear systems rely on matrix factorizations that reduce a complex system into multiple simpler ones. The **LU factorization** is the most fundamental of these, decomposing a square matrix $\bA$ into a unit lower triangular matrix $\bL$ and an upper triangular matrix $\bU$. This process is essentially the matrix form of Gaussian elimination.
 
 
+Gaussian elimination transforms $\bA\bx=\bb$ into an equivalent upper triangular system. LU factorization stores the elimination steps, so the same work can be reused for many right-hand sides.
+
+
 ## LU and Gaussian Elimination
 
 
-Decomposing $\bA$ into triangular factors allows us to solve $\bA\bx = \bb$ by solving two triangular systems, which is computationally efficient.
+Triangular systems are easy because the unknowns can be recovered one at a time. If $\bU$ is upper triangular, the last equation contains only $x_n$, the next contains only $x_{n-1}$ and $x_n$, and so on. This is backward substitution. Lower triangular systems are solved similarly by forward substitution.
 
 
 ::: {.callout-note icon=false}
@@ -22,6 +25,55 @@ $$
 :::
 
 
+The matrix $\bU$ contains the row-echelon form produced by elimination. The matrix $\bL$ stores the multipliers used to eliminate entries below each pivot. If row $i$ is updated by subtracting $\ell_{ik}$ times row $k$, then $\ell_{ik}$ appears in $\bL$.
+
+
+::: {.callout-note icon=false}
+## Example
+**(One elimination)**  Let
+$$
+\begin{align}
+\bA =
+    \begin{pmatrix}
+        2 & 1 \\
+        6 & 5
+    \end{pmatrix}.
+\end{align}
+$$
+To eliminate the entry $6$ below the pivot $2$, subtract $3$ times row 1 from row 2:
+$$
+\begin{align}
+\begin{pmatrix}
+        2 & 1 \\
+        6 & 5
+    \end{pmatrix}
+    \longrightarrow
+    \begin{pmatrix}
+        2 & 1 \\
+        0 & 2
+    \end{pmatrix}.
+\end{align}
+$$
+The multiplier is $\ell_{21}=3$, so
+$$
+\begin{align}
+\bL =
+    \begin{pmatrix}
+        1 & 0 \\
+        3 & 1
+    \end{pmatrix},
+    \qquad
+    \bU =
+    \begin{pmatrix}
+        2 & 1 \\
+        0 & 2
+    \end{pmatrix},
+    \qquad
+    \bA=\bL\bU.
+\end{align}
+$$
+:::
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
@@ -33,19 +85,28 @@ $$
 
 
 ::: {.callout-tip icon=false}
-**Existence and Uniqueness.** 
+## Remark
+**(Existence and Uniqueness)** 
 $\bA$ admits a unique LU factorization iff all leading principal submatrices $\bA_k$ are nonsingular ($k=1, ..., n-1$). The algorithm fails if a zero pivot is encountered.
 :::
 
 
 ::: {.callout-tip icon=false}
-**Flop Cost.** 
+## Remark
+**(Elimination without pivoting is fragile)**  A zero pivot causes the algebraic algorithm to stop. A tiny pivot may be worse numerically: dividing by a tiny number creates huge multipliers, which amplify rounding errors in later rows.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Flop Cost)** 
 Computing $\bL$ and $\bU$ via Gaussian elimination costs \textbf{$\frac{2}{3}n^3$ flops}.
 :::
 
 
 ::: {.callout-tip icon=false}
-**The Solve Pattern.** 
+## Remark
+**(The Solve Pattern)** 
 To solve $\bA\bx = \bb$ given $\bA = \bL\bU$:
 
 1. Solve **$\bL\by = \bb$** via forward substitution ($O(n^2)$).
@@ -55,6 +116,24 @@ To solve $\bA\bx = \bb$ given $\bA = \bL\bU$:
 **Advantage:**  Once $\bA$ is factored, each new $\bb$ costs only $O(n^2)$.
 :::
 
+
+::: {.callout-note icon=false}
+## Example
+**(Solving with the factors)**  For the previous example, solve $\bA\bx=\bb$ with $\bb=(3,11)^T$.
+First solve $\bL\by=\bb$:
+$$
+\begin{align}
+y_1=3, \qquad 3y_1+y_2=11 \Rightarrow y_2=2.
+\end{align}
+$$
+Then solve $\bU\bx=\by$:
+$$
+\begin{align}
+2x_2=2 \Rightarrow x_2=1, \qquad 2x_1+x_2=3 \Rightarrow x_1=1.
+\end{align}
+$$
+The solution is $\bx=(1,1)^T$.
+:::
 
 ::: {.callout-warning icon=false}
 ## Exercise
@@ -75,13 +154,35 @@ While mathematically elegant, basic LU factorization is numerically unstable if 
 
 
 ::: {.callout-note icon=false}
+## Example
+**(Small pivot)**  Consider
+$$
+\begin{align}
+\bA =
+    \begin{pmatrix}
+        10^{-20} & 1 \\
+        1 & 1
+    \end{pmatrix}.
+\end{align}
+$$
+Without pivoting, the first multiplier is $10^{20}$. The elimination step creates huge intermediate entries even though the original matrix has modest entries. Partial pivoting swaps the two rows first, using the pivot $1$ instead of $10^{-20}$.
+:::
+
+::: {.callout-note icon=false}
 ## Definition: LUP Decomposition
 The result of Gaussian elimination with partial pivoting is recorded as $\mathbf{P}\bA = \bL\bU$, where $\bP$ is a permutation matrix that tracks the row swaps.
 :::
 
 
 ::: {.callout-tip icon=false}
-**Stability and Growth Factor.** 
+## Remark
+**(Permutation matrices)**  Multiplying by $\bP$ reorders rows. Permutation matrices are orthogonal: $\bP^{-1}=\bP^T$. Applying a permutation is cheap because no arithmetic is required; the code only reorders indices.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Stability and Growth Factor)** 
 The numerical stability of LUP is characterized by the growth factor $\rho = \max|u_{ij}| / \max|a_{ij}|$. If $\rho$ is large, the solution may be inaccurate. Partial pivoting keeps $\rho$ small in practice (typically $O(n)$), ensuring the algorithm is backward stable. While the theoretical worst-case growth is $2^{n-1}$, such matrices are rarely encountered in engineering applications.
 :::
 
@@ -104,8 +205,18 @@ The numerical stability of LUP is characterized by the growth factor $\rho = \ma
 Understanding the computational cost is vital for choosing the right solver for large-scale engineering problems. The bulk of the work is in the factorization step.
 
 
+There are two separate costs:
+
+- **Factorization cost:**  Build $\bL$ and $\bU$ once. This costs $O(n^3)$.
+    
+- **Solve cost:**  Use the factors for a specific $\bb$. This costs $O(n^2)$.
+
+This distinction is the reason factorizations are valuable.
+
+
 ::: {.callout-tip icon=false}
-**Total Cost for $k$ Right-Hand Sides.** 
+## Remark
+**(Total Cost for $k$ Right-Hand Sides)** 
 For a system with $n$ unknowns and $k$ different right-hand side vectors $\bb$, the total cost is:
 $$
 \begin{align}
@@ -131,6 +242,12 @@ Counting the floating-point operations:
 - Total flops: $\sum_{i=1}^n 2(i-1) = 2 \sum_{k=0}^{n-1} k = 2 \frac{(n-1)n}{2} = n^2 - n$.
 
 For large $n$, each triangular solve costs approximately $n^2$ flops.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Implementation rule)**  In NumPy/SciPy, use `solve` for one right-hand side or `lu\_factor`/`lu\_solve` when reusing a factorization. Do not form $\bA^{-1}$ to solve a linear system.
 :::
 
 

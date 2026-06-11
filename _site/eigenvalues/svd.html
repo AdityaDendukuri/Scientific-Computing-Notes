@@ -702,6 +702,7 @@ window.Quarto = {
 
 
 <p>The Singular Value Decomposition (SVD) is a general matrix factorization that decomposes any <span class="math inline">\(m \times n\)</span> matrix into a product of orthogonal transformations and a diagonal scaling matrix.</p>
+<p>The SVD is the most complete description of what a matrix does geometrically. It finds orthonormal input directions, tells how much each direction is stretched, and gives the corresponding orthonormal output directions.</p>
 <section id="the-svd-theorem" class="level2" data-number="18.1">
 <h2 data-number="18.1" class="anchored" data-anchor-id="the-svd-theorem"><span class="header-section-number">18.1</span> The SVD Theorem</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -731,11 +732,101 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Geometric Interpretation:</strong> <span class="math inline">\(\bA\)</span> rotates the input space (<span class="math inline">\(\bV^T\)</span>), scales along the axes (<span class="math inline">\(\bsigma\)</span>), and rotates the result to the output space (<span class="math inline">\(\bU\)</span>).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: SVD Coordinates
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA=\bU\bsigma\bV^T\)</span> be the SVD from the result above. If <span class="math inline">\(\bx=\bV\by\)</span> and <span class="math inline">\(\bc=\bU^T\bb\)</span>, then the equation <span class="math inline">\(\bA\bx=\bb\)</span> becomes <span class="math display">\[
+\begin{align}
+\bsigma \by = \bc.
+\end{align}
+\]</span> Thus the action of <span class="math inline">\(\bA\)</span> is a set of independent scalar equations <span class="math inline">\(\sigma_i y_i=c_i\)</span> in orthonormal coordinates. Small singular values correspond to directions where solving requires division by small numbers.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Substitute <span class="math inline">\(\bx=\bV\by\)</span> into <span class="math inline">\(\bA\bx=\bb\)</span> and use the result above to obtain <span class="math inline">\(\bU\bsigma\by=\bb\)</span>.</p></li>
+<li><p>Multiply by <span class="math inline">\(\bU^T\)</span> and use orthogonality of <span class="math inline">\(\bU\)</span> to prove the result above.</p></li>
+<li><p>For a square full-rank matrix, use the scalar equations <span class="math inline">\(\sigma_i y_i=c_i\)</span> to derive <span class="math inline">\(\kappa_2(\bA)=\sigma_{\max}/\sigma_{\min}\)</span>.</p></li>
+<li><p>Explain why a tiny nonzero <span class="math inline">\(\sigma_i\)</span> makes the system numerically close to rank deficient.</p></li>
+<li><p>Use the same coordinate picture to explain the pseudoinverse in the result above.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Full vs.&nbsp;thin SVD)</strong> If <span class="math inline">\(m\geq n\)</span>, the full SVD has <span class="math inline">\(\bU\in\fR^{m\times m}\)</span> and <span class="math inline">\(\bsigma\in\fR^{m\times n}\)</span>. The thin SVD keeps only the first <span class="math inline">\(n\)</span> left singular vectors: <span class="math display">\[
+\begin{align}
+\bA=\bU_1\bsigma_1\bV^T,
+    \qquad
+    \bU_1\in\fR^{m\times n},\quad
+    \bsigma_1\in\fR^{n\times n}.
+\end{align}
+\]</span> For most computations, the thin SVD contains all nonzero singular information and avoids storing unnecessary columns.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Numerical Rank
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The numerical rank of <span class="math inline">\(\bA\)</span> is the number of singular values considered meaningfully nonzero relative to a tolerance: <span class="math display">\[
+\begin{align}
+\sigma_i &gt; \tau.
+\end{align}
+\]</span> A common scale-aware choice is <span class="math inline">\(\tau = \varepsilon_{\text{mach}}\max(m,n)\sigma_1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Conditioning through singular values)</strong> As shown in the result above, for a full-rank square matrix, <span class="math display">\[
+\begin{align}
+\kappa_2(\bA)=\frac{\sigma_{\max}}{\sigma_{\min}}.
+\end{align}
+\]</span> Small singular values mark directions where <span class="math inline">\(\bA\)</span> nearly collapses information. Solving a system must divide by these small values, amplifying noise and rounding error.</p>
 </div>
 </div>
 </section>
@@ -763,6 +854,36 @@ Tip
 <li><p>Left singular vectors (<span class="math inline">\(\bu_i\)</span>) are eigenvectors of <span class="math inline">\(\bA\bA^T\)</span>.</p></li>
 <li><p>Singular values <span class="math inline">\(\sigma_i = \sqrt{\lambda_i(\bA^T\bA)}\)</span>.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(SVD via normal equations)</strong> The relation to eigenvalues explains why the SVD exists, but forming <span class="math inline">\(\bA^T\bA\)</span> squares the condition number. Numerical SVD algorithms avoid this loss of accuracy.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to show that <span class="math inline">\(\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2\)</span> for full-rank <span class="math inline">\(\bA\)</span>.</p></li>
+<li><p>Compare this result with the result above.</p></li>
+<li><p>Explain why this makes <span class="math inline">\(\bA^T\bA\)</span> useful for theory but dangerous as a default computational route.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -794,11 +915,41 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Applications:</strong> Truncated SVD provides the computational basis for Principal Component Analysis (PCA), image compression, and latent semantic analysis.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Singular value decay)</strong> If the singular values decay rapidly, the matrix is well approximated by a low-rank matrix. If they decay slowly, no low-dimensional linear summary captures the matrix accurately.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Image compression)</strong> A grayscale image can be treated as a matrix of pixel intensities. Keeping only the largest <span class="math inline">\(k\)</span> singular values stores <span class="math display">\[
+\begin{align}
+k(m+n+1)
+\end{align}
+\]</span> numbers instead of <span class="math inline">\(mn\)</span>. The approximation error in spectral norm is exactly the next omitted singular value <span class="math inline">\(\sigma_{k+1}\)</span>.</p>
 </div>
 </div>
 </section>
@@ -820,6 +971,32 @@ Tip
 </ul>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Why the pseudoinverse is the fallback)</strong> In SVD coordinates, solving <span class="math inline">\(\bA\bx=\bb\)</span> means dividing by singular values. The pseudoinverse divides only by nonzero singular values and ignores null-space directions. This gives the minimum-norm least squares solution even when <span class="math inline">\(\bA\)</span> is rectangular or rank deficient.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Regularization by truncation)</strong> If small singular values are dominated by noise, dividing by them can make the solution explode. Truncated SVD sets small singular values to zero before applying the pseudoinverse. This trades bias for stability.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -831,9 +1008,9 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Compute the SVD of <span class="math inline">\(\bA = \begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}\)</span> by hand.</p></li>
+<li><p>Compute the SVD of <span class="math inline">\(\bA = \begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}\)</span> by hand and verify the coordinate equation in the result above.</p></li>
 <li><p><strong>Compression:</strong> Load a <span class="math inline">\(512 \times 512\)</span> image. Plot the relative error <span class="math inline">\(\|\bA - \bA_k\|_F / \|\bA\|_F\)</span> vs.&nbsp;<span class="math inline">\(k\)</span>. At what <span class="math inline">\(k\)</span> is the image recognizable?</p></li>
-<li><p>Use the pseudoinverse to find the least squares solution to a rank-deficient <span class="math inline">\(3 \times 3\)</span> system.</p></li>
+<li><p>Use the pseudoinverse to find the least squares solution to a rank-deficient <span class="math inline">\(3 \times 3\)</span> system. Explain each zero singular value using the result above.</p></li>
 </ol>
 </div>
 </div>

@@ -19,14 +19,14 @@ $f(n) = O(g(n))$ if $\exists C, n_0 > 0$ s.t. $|f(n)| \leq C|g(n)|$ for $n \geq 
 }
 \label{def:big-o}
 
-\addNote{%
-\textbf{Typical Rates.}\enspace
+\addRemark{%
+\textbf{(Typical Rates)}\enspace
 $O(1) \ll O(\log n) \ll O(n) \ll O(n \log n) \ll O(n^2) \ll O(n^3) \ll O(2^n)$.
 For $n=1000$: $O(n^2)$ is $\sim 10^6$ ops (ms); $O(n^3)$ is $\sim 10^9$ ops (s).
 }
 
-\addNote{%
-\textbf{Properties.}\enspace
+\addRemark{%
+\textbf{(Properties)}\enspace
 1. \textbf{Transitivity:} $f=O(g), g=O(h) \Rightarrow f=O(h)$.
 2. \textbf{Sum Rule:} $O(f) + O(g) = O(\max(f, g))$.
 3. \textbf{Product Rule:} $O(f) \cdot O(g) = O(fg)$.
@@ -62,13 +62,13 @@ For $\bx, \by \in \fR^n$ and $\bA \in \fR^{m \times n}, \bB \in \fR^{n \times p}
 }
 \label{thm:flop-costs}
 
-\addNote{%
+\addRemark{%
 \textbf{Data Locality and Performance:}\enspace
 On modern architectures, computational throughput often significantly exceeds memory bandwidth. Consequently, algorithms with high cache locality, such as blocked matrix multiplication (GEMM), may achieve superior performance compared to algorithms with lower theoretical operation counts but poorer data reuse.
 }
 
-\addNote{%
-\textbf{Benchmarks.}\enspace
+\addRemark{%
+\textbf{(Benchmarks)}\enspace
 \begin{itemize}
     \item \textbf{LU Factorization:} $\frac{2}{3}n^3$.
     \item \textbf{Cholesky:} $\frac{1}{3}n^3$.

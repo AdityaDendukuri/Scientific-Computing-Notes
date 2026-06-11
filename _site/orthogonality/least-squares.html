@@ -674,7 +674,8 @@ window.Quarto = {
   <li><a href="#least-squares-problem" id="toc-least-squares-problem" class="nav-link active" data-scroll-target="#least-squares-problem"><span class="header-section-number">15.1</span> Least Squares Problem</a></li>
   <li><a href="#normal-equations" id="toc-normal-equations" class="nav-link" data-scroll-target="#normal-equations"><span class="header-section-number">15.2</span> Normal Equations</a></li>
   <li><a href="#qr-based-least-squares" id="toc-qr-based-least-squares" class="nav-link" data-scroll-target="#qr-based-least-squares"><span class="header-section-number">15.3</span> QR-Based Least Squares</a></li>
-  <li><a href="#polynomial-regression" id="toc-polynomial-regression" class="nav-link" data-scroll-target="#polynomial-regression"><span class="header-section-number">15.4</span> Polynomial Regression</a></li>
+  <li><a href="#rank-deficiency-and-regularization" id="toc-rank-deficiency-and-regularization" class="nav-link" data-scroll-target="#rank-deficiency-and-regularization"><span class="header-section-number">15.4</span> Rank Deficiency and Regularization</a></li>
+  <li><a href="#polynomial-regression" id="toc-polynomial-regression" class="nav-link" data-scroll-target="#polynomial-regression"><span class="header-section-number">15.5</span> Polynomial Regression</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/least-squares.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -702,6 +703,7 @@ window.Quarto = {
 
 
 <p>Approximating the solution to an overdetermined system where <span class="math inline">\(m &gt; n\)</span> and no exact solution exists.</p>
+<p>When <span class="math inline">\(\bb\)</span> is not in the column space of <span class="math inline">\(\bA\)</span>, the equation <span class="math inline">\(\bA\bx=\bb\)</span> has no exact solution. Least squares replaces the impossible goal <code>make the residual zero'' with the geometric goal</code>make the residual as short as possible.’’</p>
 <section id="least-squares-problem" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="least-squares-problem"><span class="header-section-number">15.1</span> Least Squares Problem</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -734,6 +736,52 @@ window.Quarto = {
 \]</span> <strong>Geometry:</strong> <span class="math inline">\(\bA\hat{\bx}\)</span> is the orthogonal projection of <span class="math inline">\(\bb\)</span> onto <span class="math inline">\(\mathcal{R}(\bA)\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Projection Characterization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the least squares problem in the result above, the result above applied to <span class="math inline">\(S=\mathcal{R}(\bA)\)</span> implies that the solution <span class="math inline">\(\hat{\bx}\)</span> is characterized by <span class="math display">\[
+\begin{align}
+\bA\hat{\bx} = \operatorname{proj}_{\mathcal{R}(\bA)}(\bb),
+    \qquad
+    \br = \bb-\bA\hat{\bx} \perp \mathcal{R}(\bA).
+\end{align}
+\]</span> Equivalently, <span class="math inline">\(\bA^T\br=\bzero\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Fitting a line)</strong> For data <span class="math inline">\((t_i,y_i)\)</span>, fitting <span class="math inline">\(y\approx c_0+c_1t\)</span> gives <span class="math display">\[
+\begin{align}
+\bA =
+    \begin{pmatrix}
+        1&amp;t_1\\
+        1&amp;t_2\\
+        \vdots&amp;\vdots\\
+        1&amp;t_m
+    \end{pmatrix},
+    \qquad
+    \bx=\begin{pmatrix}c_0\\c_1\end{pmatrix},
+    \qquad
+    \bb=\begin{pmatrix}y_1\\y_2\\ \vdots\\ y_m\end{pmatrix}.
+\end{align}
+\]</span> The residuals are the vertical errors between the data and the fitted line.</p>
+</div>
+</div>
 </section>
 <section id="normal-equations" class="level2" data-number="15.2">
 <h2 data-number="15.2" class="anchored" data-anchor-id="normal-equations"><span class="header-section-number">15.2</span> Normal Equations</h2>
@@ -747,24 +795,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The minimizer satisfies <span class="math inline">\(\bA^T\bA\hat{\bx} = \bA^T\bb\)</span>.</p>
+<p>Using the orthogonality condition in the result above, the minimizer satisfies <span class="math inline">\(\bA^T\bA\hat{\bx} = \bA^T\bb\)</span>.</p>
 <ul>
 <li><p><strong>Condition:</strong> <span class="math inline">\(\bA^T\br = \bzero\)</span> (Residual must be normal to the column space).</p></li>
 <li><p><strong>Unique Solution:</strong> <span class="math inline">\(\hat{\bx} = (\bA^T\bA)^{-1}\bA^T\bb\)</span> if <span class="math inline">\(\bA\)</span> has full column rank.</p></li>
 </ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Conditioning of the Normal Equations.</strong> The condition number of the normal equations matrix satisfies <span class="math inline">\(\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2\)</span>. Squaring the condition number can lead to a significant loss of precision. For example, if <span class="math inline">\(\kappa_2(\bA) = 10^6\)</span>, the solution may lose up to 12 digits of accuracy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -778,8 +813,12 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
+<li><p>Starting from the result above, derive the normal equations in the result above.</p></li>
+<li><p>Show that <span class="math inline">\(\bA^T\br=\bzero\)</span> is equivalent to <span class="math inline">\(\br\in\mathcal{N}(\bA^T)\)</span>.</p></li>
+<li><p>Use the result above to explain why <span class="math inline">\(\br\in\mathcal{N}(\bA^T)\)</span> means <span class="math inline">\(\bA\hat{\bx}\)</span> is the projection of <span class="math inline">\(\bb\)</span> onto <span class="math inline">\(\mathcal{R}(\bA)\)</span>.</p></li>
 <li><p>Fit a line <span class="math inline">\(y = mx + b\)</span> to points <span class="math inline">\((1,2), (2,3), (3,5), (4,4)\)</span> via normal equations.</p></li>
-<li><p>Prove <span class="math inline">\(\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2\)</span> using singular values.</p></li>
+<li><p>Prove <span class="math inline">\(\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2\)</span> using singular values. If <span class="math inline">\(\kappa_2(\bA)=10^6\)</span>, estimate the number of digits that may be lost in double precision.</p></li>
+<li><p>Explain why the normal equations are useful for derivation but should not be the default numerical algorithm. Your answer should mention <span class="math inline">\(\bA^T\br=\bzero\)</span>, conditioning, QR, and SVD.</p></li>
 </ol>
 </div>
 </div>
@@ -801,11 +840,11 @@ Tip
 \begin{align}
 \bR\hat{\bx} = \bQ^T\bb.
 \end{align}
-\]</span></p>
+\]</span> This avoids forming <span class="math inline">\(\bA^T\bA\)</span>, the instability diagnosed in the result above.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -814,7 +853,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>The goal is to minimize <span class="math inline">\(\|\bA\bx - \bb\|_2^2\)</span>. Let <span class="math inline">\(\bA = \bQ\bR\)</span> be the thin QR factorization. Using the orthogonal projector <span class="math inline">\(\bP = \bQ\bQ^T\)</span> and its complement <span class="math inline">\(\bI - \bP\)</span>: <span class="math display">\[
 \begin{align}
@@ -836,11 +875,43 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance:</strong> QR-based least squares costs <span class="math inline">\(O(mn^2)\)</span>. It is the default in <code>np.linalg.lstsq</code>.</p>
+<p><strong>(Least squares solver hierarchy)</strong></p>
+<ul>
+<li><p><strong>Normal equations:</strong> Fast and simple, but least stable; condition number is squared.</p></li>
+<li><p><strong>QR:</strong> Standard method for full-rank least squares; stable and efficient.</p></li>
+<li><p><strong>SVD:</strong> Most robust; handles rank deficiency and reveals numerical rank.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="rank-deficiency-and-regularization" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="rank-deficiency-and-regularization"><span class="header-section-number">15.4</span> Rank Deficiency and Regularization</h2>
+<p>If <span class="math inline">\(\bA\)</span> does not have full column rank, there may be infinitely many least squares minimizers. The SVD selects the minimizer with smallest Euclidean norm. Regularization modifies the problem to penalize large coefficients and improve conditioning.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Ridge-Regularized Least Squares
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\lambda&gt;0\)</span>, ridge regression solves <span class="math display">\[
+\begin{align}
+\hat{\bx}_\lambda
+    =
+    \argmin_{\bx}\left(\|\bA\bx-\bb\|_2^2+\lambda\|\bx\|_2^2\right).
+\end{align}
+\]</span> The normal equations become <span class="math display">\[
+\begin{align}
+(\bA^T\bA+\lambda\bI)\hat{\bx}_\lambda = \bA^T\bb.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -854,14 +925,14 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Solve the line-fitting problem using QR. Compare coefficients with the normal equations result.</p></li>
+<li><p>Return to the result above. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.</p></li>
 <li><p><strong>Regularization:</strong> If <span class="math inline">\(\bA\)</span> is rank-deficient, <span class="math inline">\(\|\hat{\bx}\|\)</span> can explode. Add a penalty term <span class="math inline">\(\lambda \|\bx\|_2^2\)</span> (Ridge Regression). How do the normal equations change?</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="polynomial-regression" class="level2" data-number="15.4">
-<h2 data-number="15.4" class="anchored" data-anchor-id="polynomial-regression"><span class="header-section-number">15.4</span> Polynomial Regression</h2>
+<section id="polynomial-regression" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="polynomial-regression"><span class="header-section-number">15.5</span> Polynomial Regression</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -891,7 +962,7 @@ V_{ij} = t_i^{j-1}.
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Fit a degree-2 polynomial to 6 data points. Verify the residual and <span class="math inline">\(R^2\)</span> score.</p></li>
-<li><p><strong>Numerical Stability:</strong> Construct a Vandermonde matrix with <span class="math inline">\(n=10\)</span>. Compare the errors of <code>lstsq(A, b)</code> vs <code>solve(A.T @ A, A.T @ b)</code>.</p></li>
+<li><p><strong>Numerical Stability:</strong> Construct a Vandermonde matrix with <span class="math inline">\(n=10\)</span>. Compare the errors of <code>lstsq(A, b)</code> vs <code>solve(A.T @ A, A.T @ b)</code>. Relate the outcome to the result above.</p></li>
 </ol>
 </div>
 </div>

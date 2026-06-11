@@ -13,7 +13,7 @@ Iterative method for finding extreme eigenpairs of large, symmetric matrices wit
 
 \addDef{Krylov Subspace}{%
 $\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, \dots,\, \bA^{k-1}\bv\}$.
-\textbf{Intuition:}\enspace $\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
+$\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
 }
 \label{def:krylov-subspace}
 
@@ -32,7 +32,7 @@ The process builds an orthonormal basis $V_k = [\bv_1, \dots, \bv_k]$ for $\math
 }
 \label{thm:lanczos-relation}
 
-\addNote{%
+\addRemark{%
 \textbf{Performance Advantage:}\enspace
 Unlike Gram-Schmidt, which orthogonalizes against all previous vectors, Lanczos only requires the \textbf{two previous vectors} (three-term recurrence). This makes it $O(k \cdot \text{nnz})$ for sparse matrices.
 }
@@ -75,12 +75,12 @@ Taking the $L_2$ norm and using the fact that $\|\bv_{k+1}\|_2 = 1$:
 \end{align*}
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Ghost Eigenvalues:}\enspace
 In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. \textbf{Practical Rule:}\enspace Use full or selective reorthogonalization to maintain basis integrity.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Connection to Conjugate Gradient:}\enspace
 The Lanczos algorithm applied to a symmetric system $\bA\bx=\bb$ is mathematically equivalent to the Conjugate Gradient method. Both algorithms build the same Krylov subspace and produce identical iterates in exact arithmetic.
 }

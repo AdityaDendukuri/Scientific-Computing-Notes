@@ -3,6 +3,10 @@
 
 The Singular Value Decomposition (SVD) is a general matrix factorization that decomposes any $m \times n$ matrix into a product of orthogonal transformations and a diagonal scaling matrix.
 
+
+The SVD is the most complete description of what a matrix does geometrically. It finds orthonormal input directions, tells how much each direction is stretched, and gives the corresponding orthonormal output directions.
+
+
 ## The SVD Theorem
 
 
@@ -23,8 +27,76 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Geometric Interpretation:** 
 $\bA$ rotates the input space ($\bV^T$), scales along the axes ($\bsigma$), and rotates the result to the output space ($\bU$).
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: SVD Coordinates
+Let $\bA=\bU\bsigma\bV^T$ be the SVD from the result above. If $\bx=\bV\by$ and $\bc=\bU^T\bb$, then the equation $\bA\bx=\bb$ becomes
+$$
+\begin{align}
+\bsigma \by = \bc.
+\end{align}
+$$
+Thus the action of $\bA$ is a set of independent scalar equations $\sigma_i y_i=c_i$ in orthonormal coordinates. Small singular values correspond to directions where solving requires division by small numbers.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Substitute $\bx=\bV\by$ into $\bA\bx=\bb$ and use the result above to obtain $\bU\bsigma\by=\bb$.
+    
+1. Multiply by $\bU^T$ and use orthogonality of $\bU$ to prove the result above.
+    
+1. For a square full-rank matrix, use the scalar equations $\sigma_i y_i=c_i$ to derive $\kappa_2(\bA)=\sigma_{\max}/\sigma_{\min}$.
+    
+1. Explain why a tiny nonzero $\sigma_i$ makes the system numerically close to rank deficient.
+    
+1. Use the same coordinate picture to explain the pseudoinverse in the result above.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Full vs.\ thin SVD)**  If $m\geq n$, the full SVD has $\bU\in\fR^{m\times m}$ and $\bsigma\in\fR^{m\times n}$. The thin SVD keeps only the first $n$ left singular vectors:
+$$
+\begin{align}
+\bA=\bU_1\bsigma_1\bV^T,
+    \qquad
+    \bU_1\in\fR^{m\times n},\quad
+    \bsigma_1\in\fR^{n\times n}.
+\end{align}
+$$
+For most computations, the thin SVD contains all nonzero singular information and avoids storing unnecessary columns.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Numerical Rank
+The numerical rank of $\bA$ is the number of singular values considered meaningfully nonzero relative to a tolerance:
+$$
+\begin{align}
+\sigma_i > \tau.
+\end{align}
+$$
+A common scale-aware choice is $\tau = \varepsilon_{\text{mach}}\max(m,n)\sigma_1$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Conditioning through singular values)**  As shown in the result above, for a full-rank square matrix,
+$$
+\begin{align}
+\kappa_2(\bA)=\frac{\sigma_{\max}}{\sigma_{\min}}.
+\end{align}
+$$
+Small singular values mark directions where $\bA$ nearly collapses information. Solving a system must divide by these small values, amplifying noise and rounding error.
 :::
 
 
@@ -53,6 +125,24 @@ The SVD provides optimal orthonormal bases for the spaces defined by $\bA$ (rank
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(SVD via normal equations)**  The relation to eigenvalues explains why the SVD exists, but forming $\bA^T\bA$ squares the condition number. Numerical SVD algorithms avoid this loss of accuracy.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the result above to show that $\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2$ for full-rank $\bA$.
+    
+1. Compare this result with the result above.
+    
+1. Explain why this makes $\bA^T\bA$ useful for theory but dangerous as a default computational route.
+
+:::
+
+
 ## Low-Rank Approximation
 
 
@@ -71,11 +161,28 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Applications:** 
 Truncated SVD provides the computational basis for Principal Component Analysis (PCA), image compression, and latent semantic analysis.
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Singular value decay)**  If the singular values decay rapidly, the matrix is well approximated by a low-rank matrix. If they decay slowly, no low-dimensional linear summary captures the matrix accurately.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Image compression)**  A grayscale image can be treated as a matrix of pixel intensities. Keeping only the largest $k$ singular values stores
+$$
+\begin{align}
+k(m+n+1)
+\end{align}
+$$
+numbers instead of $mn$. The approximation error in spectral norm is exactly the next omitted singular value $\sigma_{k+1}$.
+:::
 ## The Pseudoinverse
 
 
@@ -88,13 +195,25 @@ $\bA^+ = \bV \bsigma^+ \bU^T$, where $(\bsigma^+)_{ii} = 1/\sigma_i$ if $\sigma_
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Why the pseudoinverse is the fallback)**  In SVD coordinates, solving $\bA\bx=\bb$ means dividing by singular values. The pseudoinverse divides only by nonzero singular values and ignores null-space directions. This gives the minimum-norm least squares solution even when $\bA$ is rectangular or rank deficient.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Regularization by truncation)**  If small singular values are dominated by noise, dividing by them can make the solution explode. Truncated SVD sets small singular values to zero before applying the pseudoinverse. This trades bias for stability.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Compute the SVD of $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$ by hand.
+1. Compute the SVD of $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$ by hand and verify the coordinate equation in the result above.
     
 1. **Compression:**  Load a $512 \times 512$ image. Plot the relative error $\|\bA - \bA_k\|_F / \|\bA\|_F$ vs.\ $k$. At what $k$ is the image recognizable?
     
-1. Use the pseudoinverse to find the least squares solution to a rank-deficient $3 \times 3$ system.
+1. Use the pseudoinverse to find the least squares solution to a rank-deficient $3 \times 3$ system. Explain each zero singular value using the result above.
 
 :::

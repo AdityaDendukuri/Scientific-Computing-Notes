@@ -82,7 +82,8 @@ A chain is reversible if $\pi_j P_{ij} = \pi_i P_{ji}$ for all $i, j$.
 
 
 ::: {.callout-tip icon=false}
-**Design Tool: Metropolis-Hastings.**  Construct a reversible chain for a desired $\boldsymbol{\pi}$ by accepting moves with probability $a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})$.
+## Remark
+**(Design Tool: Metropolis-Hastings)**  Construct a reversible chain for a desired $\boldsymbol{\pi}$ by accepting moves with probability $a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})$.
 :::
 
 

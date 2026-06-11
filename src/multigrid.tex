@@ -67,7 +67,7 @@ With respect to a grid of mesh size $h = 1/(n+1)$, partition the $n$ Fourier mod
 \end{itemize}
 }
 
-\addNote{%
+\addRemark{%
 Standard Jacobi ($\omega = 1$) is a poor smoother: the highest-frequency mode ($k = n$) satisfies $\mu_n = \cos(n\pi h) = \cos(\pi n/(n+1)) \approx -1$, so the iterate oscillates in sign rather than decaying. \emph{Weighted (damped) Jacobi} with $\omega = 2/3$ fixes this by controlling the entire high-frequency band.
 }
 
@@ -99,7 +99,7 @@ For $k > n/2$, we have $k\pi h \in (\pi/2, \pi)$, so $1 - \cos(k\pi h) \in (1, 2
 Hence $|\mu_k| < 1/3$ for all high-frequency modes. The supremum $1/3$ is approached as $k \to \lfloor n/2\rfloor^+$ (where $\cos(k\pi h) \to 0^-$).
 }
 
-\addNote{%
+\addRemark{%
 After $\nu$ weighted Jacobi sweeps, every high-frequency error component is reduced by $(1/3)^\nu$. The remaining error is dominated by \emph{smooth} modes, which are nearly constant on the scale of $h$. This smooth, slowly-varying error is the target of the coarse-grid correction in multigrid.
 }
 
@@ -141,7 +141,7 @@ The \emph{restriction} operator $\bR: \fR^{n} \to \fR^{m}$ transfers a fine-grid
 In matrix form, $\bR = \tfrac{1}{2}\bP^T$. This choice ensures that the Galerkin coarse-grid operator $\bA_c = \bR\bA\bP$ is SPD whenever $\bA$ is SPD.
 }
 
-\addNote{%
+\addRemark{%
 The relationship $\bR = \tfrac{1}{2}\bP^T$ is called the \emph{variational principle} and guarantees that $\bA_c = \bR\bA\bP$ is a consistent, spectrally equivalent discretization on the coarse grid. For the 1D model problem, $\bA_c$ equals the natural finite-difference matrix on the $2h$-grid exactly; this is a special property that simplifies analysis but does not hold in general for variable-coefficient or higher-dimensional problems.
 }
 
@@ -199,7 +199,7 @@ $\mathtt{MG}(\ell,\, \bx,\, \bb)$: one multigrid V-cycle at level $\ell$, return
 Calling $\mathtt{MG}$ once as the coarse-grid solver in step 4 gives the V-cycle. Calling it twice gives the \emph{W-cycle}, which is more robust on difficult problems at higher cost.
 }
 
-\addNote{%
+\addRemark{%
 A single V-cycle descends from the finest level $L$ to the coarsest level $1$ (the ``down stroke'') applying pre-smoothing and restriction, then ascends back (the ``up stroke'') applying prolongation and post-smoothing. Typical choices are $\nu_1 = \nu_2 = 1$ or $2$. The W-cycle replaces the single recursive call in step 4 with two calls, more aggressively correcting smooth error at the cost of roughly $\log n$ extra work.
 }
 
@@ -220,7 +220,7 @@ The proof combines two independent estimates:
 Composing these estimates (smoothing makes $\be$ smooth; approximation then captures the smooth part) gives $\|\be_{\text{after TG}}\|_{\bA} \leq \eta(\nu) C\|\be\|_{\bA}$. Choosing $\nu$ large enough that $\eta(\nu)C < 1$ completes the argument. For $\nu = 1$ with weighted Jacobi and the 1D model problem, $\eta(1) = 1/3$ and $C$ is bounded independently of $h$, giving $\rho < 1/3$.
 }
 
-\addNote{%
+\addRemark{%
 Contrast with classical iterations: for the 1D Poisson problem, $\rho(\bT_J) = \cos(\pi h) \approx 1 - \pi^2h^2/2 \to 1$ as $h \to 0$, requiring $O(h^{-2}) = O(n)$ Jacobi iterations. With the V-cycle, the number of iterations to reach a fixed tolerance is bounded by a constant independent of $n$. The cost per V-cycle is $O(n)$ (geometric series over levels), making the total cost $O(n)$, which is the optimal asymptotic complexity for this class of problems.
 }
 

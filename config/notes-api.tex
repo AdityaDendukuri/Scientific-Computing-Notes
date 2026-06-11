@@ -19,7 +19,7 @@
 %   \addCor{Name}{Content}    — numbered (shared counter with Thm)
 %   \addProp{Name}{Content}   — numbered (shared counter with Thm)
 %   \addPrf{Content}
-%   \addNote{Content}         — numbered (own counter)
+%   \addRemark{Content}       — numbered (own counter)
 %   \addExmpl{Content}
 %   \addExcr{Content}         — numbered (own counter)
 %   \textBox{Content}         — unnumbered expository block
@@ -41,15 +41,15 @@
 }
 
 %% ── Counters ─────────────────────────────────────────────────
-%% Thm/Lem/Cor/Prop share one counter; Def and Note have their own.
+%% Thm/Lem/Cor/Prop share one counter; Def and Remark have their own.
 \newcounter{thmctr}[section]
 \renewcommand{\thethmctr}{\thesection.\arabic{thmctr}}
 
 \newcounter{defctr}[section]
 \renewcommand{\thedefctr}{\thesection.\arabic{defctr}}
 
-\newcounter{notectr}[section]
-\renewcommand{\thenotectr}{\thesection.\arabic{notectr}}
+\newcounter{remarkctr}[section]
+\renewcommand{\theremarkctr}{\thesection.\arabic{remarkctr}}
 
 \newcounter{excrctr}[section]
 \renewcommand{\theexcrctr}{\thesection.\arabic{excrctr}}
@@ -101,11 +101,11 @@
   \textit{Proof.}\enspace #1\hfill$\square$%
 }
 
-%% ── Notes ────────────────────────────────────────────────────
-\newcommand{\addNote}[1]{%
-  \refstepcounter{notectr}%
+%% ── Remarks ──────────────────────────────────────────────────
+\newcommand{\addRemark}[1]{%
+  \refstepcounter{remarkctr}%
   \newentry
-  \noindent\mLabel{ucsb_green}{Note~\thenotectr}%
+  \noindent\mLabel{ucsb_green}{Remark~\theremarkctr}%
   #1%
 }
 

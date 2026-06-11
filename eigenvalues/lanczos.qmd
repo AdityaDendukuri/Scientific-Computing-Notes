@@ -10,7 +10,7 @@ Iterative method for finding extreme eigenpairs of large, symmetric matrices wit
 ::: {.callout-note icon=false}
 ## Definition: Krylov Subspace
 $\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, ...,\, \bA^{k-1}\bv\}$.
-**Intuition:**  $\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
+$\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
 :::
 
 
@@ -36,6 +36,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Performance Advantage:** 
 Unlike Gram-Schmidt, which orthogonalizes against all previous vectors, Lanczos only requires the **two previous vectors** (three-term recurrence). This makes it $O(k \cdot \text{nnz})$ for sparse matrices.
 :::
@@ -94,12 +95,14 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Ghost Eigenvalues:** 
 In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. **Practical Rule:**  Use full or selective reorthogonalization to maintain basis integrity.
 :::
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Connection to Conjugate Gradient:** 
 The Lanczos algorithm applied to a symmetric system $\bA\bx=\bb$ is mathematically equivalent to the Conjugate Gradient method. Both algorithms build the same Krylov subspace and produce identical iterates in exact arithmetic.
 :::

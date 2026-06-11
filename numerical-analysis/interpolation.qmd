@@ -31,6 +31,7 @@ The interpolating polynomial is $P_n(x) = \sum_{i=0}^n y_i L_i(x)$.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Computational Cost:**  Evaluation of the Lagrange form costs $O(n^2)$ operations. Adding a new point requires recomputing all basis polynomials.
 :::
 
@@ -52,6 +53,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Advantages:**  Evaluation costs only $O(n)$ once the weights $w_i$ are computed ($O(n^2)$). This is the standard recommended approach for general polynomial interpolation.
 :::
 
@@ -63,6 +65,7 @@ Equally spaced points are often a poor choice for high-degree interpolation.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **The Runge Phenomenon:**  For certain functions, such as $f(x) = 1/(1+25x^2)$ on $[-1, 1]$, the interpolation error near the boundaries increases exponentially as the degree $n \to \infty$.
 :::
 
@@ -92,6 +95,7 @@ A piecewise cubic function $S(x)$ that is $C^2$ continuous (continuous values, f
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Structure:**  Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
 :::
 

@@ -1450,6 +1450,8 @@ INPUT src/jacobi_eig.tex
 INPUT ./src/jacobi_eig.tex
 INPUT src/jacobi_eig.tex
 INPUT src/jacobi_eig.tex
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT ./src/iterative.tex
 INPUT ./src/iterative.tex
 INPUT ./src/iterative.tex

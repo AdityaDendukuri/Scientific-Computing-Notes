@@ -704,6 +704,20 @@ window.Quarto = {
 
 
 <p>The Conjugate Gradient (CG) method is a standard iterative solver for large, sparse, symmetric positive definite (SPD) linear systems. It belongs to the class of <strong>Krylov subspace methods</strong>, which seek an approximate solution within a space spanned by powers of the matrix applied to the initial residual.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Assumption)</strong> CG requires <span class="math inline">\(\bA\)</span> to be symmetric positive definite. If <span class="math inline">\(\bA\)</span> is nonsymmetric, use GMRES or another nonsymmetric Krylov method. If <span class="math inline">\(\bA\)</span> is symmetric indefinite, use methods designed for indefinite systems, such as MINRES.</p>
+</div>
+</div>
+<p>For SPD <span class="math inline">\(\bA\)</span>, solving <span class="math inline">\(\bA\bx=\bb\)</span> is equivalent to minimizing a convex quadratic energy. CG chooses search directions that do not interfere with previous progress, so each step is optimal over a growing Krylov subspace.</p>
 <section id="krylov-subspaces" class="level2" data-number="23.1">
 <h2 data-number="23.1" class="anchored" data-anchor-id="krylov-subspaces"><span class="header-section-number">23.1</span> Krylov Subspaces</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -726,13 +740,18 @@ window.Quarto = {
 </section>
 <section id="cg-as-a-projection-method" class="level2" data-number="23.2">
 <h2 data-number="23.2" class="anchored" data-anchor-id="cg-as-a-projection-method"><span class="header-section-number">23.2</span> CG as a Projection Method</h2>
+<p>For SPD <span class="math inline">\(\bA\)</span>, the quadratic <span class="math display">\[
+\begin{align}
+\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx
+\end{align}
+\]</span> has gradient <span class="math inline">\(\nabla\phi(\bx)=\bA\bx-\bb\)</span>. Therefore <span class="math inline">\(\nabla\phi(\bx)=0\)</span> exactly when <span class="math inline">\(\bA\bx=\bb\)</span>. Solving the linear system is the same as finding the unique minimizer of <span class="math inline">\(\phi\)</span>.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -752,7 +771,7 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -761,6 +780,32 @@ Tip
 <li><p><strong>Global Optimality:</strong> Because directions are <span class="math inline">\(\bA\)</span>-orthogonal, the <span class="math inline">\(k\)</span>-th update <span class="math inline">\(\bx_k = \bx_{k-1} + \alpha_{k-1}\bp_{k-1}\)</span> is guaranteed to be the best possible update in the entire subspace <span class="math inline">\(\mathcal{K}_k\)</span>. There is no need to revisit previous directions.</p></li>
 <li><p><strong>Short Recurrence:</strong> Due to the symmetry of <span class="math inline">\(\bA\)</span>, the new conjugate direction <span class="math inline">\(\bp_k\)</span> can be computed using only the current residual and the <em>single</em> previous direction. This leads to the <span class="math inline">\(O(n)\)</span> storage requirement.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Residuals vs.&nbsp;directions)</strong> In exact arithmetic, CG residuals are mutually orthogonal in the Euclidean inner product, while search directions are mutually orthogonal in the <span class="math inline">\(\bA\)</span>-inner product. These two orthogonality structures are what make the short recurrence possible.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Why not steepest descent?</strong> Steepest descent always moves in the negative gradient direction, but successive gradients can undo previous progress by zig-zagging across narrow energy valleys. CG corrects this by choosing conjugate directions adapted to the geometry of <span class="math inline">\(\bA\)</span>.</p>
 </div>
 </div>
 </section>
@@ -792,7 +837,7 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -801,6 +846,23 @@ Tip
 <li><p><strong>Matvecs:</strong> Only 1 matrix-vector product per iteration.</p></li>
 <li><p><strong>Memory:</strong> <span class="math inline">\(O(n)\)</span> storage (requires only a few vectors). No need to store the basis.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Practical stopping)</strong> A common stopping rule is <span class="math display">\[
+\begin{align}
+\frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq `tol`.
+\end{align}
+\]</span> For ill-conditioned systems, residual decrease may not translate directly into error decrease. The condition number controls that conversion.</p>
 </div>
 </div>
 </section>
@@ -829,7 +891,7 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -842,28 +904,58 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Superlinear Convergence:</strong> If eigenvalues are clustered, CG converges much faster than the worst-case bound suggests (e.g., <span class="math inline">\(k \ll n\)</span> for clustered spectra).</p>
 </div>
 </div>
-</section>
-<section id="preconditioning" class="level2" data-number="23.6">
-<h2 data-number="23.6" class="anchored" data-anchor-id="preconditioning"><span class="header-section-number">23.6</span> Preconditioning</h2>
-<p>The convergence of CG depends on the condition number <span class="math inline">\(\kappa(\bA)\)</span>. <strong>Preconditioning</strong> transforms the system into <span class="math inline">\(\bM^{-1}\bA\bx = \bM^{-1}\bb\)</span>, where <span class="math inline">\(\bM\)</span> is a symmetric positive definite matrix that approximates <span class="math inline">\(\bA\)</span> but is much easier to invert.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Polynomial view)</strong> CG chooses a degree-<span class="math inline">\(k\)</span> polynomial <span class="math inline">\(p_k\)</span> with <span class="math inline">\(p_k(0)=1\)</span> so that <span class="math display">\[
+\begin{align}
+\be^{(k)} = p_k(\bA)\be^{(0)}
+\end{align}
+\]</span> is small in the <span class="math inline">\(\bA\)</span>-norm. Good convergence occurs when a low-degree polynomial can be small on the eigenvalues of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="preconditioning" class="level2" data-number="23.6">
+<h2 data-number="23.6" class="anchored" data-anchor-id="preconditioning"><span class="header-section-number">23.6</span> Preconditioning</h2>
+<p>The convergence of CG depends on the condition number <span class="math inline">\(\kappa(\bA)\)</span>. <strong>Preconditioning</strong> transforms the system using a symmetric positive definite matrix <span class="math inline">\(\bM\)</span> that approximates <span class="math inline">\(\bA\)</span> but is much easier to invert.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Spectral Transformation:</strong> The goal of the preconditioner is to cluster the eigenvalues of <span class="math inline">\(\bM^{-1}\bA\)</span> near 1. A perfectly preconditioned system (<span class="math inline">\(\bM = \bA\)</span>) has all eigenvalues equal to 1 and converges in a single step. In practice, a good preconditioner reduces the effective condition number, significantly accelerating convergence.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Preconditioning is not optional in hard problems)</strong> For large PDE systems, unpreconditioned CG can require too many iterations. The preconditioner is often the main algorithmic design choice.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -876,7 +968,6 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>…</p>
 <ol type="1">
 <li><p><strong>Jacobi:</strong> <span class="math inline">\(\bM = \text{diag}(\bA)\)</span>. (Cheap, moderate speedup).</p></li>
 <li><p><strong>Incomplete Cholesky (IC):</strong> <span class="math inline">\(\bM \approx \bL\bL^T\)</span> with sparse factors. (Robust).</p></li>

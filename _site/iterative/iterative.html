@@ -673,7 +673,8 @@ window.Quarto = {
   <ul>
   <li><a href="#direct-vs.-iterative-solvers" id="toc-direct-vs.-iterative-solvers" class="nav-link active" data-scroll-target="#direct-vs.-iterative-solvers"><span class="header-section-number">21.1</span> Direct vs.&nbsp;Iterative Solvers</a></li>
   <li><a href="#convergence-and-spectral-radius" id="toc-convergence-and-spectral-radius" class="nav-link" data-scroll-target="#convergence-and-spectral-radius"><span class="header-section-number">21.2</span> Convergence and Spectral Radius</a></li>
-  <li><a href="#fill-in-and-sparse-storage" id="toc-fill-in-and-sparse-storage" class="nav-link" data-scroll-target="#fill-in-and-sparse-storage"><span class="header-section-number">21.3</span> Fill-in and Sparse Storage</a></li>
+  <li><a href="#stopping-criteria" id="toc-stopping-criteria" class="nav-link" data-scroll-target="#stopping-criteria"><span class="header-section-number">21.3</span> Stopping Criteria</a></li>
+  <li><a href="#fill-in-and-sparse-storage" id="toc-fill-in-and-sparse-storage" class="nav-link" data-scroll-target="#fill-in-and-sparse-storage"><span class="header-section-number">21.4</span> Fill-in and Sparse Storage</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/iterative.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -701,6 +702,7 @@ window.Quarto = {
 
 
 <p>Alternative to direct solvers for large, sparse systems where matrix factorization is impractical due to memory or compute limits.</p>
+<p>Direct methods factor the matrix. Iterative methods repeatedly improve an approximate solution using cheap operations, usually matrix-vector products. They are preferred when <span class="math inline">\(\bA\)</span> is large, sparse, or available only as a function that computes <span class="math inline">\(\bA\bv\)</span>.</p>
 <section id="direct-vs.-iterative-solvers" class="level2" data-number="21.1">
 <h2 data-number="21.1" class="anchored" data-anchor-id="direct-vs.-iterative-solvers"><span class="header-section-number">21.1</span> Direct vs.&nbsp;Iterative Solvers</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -709,16 +711,88 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>The Sparsity Problem:</strong> Even if <span class="math inline">\(\bA\)</span> is sparse, its LU or Cholesky factors are typically much denser (<strong>fill-in</strong>). For a 2D Poisson problem on an <span class="math inline">\(n \times n\)</span> grid:</p>
+<p><strong>(Sparse fill-in)</strong> Even if <span class="math inline">\(\bA\)</span> is sparse, its LU or Cholesky factors are typically much denser (<strong>fill-in</strong>). For a 2D Poisson problem on an <span class="math inline">\(n \times n\)</span> grid:</p>
 <ul>
 <li><p><span class="math inline">\(\bA\)</span> has <span class="math inline">\(O(n^2)\)</span> nonzeros.</p></li>
 <li><p>LU factors have <span class="math inline">\(O(n^3)\)</span> nonzeros.</p></li>
 </ul>
 <p>Iterative methods exploit sparsity by using only matrix-vector products (<span class="math inline">\(O(\text{nnz})\)</span>).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Matrix-free viewpoint)</strong> Many scientific codes never assemble <span class="math inline">\(\bA\)</span> explicitly. They only provide a routine that maps <span class="math inline">\(\bv\mapsto\bA\bv\)</span>. Krylov methods such as CG and GMRES are designed for this setting.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Krylov Subspace
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given a matrix <span class="math inline">\(\bA\)</span> and a vector <span class="math inline">\(\bv\)</span>, the <span class="math inline">\(k\)</span>-th Krylov subspace is <span class="math display">\[
+\begin{align}
+\mathcal{K}_k(\bA,\bv)
+    =
+    \operatorname{span}\{\bv,\bA\bv,\bA^2\bv,...,\bA^{k-1}\bv\}.
+\end{align}
+\]</span> It is the smallest subspace that contains <span class="math inline">\(\bv\)</span> and is built by repeated multiplication by <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Krylov Approximation Principle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\br^{(0)}=\bb-\bA\bx^{(0)}\)</span>. Any iterate of the form <span class="math display">\[
+\begin{align}
+\bx^{(k)}=\bx^{(0)}+p_{k-1}(\bA)\br^{(0)},
+\end{align}
+\]</span> where <span class="math inline">\(p_{k-1}\)</span> is a polynomial of degree at most <span class="math inline">\(k-1\)</span>, lies in the affine space <span class="math display">\[
+\begin{align}
+\bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)}).
+\end{align}
+\]</span> Thus a matrix-free method can improve <span class="math inline">\(\bx^{(0)}\)</span> by choosing increasingly good corrections from Krylov subspaces using only matrix-vector products.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Write <span class="math inline">\(p_{k-1}(t)=c_0+c_1t+\cdots+c_{k-1}t^{k-1}\)</span> and expand <span class="math inline">\(p_{k-1}(\bA)\br^{(0)}\)</span>.</p></li>
+<li><p>Use the result above to show that this correction belongs to <span class="math inline">\(\mathcal{K}_k(\bA,\br^{(0)})\)</span>.</p></li>
+<li><p>List <span class="math inline">\(\mathcal{K}_1\)</span>, <span class="math inline">\(\mathcal{K}_2\)</span>, and <span class="math inline">\(\mathcal{K}_3\)</span> explicitly. What new vector must be computed to move from <span class="math inline">\(\mathcal{K}_k\)</span> to <span class="math inline">\(\mathcal{K}_{k+1}\)</span>?</p></li>
+<li><p>Explain why the result above makes Krylov methods compatible with the matrix-free viewpoint above.</p></li>
+<li><p>Preview the later chapters: CG chooses the best correction in an energy norm for SPD systems, while GMRES chooses the correction with smallest residual norm.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -739,6 +813,30 @@ Tip
 </ul>
 </div>
 </div>
+<p>Stationary iterations are fixed-point iterations. Instead of solving <span class="math inline">\(\bA\bx=\bb\)</span> directly, we rewrite the problem as <span class="math inline">\(\bx=\bT\bx+\bc\)</span> and repeatedly apply the map. The exact solution is a fixed point of this map.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Splitting form)</strong> If <span class="math inline">\(\bA=\bM-\mathbf{N}\)</span>, then <span class="math display">\[
+\begin{align}
+\bA\bx=\bb
+    \quad \Longleftrightarrow \quad
+    \bM\bx=\mathbf{N}\bx+\bb.
+\end{align}
+\]</span> The iteration is <span class="math display">\[
+\begin{align}
+\bx^{(k+1)}=\bM^{-1}\mathbf{N}\bx^{(k)}+\bM^{-1}\bb.
+\end{align}
+\]</span> The art is choosing <span class="math inline">\(\bM\)</span> easy to invert while making the iteration converge quickly.</p>
+</div>
+</div>
 </section>
 <section id="convergence-and-spectral-radius" class="level2" data-number="21.2">
 <h2 data-number="21.2" class="anchored" data-anchor-id="convergence-and-spectral-radius"><span class="header-section-number">21.2</span> Convergence and Spectral Radius</h2>
@@ -755,6 +853,19 @@ Tip
 <p><span class="math inline">\(\rho(\bB) = \max \{|\lambda| : \lambda \in \sigma(\bB)\}\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Spectral radius intuition)</strong> The eigenvalue of largest magnitude controls the long-run behavior of repeated multiplication. If every eigenvalue of <span class="math inline">\(\bT\)</span> lies inside the unit disk, powers of <span class="math inline">\(\bT\)</span> decay and the iteration converges.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -765,7 +876,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For any submultiplicative norm, <span class="math inline">\(\rho(\bB) = \lim_{k\to\infty} \|\bB^k\|^{1/k}\)</span>. <strong>Insight:</strong> For large <span class="math inline">\(k\)</span>, <span class="math inline">\(\|\bB^k\| \approx \rho(\bB)^k\)</span>.</p>
+<p>For any submultiplicative norm, <span class="math inline">\(\rho(\bB) = \lim_{k\to\infty} \|\bB^k\|^{1/k}\)</span>. For large <span class="math inline">\(k\)</span>, <span class="math inline">\(\|\bB^k\| \approx \rho(\bB)^k\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -782,7 +893,7 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -791,7 +902,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Let <span class="math inline">\(\bx^*\)</span> be the exact solution satisfying <span class="math inline">\(\bx^* = \bT\bx^* + \bc\)</span>. Subtracting this from the iteration formula gives the error evolution: <span class="math display">\[
 \begin{align}
@@ -812,11 +923,45 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Practical Cost:</strong> To reduce error by <span class="math inline">\(10^{-p}\)</span>, the required iterations are <span class="math inline">\(k \approx \frac{p}{\log_{10}(1/\rho(\bT))}\)</span>. As <span class="math inline">\(\rho(\bT) \to 1^-\)</span>, the cost explodes.</p>
+<p><strong>(Iteration count)</strong> To reduce error by <span class="math inline">\(10^{-p}\)</span>, the required iterations are <span class="math inline">\(k \approx \frac{p}{\log_{10}(1/\rho(\bT))}\)</span>. As <span class="math inline">\(\rho(\bT) \to 1^-\)</span>, the cost explodes.</p>
+</div>
+</div>
+</section>
+<section id="stopping-criteria" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="stopping-criteria"><span class="header-section-number">21.3</span> Stopping Criteria</h2>
+<p>Iterative methods need a stopping rule. The true error <span class="math inline">\(\|\bx^{(k)}-\bx^*\|\)</span> is usually unknown, so algorithms monitor the residual <span class="math inline">\(\br^{(k)}=\bb-\bA\bx^{(k)}\)</span>.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Common stopping test)</strong> Stop when <span class="math display">\[
+\begin{align}
+\frac{\|\br^{(k)}\|}{\|\bb\|} \leq `tol`.
+\end{align}
+\]</span> This is a relative residual test. It is cheap and scale-aware, but it is not the same as a relative error test unless the problem is well-conditioned.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Preconditioning preview)</strong> Most useful iterative solvers are preconditioned. A preconditioner <span class="math inline">\(\bM\approx\bA\)</span> should be cheap to solve with and should make the transformed system easier for the iterative method. Good preconditioning changes the problem from “possible but slow” to practical.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -837,8 +982,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="fill-in-and-sparse-storage" class="level2" data-number="21.3">
-<h2 data-number="21.3" class="anchored" data-anchor-id="fill-in-and-sparse-storage"><span class="header-section-number">21.3</span> Fill-in and Sparse Storage</h2>
+<section id="fill-in-and-sparse-storage" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="fill-in-and-sparse-storage"><span class="header-section-number">21.4</span> Fill-in and Sparse Storage</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

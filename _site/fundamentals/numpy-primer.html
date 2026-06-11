@@ -726,11 +726,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Shapes and Rank-1 Arrays.</strong> <code>A.shape</code> returns <code>(m, n)</code>. Note that a 1D array has shape <code>(n,)</code>, which is <strong>not</strong> equivalent to a column vector <code>(n, 1)</code>. These `<code>rank-1 arrays'' are a common source of broadcasting bugs. Use</code>x[:, None]<code>or</code>x.reshape(-1, 1)` to convert to 2D.</p>
+<p><strong>(Shapes and Rank-1 Arrays)</strong> <code>A.shape</code> returns <code>(m, n)</code>. Note that a 1D array has shape <code>(n,)</code>, which is <strong>not</strong> equivalent to a column vector <code>(n, 1)</code>. These `<code>rank-1 arrays'' are a common source of broadcasting bugs. Use</code>x[:, None]<code>or</code>x.reshape(-1, 1)` to convert to 2D.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -760,11 +760,11 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance Law: Vectorization.</strong> Explicit <code>for</code> loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by <strong>vectorizing</strong> operations. For example, use <code>A @ B</code> instead of triple-nested loops.</p>
+<p><strong>(Performance Law: Vectorization)</strong> Explicit <code>for</code> loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by <strong>vectorizing</strong> operations. For example, use <code>A @ B</code> instead of triple-nested loops.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -773,11 +773,11 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Stability: solve vs inv.</strong> <code>np.linalg.solve(A, b)</code> is faster and more stable than <code>np.linalg.inv(A) @ b</code>. Explicit inversion is almost never desirable in scientific computation.</p>
+<p><strong>(Stability: solve vs inv)</strong> <code>np.linalg.solve(A, b)</code> is faster and more stable than <code>np.linalg.inv(A) @ b</code>. Explicit inversion is almost never desirable in scientific computation.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">

@@ -3,11 +3,97 @@
 
 Sensitivity of problems vs.\ robustness of algorithms.
 
+
+Conditioning asks whether the mathematical problem is sensitive to small changes in the data. Stability asks whether the algorithm introduces only small changes to the problem. A good computation needs both: a well-conditioned problem and a stable algorithm.
+
+
+## Residual, Forward Error, and Backward Error
+
+
+::: {.callout-note icon=false}
+## Definition: Residual and Forward Error
+For a computed solution $\hat{\bx}$ to the linear system in the result above:
+$$
+\begin{align}
+\br = \bb-\bA\hat{\bx}
+    \qquad \text{and} \qquad
+    \be = \hat{\bx}-\bx^*,
+\end{align}
+$$
+where $\bx^*$ is the exact solution.
+
+- **Residual:**  How well the computed answer satisfies the equations.
+    
+- **Forward error:**  How close the computed answer is to the exact answer.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Small residual, large error)**  Let
+$$
+\begin{align}
+\bA=\begin{pmatrix}1&0\\0&10^{-8}\end{pmatrix},
+    \qquad
+    \bb=\begin{pmatrix}1\\10^{-8}\end{pmatrix}.
+\end{align}
+$$
+The exact solution is $\bx^*=(1,1)^T$. The approximation $\hat{\bx}=(1,0)^T$ has residual
+$$
+\begin{align}
+\br=\bb-\bA\hat{\bx}=(0,10^{-8})^T,
+\end{align}
+$$
+which is tiny in absolute norm, but the solution error is $(0,-1)^T$. The small singular value makes one direction hard to determine accurately.
+:::
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Return to the result above. Explain why the residual in the result above is computable but the forward error usually is not.
+    
+1. Verify every number in the small-residual example above.
+    
+1. Change the small diagonal entry from $10^{-8}$ to $10^{-12}$. How do the residual and forward error change?
+
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Residual-Error Bound
+Let $\bA$ be nonsingular, $\bx^*$ solve $\bA\bx=\bb$, and $\hat{\bx}$ have residual $\br=\bb-\bA\hat{\bx}$. If $\bb\neq\bzero$, then
+$$
+\begin{align}
+\frac{\|\hat{\bx}-\bx^*\|}{\|\bx^*\|}
+    \leq
+    \kappa(\bA)\frac{\|\br\|}{\|\bb\|}.
+\end{align}
+$$
+Thus a small relative residual guarantees a small relative forward error only when the problem is well-conditioned.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Starting from $\br=\bb-\bA\hat{\bx}$ and $\bb=\bA\bx^*$, show that $\br=\bA(\bx^*-\hat{\bx})$.
+    
+1. Use the previous step to prove $\|\hat{\bx}-\bx^*\|\leq \|\bA^{-1}\|\|\br\|$.
+    
+1. Use $\|\bb\|\leq \|\bA\|\|\bx^*\|$ to finish the proof of the result above.
+    
+1. Apply the bound to the small-residual example above. Is the bound sharp?
+
+:::
+
+
 ## Why Factorize instead of Invert?
 
 
 ::: {.callout-tip icon=false}
-**Rule:**  Never compute $\bA^{-1}$ explicitly.
+## Remark
+**(Explicit inverse rule)**  Never compute $\bA^{-1}$ explicitly.
 
 - **Cost:**  Computing $\bA^{-1}$ takes $3\times$ longer than LU ($\frac{8}{3}n^3$ vs.\ $\frac{2}{3}n^3$).
     
@@ -21,9 +107,11 @@ Sensitivity of problems vs.\ robustness of algorithms.
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. For $n=500$, compare total flops for solving 10 systems via $\bA^{-1}$ vs.\ LU.
+1. Use the LU factorization costs from the LU chapter to compare total flops for solving 10 systems via $\bA^{-1}$ vs.\ LU when $n=500$.
     
-1. Construct $\bA = \text{diag}(1, 1, 10^{-12})$. Compare residuals of `inv(A) @ b` and `solve(A, b)`.
+1. Construct $\bA = \text{diag}(1, 1, 10^{-12})$. Compare residuals of `inv(A) @ b` and `solve(A, b)` using the result above.
+    
+1. Explain the result using the distinction between residual and forward error from the result above.
 
 :::
 
@@ -40,16 +128,59 @@ $(\bA + \delta \bA)\hat{\bx} = \bb + \delta \bb$, with $\|\delta \bA\|/\|\bA\| =
 :::
 
 
-::: {.callout-tip icon=false}
-**GEPP Stability:** 
-Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor $\rho$ stays small, preventing exponential error amplification.
+::: {.callout-note icon=false}
+## Theorem: Normwise Backward Error for Linear Systems
+For a computed vector $\hat{\bx}$ with residual $\br=\bb-\bA\hat{\bx}$, the normwise relative backward error for the linear system $\bA\bx=\bb$ is
+$$
+\begin{align}
+\eta(\hat{\bx})
+    =
+    \frac{\|\br\|}
+    {\|\bA\|\|\hat{\bx}\|+\|\bb\|}.
+\end{align}
+$$
+This is the smallest relative perturbation size, measured normwise in both $\bA$ and $\bb$, that makes $\hat{\bx}$ an exact solution of a nearby system.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Explain why a small residual doesn't always guarantee a small error (Forward Error).
+1. Suppose $(\bA+\delta\bA)\hat{\bx}=\bb+\delta\bb$. Show that $\br=\delta\bb-\delta\bA\hat{\bx}$.
+    
+1. Use the triangle inequality to prove the lower bound
+    $$\|\br\|\leq \|\delta\bA\|\|\hat{\bx}\|+\|\delta\bb\|.$$
+    
+1. Divide by $\|\bA\|\|\hat{\bx}\|+\|\bb\|$ to obtain the denominator in the result above.
+    
+1. Construct a rank-one perturbation in the direction of $\br$ to see why the bound can be attained.
+    
+1. Compare this computable backward error with the residual-error bound in the result above.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**GEPP Stability:** 
+Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor $\rho$ stays small, preventing exponential error amplification.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Stable algorithms)**  Householder QR and Cholesky for SPD systems are backward stable under their usual assumptions. LU with partial pivoting is reliable in practice, though its worst-case growth factor can be large.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the result above to explain why backward stability is a natural standard when input data are already uncertain.
+    
+1. Explain why a small residual does not always guarantee a small forward error. Use the result above.
+    
+1. Compute $\eta(\hat{\bx})$ from the result above for the small-residual example above.
     
 1. Histogram growth factors for 100 random matrices via `scipy.linalg.lu`.
 
@@ -97,7 +228,11 @@ Thus, the condition number $\kappa(\bA)$ acts as the amplification factor for re
 ::: {.callout-warning icon=false}
 ## Exercise
 
+1. Reproduce the perturbation argument above without looking.
+    
 1. Compute $\kappa_2(H_n)$ for Hilbert matrices $n=3, ..., 10$. How fast does it grow?
+    
+1. Use the result above, the result above, and the result above to explain why a stable algorithm on an ill-conditioned problem may still lose many digits.
     
 1. **The Neumann Series:**  Use it to prove the perturbation bound: $\frac{\|\delta \bx\|}{\|\bx\|} \leq \frac{\kappa(\bA)}{1 - ...}$.
 
@@ -106,17 +241,39 @@ Thus, the condition number $\kappa(\bA)$ acts as the amplification factor for re
 
 ## Solver Selection Hierarchy
 
-Algorithms are typically selected based on a trade-off between numerical stability and computational efficiency:
 
-1. **SVD:**  Most stable, most expensive ($O(n^3)$ with large constant).
+::: {.callout-note icon=false}
+## Theorem: Solver Selection by Structure
+Choose a solver from the most specific trustworthy structure in the problem:
+
+1. If $\bA$ is SPD and dense, use Cholesky; if it is SPD and large sparse, use CG with a preconditioner.
     
-1. **Householder QR:**  Very stable, no growth factor ($O(mn^2)$).
+1. If $\bA$ is general, square, dense, and nonsingular, use LU with partial pivoting.
     
-1. **Cholesky:**  Stable for SPD systems, half the cost of LU.
+1. If the problem is full-rank least squares, use Householder QR.
     
-1. **GEPP (LU with Pivoting):**  Standard for general systems.
+1. If the problem is rank-deficient, nearly rank-deficient, or requires numerical rank information, use the SVD.
     
-1. **LU without Pivoting:**  Dangerously unstable; avoid.
+1. If $\bA$ is large, sparse, nonsymmetric, and only matrix-vector products are practical, use GMRES or another nonsymmetric Krylov method.
+
+The more structure a solver exploits, the cheaper it can be; the less trustworthy the structure, the more robust the solver must be.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. For each case in the result above, identify the mathematical structure being used: symmetry, positive definiteness, sparsity, full column rank, or numerical rank.
+    
+1. Explain why Cholesky is inappropriate if the SPD assumption fails.
+    
+1. Explain why QR is preferred to normal equations for full-rank least squares, using the result above.
+    
+1. Explain why the SVD is the natural fallback when rank is uncertain, using the result above.
+    
+1. Explain why CG and GMRES fit the Krylov approximation principle from the result above.
+
+:::
 
 
 ::: {.callout-note icon=false}
@@ -133,11 +290,19 @@ Each step recovers digits lost due to ill-conditioning, up to the limits of mach
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Limitations)**  Iterative refinement helps when the residual can be computed accurately and the correction equation can be solved reliably. It cannot overcome a problem whose condition number is so large that the desired digits are not present in the data.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Solve $H_{10}\bx = H_{10}\mathbf{1}$. Apply one step of iterative refinement. How many digits are recovered?
+1. Solve $H_{10}\bx = H_{10}\mathbf{1}$. Apply one step of iterative refinement from the result above. How many digits are recovered?
     
-1. Compare forward errors of `solve` (LU) vs `lstsq` (QR) on a Hilbert system.
+1. Compare forward errors of `solve` (LU) vs `lstsq` (QR) on a Hilbert system. Interpret the result using the result above.
+    
+1. Choose a solver for each case in the result above: SPD, dense general square, full-rank least squares, rank-deficient least squares, large sparse SPD, and large sparse nonsymmetric. Justify each choice by citing one earlier result or exercise.
 
 :::

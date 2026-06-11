@@ -108,7 +108,8 @@ For $H = \frac{1}{2}v^2 + V(q)$, ensures no long-term energy drift:
 
 
 ::: {.callout-tip icon=false}
-**Numerical Energy Drift.**  Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.
+## Remark
+**(Numerical Energy Drift)**  Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.
 :::
 
 

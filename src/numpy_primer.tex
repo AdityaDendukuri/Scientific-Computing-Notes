@@ -18,8 +18,8 @@ The \texttt{ndarray} is the fundamental structure.
 }
 \label{def:numpy-arrays}
 
-\addNote{%
-\textbf{Shapes and Rank-1 Arrays.}\enspace
+\addRemark{%
+\textbf{(Shapes and Rank-1 Arrays)}\enspace
 \texttt{A.shape} returns \texttt{(m, n)}. Note that a 1D array has shape \texttt{(n,)}, which is \textbf{not} equivalent to a column vector \texttt{(n, 1)}. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use \texttt{x[:, None]} or \texttt{x.reshape(-1, 1)} to convert to 2D.
 }
 
@@ -49,13 +49,13 @@ Core routines in \texttt{numpy.linalg}:
 \end{tabular}
 \end{center}
 
-\addNote{%
-\textbf{Performance Law: Vectorization.}\enspace
+\addRemark{%
+\textbf{(Performance Law: Vectorization)}\enspace
 Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by \textbf{vectorizing} operations. For example, use \texttt{A @ B} instead of triple-nested loops.
 }
 
-\addNote{%
-\textbf{Stability: solve vs inv.}\enspace
+\addRemark{%
+\textbf{(Stability: solve vs inv)}\enspace
 \texttt{np.linalg.solve(A, b)} is faster and more stable than \texttt{np.linalg.inv(A) @ b}. Explicit inversion is almost never desirable in scientific computation.
 }
 

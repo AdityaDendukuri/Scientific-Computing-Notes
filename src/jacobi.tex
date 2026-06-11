@@ -22,7 +22,7 @@ Decomposes $\bA$ into diagonal $\bD$ and remainder $\bR$: $\bA = \bD + \bR$.
 }
 \label{def:jacobi-iteration}
 
-\addNote{%
+\addRemark{%
 \textbf{Performance:}\enspace
 Jacobi iteration is \textbf{inherently parallel}, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.
 }
@@ -42,7 +42,7 @@ Splits $\bA = \bL_* + \bU_*$, where $\bL_*$ includes the diagonal.
 }
 \label{def:gs-iteration}
 
-\addNote{%
+\addRemark{%
 \textbf{Performance:}\enspace
 Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges \textbf{twice as fast} as Jacobi and allows for in-place updates.
 }
@@ -80,7 +80,7 @@ Accelerates Gauss-Seidel by overshooting the update.
 }
 \label{def:sor}
 
-\addNote{%
+\addRemark{%
 \textbf{Convergence Acceleration:}\enspace
 For the 1D Poisson problem on a grid with spacing $h$:
 \begin{itemize}

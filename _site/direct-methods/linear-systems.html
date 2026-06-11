@@ -672,10 +672,12 @@ window.Quarto = {
    
   <ul>
   <li><a href="#linear-systems" id="toc-linear-systems" class="nav-link active" data-scroll-target="#linear-systems"><span class="header-section-number">9.1</span> Linear Systems</a></li>
-  <li><a href="#invertibility-and-existence" id="toc-invertibility-and-existence" class="nav-link" data-scroll-target="#invertibility-and-existence"><span class="header-section-number">9.2</span> Invertibility and Existence</a></li>
-  <li><a href="#linear-combinations-and-bases" id="toc-linear-combinations-and-bases" class="nav-link" data-scroll-target="#linear-combinations-and-bases"><span class="header-section-number">9.3</span> Linear Combinations and Bases</a></li>
-  <li><a href="#rank" id="toc-rank" class="nav-link" data-scroll-target="#rank"><span class="header-section-number">9.4</span> Rank</a></li>
-  <li><a href="#the-four-fundamental-subspaces" id="toc-the-four-fundamental-subspaces" class="nav-link" data-scroll-target="#the-four-fundamental-subspaces"><span class="header-section-number">9.5</span> The Four Fundamental Subspaces</a></li>
+  <li><a href="#rows-columns-and-geometry" id="toc-rows-columns-and-geometry" class="nav-link" data-scroll-target="#rows-columns-and-geometry"><span class="header-section-number">9.2</span> Rows, Columns, and Geometry</a></li>
+  <li><a href="#invertibility-and-existence" id="toc-invertibility-and-existence" class="nav-link" data-scroll-target="#invertibility-and-existence"><span class="header-section-number">9.3</span> Invertibility and Existence</a></li>
+  <li><a href="#residuals-and-approximate-solutions" id="toc-residuals-and-approximate-solutions" class="nav-link" data-scroll-target="#residuals-and-approximate-solutions"><span class="header-section-number">9.4</span> Residuals and Approximate Solutions</a></li>
+  <li><a href="#linear-combinations-and-bases" id="toc-linear-combinations-and-bases" class="nav-link" data-scroll-target="#linear-combinations-and-bases"><span class="header-section-number">9.5</span> Linear Combinations and Bases</a></li>
+  <li><a href="#rank" id="toc-rank" class="nav-link" data-scroll-target="#rank"><span class="header-section-number">9.6</span> Rank</a></li>
+  <li><a href="#the-four-fundamental-subspaces" id="toc-the-four-fundamental-subspaces" class="nav-link" data-scroll-target="#the-four-fundamental-subspaces"><span class="header-section-number">9.7</span> The Four Fundamental Subspaces</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/direct-methods/linear-systems.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -702,7 +704,8 @@ window.Quarto = {
 </header>
 
 
-<p>Linear systems are characterized by the properties of additivity and homogeneity, which allow for the decomposition of complex operators into simpler components.</p>
+<p>Linear systems are the basic computational problem in scientific computing. Even when the original problem is nonlinear, algorithms often reduce it to a sequence of linear systems by linearizing the problem near the current estimate.</p>
+<p>A matrix equation <span class="math inline">\(\bA\bx=\bb\)</span> asks whether the data vector <span class="math inline">\(\bb\)</span> can be produced by combining the columns of <span class="math inline">\(\bA\)</span>. The unknown vector <span class="math inline">\(\bx\)</span> contains the weights in that combination. Existence, uniqueness, and numerical difficulty are all controlled by the geometry of those columns.</p>
 <section id="linear-systems" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="linear-systems"><span class="header-section-number">9.1</span> Linear Systems</h2>
 <p>A linear system is a collection of linear equations involving the same set of variables. In matrix-vector notation, we package these equations into a single compact form that is amenable to both theoretical analysis and high-performance computation.</p>
@@ -724,6 +727,43 @@ window.Quarto = {
 </ul>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Shape discipline)</strong> If <span class="math inline">\(\bA \in \fR^{m\times n}\)</span>, then <span class="math inline">\(\bx\)</span> must have <span class="math inline">\(n\)</span> entries and <span class="math inline">\(\bb\)</span> must have <span class="math inline">\(m\)</span> entries. The number of columns is the number of unknowns. The number of rows is the number of equations or measurements.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Two equations)</strong> The system <span class="math display">\[
+\begin{align}
+x + 2y = 3, \qquad 3x-y = 1
+\end{align}
+\]</span> can be written as <span class="math display">\[
+\begin{align}
+\begin{pmatrix}1&amp;2\\3&amp;-1\end{pmatrix}
+    \begin{pmatrix}x\\y\end{pmatrix}
+    =
+    \begin{pmatrix}3\\1\end{pmatrix}.
+\end{align}
+\]</span> The first row encodes the first equation; the second row encodes the second equation.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -735,9 +775,35 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Convert <span class="math inline">\(\{x + 2y = 3,\; 3x - y = 1\}\)</span> to <span class="math inline">\(\bA\bx = \bb\)</span>.</p></li>
-<li><p>Solve in NumPy via <code>np.linalg.solve(A, b)</code>. Verify with <code>np.linalg.norm(b - A @ x)</code>.</p></li>
+<li><p>Convert <span class="math inline">\(\{x + 2y = 3,\; 3x - y = 1\}\)</span> to the form in the result above.</p></li>
+<li><p>Check the dimensions of <span class="math inline">\(\bA\)</span>, <span class="math inline">\(\bx\)</span>, and <span class="math inline">\(\bb\)</span> before solving. Which part of the result above determines each shape?</p></li>
+<li><p>Solve in NumPy via <code>np.linalg.solve(A, b)</code>. Verify with the residual from the result above.</p></li>
 </ol>
+</div>
+</div>
+</section>
+<section id="rows-columns-and-geometry" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="rows-columns-and-geometry"><span class="header-section-number">9.2</span> Rows, Columns, and Geometry</h2>
+<p>There are two complementary ways to read <span class="math inline">\(\bA\bx=\bb\)</span>.</p>
+<ul>
+<li><p><strong>Row view:</strong> Each row is one linear equation. In two or three dimensions, each equation describes a line, plane, or hyperplane. Solving the system means finding their intersection.</p></li>
+<li><p><strong>Column view:</strong> The product <span class="math inline">\(\bA\bx\)</span> is a weighted sum of the columns of <span class="math inline">\(\bA\)</span>. Solving the system means expressing <span class="math inline">\(\bb\)</span> as a linear combination of those columns.</p></li>
+</ul>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The Column Perspective)</strong> If <span class="math inline">\(\bA=[\ba_1,\ba_2,...,\ba_n]\)</span>, then <span class="math display">\[
+\begin{align}
+\bA\bx = x_1 \ba_1 + x_2 \ba_2 + ... + x_n \ba_n.
+\end{align}
+\]</span> The system <span class="math inline">\(\bA\bx = \bb\)</span> is consistent exactly when <span class="math inline">\(\bb\)</span> lies in the span of the columns of <span class="math inline">\(\bA\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -768,15 +834,21 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Solve <span class="math inline">\(\bA\bx = 3\bb_1 - 2\bb_2\)</span> given only the solutions <span class="math inline">\(\bx_1, \bx_2\)</span> for <span class="math inline">\(\bb_1, \bb_2\)</span>.</p></li>
+<li><p>Use the result above to solve <span class="math inline">\(\bA\bx = 3\bb_1 - 2\bb_2\)</span> given only the solutions <span class="math inline">\(\bx_1, \bx_2\)</span> for <span class="math inline">\(\bb_1, \bb_2\)</span>.</p></li>
 <li><p>How does <code>np.linalg.solve(A, B)</code> for a matrix <span class="math inline">\(\bB\)</span> exploit this?</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="invertibility-and-existence" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="invertibility-and-existence"><span class="header-section-number">9.2</span> Invertibility and Existence</h2>
+<section id="invertibility-and-existence" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="invertibility-and-existence"><span class="header-section-number">9.3</span> Invertibility and Existence</h2>
 <p>For square systems (<span class="math inline">\(\bA \in \fR^{n \times n}\)</span>), the most critical question is whether a unique solution exists for any given right-hand side. This property is known as invertibility or nonsingularity.</p>
+<p>For rectangular systems, the same questions still matter but the answer changes.</p>
+<ul>
+<li><p><strong>Square:</strong> <span class="math inline">\(m=n\)</span>. A unique solution may exist.</p></li>
+<li><p><strong>Overdetermined:</strong> <span class="math inline">\(m&gt;n\)</span>. There are more equations than unknowns; usually no exact solution exists, so we solve a least squares problem.</p></li>
+<li><p><strong>Underdetermined:</strong> <span class="math inline">\(m&lt;n\)</span>. There are fewer equations than unknowns; if a solution exists, it is usually not unique.</p></li>
+</ul>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -797,6 +869,19 @@ window.Quarto = {
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Determinants are not algorithms)</strong> The determinant is useful theoretically, but numerical codes do not test invertibility by computing <span class="math inline">\(\det(\bA)\)</span>. Rank, singular values, and condition numbers are more informative and more stable.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -808,31 +893,64 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Determine invertibility: <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; -1 \\ 4 &amp; -2 \end{pmatrix}\)</span>, <span class="math inline">\(\bB = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; 3 \end{pmatrix}\)</span>.</p></li>
-<li><p>Check consistency of <span class="math inline">\(\bA = \begin{pmatrix}1&amp;2\\3&amp;6\end{pmatrix}, \bb = \begin{pmatrix}1\\4\end{pmatrix}\)</span> via <code>np.linalg.matrix\_rank</code>.</p></li>
+<li><p>Determine invertibility using the result above: <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; -1 \\ 4 &amp; -2 \end{pmatrix}\)</span>, <span class="math inline">\(\bB = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; 3 \end{pmatrix}\)</span>.</p></li>
+<li><p>Check consistency of <span class="math inline">\(\bA = \begin{pmatrix}1&amp;2\\3&amp;6\end{pmatrix}, \bb = \begin{pmatrix}1\\4\end{pmatrix}\)</span> using the column perspective in the result above and <code>np.linalg.matrix\_rank</code>.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="linear-combinations-and-bases" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="linear-combinations-and-bases"><span class="header-section-number">9.3</span> Linear Combinations and Bases</h2>
+<section id="residuals-and-approximate-solutions" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="residuals-and-approximate-solutions"><span class="header-section-number">9.4</span> Residuals and Approximate Solutions</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Residual
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For an approximate solution <span class="math inline">\(\hat{\bx}\)</span> to <span class="math inline">\(\bA\bx=\bb\)</span>, the residual is <span class="math display">\[
+\begin{align}
+\br = \bb-\bA\hat{\bx}.
+\end{align}
+\]</span> It measures how well <span class="math inline">\(\hat{\bx}\)</span> satisfies the equations.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>The Column Perspective.</strong> While we often think of <span class="math inline">\(\bA\bx = \bb\)</span> as a set of row equations, it is often more powerful to view it as a statement about columns. The product <span class="math inline">\(\bA\bx\)</span> is a <strong>linear combination of the columns of <span class="math inline">\(\bA\)</span></strong> weighted by the entries of <span class="math inline">\(\bx\)</span>: <span class="math display">\[
+<p><strong>(Residual vs.&nbsp;error)</strong> The error is <span class="math inline">\(\hat{\bx}-\bx^*\)</span>, where <span class="math inline">\(\bx^*\)</span> is the exact solution. The residual is computable; the error usually is not. A small residual means the equations are nearly satisfied, but it does not always mean the solution is accurate. Ill-conditioned matrices can turn small residuals into large errors.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Inconsistent system)</strong> The equations <span class="math display">\[
 \begin{align}
-\bA\bx = x_1 \ba_1 + x_2 \ba_2 + ... + x_n \ba_n.
+x+y=1, \qquad x+y=3
 \end{align}
-\]</span> The system <span class="math inline">\(\bA\bx = \bb\)</span> asks a fundamental geometric question: ``Can the vector <span class="math inline">\(\bb\)</span> be represented as a weighted sum of the columns of <span class="math inline">\(\bA\)</span>?’’ If the answer is yes, the system is consistent.</p>
+\]</span> cannot both be true. In matrix form, <span class="math inline">\(\bb\)</span> is not in the column space of <span class="math inline">\(\bA\)</span>. The best we can do is choose <span class="math inline">\(\hat{\bx}\)</span> so that the residual <span class="math inline">\(\bb-\bA\hat{\bx}\)</span> is small in a chosen norm. This is the least squares problem.</p>
 </div>
 </div>
+</section>
+<section id="linear-combinations-and-bases" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="linear-combinations-and-bases"><span class="header-section-number">9.5</span> Linear Combinations and Bases</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -860,9 +978,9 @@ Tip
 </div>
 </div>
 </section>
-<section id="rank" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="rank"><span class="header-section-number">9.4</span> Rank</h2>
-<p>The rank of a matrix is a measure of its “information content,” representing the number of independent directions it can span.</p>
+<section id="rank" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="rank"><span class="header-section-number">9.6</span> Rank</h2>
+<p>The rank of a matrix is the number of independent directions its columns span. It measures how many genuinely different constraints or directions are present after removing redundancy.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -886,11 +1004,29 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Numerical Rank.</strong> In code, never use row-reduction to find rank; it is numerically unstable. Use <code>np.linalg.matrix\_rank</code>, which uses the Singular Value Decomposition (SVD).</p>
+<p><strong>(Rank and solution structure)</strong> For <span class="math inline">\(\bA\in\fR^{m\times n}\)</span>:</p>
+<ul>
+<li><p>Full column rank (<span class="math inline">\(\text{rank}(\bA)=n\)</span>) means the columns are independent.</p></li>
+<li><p>Full row rank (<span class="math inline">\(\text{rank}(\bA)=m\)</span>) means the rows are independent.</p></li>
+<li><p>Rank deficiency means there is redundancy: some row or column information can be produced from the rest.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Numerical Rank)</strong> In code, do not use exact row-reduction to find rank; it is numerically unstable. Use <code>np.linalg.matrix\_rank</code>, which estimates rank from the singular values. A matrix can be mathematically full rank but numerically rank deficient if one singular value is tiny compared to the others.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -909,6 +1045,23 @@ Tip
 </ul>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(General solution form)</strong> If <span class="math inline">\(\bA\bx=\bb\)</span> is consistent and <span class="math inline">\(\bx_p\)</span> is one particular solution, then every solution has the form <span class="math display">\[
+\begin{align}
+\bx = \bx_p + \bz, \qquad \bz \in \mathcal{N}(\bA).
+\end{align}
+\]</span> The null space contains the directions you can add without changing <span class="math inline">\(\bA\bx\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -920,14 +1073,15 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Find the general solution to a <span class="math inline">\(2 \times 3\)</span> system as <span class="math inline">\(\bx = \bx_p + \bx_n\)</span> (particular + null space).</p></li>
-<li><p>Why must a ``wide’’ matrix (<span class="math inline">\(m &lt; n\)</span>) have a non-trivial null space?</p></li>
+<li><p>Use the result above to explain why a ``wide’’ matrix (<span class="math inline">\(m&lt;n\)</span>) must have a non-trivial null space.</p></li>
+<li><p>Find the general solution to a consistent <span class="math inline">\(2 \times 3\)</span> system in the form <span class="math inline">\(\bx=\bx_p+\bz\)</span>, where <span class="math inline">\(\bz\in\mathcal{N}(\bA)\)</span>.</p></li>
+<li><p>Check directly that adding a null-space vector leaves <span class="math inline">\(\bA\bx\)</span> unchanged.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="the-four-fundamental-subspaces" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="the-four-fundamental-subspaces"><span class="header-section-number">9.5</span> The Four Fundamental Subspaces</h2>
+<section id="the-four-fundamental-subspaces" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="the-four-fundamental-subspaces"><span class="header-section-number">9.7</span> The Four Fundamental Subspaces</h2>
 <p>The structure of any linear operator <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> with rank <span class="math inline">\(r\)</span> is completely characterized by four subspaces. Understanding these spaces is essential for solving least squares problems and understanding the behavior of iterative solvers.</p>
 <ol type="1">
 <li><p> <span class="math inline">\(\fR^m, \dim=r\)</span>. Span of columns.</p></li>
@@ -963,7 +1117,8 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>For <span class="math inline">\(\bA = \begin{pmatrix}1&amp;2&amp;3\\2&amp;4&amp;6\end{pmatrix}\)</span>, find dimensions and bases for all four spaces.</p></li>
+<li><p>For <span class="math inline">\(\bA = \begin{pmatrix}1&amp;2&amp;3\\2&amp;4&amp;6\end{pmatrix}\)</span>, use the result above and the result above to find dimensions and bases for all four spaces.</p></li>
+<li><p>Verify the two orthogonality statements in the result above.</p></li>
 <li><p>Verify <span class="math inline">\(\bb = (1, 3)^T\)</span> is not in the column space. What is the projection of <span class="math inline">\(\bb\)</span> onto <span class="math inline">\(\mathcal{R}(\bA)\)</span>?</p></li>
 </ol>
 </div>

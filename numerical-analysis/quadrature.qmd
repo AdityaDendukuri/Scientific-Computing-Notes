@@ -52,6 +52,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Efficiency:**  $p$ Gauss points are as accurate as $2p$ Newton-Cotes points. Always prefer Gaussian quadrature for smooth, non-periodic functions.
 :::
 
@@ -112,6 +113,7 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Design Goal:**  Automatically focus function evaluations where $f$ is "difficult" (steep gradients, oscillations) and use large steps where $f$ is smooth.
 **Mechanism:**  Compare quadrature on one large panel vs.\ two small panels. If the difference is above tolerance $\varepsilon$, recurse.
 :::
@@ -121,7 +123,8 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 
 
 ::: {.callout-tip icon=false}
-**Spectral Accuracy on Periodic Domains.**  For smooth, periodic functions on $[0, 2\pi]$, the **Trapezoidal Rule** is the optimal choice. It achieves **Spectral Accuracy** (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.
+## Remark
+**(Spectral Accuracy on Periodic Domains)**  For smooth, periodic functions on $[0, 2\pi]$, the **Trapezoidal Rule** is the optimal choice. It achieves **Spectral Accuracy** (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.
 :::
 
 

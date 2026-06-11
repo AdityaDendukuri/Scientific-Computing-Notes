@@ -25,6 +25,7 @@ $1 \le j \le n$.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 For $\bA \in \fR^{m \times n}$ and $\bB \in \fR^{p \times q}$, the sum $\bA + \bB$ is
 defined if and only if $m = p$ and $n = q$.
 :::
@@ -216,6 +217,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 Matrix multiplication is defined only when the number of columns of $\bA$ equals the number
 of rows of $\bB$.  It is associative and distributive over addition, but in general not
 commutative: $\bA\bB \neq \bB\bA$ for most matrices.
@@ -232,6 +234,7 @@ reduces to $O(n^3)$ flops.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 The $O(n^3)$ cost of naive matrix multiplication is a central bottleneck in scientific
 computing.  Strassen's algorithm reduces this to $O(n^{\log_2 7}) \approx O(n^{2.807})$,
 but is rarely used in practice due to numerical stability concerns and cache-unfriendly
@@ -372,6 +375,7 @@ called *invertible* or *nonsingular*.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 A square matrix $\bA$ is invertible if and only if $\det(\bA) \neq 0$, which also implies
 that $\bA$ has full rank.
 :::
@@ -442,7 +446,8 @@ This shows $(\bA^{-1})^T$ is the inverse of $\bA^T$, so $(\bA^T)^{-1} = (\bA^{-1
 
 
 ::: {.callout-tip icon=false}
-**The Decomposition Principle.** 
+## Remark
+**(The Decomposition Principle)** 
 In scientific computing, we almost never compute $\bA^{-1}$ explicitly. To solve $\bA\bx = \bb$, we decompose $\bA$ into simpler factors (like LU or QR) and solve a sequence of simpler systems. This is more numerically stable and computationally efficient. The Reversal Law $(\bA\bB)^{-1} = \bB^{-1}\bA^{-1}$ reflects this: to solve $(\bA\bB)\bx = \bb$, we first solve $\bA\by = \bb$ for $\by$, then $\bB\bx = \by$.
 :::
 

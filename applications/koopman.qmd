@@ -51,6 +51,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Interpretation:**  DMD decomposes data into spatiotemporal modes $\boldsymbol{\phi}_i$ with associated frequencies and growth rates. It is the data-driven approximation of the Koopman operator using the identity dictionary.
 :::
 

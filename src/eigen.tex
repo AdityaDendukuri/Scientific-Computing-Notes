@@ -9,6 +9,10 @@
 Reveals the scaling directions of a linear transformation. Essential for stability analysis, PCA, and spectral methods.
 }
 
+\textBox{%
+Eigenvectors are directions preserved by a linear map. Along an eigenvector, the matrix acts like multiplication by a scalar. This reduces a matrix transformation to independent one-dimensional actions, when enough eigenvectors exist.
+}
+
 \subsubsection{Definitions and Basic Properties}
 
 \addDef{Eigenvalues and Eigenvectors}{%
@@ -28,6 +32,10 @@ $p_{\bA}(\lambda) = \det(\bA - \lambda \bI)$. Eigenvalues are the roots of $p_{\
 }
 \label{def:char-poly}
 
+\addRemark{%
+\textbf{(Characteristic polynomial as theory)}\enspace The characteristic polynomial is useful for proofs and small hand examples. Numerical algorithms do not compute eigenvalues by forming $p_{\bA}$ and finding its roots; polynomial coefficients are extremely sensitive to perturbations.
+}
+
 \addExcr{%
 \begin{enumerate}
     \item Verify $\bv = (1, 1)^T$ is an eigenvector of $\bA = \begin{pmatrix}3&1\\1&3\end{pmatrix}$ and find $\lambda$.
@@ -37,9 +45,22 @@ $p_{\bA}(\lambda) = \det(\bA - \lambda \bI)$. Eigenvalues are the roots of $p_{\
 
 \addThm{Similar Matrices}{%
 If $\bB = \bV^{-1}\bA\bV$ (Similarity Transform), then $\sigma(\bB) = \sigma(\bA)$.
-\textbf{Insight:}\enspace Eigenvalues are invariant under change of basis.
+Eigenvalues are invariant under change of basis.
 }
 \label{thm:similar-matrices}
+
+\addDef{Diagonalization}{%
+A matrix $\bA$ is diagonalizable if there exists an invertible matrix $\bV$ such that
+\begin{align*}
+    \bA=\bV\bD\bV^{-1},
+\end{align*}
+where $\bD$ is diagonal. The columns of $\bV$ are eigenvectors and the diagonal entries of $\bD$ are eigenvalues.
+}
+\label{def:diagonalization}
+
+\addRemark{%
+\textbf{(Multiplicity and defectiveness)}\enspace Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity $2$ but only one independent eigenvector; such a matrix is \textbf{defective} and cannot be diagonalized.
+}
 
 \addThm{Key Properties}{%
 \begin{enumerate}
@@ -54,6 +75,10 @@ If $\bB = \bV^{-1}\bA\bV$ (Similarity Transform), then $\sigma(\bB) = \sigma(\bA
 \subsubsection{Symmetric and Hermitian Matrices}
 
 Symmetric and Hermitian matrices possess special spectral properties that simplify analysis and computation.
+
+\textBox{%
+The symmetric case is the cleanest eigenvalue theory. Orthogonal eigenvectors mean that diagonalization is also a numerically safe change of basis: $\bQ^{-1}=\bQ^T$, so the transformation does not amplify Euclidean errors.
+}
 
 \addThm{Spectral Theorem (Real Symmetric)}{%
 If $\bA = \bA^T$:
@@ -86,6 +111,10 @@ $\bA = \bA^*$ (conjugate transpose). The complex analog of symmetric matrices.
 In practice, we compute eigenvalues via iteration, not by finding roots of the characteristic polynomial.
 }
 
+\textBox{%
+Most large eigenvalue computations do not compute the full spectrum. They target a few eigenvalues: the largest, smallest, or those closest to a shift. Matrix-vector products and linear solves are the basic primitives.
+}
+
 \addDef{Power Iteration}{%
 Repeatedly apply $\bA$ to a unit vector: $\bv^{(k)} = \frac{\bA\bv^{(k-1)}}{\|\bA\bv^{(k-1)}\|}$.
 \begin{itemize}
@@ -94,6 +123,10 @@ Repeatedly apply $\bA$ to a unit vector: $\bv^{(k)} = \frac{\bA\bv^{(k-1)}}{\|\b
 \end{itemize}
 }
 \label{def:power-iteration}
+
+\addRemark{%
+\textbf{(Power iteration failure modes)}\enspace Power iteration can fail or converge slowly if $|\lambda_1|\approx|\lambda_2|$, if the starting vector has tiny component in the dominant eigenvector direction, or if the dominant eigenvalue is not unique in magnitude.
+}
 
 \addPrf{%
 Assume $\bA$ is diagonalizable with eigenvectors $\{\bu_1, \dots, \bu_n\}$ and eigenvalues $|\lambda_1| > |\lambda_2| \geq \dots$. Let $\bx^{(0)} = \sum_{i=1}^n c_i \bu_i$ with $c_1 \neq 0$. Applying $\bA$ $k$ times:
@@ -112,6 +145,10 @@ Apply power iteration to $(\bA - \sigma\bI)^{-1}$.
 \end{itemize}
 }
 \label{def:inverse-iteration}
+
+\addRemark{%
+\textbf{(Shifted inverse iteration)}\enspace If $\lambda_i$ is an eigenvalue of $\bA$, then $(\lambda_i-\sigma)^{-1}$ is an eigenvalue of $(\bA-\sigma\bI)^{-1}$. The eigenvalue closest to $\sigma$ becomes largest in magnitude after inversion.
+}
 
 \addDef{Rayleigh Quotient Iteration (RQI)}{%
 Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\bv^{(k)}$ at each step.
@@ -134,6 +171,10 @@ Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\b
 The Schur decomposition provides the theoretical basis for the QR algorithm, the standard iterative method for computing the eigenvalues and eigenvectors of dense, general matrices.
 }
 
+\textBox{%
+Diagonalization may fail for defective matrices, but Schur decomposition always exists over $\fC$. This is why practical dense eigensolvers target Schur form rather than diagonal form.
+}
+
 \addThm{Schur Decomposition}{%
 Every square $\bA$ satisfies $\bA = \bQ\bT\bQ^*$, where $\bQ$ is unitary and $\bT$ is upper triangular.
 \begin{itemize}
@@ -152,8 +193,8 @@ Iteratively compute QR factorizations and swap the factors. The goal is to trans
 }
 \label{def:qr-iteration}
 
-\addNote{%
-\textbf{Performance:}\enspace
+\addRemark{%
+\textbf{(QR iteration performance)}\enspace
 Raw QR iteration requires $O(n^3)$ operations per step. Practical implementations, such as those in standard numerical libraries, typically use:
 \begin{enumerate}
     \item \textbf{Hessenberg Reduction:}\enspace Pre-process $\bA$ to upper Hessenberg form in $O(n^3)$ operations.

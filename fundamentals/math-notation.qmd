@@ -85,6 +85,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Numerical Proofs:**  Often validate that an approximation is **stable** or that an error term **converges**. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
 :::
 
@@ -105,7 +106,8 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 
 ::: {.callout-tip icon=false}
-**Scalars, Vectors, and Matrices.** 
+## Remark
+**(Scalars, Vectors, and Matrices)** 
 
 - **Scalars:**  Lowercase italic ($a, b, x$).
   
@@ -119,7 +121,8 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 
 ::: {.callout-tip icon=false}
-**Transpose and Inverse.** 
+## Remark
+**(Transpose and Inverse)** 
 
 - $\bA^T$: Transpose.
   
@@ -133,7 +136,8 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 
 ::: {.callout-tip icon=false}
-**Sums and Products.** 
+## Remark
+**(Sums and Products)** 
 $$
 \begin{align}
 \sum_{i=1}^{n} a_i = a_1 + ... + a_n, \qquad
@@ -144,7 +148,8 @@ $$
 
 
 ::: {.callout-tip icon=false}
-**Functions.** 
+## Remark
+**(Functions)** 
 
 - $f : \fR^n \to \fR^m$: Maps $n$-vectors to $m$-vectors.
   
@@ -154,6 +159,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
-**Asymptotic Notation.** 
+## Remark
+**(Asymptotic Notation)** 
 Scaling of algorithms is described using **Big-O notation** ($O(n^2), O(n^3)$). Details in the Computational Complexity section.
 :::

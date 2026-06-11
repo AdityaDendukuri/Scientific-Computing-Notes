@@ -36,7 +36,7 @@ Let $\bX = \bU\bsigma\bV^T$ be the SVD of the centered data matrix.
 \end{itemize}
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Numerical Stability:}\enspace Never form $\bX^T\bX$ explicitly for PCA. Squaring the data matrix doubles the condition number ($\kappa(\bS) = \kappa(\bX)^2$). Compute PCA directly via the SVD of $\bX$.
 }
 
@@ -56,7 +56,7 @@ The rank-$k$ matrix $\bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T$ is the optimal
 
 \subsubsection{Implementation Details}
 
-\addNote{%
+\addRemark{%
 \textbf{Standardization:}\enspace If features have different units (e.g., height in meters vs.\ weight in kg), PCA will be dominated by large-scale features. **Standardize** by dividing each centered column by its standard deviation: $X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j$.
 }
 

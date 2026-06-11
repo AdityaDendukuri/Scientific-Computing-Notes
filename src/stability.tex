@@ -7,10 +7,75 @@
 
 Sensitivity of problems vs.\ robustness of algorithms.
 
+\textBox{%
+Conditioning asks whether the mathematical problem is sensitive to small changes in the data. Stability asks whether the algorithm introduces only small changes to the problem. A good computation needs both: a well-conditioned problem and a stable algorithm.
+}
+
+\subsubsection{Residual, Forward Error, and Backward Error}
+
+\addDef{Residual and Forward Error}{%
+For a computed solution $\hat{\bx}$ to the linear system in Def~\ref{def:linear-system}:
+\begin{align*}
+    \br = \bb-\bA\hat{\bx}
+    \qquad \text{and} \qquad
+    \be = \hat{\bx}-\bx^*,
+\end{align*}
+where $\bx^*$ is the exact solution.
+\begin{itemize}
+    \item \textbf{Residual:}\enspace How well the computed answer satisfies the equations.
+    \item \textbf{Forward error:}\enspace How close the computed answer is to the exact answer.
+\end{itemize}
+}
+\label{def:residual-forward-error}
+
+\addExmpl{%
+\textbf{(Small residual, large error)}\enspace Let
+\begin{align*}
+    \bA=\begin{pmatrix}1&0\\0&10^{-8}\end{pmatrix},
+    \qquad
+    \bb=\begin{pmatrix}1\\10^{-8}\end{pmatrix}.
+\end{align*}
+The exact solution is $\bx^*=(1,1)^T$. The approximation $\hat{\bx}=(1,0)^T$ has residual
+\begin{align*}
+    \br=\bb-\bA\hat{\bx}=(0,10^{-8})^T,
+\end{align*}
+which is tiny in absolute norm, but the solution error is $(0,-1)^T$. The small singular value makes one direction hard to determine accurately.
+}
+
+\addExcr{%
+\begin{enumerate}
+    \item Return to Remark~\ref{rem:residual-vs-error}. Explain why the residual in Def~\ref{def:residual-forward-error} is computable but the forward error usually is not.
+    \item Verify every number in the small-residual example above.
+    \item Change the small diagonal entry from $10^{-8}$ to $10^{-12}$. How do the residual and forward error change?
+\end{enumerate}
+}
+\label{ex:residual-forward-error}
+
+\addThm{Residual-Error Bound}{%
+Let $\bA$ be nonsingular, $\bx^*$ solve $\bA\bx=\bb$, and $\hat{\bx}$ have residual $\br=\bb-\bA\hat{\bx}$. If $\bb\neq\bzero$, then
+\begin{align*}
+    \frac{\|\hat{\bx}-\bx^*\|}{\|\bx^*\|}
+    \leq
+    \kappa(\bA)\frac{\|\br\|}{\|\bb\|}.
+\end{align*}
+Thus a small relative residual guarantees a small relative forward error only when the problem is well-conditioned.
+}
+\label{thm:residual-error-bound}
+
+\addExcr{%
+\begin{enumerate}
+    \item Starting from $\br=\bb-\bA\hat{\bx}$ and $\bb=\bA\bx^*$, show that $\br=\bA(\bx^*-\hat{\bx})$.
+    \item Use the previous step to prove $\|\hat{\bx}-\bx^*\|\leq \|\bA^{-1}\|\|\br\|$.
+    \item Use $\|\bb\|\leq \|\bA\|\|\bx^*\|$ to finish the proof of Thm~\ref{thm:residual-error-bound}.
+    \item Apply the bound to the small-residual example above. Is the bound sharp?
+\end{enumerate}
+}
+\label{ex:residual-error-bound}
+
 \subsubsection{Why Factorize instead of Invert?}
 
-\addNote{%
-\textbf{Rule:}\enspace Never compute $\bA^{-1}$ explicitly.
+\addRemark{%
+\textbf{(Explicit inverse rule)}\enspace Never compute $\bA^{-1}$ explicitly.
 \begin{itemize}
     \item \textbf{Cost:}\enspace Computing $\bA^{-1}$ takes $3\times$ longer than LU ($\frac{8}{3}n^3$ vs.\ $\frac{2}{3}n^3$).
     \item \textbf{Stability:}\enspace Round-off in $\bA^{-1}$ propagates into the entire product $\bA^{-1}\bb$. Stable factorizations confine errors.
@@ -20,10 +85,12 @@ Sensitivity of problems vs.\ robustness of algorithms.
 
 \addExcr{%
 \begin{enumerate}
-    \item For $n=500$, compare total flops for solving 10 systems via $\bA^{-1}$ vs.\ LU.
-    \item Construct $\bA = \text{diag}(1, 1, 10^{-12})$. Compare residuals of \texttt{inv(A) @ b} and \texttt{solve(A, b)}.
+    \item Use the LU factorization costs from the LU chapter to compare total flops for solving 10 systems via $\bA^{-1}$ vs.\ LU when $n=500$.
+    \item Construct $\bA = \text{diag}(1, 1, 10^{-12})$. Compare residuals of \texttt{inv(A) @ b} and \texttt{solve(A, b)} using Def~\ref{def:residual-forward-error}.
+    \item Explain the result using the distinction between residual and forward error from Ex~\ref{ex:residual-forward-error}.
 \end{enumerate}
 }
+\label{ex:inverse-vs-factorization}
 
 \subsubsection{Numerical Stability}
 
@@ -35,17 +102,50 @@ $(\bA + \delta \bA)\hat{\bx} = \bb + \delta \bb$, with $\|\delta \bA\|/\|\bA\| =
 }
 \label{def:backward-stability}
 
-\addNote{%
+\addThm{Normwise Backward Error for Linear Systems}{%
+For a computed vector $\hat{\bx}$ with residual $\br=\bb-\bA\hat{\bx}$, the normwise relative backward error for the linear system $\bA\bx=\bb$ is
+\begin{align*}
+    \eta(\hat{\bx})
+    =
+    \frac{\|\br\|}
+    {\|\bA\|\|\hat{\bx}\|+\|\bb\|}.
+\end{align*}
+This is the smallest relative perturbation size, measured normwise in both $\bA$ and $\bb$, that makes $\hat{\bx}$ an exact solution of a nearby system.
+}
+\label{thm:linear-system-backward-error}
+
+\addExcr{%
+\begin{enumerate}
+    \item Suppose $(\bA+\delta\bA)\hat{\bx}=\bb+\delta\bb$. Show that $\br=\delta\bb-\delta\bA\hat{\bx}$.
+    \item Use the triangle inequality to prove the lower bound
+    \[
+        \|\br\|\leq \|\delta\bA\|\|\hat{\bx}\|+\|\delta\bb\|.
+    \]
+    \item Divide by $\|\bA\|\|\hat{\bx}\|+\|\bb\|$ to obtain the denominator in Thm~\ref{thm:linear-system-backward-error}.
+    \item Construct a rank-one perturbation in the direction of $\br$ to see why the bound can be attained.
+    \item Compare this computable backward error with the residual-error bound in Thm~\ref{thm:residual-error-bound}.
+\end{enumerate}
+}
+\label{ex:linear-system-backward-error}
+
+\addRemark{%
 \textbf{GEPP Stability:}\enspace
 Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor $\rho$ stays small, preventing exponential error amplification.
 }
 
+\addRemark{%
+\textbf{(Stable algorithms)}\enspace Householder QR and Cholesky for SPD systems are backward stable under their usual assumptions. LU with partial pivoting is reliable in practice, though its worst-case growth factor can be large.
+}
+
 \addExcr{%
 \begin{enumerate}
-    \item Explain why a small residual doesn't always guarantee a small error (Forward Error).
+    \item Use Def~\ref{def:backward-stability} to explain why backward stability is a natural standard when input data are already uncertain.
+    \item Explain why a small residual does not always guarantee a small forward error. Use Thm~\ref{thm:residual-error-bound}.
+    \item Compute $\eta(\hat{\bx})$ from Thm~\ref{thm:linear-system-backward-error} for the small-residual example above.
     \item Histogram growth factors for 100 random matrices via \texttt{scipy.linalg.lu}.
 \end{enumerate}
 }
+\label{ex:backward-stability}
 
 \subsubsection{Condition Number}
 
@@ -78,21 +178,39 @@ Thus, the condition number $\kappa(\bA)$ acts as the amplification factor for re
 
 \addExcr{%
 \begin{enumerate}
+    \item Reproduce the perturbation argument above without looking.
     \item Compute $\kappa_2(H_n)$ for Hilbert matrices $n=3, \dots, 10$. How fast does it grow?
+    \item Use Def~\ref{def:backward-stability}, Def~\ref{def:condition-number}, and Thm~\ref{thm:residual-error-bound} to explain why a stable algorithm on an ill-conditioned problem may still lose many digits.
     \item \textbf{The Neumann Series:}\enspace Use it to prove the perturbation bound: $\frac{\|\delta \bx\|}{\|\bx\|} \leq \frac{\kappa(\bA)}{1 - \dots}$.
 \end{enumerate}
 }
+\label{ex:conditioning-and-stability}
 
 \subsubsection{Solver Selection Hierarchy}
 
-Algorithms are typically selected based on a trade-off between numerical stability and computational efficiency:
+\addThm{Solver Selection by Structure}{%
+Choose a solver from the most specific trustworthy structure in the problem:
 \begin{enumerate}
-    \item \textbf{SVD:}\enspace Most stable, most expensive ($O(n^3)$ with large constant).
-    \item \textbf{Householder QR:}\enspace Very stable, no growth factor ($O(mn^2)$).
-    \item \textbf{Cholesky:}\enspace Stable for SPD systems, half the cost of LU.
-    \item \textbf{GEPP (LU with Pivoting):}\enspace Standard for general systems.
-    \item \textbf{LU without Pivoting:}\enspace Dangerously unstable; avoid.
+    \item If $\bA$ is SPD and dense, use Cholesky; if it is SPD and large sparse, use CG with a preconditioner.
+    \item If $\bA$ is general, square, dense, and nonsingular, use LU with partial pivoting.
+    \item If the problem is full-rank least squares, use Householder QR.
+    \item If the problem is rank-deficient, nearly rank-deficient, or requires numerical rank information, use the SVD.
+    \item If $\bA$ is large, sparse, nonsymmetric, and only matrix-vector products are practical, use GMRES or another nonsymmetric Krylov method.
 \end{enumerate}
+The more structure a solver exploits, the cheaper it can be; the less trustworthy the structure, the more robust the solver must be.
+}
+\label{thm:solver-selection}
+
+\addExcr{%
+\begin{enumerate}
+    \item For each case in Thm~\ref{thm:solver-selection}, identify the mathematical structure being used: symmetry, positive definiteness, sparsity, full column rank, or numerical rank.
+    \item Explain why Cholesky is inappropriate if the SPD assumption fails.
+    \item Explain why QR is preferred to normal equations for full-rank least squares, using Ex~\ref{ex:normal-equations-conditioning}.
+    \item Explain why the SVD is the natural fallback when rank is uncertain, using Thm~\ref{thm:svd-coordinates}.
+    \item Explain why CG and GMRES fit the Krylov approximation principle from Thm~\ref{thm:krylov-approximation-principle}.
+\end{enumerate}
+}
+\label{ex:solver-selection-by-structure}
 
 \addDef{Iterative Refinement}{%
 The accuracy of a computed solution $\hat{\bx}$ can be improved by iterative refinement:
@@ -105,11 +223,17 @@ Each step recovers digits lost due to ill-conditioning, up to the limits of mach
 }
 \label{def:iterative-refinement}
 
+\addRemark{%
+\textbf{(Limitations)}\enspace Iterative refinement helps when the residual can be computed accurately and the correction equation can be solved reliably. It cannot overcome a problem whose condition number is so large that the desired digits are not present in the data.
+}
+
 \addExcr{%
 \begin{enumerate}
-    \item Solve $H_{10}\bx = H_{10}\mathbf{1}$. Apply one step of iterative refinement. How many digits are recovered?
-    \item Compare forward errors of \texttt{solve} (LU) vs \texttt{lstsq} (QR) on a Hilbert system.
+    \item Solve $H_{10}\bx = H_{10}\mathbf{1}$. Apply one step of iterative refinement from Def~\ref{def:iterative-refinement}. How many digits are recovered?
+    \item Compare forward errors of \texttt{solve} (LU) vs \texttt{lstsq} (QR) on a Hilbert system. Interpret the result using Ex~\ref{ex:conditioning-and-stability}.
+    \item Choose a solver for each case in Thm~\ref{thm:solver-selection}: SPD, dense general square, full-rank least squares, rank-deficient least squares, large sparse SPD, and large sparse nonsymmetric. Justify each choice by citing one earlier result or exercise.
 \end{enumerate}
 }
+\label{ex:solver-selection-refinement}
 
 \end{document}

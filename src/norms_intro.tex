@@ -37,8 +37,8 @@ The three most common cases are:
 }
 \label{def:p-norms-intro}
 
-\addNote{%
-\textbf{Physical Intuition.}\enspace
+\addRemark{%
+\textbf{(Physical Intuition)}\enspace
 In scientific computing, the choice of norm depends on what you want to measure:
 \begin{itemize}
     \item \textbf{$\ell_2$ (Energy):} The standard measure of magnitude; corresponds to physical energy or distance.
@@ -59,15 +59,15 @@ circle ($p = 2$), and a square ($p = \infty$). As $p$ increases, the unit ball g
 toward the $\ell^\infty$ square.
 }
 
-\addNote{%
+\addRemark{%
 Throughout these notes, $\|\cdot\|$ without a subscript denotes the Euclidean norm
 $\|\cdot\|_2$ unless stated otherwise. Errors and residuals are almost always measured
 in $\|\cdot\|_2$. In NumPy: \texttt{np.linalg.norm(x)} computes $\|\bx\|_2$;
 \texttt{np.linalg.norm(x, ord=p)} computes $\|\bx\|_p$.
 }
 
-\addNote{%
-\textbf{Numerical Zero.}\enspace
+\addRemark{%
+\textbf{(Numerical Zero)}\enspace
 In floating-point arithmetic, the condition $\|\bx\| = 0$ is rarely met exactly due to rounding. We instead use a \textbf{tolerance} $\varepsilon$: we say $\bx$ is ``numerically zero'' if $\|\bx\| \leq \varepsilon \cdot \|\bx_0\|$, where $\bx_0$ is some initial reference vector.
 }
 

@@ -7,10 +7,14 @@
 
 Alternative to direct solvers for large, sparse systems where matrix factorization is impractical due to memory or compute limits.
 
+\textBox{%
+Direct methods factor the matrix. Iterative methods repeatedly improve an approximate solution using cheap operations, usually matrix-vector products. They are preferred when $\bA$ is large, sparse, or available only as a function that computes $\bA\bv$.
+}
+
 \subsubsection{Direct vs.\ Iterative Solvers}
 
-\addNote{%
-\textbf{The Sparsity Problem:}\enspace
+\addRemark{%
+\textbf{(Sparse fill-in)}\enspace
 Even if $\bA$ is sparse, its LU or Cholesky factors are typically much denser (\textbf{fill-in}). For a 2D Poisson problem on an $n \times n$ grid:
 \begin{itemize}
     \item $\bA$ has $O(n^2)$ nonzeros.
@@ -18,6 +22,45 @@ Even if $\bA$ is sparse, its LU or Cholesky factors are typically much denser (\
 \end{itemize}
 Iterative methods exploit sparsity by using only matrix-vector products ($O(\text{nnz})$).
 }
+
+\addRemark{%
+\textbf{(Matrix-free viewpoint)}\enspace Many scientific codes never assemble $\bA$ explicitly. They only provide a routine that maps $\bv\mapsto\bA\bv$. Krylov methods such as CG and GMRES are designed for this setting.
+}
+
+\addDef{Krylov Subspace}{%
+Given a matrix $\bA$ and a vector $\bv$, the $k$-th Krylov subspace is
+\begin{align*}
+    \mathcal{K}_k(\bA,\bv)
+    =
+    \operatorname{span}\{\bv,\bA\bv,\bA^2\bv,\dots,\bA^{k-1}\bv\}.
+\end{align*}
+It is the smallest subspace that contains $\bv$ and is built by repeated multiplication by $\bA$.
+}
+\label{def:krylov-subspace-general}
+
+\addThm{Krylov Approximation Principle}{%
+Let $\br^{(0)}=\bb-\bA\bx^{(0)}$. Any iterate of the form
+\begin{align*}
+    \bx^{(k)}=\bx^{(0)}+p_{k-1}(\bA)\br^{(0)},
+\end{align*}
+where $p_{k-1}$ is a polynomial of degree at most $k-1$, lies in the affine space
+\begin{align*}
+    \bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)}).
+\end{align*}
+Thus a matrix-free method can improve $\bx^{(0)}$ by choosing increasingly good corrections from Krylov subspaces using only matrix-vector products.
+}
+\label{thm:krylov-approximation-principle}
+
+\addExcr{%
+\begin{enumerate}
+    \item Write $p_{k-1}(t)=c_0+c_1t+\cdots+c_{k-1}t^{k-1}$ and expand $p_{k-1}(\bA)\br^{(0)}$.
+    \item Use Def~\ref{def:krylov-subspace-general} to show that this correction belongs to $\mathcal{K}_k(\bA,\br^{(0)})$.
+    \item List $\mathcal{K}_1$, $\mathcal{K}_2$, and $\mathcal{K}_3$ explicitly. What new vector must be computed to move from $\mathcal{K}_k$ to $\mathcal{K}_{k+1}$?
+    \item Explain why Thm~\ref{thm:krylov-approximation-principle} makes Krylov methods compatible with the matrix-free viewpoint above.
+    \item Preview the later chapters: CG chooses the best correction in an energy norm for SPD systems, while GMRES chooses the correction with smallest residual norm.
+\end{enumerate}
+}
+\label{ex:krylov-approximation-principle}
 
 \addDef{Stationary Iteration}{%
 An iteration of the form \textbf{$\bx^{(k+1)} = \bT\bx^{(k)} + \bc$}, where:
@@ -29,6 +72,24 @@ An iteration of the form \textbf{$\bx^{(k+1)} = \bT\bx^{(k)} + \bc$}, where:
 }
 \label{def:stationary-iteration}
 
+\textBox{%
+Stationary iterations are fixed-point iterations. Instead of solving $\bA\bx=\bb$ directly, we rewrite the problem as $\bx=\bT\bx+\bc$ and repeatedly apply the map. The exact solution is a fixed point of this map.
+}
+
+\addRemark{%
+\textbf{(Splitting form)}\enspace If $\bA=\bM-\mathbf{N}$, then
+\begin{align*}
+    \bA\bx=\bb
+    \quad \Longleftrightarrow \quad
+    \bM\bx=\mathbf{N}\bx+\bb.
+\end{align*}
+The iteration is
+\begin{align*}
+    \bx^{(k+1)}=\bM^{-1}\mathbf{N}\bx^{(k)}+\bM^{-1}\bb.
+\end{align*}
+The art is choosing $\bM$ easy to invert while making the iteration converge quickly.
+}
+
 \subsubsection{Convergence and Spectral Radius}
 
 \addDef{Spectral Radius}{%
@@ -36,9 +97,13 @@ $\rho(\bB) = \max \{|\lambda| : \lambda \in \sigma(\bB)\}$.
 }
 \label{def:spectral-radius}
 
+\addRemark{%
+\textbf{(Spectral radius intuition)}\enspace The eigenvalue of largest magnitude controls the long-run behavior of repeated multiplication. If every eigenvalue of $\bT$ lies inside the unit disk, powers of $\bT$ decay and the iteration converges.
+}
+
 \addThm{Gelfand's Formula}{%
 For any submultiplicative norm, $\rho(\bB) = \lim_{k\to\infty} \|\bB^k\|^{1/k}$.
-\textbf{Insight:}\enspace For large $k$, $\|\bB^k\| \approx \rho(\bB)^k$.
+For large $k$, $\|\bB^k\| \approx \rho(\bB)^k$.
 }
 \label{thm:gelfand}
 
@@ -60,9 +125,27 @@ Applying this relation recursively from $k=0$:
 The error $\be^{(k)} \to \bzero$ for any $\be^{(0)}$ iff $\bT^k \to \bzero$ as $k \to \infty$, which is guaranteed iff $\rho(\bT) < 1$ by Gelfand's formula.
 }
 
-\addNote{%
-\textbf{Practical Cost:}\enspace
+\addRemark{%
+\textbf{(Iteration count)}\enspace
 To reduce error by $10^{-p}$, the required iterations are $k \approx \frac{p}{\log_{10}(1/\rho(\bT))}$. As $\rho(\bT) \to 1^-$, the cost explodes.
+}
+
+\subsubsection{Stopping Criteria}
+
+\textBox{%
+Iterative methods need a stopping rule. The true error $\|\bx^{(k)}-\bx^*\|$ is usually unknown, so algorithms monitor the residual $\br^{(k)}=\bb-\bA\bx^{(k)}$.
+}
+
+\addRemark{%
+\textbf{(Common stopping test)}\enspace Stop when
+\begin{align*}
+    \frac{\|\br^{(k)}\|}{\|\bb\|} \leq \texttt{tol}.
+\end{align*}
+This is a relative residual test. It is cheap and scale-aware, but it is not the same as a relative error test unless the problem is well-conditioned.
+}
+
+\addRemark{%
+\textbf{(Preconditioning preview)}\enspace Most useful iterative solvers are preconditioned. A preconditioner $\bM\approx\bA$ should be cheap to solve with and should make the transformed system easier for the iterative method. Good preconditioning changes the problem from "possible but slow" to practical.
 }
 
 \addExcr{%

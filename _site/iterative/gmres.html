@@ -703,6 +703,7 @@ window.Quarto = {
 
 
 <p>The Generalized Minimal Residual (GMRES) method is the standard Krylov subspace solver for general (non-symmetric) linear systems <span class="math inline">\(\bA\bx = \bb\)</span>. Unlike CG, it does not require <span class="math inline">\(\bA\)</span> to be symmetric or positive definite.</p>
+<p>CG relies on symmetry to get a short recurrence. GMRES works without symmetry by explicitly building an orthonormal Krylov basis and choosing the vector in that subspace with smallest residual. This makes GMRES broadly applicable, but more expensive in memory.</p>
 <section id="residual-minimization-and-krylov-subspaces" class="level2" data-number="24.1">
 <h2 data-number="24.1" class="anchored" data-anchor-id="residual-minimization-and-krylov-subspaces"><span class="header-section-number">24.1</span> Residual Minimization and Krylov Subspaces</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -711,7 +712,7 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -720,6 +721,23 @@ Tip
 \bx_k = \arg\min_{\bx \in \bx_0 + \mathcal{K}_k} \|\bb - \bA\bx\|_2.
 \end{align}
 \]</span> Because the residual norm is minimized explicitly, it is guaranteed to be non-increasing with <span class="math inline">\(k\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(CG vs.&nbsp;GMRES)</strong></p>
+<ul>
+<li><p><strong>CG:</strong> SPD systems only; short recurrence; <span class="math inline">\(O(n)\)</span> memory.</p></li>
+<li><p><strong>GMRES:</strong> General square systems; stores a growing basis; <span class="math inline">\(O(kn)\)</span> memory after <span class="math inline">\(k\)</span> steps.</p></li>
+</ul>
 </div>
 </div>
 </section>
@@ -731,13 +749,14 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Basis Construction:</strong> To compute this minimum efficiently, GMRES uses the <strong>Arnoldi process</strong> to build an orthonormal basis <span class="math inline">\(V_k = [\bv_1, \bv_2, ..., \bv_k]\)</span> for <span class="math inline">\(\mathcal{K}_k\)</span>. This process is essentially a Gram-Schmidt orthogonalization of the Krylov sequence.</p>
 </div>
 </div>
+<p>Arnoldi is the nonsymmetric analog of the Lanczos process. Each step applies <span class="math inline">\(\bA\)</span> to the newest basis vector, then orthogonalizes the result against all previous basis vectors. The need to remember all previous basis vectors is the source of GMRES memory growth.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -777,12 +796,39 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\br_0=\bb-\bA\bx_0\)</span> and choose <span class="math inline">\(\bv_1=\br_0/\|\br_0\|_2\)</span>, so <span class="math inline">\(\br_0=\beta V_{k+1}\be_1\)</span>. If <span class="math inline">\(\bx_k=\bx_0+V_k\by\)</span>, then <span class="math display">\[
+\begin{align}
+\br_k
+    &amp;= \bb-\bA(\bx_0+V_k\by) \\
+    &amp;= \br_0-\bA V_k\by \\
+    &amp;= V_{k+1}\left(\beta\be_1-\bar{H}_k\by\right),
+\end{align}
+\]</span> using the Arnoldi relation <span class="math inline">\(\bA V_k=V_{k+1}\bar{H}_k\)</span>. Since <span class="math inline">\(V_{k+1}\)</span> has orthonormal columns, it preserves the Euclidean norm, giving <span class="math display">\[
+\begin{align}
+\|\br_k\|_2=\|\beta\be_1-\bar{H}_k\by\|_2.
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -798,11 +844,24 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>The Memory Wall:</strong> Full GMRES storage costs <span class="math inline">\(O(kn)\)</span> and work grows quadratically with <span class="math inline">\(k\)</span> (due to orthogonalization). <strong>Restarting</strong> after <span class="math inline">\(m\)</span> steps prevents memory explosion but can lead to stagnation.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Restart trade-off)</strong> GMRES(<span class="math inline">\(m\)</span>) discards the Krylov basis every <span class="math inline">\(m\)</span> steps and starts again from the current residual. This controls memory, but it also discards spectral information. Small restart values can cause long plateaus in convergence.</p>
 </div>
 </div>
 </section>
@@ -825,6 +884,19 @@ Tip
 \]</span></p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Convergence is less predictable than CG)</strong> For nonnormal matrices, eigenvalues alone may not explain GMRES behavior. The geometry of eigenvectors and transient growth can matter. In practice, preconditioning is usually essential.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -839,6 +911,19 @@ Tip
 <li><p><strong>Left:</strong> <span class="math inline">\(\bM^{-1}\bA\bx = \bM^{-1}\bb\)</span>. (Minimizes preconditioned residual).</p></li>
 <li><p><strong>Right:</strong> <span class="math inline">\(\bA\bM^{-1}(\bM\bx) = \bb\)</span>. (Minimizes true residual; standard choice).</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Breakdown and stagnation)</strong> Arnoldi breakdown can be good: if the Krylov subspace becomes invariant and the residual reaches zero, GMRES has found the exact solution. Stagnation is different: the method keeps iterating but the residual barely decreases, often because the restart length or preconditioner is poor.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">

@@ -41,7 +41,7 @@ Integrating over $[-1, 1]$ with $p$ points:
 \textbf{Nodes:}\enspace Roots of the degree-$p$ Legendre polynomial $P_p(x)$.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Efficiency:}\enspace $p$ Gauss points are as accurate as $2p$ Newton-Cotes points. Always prefer Gaussian quadrature for smooth, non-periodic functions.
 }
 
@@ -83,15 +83,15 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 
 \subsubsection{Adaptive Quadrature}
 
-\addNote{%
+\addRemark{%
 \textbf{Design Goal:}\enspace Automatically focus function evaluations where $f$ is "difficult" (steep gradients, oscillations) and use large steps where $f$ is smooth.
 \textbf{Mechanism:}\enspace Compare quadrature on one large panel vs.\ two small panels. If the difference is above tolerance $\varepsilon$, recurse.
 }
 
 \subsubsection{Periodic Functions and Spectral Accuracy}
 
-\addNote{%
-\textbf{Spectral Accuracy on Periodic Domains.}\enspace For smooth, periodic functions on $[0, 2\pi]$, the **Trapezoidal Rule** is the optimal choice. It achieves **Spectral Accuracy** (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.
+\addRemark{%
+\textbf{(Spectral Accuracy on Periodic Domains)}\enspace For smooth, periodic functions on $[0, 2\pi]$, the **Trapezoidal Rule** is the optimal choice. It achieves **Spectral Accuracy** (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.
 }
 
 \subsubsection{Exercises}

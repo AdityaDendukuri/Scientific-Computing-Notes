@@ -58,7 +58,7 @@ $x_k = \cos(\frac{(2k-1)\pi}{2n})$ for $k=1, \dots, n$.
 }
 \label{def:cheb-nodes}
 
-\addNote{%
+\addRemark{%
 \textbf{The Minimax Property:}\enspace
 Among all monic polynomials of degree $n$, $\tilde{T}_n = T_n/2^{n-1}$ has the smallest possible maximum value on $[-1, 1]$. Using these nodes minimizes the interpolation error bound.
 }
@@ -77,11 +77,11 @@ Truncated expansions $f(x) \approx \sum c_k T_k(x)$.
 
 \addThm{Spectral Accuracy}{%
 If $f$ is analytic on $[-1, 1]$, the Chebyshev coefficients $c_k$ decay \textbf{exponentially}. Truncation error $\|f - p_n\|_\infty = O(\rho^{-n})$.
-\textbf{Insight:}\enspace Just 20--30 terms often yield machine precision.
+Just 20--30 terms often yield machine precision.
 }
 \label{thm:spectral-accuracy}
 
-\addNote{%
+\addRemark{%
 \textbf{Connection to Fourier Series:}\enspace
 The Chebyshev polynomials are closely related to the Fourier series. Specifically, $T_n(x)$ corresponds to the real part of a Fourier series on the unit circle under the mapping $x = \cos \theta$. This connection explains their remarkable convergence properties for smooth functions.
 }

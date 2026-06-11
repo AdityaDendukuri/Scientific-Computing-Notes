@@ -22,6 +22,7 @@ The method repeatedly halves the interval:
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Stability:**  Bisection is the most robust method; it always converges if a bracket exists.
 **Convergence:**  **Linear** with rate $1/2$. Gains exactly 1 bit of accuracy per step.
 :::
@@ -80,6 +81,7 @@ As $x_k \to x^*$, we have $\xi_k \to x^*$, yielding the quadratic error relation
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Failure Modes:** 
 1. $x_0$ too far from $x^*$.
 2. $f'(x_k) \approx 0$ (zero derivative).
@@ -126,6 +128,7 @@ Brent's method combines:
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Implementation:**  Used in `scipy.optimize.brentq`.
 :::
 

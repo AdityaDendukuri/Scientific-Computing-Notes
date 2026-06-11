@@ -9,6 +9,14 @@
 The Conjugate Gradient (CG) method is a standard iterative solver for large, sparse, symmetric positive definite (SPD) linear systems. It belongs to the class of \textbf{Krylov subspace methods}, which seek an approximate solution within a space spanned by powers of the matrix applied to the initial residual.
 }
 
+\addRemark{%
+\textbf{(Assumption)}\enspace CG requires $\bA$ to be symmetric positive definite. If $\bA$ is nonsymmetric, use GMRES or another nonsymmetric Krylov method. If $\bA$ is symmetric indefinite, use methods designed for indefinite systems, such as MINRES.
+}
+
+\textBox{%
+For SPD $\bA$, solving $\bA\bx=\bb$ is equivalent to minimizing a convex quadratic energy. CG chooses search directions that do not interfere with previous progress, so each step is optimal over a growing Krylov subspace.
+}
+
 \subsubsection{Krylov Subspaces}
 
 \addDef{Krylov Subspace}{%
@@ -22,7 +30,15 @@ Krylov methods are efficient because they only require the ability to compute ma
 
 \subsubsection{CG as a Projection Method}
 
-\addNote{%
+\textBox{%
+For SPD $\bA$, the quadratic
+\begin{align*}
+    \phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx
+\end{align*}
+has gradient $\nabla\phi(\bx)=\bA\bx-\bb$. Therefore $\nabla\phi(\bx)=0$ exactly when $\bA\bx=\bb$. Solving the linear system is the same as finding the unique minimizer of $\phi$.
+}
+
+\addRemark{%
 \textbf{Error Minimization Properties:}\enspace
 For an SPD system $\bA\bx = \bb$, the CG method identifies the unique vector $\bx_k \in \mathcal{K}_k(\bA, \bb)$ that minimizes the \textbf{$\bA$-norm of the error}:
 \begin{align*}
@@ -33,13 +49,21 @@ where $\bx^*$ is the exact solution and $\|\be\|_\bA = \sqrt{\be^T\bA\be}$. This
 
 \subsubsection{Conjugate Directions and A-Orthogonality}
 
-\addNote{%
+\addRemark{%
 \textbf{The Basis of Directions:}\enspace
 To find this minimum efficiently, CG constructs a basis of search directions $\{\bp_0, \bp_1, \dots, \bp_{k-1}\}$ that are \textbf{$\bA$-orthogonal} (or conjugate), meaning $\bp_i^T \bA \bp_j = 0$ for $i \neq j$.
 \begin{itemize}
     \item \textbf{Global Optimality:}\enspace Because directions are $\bA$-orthogonal, the $k$-th update $\bx_k = \bx_{k-1} + \alpha_{k-1}\bp_{k-1}$ is guaranteed to be the best possible update in the entire subspace $\mathcal{K}_k$. There is no need to revisit previous directions.
     \item \textbf{Short Recurrence:}\enspace Due to the symmetry of $\bA$, the new conjugate direction $\bp_k$ can be computed using only the current residual and the \emph{single} previous direction. This leads to the $O(n)$ storage requirement.
 \end{itemize}
+}
+
+\addRemark{%
+\textbf{(Residuals vs.\ directions)}\enspace In exact arithmetic, CG residuals are mutually orthogonal in the Euclidean inner product, while search directions are mutually orthogonal in the $\bA$-inner product. These two orthogonality structures are what make the short recurrence possible.
+}
+
+\addRemark{%
+\textbf{Why not steepest descent?}\enspace Steepest descent always moves in the negative gradient direction, but successive gradients can undo previous progress by zig-zagging across narrow energy valleys. CG corrects this by choosing conjugate directions adapted to the geometry of $\bA$.
 }
 
 \subsubsection{The CG Algorithm}
@@ -57,12 +81,20 @@ To find this minimum efficiently, CG constructs a basis of search directions $\{
 }
 \label{alg:cg}
 
-\addNote{%
+\addRemark{%
 \textbf{Efficiency:}\enspace
 \begin{itemize}
     \item \textbf{Matvecs:}\enspace Only 1 matrix-vector product per iteration.
     \item \textbf{Memory:}\enspace $O(n)$ storage (requires only a few vectors). No need to store the basis.
 \end{itemize}
+}
+
+\addRemark{%
+\textbf{(Practical stopping)}\enspace A common stopping rule is
+\begin{align*}
+    \frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq \texttt{tol}.
+\end{align*}
+For ill-conditioned systems, residual decrease may not translate directly into error decrease. The condition number controls that conversion.
 }
 
 \subsubsection{Convergence Rate}
@@ -74,27 +106,37 @@ To find this minimum efficiently, CG constructs a basis of search directions $\{
 }
 \label{thm:cg-convergence}
 
-\addNote{%
+\addRemark{%
 \textbf{The $\sqrt{\kappa}$ Advantage:}\enspace
 While stationary methods depend on $(\kappa-1)/(\kappa+1)$, CG depends on the \textbf{square root} of the condition number. For $\kappa=100$, CG reduces error $5\times$ faster per step.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Superlinear Convergence:}\enspace
 If eigenvalues are clustered, CG converges much faster than the worst-case bound suggests (e.g., $k \ll n$ for clustered spectra).
 }
+
+\addRemark{%
+\textbf{(Polynomial view)}\enspace CG chooses a degree-$k$ polynomial $p_k$ with $p_k(0)=1$ so that
+\begin{align*}
+    \be^{(k)} = p_k(\bA)\be^{(0)}
+\end{align*}
+is small in the $\bA$-norm. Good convergence occurs when a low-degree polynomial can be small on the eigenvalues of $\bA$.
+}
 \subsubsection{Preconditioning}
 
-The convergence of CG depends on the condition number $\kappa(\bA)$. \textbf{Preconditioning} transforms the system into $\bM^{-1}\bA\bx = \bM^{-1}\bb$, where $\bM$ is a symmetric positive definite matrix that approximates $\bA$ but is much easier to invert.
+The convergence of CG depends on the condition number $\kappa(\bA)$. \textbf{Preconditioning} transforms the system using a symmetric positive definite matrix $\bM$ that approximates $\bA$ but is much easier to invert.
 
-\addNote{%
+\addRemark{%
 \textbf{Spectral Transformation:}\enspace
 The goal of the preconditioner is to cluster the eigenvalues of $\bM^{-1}\bA$ near 1. A perfectly preconditioned system ($\bM = \bA$) has all eigenvalues equal to 1 and converges in a single step. In practice, a good preconditioner reduces the effective condition number, significantly accelerating convergence.
 }
 
-\addDef{Common Preconditioners}{%
-...
+\addRemark{%
+\textbf{(Preconditioning is not optional in hard problems)}\enspace For large PDE systems, unpreconditioned CG can require too many iterations. The preconditioner is often the main algorithmic design choice.
+}
 
+\addDef{Common Preconditioners}{%
 \begin{enumerate}
     \item \textbf{Jacobi:}\enspace $\bM = \text{diag}(\bA)$. (Cheap, moderate speedup).
     \item \textbf{Incomplete Cholesky (IC):}\enspace $\bM \approx \bL\bL^T$ with sparse factors. (Robust).

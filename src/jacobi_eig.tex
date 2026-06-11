@@ -27,6 +27,54 @@ Choosing the smaller root $|t| \leq 1$ ensures numerical stability and minimal p
 }
 \label{thm:jacobi-angle}
 
+\subsubsection{The Jacobi Algorithm}
+
+\textBox{%
+The Jacobi eigenvalue algorithm repeatedly applies orthogonal similarity transformations
+\begin{align*}
+    \bA^{(k+1)} = \bG_k^T \bA^{(k)} \bG_k
+\end{align*}
+to a symmetric matrix. Each rotation zeros one off-diagonal entry while preserving eigenvalues. As the off-diagonal entries converge to zero, $\bA^{(k)}$ converges to a diagonal matrix whose diagonal entries are the eigenvalues.
+}
+
+\addDef{Jacobi Eigenvalue Algorithm}{%
+\textbf{Input:}\enspace Symmetric matrix $\bA\in\fR^{n\times n}$ and tolerance \texttt{tol}.\\
+\textbf{Initialize:}\enspace $\bA^{(0)}=\bA$, $\bV^{(0)}=\bI$.\\
+\textbf{Repeat:}
+\begin{enumerate}
+    \item Choose an off-diagonal pivot $(p,q)$ with $p<q$.
+    \item Compute $c=\cos\theta$ and $s=\sin\theta$ using the stable tangent formula so that $(\bG^T\bA^{(k)}\bG)_{pq}=0$.
+    \item Update the matrix by orthogonal similarity:
+    \begin{align*}
+        \bA^{(k+1)}=\bG^T\bA^{(k)}\bG.
+    \end{align*}
+    \item Accumulate eigenvectors:
+    \begin{align*}
+        \bV^{(k+1)}=\bV^{(k)}\bG.
+    \end{align*}
+\end{enumerate}
+\textbf{Stop:}\enspace when $\sigma_{\text{off}}(\bA^{(k)}) \leq \texttt{tol}\|\bA^{(k)}\|_F$.\\
+\textbf{Output:}\enspace Diagonal entries of $\bA^{(k)}$ approximate eigenvalues; columns of $\bV^{(k)}$ approximate eigenvectors.
+}
+\label{alg:jacobi-eigenvalue}
+
+\addRemark{%
+\textbf{(Pivot choices)}\enspace
+\begin{itemize}
+    \item \textbf{Classical Jacobi:}\enspace choose the largest off-diagonal entry $|A_{pq}|$.
+    \item \textbf{Cyclic Jacobi:}\enspace sweep through all pairs $(p,q)$ in a fixed order.
+\end{itemize}
+The largest-entry rule gives the clearest convergence proof. Cyclic sweeps are simpler to implement and often used in practice.
+}
+
+\addRemark{%
+\textbf{(Why eigenvectors accumulate)}\enspace After $k$ rotations,
+\begin{align*}
+    \bA^{(k)} = (\bV^{(k)})^T \bA \bV^{(k)}.
+\end{align*}
+If $\bA^{(k)}$ is nearly diagonal, then $\bA \bV^{(k)} \approx \bV^{(k)}\boldsymbol{\Lambda}$, so the columns of $\bV^{(k)}$ are approximate eigenvectors of the original matrix.
+}
+
 \subsubsection{Convergence and Cost}
 
 \addThm{Monotone Convergence}{%
@@ -57,7 +105,7 @@ Substituting this into the norm conservation $\|\bA'\|_F^2 = \|\bA\|_F^2$:
 Thus each rotation reduces the off-diagonal mass by exactly $A_{pq}^2$.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Performance vs.\ Accuracy:}\enspace
 \begin{itemize}
     \item \textbf{Cost:}\enspace $O(n^3)$ per sweep. Typically 5--15 sweeps for convergence. More expensive than QR.

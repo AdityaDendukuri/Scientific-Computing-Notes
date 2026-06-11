@@ -43,6 +43,7 @@ $\|\bx\|_p = (\sum |x_i|^p)^{1/p}$.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Equivalence:** 
 On $\fR^n$, all norms are equivalent: $c_1 \|\bx\|_\beta \leq \|\bx\|_\alpha \leq c_2 \|\bx\|_\beta$. Convergence in one implies convergence in all.
 :::
@@ -86,6 +87,7 @@ $\|\bA\|_F = \sqrt{\sum a_{ij}^2} = \sqrt{\text{Tr}(\bA^T\bA)}$.
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Consistency and Submultiplicativity:** 
 Matrix norms are useful when they satisfy $\|\bA\bx\| \leq \|\bA\|\|\bx\|$. All induced norms are additionally submultiplicative: $\|\bA\bB\| \leq \|\bA\|\|\bB\|$.
 :::

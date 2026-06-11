@@ -6,7 +6,11 @@
 \label{sub:floating-point}
 
 \textBox{%
-Digital computers represent real numbers using a finite number of bits, leading to a discrete and non-uniform sampling of the real line. Understanding the limits of this representation is critical for designing robust numerical algorithms.
+Digital computers represent real numbers using a finite number of bits. The result is not the real line, but a finite, non-uniform grid of representable numbers. Numerical analysis begins with this mismatch: the mathematical algorithm acts on real numbers, while the computer executes a nearby algorithm on rounded numbers.
+}
+
+\textBox{%
+Floating-point arithmetic is usually accurate locally: one elementary operation is rounded to a nearby representable number. Instability appears when an algorithm repeatedly amplifies these tiny local errors, or when it subtracts nearly equal quantities and exposes digits that were already contaminated by rounding.
 }
 
 \subsubsection{Floating Point Representation}
@@ -18,8 +22,12 @@ Most modern systems adhere to the IEEE 754 standard, which represents numbers in
   \item \textbf{e:} Biased exponent, allowing both very large and very small numbers to be represented.
 \end{itemize}
 
-\addNote{%
-\textbf{IEEE 754 Standards.}\enspace
+\textBox{%
+The exponent controls scale and the significand controls precision. This means floating-point numbers have roughly fixed \textbf{relative} spacing, not fixed absolute spacing. There are many representable numbers near zero and far fewer, in absolute terms, near $10^{100}$. The gap between adjacent numbers near $x$ is proportional to $|x|$.
+}
+
+\addRemark{%
+\textbf{(IEEE 754 Standards)}\enspace
 \begin{itemize}
   \item \textbf{Single (32-bit):} 1 sign, 8 exponent, 23 fraction bits.
   \item \textbf{Double (64-bit):} 1 sign, 11 exponent, 52 fraction bits.
@@ -27,7 +35,7 @@ Most modern systems adhere to the IEEE 754 standard, which represents numbers in
 }
 
 \addExmpl{%
-\textbf{16-bit float.}\enspace 1 sign, 5 exp (bias 15), 10 frac. Represent $-3.25$:
+\textbf{(16-bit float)}\enspace 1 sign, 5 exp (bias 15), 10 frac. Represent $-3.25$:
 \begin{enumerate}
   \item $s=1$.
   \item $3.25_{10} = 11.01_2 = 1.101_2 \times 2^1$.
@@ -45,27 +53,48 @@ Result: \texttt{1 10000 1010000000}.
 }
 
 \addDef{Machine Epsilon ($\varepsilon_{\text{mach}}$)}{%
-Machine epsilon is the smallest positive number that, when added to 1, yields a result different from 1. It characterizes the "gap" between representable numbers and is given by $\varepsilon_{\text{mach}} = 2^{1-p}$, where $p$ is the number of bits in the significand.
+Machine epsilon is the distance from $1$ to the next larger floating-point number. Equivalently, it is the smallest positive floating-point number $\varepsilon$ such that $\text{fl}(1+\varepsilon) > 1$. It characterizes the spacing of representable numbers near $1$ and is given by $\varepsilon_{\text{mach}} = 2^{1-p}$, where $p$ is the number of bits in the significand.
 \begin{itemize}
   \item For double precision (64-bit), $\varepsilon_{\text{mach}} \approx 2.22 \times 10^{-16}$.
 \end{itemize}
 }
 \label{def:mach-eps}
 
-\addExcr{%
-\begin{enumerate}
-  \item Python: Compare \texttt{1.0 + 1e-16} and \texttt{1.0 + 2e-16}.
-  \item Find $\varepsilon_{\text{mach}}$ empirically via loop.
-\end{enumerate}
+\addRemark{%
+\textbf{(Spacing rule)}\enspace Near a normalized number $x$, the distance to the next representable number is approximately $\varepsilon_{\text{mach}}|x|$. Near $10^{16}$, the gap is on the order of $1$; near $1$, the gap is on the order of $10^{-16}$. This is why adding a small number to a huge number may do nothing.
 }
 
+\addThm{Absorption Criterion}{%
+In round-to-nearest arithmetic, if $|y|$ is less than half the spacing between adjacent floating-point numbers near $x$, then
+\begin{align*}
+    \operatorname{fl}(x+y)=x.
+\end{align*}
+Equivalently, small increments disappear when they are below the local resolution of the floating-point grid.
+}
+\label{thm:absorption-criterion}
+
+\addExcr{%
+\begin{enumerate}
+  \item Use Def~\ref{def:mach-eps} to predict whether \texttt{1.0 + 1e-16} and \texttt{1.0 + 2e-16} differ from \texttt{1.0}; then check in Python.
+  \item Find $\varepsilon_{\text{mach}}$ empirically via loop.
+  \item Use Thm~\ref{thm:absorption-criterion} to predict the smallest power of $10$ for which \texttt{1e16 + 10**k} changes \texttt{1e16}.
+  \item Explain why the answer changes if \texttt{1e16} is replaced by \texttt{1.0}.
+\end{enumerate}
+}
+\label{ex:spacing-absorption}
+
 \addDef{Unit Roundoff ($u$)}{%
-Max relative rounding error: $u = \varepsilon_{\text{mach}}/2 = 2^{-p}$.
+Unit roundoff is the maximum relative error caused by rounding one real number to the nearest floating-point number:
 \begin{align*}
   \frac{|\text{fl}(x) - x|}{|x|} \leq u.
 \end{align*}
+For round-to-nearest arithmetic, $u = \varepsilon_{\text{mach}}/2 = 2^{-p}$.
 }
 \label{def:unit-roundoff}
+
+\addRemark{%
+\textbf{(Machine epsilon vs.\ unit roundoff)}\enspace $\varepsilon_{\text{mach}}$ is a spacing near $1$. The unit roundoff $u$ is an error bound for rounding to nearest. Many texts use ``machine epsilon'' for both quantities, so always check the convention. In these notes, elementary rounding errors are bounded by $u$.
+}
 
 \addThm{Fundamental Axiom}{%
 IEEE 754 guarantees $\text{fl}(a \circ b) = (a \circ b)(1 + \delta)$ for $\circ \in \{+, -, \times, \div\}$ and $|\delta| \leq u$. Individual operations are as accurate as the representation allows.
@@ -84,8 +113,8 @@ For any operation $\circ$, IEEE 754 mandates computing the exact result first, t
 \end{align*}
 }
 
-\addNote{%
-\textbf{Warning:}\enspace After $n$ operations, error grows as $O(nu)$. Operation order matters because each intermediate result is rounded.
+\addRemark{%
+\textbf{Warning:}\enspace After $n$ operations, error often grows like $O(nu)$ when errors do not systematically amplify. This is a rule of thumb, not a guarantee. Operation order matters because each intermediate result is rounded.
 }
 
 \addExcr{%
@@ -106,6 +135,10 @@ For any operation $\circ$, IEEE 754 mandates computing the exact result first, t
 \end{itemize}
 }
 
+\addRemark{%
+\textbf{(NaN propagation)}\enspace A NaN usually contaminates all later arithmetic. This is useful for debugging: it marks an invalid operation that happened earlier, even if the failure is observed much later.
+}
+
 \addExcr{%
 \begin{enumerate}
   \item Python: \texttt{1.0/0.0} vs \texttt{1.0/-0.0}.
@@ -124,12 +157,32 @@ Because floating-point numbers are discrete, the standard laws of algebra do not
   \item \textbf{Absorption:} If $|a|$ is much larger than $|b|$, then $a+b$ may equal $a$ exactly because $b$ is smaller than the gap between representable numbers near $a$.
 \end{itemize}
 
+\addExmpl{%
+\textbf{(Absorption)}\enspace In double precision, \texttt{1e16 + 1.0 == 1e16} is true. The number $1$ is smaller than the spacing between adjacent representable numbers near $10^{16}$, so it is rounded away. Consequently \texttt{(1e16 + 1.0) - 1e16} returns \texttt{0.0}, not \texttt{1.0}.
+}
+
+\addExmpl{%
+\textbf{(Non-associativity)}\enspace Let $a=10^{16}$, $b=-10^{16}$, and $c=1$. Then
+\begin{align*}
+    (a+b)+c = 1, \qquad a+(b+c) = 0
+\end{align*}
+in double precision. The second expression first rounds $b+c$ back to $-10^{16}$, so the $1$ is lost before the final addition.
+}
+
+\addRemark{%
+\textbf{(Summation rule)}\enspace Add numbers of similar magnitude when possible. Summing from smallest to largest, pairwise summation, or compensated summation reduces the loss of small terms. This is why library reductions may give different answers than a hand-written loop while still being more accurate.
+}
+
 \addExcr{%
 \begin{enumerate}
+  \item Before running Python, use Thm~\ref{thm:absorption-criterion} to predict \texttt{(1e16 + 1.0) - 1e16}.
   \item \texttt{a=1e16, b=1}. Find \texttt{(a+b)-a} in Python. Explain result.
   \item Find $a, b, c$ where \texttt{a*(b+c) != a*b + a*c}.
+  \item Before running Python, predict the results of summing $[10^{16}, 1, -10^{16}]$ in the listed order and in the order $[10^{16}, -10^{16}, 1]$.
+  \item Compare naive summation, pairwise summation, and Kahan summation on a list containing one large number and many small numbers. Which method best preserves the small terms?
 \end{enumerate}
 }
+\label{ex:floating-point-prediction}
 
 \subsection{Quantifying Approximation Error}
 \label{sub:error-analysis}
@@ -141,6 +194,18 @@ Because floating-point numbers are discrete, the standard laws of algebra do not
   \item \textbf{Absolute Error:} $|\hat{x} - x|$.
   \item \textbf{Relative Error:} $\varepsilon = \frac{|\hat{x} - x|}{|x|}$. This is the standard measure for precision in numerical computing.
 \end{itemize}
+}
+
+\textBox{%
+Absolute error measures the size of the mistake in the original units. Relative error measures the size of the mistake compared to the quantity being computed. In numerical computing, relative error is usually more informative: an error of $10^{-6}$ is excellent for a number of size $10^3$ and terrible for a number of size $10^{-9}$.
+}
+
+\addRemark{%
+\textbf{(Comparing floating-point numbers)}\enspace Avoid testing computed real numbers with exact equality. Use a tolerance such as
+\begin{align*}
+    |\hat{x}-x| \leq \text{atol} + \text{rtol}|x|.
+\end{align*}
+This is the logic behind \texttt{np.isclose}. Absolute tolerance handles values near zero; relative tolerance handles scale.
 }
 
 \addExcr{%
@@ -175,26 +240,39 @@ The relative error is bounded by:
 As $x \to y$, the denominator $x-y \to 0$, causing the relative error to explode.
 }
 
-\addNote{%
+\addRemark{%
 \textbf{Numerical Stability Principle:}\enspace Rounding error is an inevitable consequence of finite precision. However, catastrophic cancellation is an algorithmic flaw that can often be avoided by mathematically rearranging the problem.
 }
 
 \addExmpl{%
-\textbf{Stabilizing Cancellation.}\enspace $f(x) = \sqrt{x+1} - \sqrt{x}$ for $x = 10^8$.
+\textbf{(Stabilizing Cancellation)}\enspace $f(x) = \sqrt{x+1} - \sqrt{x}$ for $x = 10^8$.
 \begin{itemize}
   \item \textbf{Direct:} $10000.00000005 - 10000 \approx 0$ (Catastrophic).
   \item \textbf{Stable:} $\frac{1}{\sqrt{x+1} + \sqrt{x}} \approx 5 \times 10^{-5}$.
 \end{itemize}
 }
 
+\addExmpl{%
+\textbf{(Quadratic formula)}\enspace The roots of $ax^2+bx+c=0$ are
+\begin{align*}
+    x_{\pm} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}.
+\end{align*}
+If $b^2 \gg 4ac$, one numerator subtracts nearly equal numbers. A stable strategy computes the root with no cancellation first, then uses $x_1x_2=c/a$ to recover the other root.
+}
+
+\addRemark{%
+\textbf{(Use stable library functions)}\enspace Functions such as \texttt{log1p(x)}, \texttt{expm1(x)}, and \texttt{hypot(x, y)} implement stable rearrangements for common cancellation and overflow patterns. Prefer them over hand-expanded formulas when the inputs may be small, large, or nearly cancelling.
+}
+
 \addExcr{%
 Stabilize:
 \begin{enumerate}
-  \item $(1-\cos x)/x^2$ for small $x$.
-  \item Smaller root of $x^2 - 10^8 x + 1 = 0$ via quadratic formula.
-  \item $e^x - 1$ for small $x$ (Why use \texttt{np.expm1}?).
+  \item Use Def~\ref{def:cancellation} to explain why $(1-\cos x)/x^2$ is unstable for small $x$, then derive a stable form.
+  \item Use Def~\ref{def:cancellation} to identify which root of $x^2 - 10^8 x + 1 = 0$ is unstable in the quadratic formula, then compute it using $x_1x_2=c/a$.
+  \item Use the Taylor series of $e^x$ to explain why $e^x - 1$ loses relative accuracy for small $x$. Compare with \texttt{np.expm1}.
 \end{enumerate}
 }
+\label{ex:cancellation-stabilization}
 
 \subsubsection{Error Analysis Frameworks}
 
@@ -206,10 +284,18 @@ Stabilize:
 \end{itemize}
 }
 
+\textBox{%
+Forward error asks whether the computed answer is close to the exact answer. Backward error asks whether the computed answer is the exact answer to a nearby problem. Backward error is often easier to prove and more useful in practice: if the data are uncertain at the level of the backward error, the algorithm has not introduced a meaningful additional error.
+}
+
 \addDef{Condition Number ($\kappa$)}{%
 Inherent sensitivity of the problem. $\text{Forward Error} \leq \kappa \cdot \text{Backward Error}$.
 }
 \label{def:cond-num-intro}
+
+\addRemark{%
+\textbf{(Stability vs.\ conditioning)}\enspace Conditioning is a property of the mathematical problem. Stability is a property of the algorithm. A stable algorithm can still return a poor answer on an ill-conditioned problem, because the problem itself amplifies small perturbations.
+}
 
 \addExcr{%
 \begin{enumerate}

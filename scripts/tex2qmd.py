@@ -106,7 +106,7 @@ def convert_formatting(text: str) -> str:
 
 def convert_references(text: str) -> str:
     text = re.sub(r'\\label\{[^}]+\}', '', text)
-    text = re.sub(r'(?:Def|Thm|Lem|Cor|Prop|Note|Ex)~?\\ref\{[^}]+\}',
+    text = re.sub(r'(?:Def|Thm|Lem|Cor|Prop|Remark|Ex)~?\\ref\{[^}]+\}',
                   'the result above', text)
     text = re.sub(r'\\ref\{[^}]+\}', 'above', text)
     text = re.sub(r'\\S~?\\ref\{[^}]+\}', 'the section above', text)
@@ -167,7 +167,7 @@ TWO_ARG_MACROS = [
 
 ONE_ARG_MACROS = [
     ('\\addPrf',  'callout-tip',     'Proof',    True),   # collapse=true
-    ('\\addNote', 'callout-tip',     None,       False),
+    ('\\addRemark', 'callout-tip',   'Remark',   False),
     ('\\addExcr', 'callout-warning', 'Exercise', False),
     ('\\textBox', None,              None,       False),  # plain block
 ]

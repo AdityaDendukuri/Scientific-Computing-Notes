@@ -1,7 +1,10 @@
 # Linearity
 
 
-Linear systems are characterized by the properties of additivity and homogeneity, which allow for the decomposition of complex operators into simpler components.
+Linear systems are the basic computational problem in scientific computing. Even when the original problem is nonlinear, algorithms often reduce it to a sequence of linear systems by linearizing the problem near the current estimate.
+
+
+A matrix equation $\bA\bx=\bb$ asks whether the data vector $\bb$ can be produced by combining the columns of $\bA$. The unknown vector $\bx$ contains the weights in that combination. Existence, uniqueness, and numerical difficulty are all controlled by the geometry of those columns.
 
 
 ## Linear Systems
@@ -23,13 +26,64 @@ The matrix-vector form of a linear system is **$\bA\bx = \bb$**, where:
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Shape discipline)**  If $\bA \in \fR^{m\times n}$, then $\bx$ must have $n$ entries and $\bb$ must have $m$ entries. The number of columns is the number of unknowns. The number of rows is the number of equations or measurements.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Two equations)**  The system
+$$
+\begin{align}
+x + 2y = 3, \qquad 3x-y = 1
+\end{align}
+$$
+can be written as
+$$
+\begin{align}
+\begin{pmatrix}1&2\\3&-1\end{pmatrix}
+    \begin{pmatrix}x\\y\end{pmatrix}
+    =
+    \begin{pmatrix}3\\1\end{pmatrix}.
+\end{align}
+$$
+The first row encodes the first equation; the second row encodes the second equation.
+:::
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Convert $\{x + 2y = 3,\; 3x - y = 1\}$ to $\bA\bx = \bb$.
+1. Convert $\{x + 2y = 3,\; 3x - y = 1\}$ to the form in the result above.
     
-1. Solve in NumPy via `np.linalg.solve(A, b)`. Verify with `np.linalg.norm(b - A @ x)`.
+1. Check the dimensions of $\bA$, $\bx$, and $\bb$ before solving. Which part of the result above determines each shape?
+    
+1. Solve in NumPy via `np.linalg.solve(A, b)`. Verify with the residual from the result above.
 
+:::
+
+
+## Rows, Columns, and Geometry
+
+
+There are two complementary ways to read $\bA\bx=\bb$.
+
+- **Row view:**  Each row is one linear equation. In two or three dimensions, each equation describes a line, plane, or hyperplane. Solving the system means finding their intersection.
+    
+- **Column view:**  The product $\bA\bx$ is a weighted sum of the columns of $\bA$. Solving the system means expressing $\bb$ as a linear combination of those columns.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(The Column Perspective)** 
+If $\bA=[\ba_1,\ba_2,...,\ba_n]$, then
+$$
+\begin{align}
+\bA\bx = x_1 \ba_1 + x_2 \ba_2 + ... + x_n \ba_n.
+\end{align}
+$$
+The system $\bA\bx = \bb$ is consistent exactly when $\bb$ lies in the span of the columns of $\bA$.
 :::
 
 
@@ -48,7 +102,7 @@ $$
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Solve $\bA\bx = 3\bb_1 - 2\bb_2$ given only the solutions $\bx_1, \bx_2$ for $\bb_1, \bb_2$.
+1. Use the result above to solve $\bA\bx = 3\bb_1 - 2\bb_2$ given only the solutions $\bx_1, \bx_2$ for $\bb_1, \bb_2$.
     
 1. How does `np.linalg.solve(A, B)` for a matrix $\bB$ exploit this?
 
@@ -59,6 +113,15 @@ $$
 
 
 For square systems ($\bA \in \fR^{n \times n}$), the most critical question is whether a unique solution exists for any given right-hand side. This property is known as invertibility or nonsingularity.
+
+
+For rectangular systems, the same questions still matter but the answer changes.
+
+- **Square:**  $m=n$. A unique solution may exist.
+    
+- **Overdetermined:**  $m>n$. There are more equations than unknowns; usually no exact solution exists, so we solve a least squares problem.
+    
+- **Underdetermined:**  $m<n$. There are fewer equations than unknowns; if a solution exists, it is usually not unique.
 
 
 ::: {.callout-note icon=false}
@@ -78,29 +141,54 @@ The following are equivalent for $\bA \in \fR^{n \times n}$:
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Determinants are not algorithms)**  The determinant is useful theoretically, but numerical codes do not test invertibility by computing $\det(\bA)$. Rank, singular values, and condition numbers are more informative and more stable.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Determine invertibility: $\bA = \begin{pmatrix} 2 & -1 \\ 4 & -2 \end{pmatrix}$, $\bB = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{pmatrix}$.
+1. Determine invertibility using the result above: $\bA = \begin{pmatrix} 2 & -1 \\ 4 & -2 \end{pmatrix}$, $\bB = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{pmatrix}$.
     
-1. Check consistency of $\bA = \begin{pmatrix}1&2\\3&6\end{pmatrix}, \bb = \begin{pmatrix}1\\4\end{pmatrix}$ via `np.linalg.matrix\_rank`.
+1. Check consistency of $\bA = \begin{pmatrix}1&2\\3&6\end{pmatrix}, \bb = \begin{pmatrix}1\\4\end{pmatrix}$ using the column perspective in the result above and `np.linalg.matrix\_rank`.
 
 :::
 
 
-## Linear Combinations and Bases
+## Residuals and Approximate Solutions
+
+
+::: {.callout-note icon=false}
+## Definition: Residual
+For an approximate solution $\hat{\bx}$ to $\bA\bx=\bb$, the residual is
+$$
+\begin{align}
+\br = \bb-\bA\hat{\bx}.
+\end{align}
+$$
+It measures how well $\hat{\bx}$ satisfies the equations.
+:::
 
 
 ::: {.callout-tip icon=false}
-**The Column Perspective.** 
-While we often think of $\bA\bx = \bb$ as a set of row equations, it is often more powerful to view it as a statement about columns. The product $\bA\bx$ is a **linear combination of the columns of $\bA$** weighted by the entries of $\bx$:
+## Remark
+**(Residual vs.\ error)**  The error is $\hat{\bx}-\bx^*$, where $\bx^*$ is the exact solution. The residual is computable; the error usually is not. A small residual means the equations are nearly satisfied, but it does not always mean the solution is accurate. Ill-conditioned matrices can turn small residuals into large errors.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Inconsistent system)**  The equations
 $$
 \begin{align}
-\bA\bx = x_1 \ba_1 + x_2 \ba_2 + ... + x_n \ba_n.
+x+y=1, \qquad x+y=3
 \end{align}
 $$
-The system $\bA\bx = \bb$ asks a fundamental geometric question: ``Can the vector $\bb$ be represented as a weighted sum of the columns of $\bA$?'' If the answer is yes, the system is consistent.
+cannot both be true. In matrix form, $\bb$ is not in the column space of $\bA$. The best we can do is choose $\hat{\bx}$ so that the residual $\bb-\bA\hat{\bx}$ is small in a chosen norm. This is the least squares problem.
 :::
+## Linear Combinations and Bases
 
 
 ::: {.callout-note icon=false}
@@ -118,7 +206,7 @@ A linearly independent set that spans the space. The number of vectors in any ba
 ## Rank
 
 
-The rank of a matrix is a measure of its "information content," representing the number of independent directions it can span.
+The rank of a matrix is the number of independent directions its columns span. It measures how many genuinely different constraints or directions are present after removing redundancy.
 
 
 ::: {.callout-note icon=false}
@@ -133,7 +221,21 @@ The rank, $\text{rank}(\bA)$, is the dimension of the column space. It is always
 
 
 ::: {.callout-tip icon=false}
-**Numerical Rank.**  In code, never use row-reduction to find rank; it is numerically unstable. Use `np.linalg.matrix\_rank`, which uses the Singular Value Decomposition (SVD).
+## Remark
+**(Rank and solution structure)**  For $\bA\in\fR^{m\times n}$:
+
+- Full column rank ($\text{rank}(\bA)=n$) means the columns are independent.
+    
+- Full row rank ($\text{rank}(\bA)=m$) means the rows are independent.
+    
+- Rank deficiency means there is redundancy: some row or column information can be produced from the rest.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Numerical Rank)**  In code, do not use exact row-reduction to find rank; it is numerically unstable. Use `np.linalg.matrix\_rank`, which estimates rank from the singular values. A matrix can be mathematically full rank but numerically rank deficient if one singular value is tiny compared to the others.
 :::
 
 
@@ -146,12 +248,26 @@ For $\bA \in \fR^{m \times n}$: $\text{rank}(\bA) + \text{nullity}(\bA) = n$.
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(General solution form)**  If $\bA\bx=\bb$ is consistent and $\bx_p$ is one particular solution, then every solution has the form
+$$
+\begin{align}
+\bx = \bx_p + \bz, \qquad \bz \in \mathcal{N}(\bA).
+\end{align}
+$$
+The null space contains the directions you can add without changing $\bA\bx$.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Find the general solution to a $2 \times 3$ system as $\bx = \bx_p + \bx_n$ (particular + null space).
+1. Use the result above to explain why a ``wide'' matrix ($m<n$) must have a non-trivial null space.
     
-1. Why must a ``wide'' matrix ($m < n$) have a non-trivial null space?
+1. Find the general solution to a consistent $2 \times 3$ system in the form $\bx=\bx_p+\bz$, where $\bz\in\mathcal{N}(\bA)$.
+    
+1. Check directly that adding a null-space vector leaves $\bA\bx$ unchanged.
 
 :::
 
@@ -185,7 +301,9 @@ The structure of any linear operator $\bA \in \fR^{m \times n}$ with rank $r$ is
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. For $\bA = \begin{pmatrix}1&2&3\\2&4&6\end{pmatrix}$, find dimensions and bases for all four spaces.
+1. For $\bA = \begin{pmatrix}1&2&3\\2&4&6\end{pmatrix}$, use the result above and the result above to find dimensions and bases for all four spaces.
+    
+1. Verify the two orthogonality statements in the result above.
     
 1. Verify $\bb = (1, 3)^T$ is not in the column space. What is the projection of $\bb$ onto $\mathcal{R}(\bA)$?
 

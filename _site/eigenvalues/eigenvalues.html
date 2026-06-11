@@ -702,6 +702,7 @@ window.Quarto = {
 
 
 <p>Reveals the scaling directions of a linear transformation. Essential for stability analysis, PCA, and spectral methods.</p>
+<p>Eigenvectors are directions preserved by a linear map. Along an eigenvector, the matrix acts like multiplication by a scalar. This reduces a matrix transformation to independent one-dimensional actions, when enough eigenvectors exist.</p>
 <section id="definitions-and-basic-properties" class="level2" data-number="17.1">
 <h2 data-number="17.1" class="anchored" data-anchor-id="definitions-and-basic-properties"><span class="header-section-number">17.1</span> Definitions and Basic Properties</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -738,6 +739,19 @@ window.Quarto = {
 <p><span class="math inline">\(p_{\bA}(\lambda) = \det(\bA - \lambda \bI)\)</span>. Eigenvalues are the roots of <span class="math inline">\(p_{\bA}(\lambda) = 0\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Characteristic polynomial as theory)</strong> The characteristic polynomial is useful for proofs and small hand examples. Numerical algorithms do not compute eigenvalues by forming <span class="math inline">\(p_{\bA}\)</span> and finding its roots; polynomial coefficients are extremely sensitive to perturbations.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -764,7 +778,37 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bB = \bV^{-1}\bA\bV\)</span> (Similarity Transform), then <span class="math inline">\(\sigma(\bB) = \sigma(\bA)\)</span>. <strong>Insight:</strong> Eigenvalues are invariant under change of basis.</p>
+<p>If <span class="math inline">\(\bB = \bV^{-1}\bA\bV\)</span> (Similarity Transform), then <span class="math inline">\(\sigma(\bB) = \sigma(\bA)\)</span>. Eigenvalues are invariant under change of basis.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Diagonalization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A matrix <span class="math inline">\(\bA\)</span> is diagonalizable if there exists an invertible matrix <span class="math inline">\(\bV\)</span> such that <span class="math display">\[
+\begin{align}
+\bA=\bV\bD\bV^{-1},
+\end{align}
+\]</span> where <span class="math inline">\(\bD\)</span> is diagonal. The columns of <span class="math inline">\(\bV\)</span> are eigenvectors and the diagonal entries of <span class="math inline">\(\bD\)</span> are eigenvalues.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Multiplicity and defectiveness)</strong> Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity <span class="math inline">\(2\)</span> but only one independent eigenvector; such a matrix is <strong>defective</strong> and cannot be diagonalized.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -789,6 +833,7 @@ window.Quarto = {
 <section id="symmetric-and-hermitian-matrices" class="level2" data-number="17.2">
 <h2 data-number="17.2" class="anchored" data-anchor-id="symmetric-and-hermitian-matrices"><span class="header-section-number">17.2</span> Symmetric and Hermitian Matrices</h2>
 <p>Symmetric and Hermitian matrices possess special spectral properties that simplify analysis and computation.</p>
+<p>The symmetric case is the cleanest eigenvalue theory. Orthogonal eigenvectors mean that diagonalization is also a numerically safe change of basis: <span class="math inline">\(\bQ^{-1}=\bQ^T\)</span>, so the transformation does not amplify Euclidean errors.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -843,6 +888,7 @@ window.Quarto = {
 <section id="iterative-algorithms" class="level2" data-number="17.3">
 <h2 data-number="17.3" class="anchored" data-anchor-id="iterative-algorithms"><span class="header-section-number">17.3</span> Iterative Algorithms</h2>
 <p>In practice, we compute eigenvalues via iteration, not by finding roots of the characteristic polynomial.</p>
+<p>Most large eigenvalue computations do not compute the full spectrum. They target a few eigenvalues: the largest, smallest, or those closest to a shift. Matrix-vector products and linear solves are the basic primitives.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -861,7 +907,20 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Power iteration failure modes)</strong> Power iteration can fail or converge slowly if <span class="math inline">\(|\lambda_1|\approx|\lambda_2|\)</span>, if the starting vector has tiny component in the dominant eigenvector direction, or if the dominant eigenvalue is not unique in magnitude.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -870,7 +929,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Assume <span class="math inline">\(\bA\)</span> is diagonalizable with eigenvectors <span class="math inline">\(\{\bu_1, ..., \bu_n\}\)</span> and eigenvalues <span class="math inline">\(|\lambda_1| &gt; |\lambda_2| \geq ...\)</span>. Let <span class="math inline">\(\bx^{(0)} = \sum_{i=1}^n c_i \bu_i\)</span> with <span class="math inline">\(c_1 \neq 0\)</span>. Applying <span class="math inline">\(\bA\)</span> <span class="math inline">\(k\)</span> times: <span class="math display">\[
 \begin{align}
@@ -896,6 +955,19 @@ window.Quarto = {
 <li><p><strong>Use:</strong> Finds the eigenvalue closest to the shift <span class="math inline">\(\sigma\)</span>.</p></li>
 <li><p><strong>Efficiency:</strong> Factorize <span class="math inline">\((\bA - \sigma\bI)\)</span> once, then solve at each step (<span class="math inline">\(O(n^2)\)</span>).</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Shifted inverse iteration)</strong> If <span class="math inline">\(\lambda_i\)</span> is an eigenvalue of <span class="math inline">\(\bA\)</span>, then <span class="math inline">\((\lambda_i-\sigma)^{-1}\)</span> is an eigenvalue of <span class="math inline">\((\bA-\sigma\bI)^{-1}\)</span>. The eigenvalue closest to <span class="math inline">\(\sigma\)</span> becomes largest in magnitude after inversion.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -934,6 +1006,7 @@ window.Quarto = {
 <section id="schur-decomposition-and-the-qr-algorithm" class="level2" data-number="17.4">
 <h2 data-number="17.4" class="anchored" data-anchor-id="schur-decomposition-and-the-qr-algorithm"><span class="header-section-number">17.4</span> Schur Decomposition and the QR Algorithm</h2>
 <p>The Schur decomposition provides the theoretical basis for the QR algorithm, the standard iterative method for computing the eigenvalues and eigenvectors of dense, general matrices.</p>
+<p>Diagonalization may fail for defective matrices, but Schur decomposition always exists over <span class="math inline">\(\fC\)</span>. This is why practical dense eigensolvers target Schur form rather than diagonal form.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -974,11 +1047,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance:</strong> Raw QR iteration requires <span class="math inline">\(O(n^3)\)</span> operations per step. Practical implementations, such as those in standard numerical libraries, typically use:</p>
+<p><strong>(QR iteration performance)</strong> Raw QR iteration requires <span class="math inline">\(O(n^3)\)</span> operations per step. Practical implementations, such as those in standard numerical libraries, typically use:</p>
 <ol type="1">
 <li><p><strong>Hessenberg Reduction:</strong> Pre-process <span class="math inline">\(\bA\)</span> to upper Hessenberg form in <span class="math inline">\(O(n^3)\)</span> operations.</p></li>
 <li><p><strong>Triangularization:</strong> Subsequent QR steps on a Hessenberg matrix cost only <span class="math inline">\(O(n^2)\)</span>.</p></li>

@@ -701,9 +701,10 @@ window.Quarto = {
 
 
 <p>Most direct methods for solving linear systems rely on matrix factorizations that reduce a complex system into multiple simpler ones. The <strong>LU factorization</strong> is the most fundamental of these, decomposing a square matrix <span class="math inline">\(\bA\)</span> into a unit lower triangular matrix <span class="math inline">\(\bL\)</span> and an upper triangular matrix <span class="math inline">\(\bU\)</span>. This process is essentially the matrix form of Gaussian elimination.</p>
+<p>Gaussian elimination transforms <span class="math inline">\(\bA\bx=\bb\)</span> into an equivalent upper triangular system. LU factorization stores the elimination steps, so the same work can be reused for many right-hand sides.</p>
 <section id="lu-and-gaussian-elimination" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="lu-and-gaussian-elimination"><span class="header-section-number">10.1</span> LU and Gaussian Elimination</h2>
-<p>Decomposing <span class="math inline">\(\bA\)</span> into triangular factors allows us to solve <span class="math inline">\(\bA\bx = \bb\)</span> by solving two triangular systems, which is computationally efficient.</p>
+<p>Triangular systems are easy because the unknowns can be recovered one at a time. If <span class="math inline">\(\bU\)</span> is upper triangular, the last equation contains only <span class="math inline">\(x_n\)</span>, the next contains only <span class="math inline">\(x_{n-1}\)</span> and <span class="math inline">\(x_n\)</span>, and so on. This is backward substitution. Lower triangular systems are solved similarly by forward substitution.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -718,6 +719,56 @@ window.Quarto = {
 \begin{align}
 \bL = \begin{pmatrix} 1 &amp; 0 &amp; ... \\ \ell_{21} &amp; 1 &amp; ... \\ \vdots &amp; \vdots &amp; \ddots \end{pmatrix}, \quad
 \bU = \begin{pmatrix} u_{11} &amp; u_{12} &amp; ... \\ 0 &amp; u_{22} &amp; ... \\ \vdots &amp; \vdots &amp; \ddots \end{pmatrix}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<p>The matrix <span class="math inline">\(\bU\)</span> contains the row-echelon form produced by elimination. The matrix <span class="math inline">\(\bL\)</span> stores the multipliers used to eliminate entries below each pivot. If row <span class="math inline">\(i\)</span> is updated by subtracting <span class="math inline">\(\ell_{ik}\)</span> times row <span class="math inline">\(k\)</span>, then <span class="math inline">\(\ell_{ik}\)</span> appears in <span class="math inline">\(\bL\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(One elimination)</strong> Let <span class="math display">\[
+\begin{align}
+\bA =
+    \begin{pmatrix}
+        2 &amp; 1 \\
+        6 &amp; 5
+    \end{pmatrix}.
+\end{align}
+\]</span> To eliminate the entry <span class="math inline">\(6\)</span> below the pivot <span class="math inline">\(2\)</span>, subtract <span class="math inline">\(3\)</span> times row 1 from row 2: <span class="math display">\[
+\begin{align}
+\begin{pmatrix}
+        2 &amp; 1 \\
+        6 &amp; 5
+    \end{pmatrix}
+    \longrightarrow
+    \begin{pmatrix}
+        2 &amp; 1 \\
+        0 &amp; 2
+    \end{pmatrix}.
+\end{align}
+\]</span> The multiplier is <span class="math inline">\(\ell_{21}=3\)</span>, so <span class="math display">\[
+\begin{align}
+\bL =
+    \begin{pmatrix}
+        1 &amp; 0 \\
+        3 &amp; 1
+    \end{pmatrix},
+    \qquad
+    \bU =
+    \begin{pmatrix}
+        2 &amp; 1 \\
+        0 &amp; 2
+    \end{pmatrix},
+    \qquad
+    \bA=\bL\bU.
 \end{align}
 \]</span></p>
 </div>
@@ -744,11 +795,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Existence and Uniqueness.</strong> <span class="math inline">\(\bA\)</span> admits a unique LU factorization iff all leading principal submatrices <span class="math inline">\(\bA_k\)</span> are nonsingular (<span class="math inline">\(k=1, ..., n-1\)</span>). The algorithm fails if a zero pivot is encountered.</p>
+<p><strong>(Existence and Uniqueness)</strong> <span class="math inline">\(\bA\)</span> admits a unique LU factorization iff all leading principal submatrices <span class="math inline">\(\bA_k\)</span> are nonsingular (<span class="math inline">\(k=1, ..., n-1\)</span>). The algorithm fails if a zero pivot is encountered.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -757,11 +808,11 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Flop Cost.</strong> Computing <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> via Gaussian elimination costs .</p>
+<p><strong>(Elimination without pivoting is fragile)</strong> A zero pivot causes the algebraic algorithm to stop. A tiny pivot may be worse numerically: dividing by a tiny number creates huge multipliers, which amplify rounding errors in later rows.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -770,16 +821,50 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>The Solve Pattern.</strong> To solve <span class="math inline">\(\bA\bx = \bb\)</span> given <span class="math inline">\(\bA = \bL\bU\)</span>:</p>
+<p><strong>(Flop Cost)</strong> Computing <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> via Gaussian elimination costs .</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The Solve Pattern)</strong> To solve <span class="math inline">\(\bA\bx = \bb\)</span> given <span class="math inline">\(\bA = \bL\bU\)</span>:</p>
 <ol type="1">
 <li><p>Solve <strong><span class="math inline">\(\bL\by = \bb\)</span></strong> via forward substitution (<span class="math inline">\(O(n^2)\)</span>).</p></li>
 <li><p>Solve <strong><span class="math inline">\(\bU\bx = \by\)</span></strong> via backward substitution (<span class="math inline">\(O(n^2)\)</span>).</p></li>
 </ol>
 <p><strong>Advantage:</strong> Once <span class="math inline">\(\bA\)</span> is factored, each new <span class="math inline">\(\bb\)</span> costs only <span class="math inline">\(O(n^2)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Solving with the factors)</strong> For the previous example, solve <span class="math inline">\(\bA\bx=\bb\)</span> with <span class="math inline">\(\bb=(3,11)^T\)</span>. First solve <span class="math inline">\(\bL\by=\bb\)</span>: <span class="math display">\[
+\begin{align}
+y_1=3, \qquad 3y_1+y_2=11 \Rightarrow y_2=2.
+\end{align}
+\]</span> Then solve <span class="math inline">\(\bU\bx=\by\)</span>: <span class="math display">\[
+\begin{align}
+2x_2=2 \Rightarrow x_2=1, \qquad 2x_1+x_2=3 \Rightarrow x_1=1.
+\end{align}
+\]</span> The solution is <span class="math inline">\(\bx=(1,1)^T\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -809,6 +894,27 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Small pivot)</strong> Consider <span class="math display">\[
+\begin{align}
+\bA =
+    \begin{pmatrix}
+        10^{-20} &amp; 1 \\
+        1 &amp; 1
+    \end{pmatrix}.
+\end{align}
+\]</span> Without pivoting, the first multiplier is <span class="math inline">\(10^{20}\)</span>. The elimination step creates huge intermediate entries even though the original matrix has modest entries. Partial pivoting swaps the two rows first, using the pivot <span class="math inline">\(1\)</span> instead of <span class="math inline">\(10^{-20}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Definition: LUP Decomposition
 </div>
 </div>
@@ -822,11 +928,24 @@ Tip
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Stability and Growth Factor.</strong> The numerical stability of LUP is characterized by the growth factor <span class="math inline">\(\rho = \max|u_{ij}| / \max|a_{ij}|\)</span>. If <span class="math inline">\(\rho\)</span> is large, the solution may be inaccurate. Partial pivoting keeps <span class="math inline">\(\rho\)</span> small in practice (typically <span class="math inline">\(O(n)\)</span>), ensuring the algorithm is backward stable. While the theoretical worst-case growth is <span class="math inline">\(2^{n-1}\)</span>, such matrices are rarely encountered in engineering applications.</p>
+<p><strong>(Permutation matrices)</strong> Multiplying by <span class="math inline">\(\bP\)</span> reorders rows. Permutation matrices are orthogonal: <span class="math inline">\(\bP^{-1}=\bP^T\)</span>. Applying a permutation is cheap because no arithmetic is required; the code only reorders indices.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Stability and Growth Factor)</strong> The numerical stability of LUP is characterized by the growth factor <span class="math inline">\(\rho = \max|u_{ij}| / \max|a_{ij}|\)</span>. If <span class="math inline">\(\rho\)</span> is large, the solution may be inaccurate. Partial pivoting keeps <span class="math inline">\(\rho\)</span> small in practice (typically <span class="math inline">\(O(n)\)</span>), ensuring the algorithm is backward stable. While the theoretical worst-case growth is <span class="math inline">\(2^{n-1}\)</span>, such matrices are rarely encountered in engineering applications.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -850,17 +969,23 @@ Tip
 <section id="algorithm-cost-analysis" class="level2" data-number="10.3">
 <h2 data-number="10.3" class="anchored" data-anchor-id="algorithm-cost-analysis"><span class="header-section-number">10.3</span> Algorithm Cost Analysis</h2>
 <p>Understanding the computational cost is vital for choosing the right solver for large-scale engineering problems. The bulk of the work is in the factorization step.</p>
+<p>There are two separate costs:</p>
+<ul>
+<li><p><strong>Factorization cost:</strong> Build <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> once. This costs <span class="math inline">\(O(n^3)\)</span>.</p></li>
+<li><p><strong>Solve cost:</strong> Use the factors for a specific <span class="math inline">\(\bb\)</span>. This costs <span class="math inline">\(O(n^2)\)</span>.</p></li>
+</ul>
+<p>This distinction is the reason factorizations are valuable.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Total Cost for <span class="math inline">\(k\)</span> Right-Hand Sides.</strong> For a system with <span class="math inline">\(n\)</span> unknowns and <span class="math inline">\(k\)</span> different right-hand side vectors <span class="math inline">\(\bb\)</span>, the total cost is: <span class="math display">\[
+<p><strong>(Total Cost for <span class="math inline">\(k\)</span> Right-Hand Sides)</strong> For a system with <span class="math inline">\(n\)</span> unknowns and <span class="math inline">\(k\)</span> different right-hand side vectors <span class="math inline">\(\bb\)</span>, the total cost is: <span class="math display">\[
 \begin{align}
 \text{Cost} = \frac{2}{3}n^3 + 2kn^2 \text{ flops}.
 \end{align}
@@ -868,7 +993,7 @@ Tip
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -877,7 +1002,7 @@ Tip
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Forward substitution solves <span class="math inline">\(\bL\by = \bb\)</span> where <span class="math inline">\(\ell_{ii} = 1\)</span>. The <span class="math inline">\(i\)</span>-th entry <span class="math inline">\(y_i\)</span> is given by: <span class="math display">\[
 \begin{align}
@@ -890,6 +1015,19 @@ y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
 </ul>
 <p>For large <span class="math inline">\(n\)</span>, each triangular solve costs approximately <span class="math inline">\(n^2\)</span> flops.</p>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Implementation rule)</strong> In NumPy/SciPy, use <code>solve</code> for one right-hand side or <code>lu\_factor</code>/<code>lu\_solve</code> when reusing a factorization. Do not form <span class="math inline">\(\bA^{-1}\)</span> to solve a linear system.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">

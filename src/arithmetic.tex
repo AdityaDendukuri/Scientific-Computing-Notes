@@ -24,7 +24,7 @@ $1 \le j \le n$.
 }
 \label{def:matrix-sum}
 
-\addNote{%
+\addRemark{%
 For $\bA \in \fR^{m \times n}$ and $\bB \in \fR^{p \times q}$, the sum $\bA + \bB$ is
 defined if and only if $m = p$ and $n = q$.
 }
@@ -175,7 +175,7 @@ of $\bB$:
 }
 \label{def:matrix-product}
 
-\addNote{%
+\addRemark{%
 Matrix multiplication is defined only when the number of columns of $\bA$ equals the number
 of rows of $\bB$.  It is associative and distributive over addition, but in general not
 commutative: $\bA\bB \neq \bB\bA$ for most matrices.
@@ -189,7 +189,7 @@ reduces to $O(n^3)$ flops.
 }
 \label{lem:matmul-cost}
 
-\addNote{%
+\addRemark{%
 The $O(n^3)$ cost of naive matrix multiplication is a central bottleneck in scientific
 computing.  Strassen's algorithm reduces this to $O(n^{\log_2 7}) \approx O(n^{2.807})$,
 but is rarely used in practice due to numerical stability concerns and cache-unfriendly
@@ -305,7 +305,7 @@ called \emph{invertible} or \emph{nonsingular}.
 }
 \label{def:matrix-inverse}
 
-\addNote{%
+\addRemark{%
 A square matrix $\bA$ is invertible if and only if $\det(\bA) \neq 0$, which also implies
 that $\bA$ has full rank.
 }
@@ -359,8 +359,8 @@ The left-inverse condition $(\bB^{-1}\bA^{-1})(\bA\bB) = \bI$ follows similarly.
 This shows $(\bA^{-1})^T$ is the inverse of $\bA^T$, so $(\bA^T)^{-1} = (\bA^{-1})^T$.
 }
 
-\addNote{%
-\textbf{The Decomposition Principle.}\enspace
+\addRemark{%
+\textbf{(The Decomposition Principle)}\enspace
 In scientific computing, we almost never compute $\bA^{-1}$ explicitly. To solve $\bA\bx = \bb$, we decompose $\bA$ into simpler factors (like LU or QR) and solve a sequence of simpler systems. This is more numerically stable and computationally efficient. The Reversal Law $(\bA\bB)^{-1} = \bB^{-1}\bA^{-1}$ reflects this: to solve $(\bA\bB)\bx = \bb$, we first solve $\bA\by = \bb$ for $\by$, then $\bB\bx = \by$.
 }
 

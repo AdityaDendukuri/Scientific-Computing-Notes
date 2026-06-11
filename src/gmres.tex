@@ -9,9 +9,13 @@
 The Generalized Minimal Residual (GMRES) method is the standard Krylov subspace solver for general (non-symmetric) linear systems $\bA\bx = \bb$. Unlike CG, it does not require $\bA$ to be symmetric or positive definite.
 }
 
+\textBox{%
+CG relies on symmetry to get a short recurrence. GMRES works without symmetry by explicitly building an orthonormal Krylov basis and choosing the vector in that subspace with smallest residual. This makes GMRES broadly applicable, but more expensive in memory.
+}
+
 \subsubsection{Residual Minimization and Krylov Subspaces}
 
-\addNote{%
+\addRemark{%
 \textbf{The Minimization Problem:}\enspace
 At each step $k$, GMRES finds the approximate solution $\bx_k$ in the affine space $\bx_0 + \mathcal{K}_k(\bA, \br_0)$ that minimizes the \textbf{Euclidean norm of the residual}:
 \begin{align*}
@@ -20,11 +24,23 @@ At each step $k$, GMRES finds the approximate solution $\bx_k$ in the affine spa
 Because the residual norm is minimized explicitly, it is guaranteed to be non-increasing with $k$.
 }
 
+\addRemark{%
+\textbf{(CG vs.\ GMRES)}\enspace
+\begin{itemize}
+    \item \textbf{CG:}\enspace SPD systems only; short recurrence; $O(n)$ memory.
+    \item \textbf{GMRES:}\enspace General square systems; stores a growing basis; $O(kn)$ memory after $k$ steps.
+\end{itemize}
+}
+
 \subsubsection{The Arnoldi Process}
 
-\addNote{%
+\addRemark{%
 \textbf{Basis Construction:}\enspace
 To compute this minimum efficiently, GMRES uses the \textbf{Arnoldi process} to build an orthonormal basis $V_k = [\bv_1, \bv_2, \dots, \bv_k]$ for $\mathcal{K}_k$. This process is essentially a Gram-Schmidt orthogonalization of the Krylov sequence.
+}
+
+\textBox{%
+Arnoldi is the nonsymmetric analog of the Lanczos process. Each step applies $\bA$ to the newest basis vector, then orthogonalizes the result against all previous basis vectors. The need to remember all previous basis vectors is the source of GMRES memory growth.
 }
 
 \addDef{Arnoldi Relation}{%
@@ -49,17 +65,34 @@ where $\beta = \|\br_0\|_2$ and $\be_1$ is the first canonical basis vector. Sol
 }
 \label{thm:gmres-ls}
 
+\addPrf{%
+Let $\br_0=\bb-\bA\bx_0$ and choose $\bv_1=\br_0/\|\br_0\|_2$, so $\br_0=\beta V_{k+1}\be_1$. If $\bx_k=\bx_0+V_k\by$, then
+\begin{align*}
+    \br_k
+    &= \bb-\bA(\bx_0+V_k\by) \\
+    &= \br_0-\bA V_k\by \\
+    &= V_{k+1}\left(\beta\be_1-\bar{H}_k\by\right),
+\end{align*}
+using the Arnoldi relation $\bA V_k=V_{k+1}\bar{H}_k$. Since $V_{k+1}$ has orthonormal columns, it preserves the Euclidean norm, giving
+\begin{align*}
+    \|\br_k\|_2=\|\beta\be_1-\bar{H}_k\by\|_2.
+\end{align*}
+}
 
-\addNote{%
+\addRemark{%
 \textbf{Optimality:}\enspace
 By definition, GMRES finds the absolute best solution available in the growing Krylov subspace. The residual norm is non-increasing.
 }
 
 \subsubsection{Restarted GMRES($m$)}
 
-\addNote{%
+\addRemark{%
 \textbf{The Memory Wall:}\enspace
 Full GMRES storage costs $O(kn)$ and work grows quadratically with $k$ (due to orthogonalization). \textbf{Restarting} after $m$ steps prevents memory explosion but can lead to stagnation.
+}
+
+\addRemark{%
+\textbf{(Restart trade-off)}\enspace GMRES($m$) discards the Krylov basis every $m$ steps and starts again from the current residual. This controls memory, but it also discards spectral information. Small restart values can cause long plateaus in convergence.
 }
 
 \subsubsection{Convergence and Preconditioning}
@@ -71,6 +104,10 @@ Full GMRES storage costs $O(kn)$ and work grows quadratically with $k$ (due to o
 }
 \label{thm:gmres-convergence}
 
+\addRemark{%
+\textbf{(Convergence is less predictable than CG)}\enspace For nonnormal matrices, eigenvalues alone may not explain GMRES behavior. The geometry of eigenvectors and transient growth can matter. In practice, preconditioning is usually essential.
+}
+
 \addDef{Preconditioning}{%
 \begin{itemize}
     \item \textbf{Left:}\enspace $\bM^{-1}\bA\bx = \bM^{-1}\bb$. (Minimizes preconditioned residual).
@@ -78,6 +115,10 @@ Full GMRES storage costs $O(kn)$ and work grows quadratically with $k$ (due to o
 \end{itemize}
 }
 \label{def:gmres-preconditioning}
+
+\addRemark{%
+\textbf{(Breakdown and stagnation)}\enspace Arnoldi breakdown can be good: if the Krylov subspace becomes invariant and the residual reaches zero, GMRES has found the exact solution. Stagnation is different: the method keeps iterating but the residual barely decreases, often because the restart length or preconditioner is poor.
+}
 
 \addExcr{%
 \begin{enumerate}

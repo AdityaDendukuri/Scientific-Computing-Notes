@@ -7,6 +7,10 @@
 
 Approximating the solution to an overdetermined system where $m > n$ and no exact solution exists.
 
+\textBox{%
+When $\bb$ is not in the column space of $\bA$, the equation $\bA\bx=\bb$ has no exact solution. Least squares replaces the impossible goal ``make the residual zero'' with the geometric goal ``make the residual as short as possible.''
+}
+
 \subsubsection{Least Squares Problem}
 
 \addDef{Overdetermined System}{%
@@ -23,10 +27,39 @@ Find $\hat{\bx}$ that minimizes the Euclidean residual:
 }
 \label{def:least-squares-prob}
 
+\addThm{Projection Characterization}{%
+For the least squares problem in Def~\ref{def:least-squares-prob}, Thm~\ref{thm:closest-point} applied to $S=\mathcal{R}(\bA)$ implies that the solution $\hat{\bx}$ is characterized by
+\begin{align*}
+    \bA\hat{\bx} = \operatorname{proj}_{\mathcal{R}(\bA)}(\bb),
+    \qquad
+    \br = \bb-\bA\hat{\bx} \perp \mathcal{R}(\bA).
+\end{align*}
+Equivalently, $\bA^T\br=\bzero$.
+}
+\label{thm:least-squares-projection}
+
+\addExmpl{%
+\textbf{(Fitting a line)}\enspace For data $(t_i,y_i)$, fitting $y\approx c_0+c_1t$ gives
+\begin{align*}
+    \bA =
+    \begin{pmatrix}
+        1&t_1\\
+        1&t_2\\
+        \vdots&\vdots\\
+        1&t_m
+    \end{pmatrix},
+    \qquad
+    \bx=\begin{pmatrix}c_0\\c_1\end{pmatrix},
+    \qquad
+    \bb=\begin{pmatrix}y_1\\y_2\\ \vdots\\ y_m\end{pmatrix}.
+\end{align*}
+The residuals are the vertical errors between the data and the fitted line.
+}
+
 \subsubsection{Normal Equations}
 
 \addThm{Normal Equations}{%
-The minimizer satisfies $\bA^T\bA\hat{\bx} = \bA^T\bb$.
+Using the orthogonality condition in Thm~\ref{thm:least-squares-projection}, the minimizer satisfies $\bA^T\bA\hat{\bx} = \bA^T\bb$.
 \begin{itemize}
     \item \textbf{Condition:}\enspace $\bA^T\br = \bzero$ (Residual must be normal to the column space).
     \item \textbf{Unique Solution:}\enspace $\hat{\bx} = (\bA^T\bA)^{-1}\bA^T\bb$ if $\bA$ has full column rank.
@@ -34,17 +67,17 @@ The minimizer satisfies $\bA^T\bA\hat{\bx} = \bA^T\bb$.
 }
 \label{thm:normal-equations}
 
-\addNote{%
-\textbf{Conditioning of the Normal Equations.}\enspace
-The condition number of the normal equations matrix satisfies $\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2$. Squaring the condition number can lead to a significant loss of precision. For example, if $\kappa_2(\bA) = 10^6$, the solution may lose up to 12 digits of accuracy.
-}
-
 \addExcr{%
 \begin{enumerate}
+    \item Starting from Thm~\ref{thm:least-squares-projection}, derive the normal equations in Thm~\ref{thm:normal-equations}.
+    \item Show that $\bA^T\br=\bzero$ is equivalent to $\br\in\mathcal{N}(\bA^T)$.
+    \item Use Thm~\ref{thm:orthogonal-complements} to explain why $\br\in\mathcal{N}(\bA^T)$ means $\bA\hat{\bx}$ is the projection of $\bb$ onto $\mathcal{R}(\bA)$.
     \item Fit a line $y = mx + b$ to points $(1,2), (2,3), (3,5), (4,4)$ via normal equations.
-    \item Prove $\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2$ using singular values.
+    \item Prove $\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2$ using singular values. If $\kappa_2(\bA)=10^6$, estimate the number of digits that may be lost in double precision.
+    \item Explain why the normal equations are useful for derivation but should not be the default numerical algorithm. Your answer should mention $\bA^T\br=\bzero$, conditioning, QR, and SVD.
 \end{enumerate}
 }
+\label{ex:normal-equations-conditioning}
 
 \subsubsection{QR-Based Least Squares}
 
@@ -55,6 +88,7 @@ If $\bA = \bQ\bR$ (thin QR), the least squares solution satisfies:
 \begin{align*}
     \bR\hat{\bx} = \bQ^T\bb.
 \end{align*}
+This avoids forming $\bA^T\bA$, the instability diagnosed in Ex~\ref{ex:normal-equations-conditioning}.
 }
 \label{thm:least-squares-qr}
 
@@ -72,17 +106,42 @@ Since $\bQ(\bR\bx - \bQ^T\bb) \in \mathcal{R}(\bQ)$ and $(\bI - \bQ\bQ^T)\bb \in
 The first term is minimized (set to zero) when $\bR\bx = \bQ^T\bb$, and the second term is independent of $\bx$. Thus $\hat{\bx} = \bR^{-1}\bQ^T\bb$ is the unique minimizer.
 }
 
-\addNote{%
-\textbf{Performance:}\enspace
-QR-based least squares costs $O(mn^2)$. It is the default in \texttt{np.linalg.lstsq}.
+\addRemark{%
+\textbf{(Least squares solver hierarchy)}\enspace
+\begin{itemize}
+    \item \textbf{Normal equations:}\enspace Fast and simple, but least stable; condition number is squared.
+    \item \textbf{QR:}\enspace Standard method for full-rank least squares; stable and efficient.
+    \item \textbf{SVD:}\enspace Most robust; handles rank deficiency and reveals numerical rank.
+\end{itemize}
 }
+
+\subsubsection{Rank Deficiency and Regularization}
+
+\textBox{%
+If $\bA$ does not have full column rank, there may be infinitely many least squares minimizers. The SVD selects the minimizer with smallest Euclidean norm. Regularization modifies the problem to penalize large coefficients and improve conditioning.
+}
+
+\addDef{Ridge-Regularized Least Squares}{%
+For $\lambda>0$, ridge regression solves
+\begin{align*}
+    \hat{\bx}_\lambda
+    =
+    \argmin_{\bx}\left(\|\bA\bx-\bb\|_2^2+\lambda\|\bx\|_2^2\right).
+\end{align*}
+The normal equations become
+\begin{align*}
+    (\bA^T\bA+\lambda\bI)\hat{\bx}_\lambda = \bA^T\bb.
+\end{align*}
+}
+\label{def:ridge-regularization}
 
 \addExcr{%
 \begin{enumerate}
-    \item Solve the line-fitting problem using QR. Compare coefficients with the normal equations result.
+    \item Return to Ex~\ref{ex:normal-equations-conditioning}. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.
     \item \textbf{Regularization:}\enspace If $\bA$ is rank-deficient, $\|\hat{\bx}\|$ can explode. Add a penalty term $\lambda \|\bx\|_2^2$ (Ridge Regression). How do the normal equations change?
 \end{enumerate}
 }
+\label{ex:least-squares-qr-regularization}
 
 \subsubsection{Polynomial Regression}
 
@@ -98,7 +157,7 @@ Polynomial fitting $p(t) = \sum c_j t^j$ is solved as $\bV\bc \approx \mathbf{f}
 \addExcr{%
 \begin{enumerate}
     \item Fit a degree-2 polynomial to 6 data points. Verify the residual and $R^2$ score.
-    \item \textbf{Numerical Stability:}\enspace Construct a Vandermonde matrix with $n=10$. Compare the errors of \texttt{lstsq(A, b)} vs \texttt{solve(A.T @ A, A.T @ b)}.
+    \item \textbf{Numerical Stability:}\enspace Construct a Vandermonde matrix with $n=10$. Compare the errors of \texttt{lstsq(A, b)} vs \texttt{solve(A.T @ A, A.T @ b)}. Relate the outcome to Ex~\ref{ex:normal-equations-conditioning}.
 \end{enumerate}
 }
 

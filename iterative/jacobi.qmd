@@ -24,6 +24,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Performance:** 
 Jacobi iteration is **inherently parallel**, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.
 :::
@@ -50,6 +51,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Performance:** 
 Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges **twice as fast** as Jacobi and allows for in-place updates.
 :::
@@ -99,6 +101,7 @@ $$
 
 
 ::: {.callout-tip icon=false}
+## Remark
 **Convergence Acceleration:** 
 For the 1D Poisson problem on a grid with spacing $h$:
 
