@@ -719,7 +719,37 @@ window.Quarto = {
 <li><p><span class="math inline">\(P_{ij} \geq 0\)</span>.</p></li>
 <li><p><span class="math inline">\(\sum_i P_{ij} = 1\)</span> (Columns sum to 1).</p></li>
 </ol>
-<p><strong>Property:</strong> <span class="math inline">\(\lambda=1\)</span> is always an eigenvalue (dominant).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectrum of a Stochastic Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bP\)</span> is column-stochastic, then <span class="math inline">\(\lambda=1\)</span> is an eigenvalue and every eigenvalue satisfies <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Show that <span class="math inline">\(\mathbf{1}^T\bP=\mathbf{1}^T\)</span> for a column-stochastic matrix.</p></li>
+<li><p>Conclude that <span class="math inline">\(1\)</span> is a left eigenvalue of <span class="math inline">\(\bP\)</span>, hence an eigenvalue.</p></li>
+<li><p>Prove <span class="math inline">\(|\lambda|\leq 1\)</span> first for a row-stochastic matrix by taking the largest-magnitude entry of an eigenvector.</p></li>
+<li><p>Apply the previous step to <span class="math inline">\(\bP^T\)</span> to prove the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -749,7 +779,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A probability vector <span class="math inline">\(\boldsymbol{\pi}\)</span> such that <strong><span class="math inline">\(\bP \boldsymbol{\pi} = \boldsymbol{\pi}\)</span></strong>.</p>
+<p>A probability vector <span class="math inline">\(\boldsymbol{\pi}\)</span> such that <span class="math inline">\(\bP \boldsymbol{\pi} = \boldsymbol{\pi}\)</span>.</p>
 <ul>
 <li><p>Right eigenvector of <span class="math inline">\(\bP\)</span> for <span class="math inline">\(\lambda=1\)</span>.</p></li>
 <li><p>Represents the equilibrium state of the chain.</p></li>
@@ -783,15 +813,50 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Spectral Gap and Mixing Time
+<span class="screen-reader-only">Note</span>Definition: Spectral Gap
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The gap <strong><span class="math inline">\(\delta = 1 - |\lambda_2|\)</span></strong> controls convergence speed.</p>
-<ul>
-<li><p><strong>Mixing Time:</strong> <span class="math inline">\(k_{\varepsilon} \approx \log(1/\varepsilon) / \delta\)</span>.</p></li>
-<li><p><strong>Insight:</strong> Large gap = fast mixing. Connected graphs have larger gaps.</p></li>
-</ul>
+<p>The gap <span class="math inline">\(\delta = 1 - |\lambda_2|\)</span> controls convergence speed.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Mixing Heuristic
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a diagonalizable primitive chain, the distance to stationarity is dominated asymptotically by the second eigenvalue: <span class="math display">\[
+\begin{align}
+\|\bx^{(k)}-\boldsymbol{\pi}\| \approx C|\lambda_2|^k.
+\end{align}
+\]</span> Thus a larger spectral gap <span class="math inline">\(\delta=1-|\lambda_2|\)</span> means faster mixing, and the iteration count to reach tolerance <span class="math inline">\(\varepsilon\)</span> scales like <span class="math display">\[
+\begin{align}
+k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
+\end{align}
+\]</span> when <span class="math inline">\(\delta\)</span> is small.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Write an initial distribution as <span class="math inline">\(\bx^{(0)}=\boldsymbol{\pi}+\sum_{i\geq 2} c_i\bv_i\)</span> using eigenvectors of <span class="math inline">\(\bP\)</span>.</p></li>
+<li><p>Apply <span class="math inline">\(\bP^k\)</span> and use <span class="math inline">\(\bP\boldsymbol{\pi}=\boldsymbol{\pi}\)</span>.</p></li>
+<li><p>Identify the slowest-decaying term.</p></li>
+<li><p>Use <span class="math inline">\(\log(1-\delta)\approx -\delta\)</span> to derive the mixing-time estimate in the result above.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -808,10 +873,41 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>A chain is reversible if <span class="math inline">\(\pi_j P_{ij} = \pi_i P_{ji}\)</span> for all <span class="math inline">\(i, j\)</span>.</p>
-<ul>
-<li><p><strong>Implication:</strong> Reversible chains have <strong>real eigenvalues</strong>.</p></li>
-<li><p><strong>Symmetry:</strong> <span class="math inline">\(\bD_{\boldsymbol{\pi}}^{-1/2} \bP \bD_{\boldsymbol{\pi}}^{1/2}\)</span> is symmetric.</p></li>
-</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Reversible Chains Have Real Spectrum
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bP\)</span> satisfies detailed balance with stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span> and <span class="math inline">\(\bD_{\boldsymbol{\pi}}=\operatorname{diag}(\boldsymbol{\pi})\)</span>, then <span class="math display">\[
+\begin{align}
+\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}
+\end{align}
+\]</span> is symmetric. Therefore reversible chains have real eigenvalues.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Compute the <span class="math inline">\((i,j)\)</span> entry of <span class="math inline">\(\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}\)</span>.</p></li>
+<li><p>Use detailed balance from the result above to show that this entry equals the <span class="math inline">\((j,i)\)</span> entry.</p></li>
+<li><p>Explain why similarity preserves eigenvalues.</p></li>
+<li><p>Conclude the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -842,36 +938,10 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Construct <span class="math inline">\(\bP\)</span> for a 2-state chain with transition probabilities <span class="math inline">\(\{0.1, 0.2\}\)</span>. Find <span class="math inline">\(\boldsymbol{\pi}\)</span>.</p></li>
-<li><p>Prove that <span class="math inline">\(|\lambda| \leq 1\)</span> for any stochastic matrix.</p></li>
-<li><p>Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.&nbsp;<span class="math inline">\(\lambda_2\)</span>.</p></li>
+<li><p>Prove that <span class="math inline">\(|\lambda| \leq 1\)</span> for any stochastic matrix using the result above.</p></li>
+<li><p>Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.&nbsp;<span class="math inline">\(\lambda_2\)</span> using the result above.</p></li>
 <li><p>Find <span class="math inline">\(\boldsymbol{\pi}\)</span> for a random walk on <span class="math inline">\(K_4\)</span> (complete graph).</p></li>
 </ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\bP\)</span> be a row-stochastic matrix (<span class="math inline">\(\sum_j P_{ij} = 1\)</span>) and let <span class="math inline">\(\bv\)</span> be an eigenvector with eigenvalue <span class="math inline">\(\lambda\)</span>. Let <span class="math inline">\(v_k\)</span> be the entry with the largest magnitude: <span class="math inline">\(|v_k| = \max_i |v_i|\)</span>. From <span class="math inline">\(\bP\bv = \lambda\bv\)</span>, the <span class="math inline">\(k\)</span>-th component is: <span class="math display">\[
-\begin{align}
-\lambda v_k = \sum_j P_{kj} v_j.
-\end{align}
-\]</span> Taking absolute values and using the triangle inequality: <span class="math display">\[
-\begin{align}
-|\lambda| |v_k| &amp;\leq \sum_j P_{kj} |v_j| \\
-    &amp;\leq \left( \sum_j P_{kj} \right) \max_i |v_i| \\
-    &amp;= 1 \cdot |v_k|.
-\end{align}
-\]</span> Since <span class="math inline">\(|v_k| &gt; 0\)</span>, we conclude <span class="math inline">\(|\lambda| \leq 1\)</span>. The proof for column-stochastic matrices follows from <span class="math inline">\(\sigma(\bP) = \sigma(\bP^T)\)</span>.</p>
-</div>
 </div>
 </div>
 

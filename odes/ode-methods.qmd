@@ -19,30 +19,33 @@ $$
 y_{n+1} = y_n + h f(t_n, y_n).
 \end{align}
 $$
-**Error:**  Local $O(h^2)$, Global $O(h)$.
-**Stability:**  Unstable for stiff problems. Absolute stability requires $|1 + h\lambda| \leq 1$.
 :::
 
 
-::: {.callout-tip icon=false collapse=true}
-## Proof
-Apply Forward Euler to the test equation $y' = \lambda y$:
+::: {.callout-note icon=false}
+## Theorem: Forward Euler Order and Stability
+Forward Euler has local truncation error $O(h^2)$ and global error $O(h)$. Applied to the test equation $y'=\lambda y$, it is stable only when
 $$
 \begin{align}
-y_{n+1} &= y_n + h (\lambda y_n) \\
-    &= (1 + h\lambda) y_n.
+|1+h\lambda|\leq 1.
 \end{align}
 $$
-Recursive application gives $y_n = (1 + h\lambda)^n y_0$. For the solution to remain bounded, we require the amplification factor to satisfy $|1 + h\lambda| \leq 1$.
-For real $\lambda < 0$:
-$$
-\begin{align}
--1 &\leq 1 + h\lambda \leq 1 \\
-    -2 &\leq h\lambda \leq 0 \\
-    h &\leq \frac{2}{|\lambda|}.
-\end{align}
-$$
-If the step size $h$ exceeds this limit, the numerical solution oscillates and grows exponentially.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use Taylor expansion of the exact solution to show that one Forward Euler step has local error $O(h^2)$.
+    
+1. Explain why accumulating $O(1/h)$ steps gives global error $O(h)$.
+    
+1. Apply Forward Euler to $y'=\lambda y$ and derive $y_n=(1+h\lambda)^ny_0$.
+    
+1. Derive the stability condition in the result above.
+    
+1. For real $\lambda<0$, show that stability requires $h\leq 2/|\lambda|$.
+
 :::
 
 
@@ -54,8 +57,34 @@ $$
 y_{n+1} = y_n + h f(t_{n+1}, y_{n+1}).
 \end{align}
 $$
-**Rule:**  Requires solving a nonlinear system at each step (via Newton).
-**Stability:**  **A-Stable** (unconditionally stable for all $h$ if $\text{Re}(\lambda) < 0$). The choice for stiff systems.
+It requires solving a nonlinear equation at each step, usually by Newton's method.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Backward Euler A-Stability
+Applied to $y'=\lambda y$, Backward Euler has amplification factor
+$$
+\begin{align}
+R(z)=\frac{1}{1-z},
+    \qquad z=h\lambda.
+\end{align}
+$$
+If $\operatorname{Re}(\lambda)<0$, then $|R(h\lambda)|<1$ for every $h>0$. Thus Backward Euler is A-stable.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Apply the result above to $y'=\lambda y$ and solve for $y_{n+1}$ in terms of $y_n$.
+    
+1. Derive the amplification factor in the result above.
+    
+1. Prove that $|1/(1-z)|<1$ whenever $\operatorname{Re}(z)<0$.
+    
+1. Explain why this matters for stiff decay problems.
+
 :::
 
 
@@ -76,26 +105,38 @@ k_1 &= f(t_n, y_n) \\
     y_{n+1} &= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)
 \end{align}
 $$
-**Error:**  Local $O(h^5)$, Global **$O(h^4)$**. Standard default for non-stiff systems.
+It has local error $O(h^5)$ and global error $O(h^4)$ for smooth non-stiff problems.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Theorem: Adaptive Step Control (RK45)
-Uses an **embedded pair** to estimate local error $e$ without extra stages (Dormand-Prince).
+Uses an embedded pair to estimate local error $e$ without extra stages (Dormand-Prince).
 **Mechanism:**  $h_{\text{new}} = h_{\text{old}} (\varepsilon / \|e\|)^{1/5}$.
 The algorithm adjusts the step size $h$ dynamically to maintain the local error within a specified tolerance.
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. If the local error behaves like $C h^5$, solve $C h_{\text{new}}^5\approx\varepsilon$ using an estimate $e\approx C h_{\text{old}}^5$.
+    
+1. Derive the exponent $1/5$ in the result above.
+    
+1. Explain why practical codes multiply this formula by a safety factor less than $1$.
+
+:::
+
+
 ## Symplectic Integrators
 
-Preserve the geometric structure of **Hamiltonian systems** (Energy conservation).
+Preserve the geometric structure of Hamiltonian systems (energy conservation).
 
 
 ::: {.callout-note icon=false}
 ## Definition: Velocity Verlet
-For $H = \frac{1}{2}v^2 + V(q)$, ensures no long-term energy drift:
+For $H = \frac{1}{2}v^2 + V(q)$:
 
 1. $v_{n+1/2} = v_n + \frac{h}{2} F_n$
     
@@ -103,13 +144,24 @@ For $H = \frac{1}{2}v^2 + V(q)$, ensures no long-term energy drift:
     
 1. $v_{n+1} = v_{n+1/2} + \frac{h}{2} F_{n+1}$
 
-**Property:**  Symplectic and time-reversible. Numerical energy oscillates but stays bounded.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
 **(Numerical Energy Drift)**  Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Apply Velocity Verlet from the result above to the harmonic oscillator $q'=v$, $v'=-q$.
+    
+1. Show that reversing the step size from $h$ to $-h$ undoes one Verlet step.
+    
+1. Compare long-time energy behavior of Forward Euler, RK4, and Velocity Verlet numerically.
+
 :::
 
 
@@ -121,7 +173,7 @@ For $H = \frac{1}{2}v^2 + V(q)$, ensures no long-term energy drift:
 
 1. Solve $y' = -y, y(0)=1$ with Forward Euler for 4 steps. Compare error to $e^{-1}$.
     
-1. Verify the stability limit of Forward Euler for $y' = \lambda y$ is $h < 2/|\lambda|$.
+1. Verify the stability limit of Forward Euler for $y' = \lambda y$ using the result above.
     
 1. Show that Forward Euler on a harmonic oscillator leads to unbounded energy growth.
     

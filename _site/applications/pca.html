@@ -719,7 +719,7 @@ window.Quarto = {
 \begin{align}
 X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n X_{ij}.
 \end{align}
-\]</span> <strong>Rule:</strong> Throughout this section, <span class="math inline">\(\bX\)</span> is assumed centered.</p>
+\]</span> Throughout this section, <span class="math inline">\(\bX\)</span> is assumed centered.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -738,6 +738,23 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 <li><p><strong>Off-diagonal:</strong> <span class="math inline">\(S_{ij}\)</span> is the covariance between features <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>.</p></li>
 <li><p><strong>Property:</strong> <span class="math inline">\(\bS\)</span> is symmetric positive semi-definite (SPSD).</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Show that centering makes each column of <span class="math inline">\(\bX\)</span> have mean zero.</p></li>
+<li><p>Prove that the diagonal entries of <span class="math inline">\(\bS\)</span> are sample variances.</p></li>
+<li><p>Prove that <span class="math inline">\(\bS\)</span> is symmetric positive semidefinite by computing <span class="math inline">\(\bz^T\bS\bz\)</span>.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -771,7 +788,26 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Numerical Stability:</strong> Never form <span class="math inline">\(\bX^T\bX\)</span> explicitly for PCA. Squaring the data matrix doubles the condition number (<span class="math inline">\(\kappa(\bS) = \kappa(\bX)^2\)</span>). Compute PCA directly via the SVD of <span class="math inline">\(\bX\)</span>.</p>
+<p><strong>(PCA stability)</strong> Never form <span class="math inline">\(\bX^T\bX\)</span> explicitly for PCA. Squaring the data matrix doubles the condition number (<span class="math inline">\(\kappa(\bS) = \kappa(\bX)^2\)</span>). Compute PCA directly via the SVD of <span class="math inline">\(\bX\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Starting from <span class="math inline">\(\bX=\bU\bsigma\bV^T\)</span>, compute <span class="math inline">\(\bS=(n-1)^{-1}\bX^T\bX\)</span>.</p></li>
+<li><p>Show that the columns of <span class="math inline">\(\bV\)</span> are eigenvectors of <span class="math inline">\(\bS\)</span>.</p></li>
+<li><p>Show that the corresponding eigenvalues are <span class="math inline">\(\lambda_i=\sigma_i^2/(n-1)\)</span>.</p></li>
+<li><p>Compute the score matrix <span class="math inline">\(\bZ=\bX\bV\)</span> and prove that <span class="math inline">\(\operatorname{Cov}(\bZ)\)</span> is diagonal.</p></li>
+<li><p>Use the result above to explain the stability warning above.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -791,7 +827,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 \begin{align}
 \text{PVE}_k = \frac{\sum_{i=1}^k \sigma_i^2}{\sum_{i=1}^p \sigma_i^2}.
 \end{align}
-\]</span> <strong>Rule:</strong> Choose <span class="math inline">\(k\)</span> to reach a target PVE (e.g., 95%) or identify the “elbow” in a scree plot.</p>
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -804,7 +840,29 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The rank-<span class="math inline">\(k\)</span> matrix <span class="math inline">\(\bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T\)</span> is the optimal <span class="math inline">\(k\)</span>-dimensional linear approximation of the data in the Frobenius norm (Eckart-Young).</p>
+<p>The rank-<span class="math inline">\(k\)</span> matrix <span class="math display">\[
+\begin{align}
+\bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T
+\end{align}
+\]</span> is the optimal <span class="math inline">\(k\)</span>-dimensional linear approximation of the data in the Frobenius norm, by the Eckart-Young theorem.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to prove the result above.</p></li>
+<li><p>Show that <span class="math inline">\(\|\bX-\bX_k\|_F^2=\sum_{i&gt;k}\sigma_i^2\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\text{PVE}_k=1-\|\bX-\bX_k\|_F^2/\|\bX\|_F^2\)</span>.</p></li>
+<li><p>Explain why a PVE threshold is a modeling choice, not a theorem.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -820,7 +878,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Standardization:</strong> If features have different units (e.g., height in meters vs.&nbsp;weight in kg), PCA will be dominated by large-scale features. <strong>Standardize</strong> by dividing each centered column by its standard deviation: <span class="math inline">\(X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j\)</span>.</p>
+<p><strong>(Standardization)</strong> If features have different units, PCA will be dominated by large-scale features. Standardize by dividing each centered column by its standard deviation: <span class="math inline">\(X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -851,38 +909,10 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Center <span class="math inline">\(\bX = \begin{pmatrix} 2 &amp; 1 \\ -1 &amp; 3 \\ -1 &amp; -4 \end{pmatrix}\)</span> and compute <span class="math inline">\(\bS\)</span>. Find the PVE for <span class="math inline">\(k=1\)</span>.</p></li>
-<li><p>Prove that PC scores <span class="math inline">\(\bz_i, \bz_j\)</span> are uncorrelated for <span class="math inline">\(i \neq j\)</span>.</p></li>
+<li><p>Prove that PC scores <span class="math inline">\(\bz_i, \bz_j\)</span> are uncorrelated for <span class="math inline">\(i \neq j\)</span> using the result above.</p></li>
 <li><p>Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?</p></li>
 <li><p>Verify that the sum of variances <span class="math inline">\(\sum \lambda_i\)</span> equals the total variance <span class="math inline">\(\text{Tr}(\bS)\)</span>.</p></li>
 </ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>The score matrix is <span class="math inline">\(\bZ = \bX\bV\)</span>. The covariance of the scores is: <span class="math display">\[
-\begin{align}
-\text{Cov}(\bZ) &amp;= \frac{1}{n-1} \bZ^T \bZ \\
-    &amp;= \frac{1}{n-1} (\bX\bV)^T (\bX\bV) \\
-    &amp;= \bV^T \left( \frac{1}{n-1} \bX^T \bX \right) \bV.
-\end{align}
-\]</span> Since <span class="math inline">\(\frac{1}{n-1} \bX^T \bX = \bS\)</span> and <span class="math inline">\(\bV\)</span> contains the eigenvectors of <span class="math inline">\(\bS\)</span>: <span class="math display">\[
-\begin{align}
-\text{Cov}(\bZ) &amp;= \bV^T \bS \bV \\
-    &amp;= \bV^T (\bV \boldsymbol{\Lambda} \bV^T) \bV \\
-    &amp;= \boldsymbol{\Lambda}.
-\end{align}
-\]</span> Since <span class="math inline">\(\boldsymbol{\Lambda}\)</span> is diagonal, the covariance between <span class="math inline">\(\bz_i\)</span> and <span class="math inline">\(\bz_j\)</span> is zero for <span class="math inline">\(i \neq j\)</span>.</p>
-</div>
 </div>
 </div>
 

@@ -25,7 +25,7 @@ $$
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Performance:** 
+**(Jacobi performance)** 
 Jacobi iteration is **inherently parallel**, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.
 :::
 
@@ -45,14 +45,14 @@ $$
 
 - **Component form:**  $x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j < i} a_{ij}x_j^{(k+1)} - \sum_{j > i} a_{ij}x_j^{(k)}\right)$.
     
-- **Key Idea:**  Use updated values *immediately* within the same sweep.
+- **Update rule:**  Use updated values *immediately* within the same sweep.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Performance:** 
+**(Gauss-Seidel performance)** 
 Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges **twice as fast** as Jacobi and allows for in-place updates.
 :::
 
@@ -61,8 +61,52 @@ Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typ
 
 
 ::: {.callout-note icon=false}
+## Theorem: Stationary Iteration Matrices
+For $\bA=\bD+\bL+\bU$, where $\bL$ and $\bU$ are the strict lower and upper triangular parts,
+$$
+\begin{align}
+\bT_J = -\bD^{-1}(\bL+\bU)
+\end{align}
+$$
+is the Jacobi iteration matrix, and
+$$
+\begin{align}
+\bT_{GS}=-(\bD+\bL)^{-1}\bU
+\end{align}
+$$
+is the Gauss-Seidel iteration matrix. By the result above, each method converges for every initial guess exactly when the corresponding spectral radius is less than $1$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Rewrite the result above in the form $\bx^{(k+1)}=\bT_J\bx^{(k)}+\bc_J$.
+    
+1. Rewrite the result above in the form $\bx^{(k+1)}=\bT_{GS}\bx^{(k)}+\bc_{GS}$.
+    
+1. Apply the result above to prove the convergence criterion in the result above.
+    
+1. Compute $\bT_J$ and $\bT_{GS}$ for $\bA=\begin{pmatrix}2&1\\1&2\end{pmatrix}$.
+
+:::
+
+
+::: {.callout-note icon=false}
 ## Theorem: Diagonal Dominance
 If $\bA$ is **strictly diagonally dominant** ($|a_{ii}| > \sum_{j \neq i} |a_{ij}|$), both Jacobi and Gauss-Seidel converge for any $\bx^{(0)}$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. For Jacobi, use strict diagonal dominance to show that the infinity-norm row sums of $\bT_J$ are less than $1$.
+    
+1. Conclude $\rho(\bT_J)\leq \|\bT_J\|_\infty<1$.
+    
+1. Repeat the argument for Gauss-Seidel by isolating the largest component of the error equation.
+
 :::
 
 
@@ -94,15 +138,24 @@ $$
 x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 \end{align}
 $$
+:::
 
-- **Convergence Condition:**  $0 < \omega < 2$ (Kahan's Theorem).
 
+::: {.callout-note icon=false}
+## Theorem: SOR Convergence Window
+For SPD systems, SOR converges for relaxation parameters
+$$
+\begin{align}
+0<\omega<2.
+\end{align}
+$$
+For model Poisson problems, well-chosen $\omega>1$ can reduce the iteration count substantially compared with Gauss-Seidel.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Convergence Acceleration:** 
+**(SOR acceleration)** 
 For the 1D Poisson problem on a grid with spacing $h$:
 
 - Jacobi and Gauss-Seidel require $O(n^2)$ iterations.
@@ -119,6 +172,8 @@ SOR effectively improves the convergence rate from $O(h^2)$ to $O(h)$.
 1. **Optimal Tuning:**  For $\rho_J = 0.95$, calculate the optimal $\omega^* = 2/(1 + \sqrt{1-\rho_J^2})$.
     
 1. **Convergence Sweep:**  Implement SOR and plot iterations to convergence vs.\ $\omega \in [1, 2)$. Identify the ``cliff'' at $\omega^*$.
+    
+1. Check numerically that choices $\omega\leq 0$ or $\omega\geq 2$ fail on an SPD Poisson matrix, as predicted by the result above.
 
 :::
 
@@ -126,17 +181,24 @@ SOR effectively improves the convergence rate from $O(h^2)$ to $O(h)$.
 ## Stopping Criteria
 
 
-1. **Absolute Residual:**  $\|\br^{(k)}\| < \varepsilon$.
+::: {.callout-note icon=false}
+## Definition: Iterative Stopping Tests
+Common stopping tests include
+
+1. absolute residual: $\|\br^{(k)}\| < \varepsilon$,
     
-1. **Relative Residual:**  $\|\br^{(k)}\|/\|\bb\| < \varepsilon$. (Scale invariant).
+1. relative residual: $\|\br^{(k)}\|/\|\bb\| < \varepsilon$,
     
-1. **Increment:**  $\|\bx^{(k+1)} - \bx^{(k)}\| < \varepsilon$. (Cheap, but may stop prematurely if convergence is slow).
+1. increment: $\|\bx^{(k+1)}-\bx^{(k)}\|<\varepsilon$.
+
+Residual tests are tied to the equation; increment tests are cheap but can stop prematurely if convergence is slow.
+:::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Why is a small residual not enough to guarantee a small error $\be^{(k)}$? (Condition number).
+1. Why is a small residual not enough to guarantee a small error $\be^{(k)}$? Use the result above.
     
 1. Implement a robust solver that combines relative residual with a `max\_iter` budget.
 

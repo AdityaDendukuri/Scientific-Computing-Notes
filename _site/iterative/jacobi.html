@@ -737,7 +737,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance:</strong> Jacobi iteration is <strong>inherently parallel</strong>, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.</p>
+<p><strong>(Jacobi performance)</strong> Jacobi iteration is <strong>inherently parallel</strong>, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.</p>
 </div>
 </div>
 </section>
@@ -761,7 +761,7 @@ window.Quarto = {
 \]</span></p>
 <ul>
 <li><p><strong>Component form:</strong> <span class="math inline">\(x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j &lt; i} a_{ij}x_j^{(k+1)} - \sum_{j &gt; i} a_{ij}x_j^{(k)}\right)\)</span>.</p></li>
-<li><p><strong>Key Idea:</strong> Use updated values <em>immediately</em> within the same sweep.</p></li>
+<li><p><strong>Update rule:</strong> Use updated values <em>immediately</em> within the same sweep.</p></li>
 </ul>
 </div>
 </div>
@@ -775,7 +775,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance:</strong> Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges <strong>twice as fast</strong> as Jacobi and allows for in-place updates.</p>
+<p><strong>(Gauss-Seidel performance)</strong> Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges <strong>twice as fast</strong> as Jacobi and allows for in-place updates.</p>
 </div>
 </div>
 </section>
@@ -787,11 +787,67 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Stationary Iteration Matrices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bA=\bD+\bL+\bU\)</span>, where <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> are the strict lower and upper triangular parts, <span class="math display">\[
+\begin{align}
+\bT_J = -\bD^{-1}(\bL+\bU)
+\end{align}
+\]</span> is the Jacobi iteration matrix, and <span class="math display">\[
+\begin{align}
+\bT_{GS}=-(\bD+\bL)^{-1}\bU
+\end{align}
+\]</span> is the Gauss-Seidel iteration matrix. By the result above, each method converges for every initial guess exactly when the corresponding spectral radius is less than <span class="math inline">\(1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Rewrite the result above in the form <span class="math inline">\(\bx^{(k+1)}=\bT_J\bx^{(k)}+\bc_J\)</span>.</p></li>
+<li><p>Rewrite the result above in the form <span class="math inline">\(\bx^{(k+1)}=\bT_{GS}\bx^{(k)}+\bc_{GS}\)</span>.</p></li>
+<li><p>Apply the result above to prove the convergence criterion in the result above.</p></li>
+<li><p>Compute <span class="math inline">\(\bT_J\)</span> and <span class="math inline">\(\bT_{GS}\)</span> for <span class="math inline">\(\bA=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Theorem: Diagonal Dominance
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>If <span class="math inline">\(\bA\)</span> is <strong>strictly diagonally dominant</strong> (<span class="math inline">\(|a_{ii}| &gt; \sum_{j \neq i} |a_{ij}|\)</span>), both Jacobi and Gauss-Seidel converge for any <span class="math inline">\(\bx^{(0)}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>For Jacobi, use strict diagonal dominance to show that the infinity-norm row sums of <span class="math inline">\(\bT_J\)</span> are less than <span class="math inline">\(1\)</span>.</p></li>
+<li><p>Conclude <span class="math inline">\(\rho(\bT_J)\leq \|\bT_J\|_\infty&lt;1\)</span>.</p></li>
+<li><p>Repeat the argument for Gauss-Seidel by isolating the largest component of the error equation.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -842,9 +898,23 @@ window.Quarto = {
 x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 \end{align}
 \]</span></p>
-<ul>
-<li><strong>Convergence Condition:</strong> <span class="math inline">\(0 &lt; \omega &lt; 2\)</span> (Kahan’s Theorem).</li>
-</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: SOR Convergence Window
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For SPD systems, SOR converges for relaxation parameters <span class="math display">\[
+\begin{align}
+0&lt;\omega&lt;2.
+\end{align}
+\]</span> For model Poisson problems, well-chosen <span class="math inline">\(\omega&gt;1\)</span> can reduce the iteration count substantially compared with Gauss-Seidel.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -857,7 +927,7 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Convergence Acceleration:</strong> For the 1D Poisson problem on a grid with spacing <span class="math inline">\(h\)</span>:</p>
+<p><strong>(SOR acceleration)</strong> For the 1D Poisson problem on a grid with spacing <span class="math inline">\(h\)</span>:</p>
 <ul>
 <li><p>Jacobi and Gauss-Seidel require <span class="math inline">\(O(n^2)\)</span> iterations.</p></li>
 <li><p>Optimal SOR requires only <span class="math inline">\(O(n)\)</span> iterations.</p></li>
@@ -878,17 +948,32 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 <ol type="1">
 <li><p><strong>Optimal Tuning:</strong> For <span class="math inline">\(\rho_J = 0.95\)</span>, calculate the optimal <span class="math inline">\(\omega^* = 2/(1 + \sqrt{1-\rho_J^2})\)</span>.</p></li>
 <li><p><strong>Convergence Sweep:</strong> Implement SOR and plot iterations to convergence vs.&nbsp;<span class="math inline">\(\omega \in [1, 2)\)</span>. Identify the ``cliff’’ at <span class="math inline">\(\omega^*\)</span>.</p></li>
+<li><p>Check numerically that choices <span class="math inline">\(\omega\leq 0\)</span> or <span class="math inline">\(\omega\geq 2\)</span> fail on an SPD Poisson matrix, as predicted by the result above.</p></li>
 </ol>
 </div>
 </div>
 </section>
 <section id="stopping-criteria" class="level2" data-number="22.5">
 <h2 data-number="22.5" class="anchored" data-anchor-id="stopping-criteria"><span class="header-section-number">22.5</span> Stopping Criteria</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Iterative Stopping Tests
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Common stopping tests include</p>
 <ol type="1">
-<li><p><strong>Absolute Residual:</strong> <span class="math inline">\(\|\br^{(k)}\| &lt; \varepsilon\)</span>.</p></li>
-<li><p><strong>Relative Residual:</strong> <span class="math inline">\(\|\br^{(k)}\|/\|\bb\| &lt; \varepsilon\)</span>. (Scale invariant).</p></li>
-<li><p><strong>Increment:</strong> <span class="math inline">\(\|\bx^{(k+1)} - \bx^{(k)}\| &lt; \varepsilon\)</span>. (Cheap, but may stop prematurely if convergence is slow).</p></li>
+<li><p>absolute residual: <span class="math inline">\(\|\br^{(k)}\| &lt; \varepsilon\)</span>,</p></li>
+<li><p>relative residual: <span class="math inline">\(\|\br^{(k)}\|/\|\bb\| &lt; \varepsilon\)</span>,</p></li>
+<li><p>increment: <span class="math inline">\(\|\bx^{(k+1)}-\bx^{(k)}\|&lt;\varepsilon\)</span>.</p></li>
 </ol>
+<p>Residual tests are tied to the equation; increment tests are cheap but can stop prematurely if convergence is slow.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -900,7 +985,7 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Why is a small residual not enough to guarantee a small error <span class="math inline">\(\be^{(k)}\)</span>? (Condition number).</p></li>
+<li><p>Why is a small residual not enough to guarantee a small error <span class="math inline">\(\be^{(k)}\)</span>? Use the result above.</p></li>
 <li><p>Implement a robust solver that combines relative residual with a <code>max\_iter</code> budget.</p></li>
 </ol>
 </div>

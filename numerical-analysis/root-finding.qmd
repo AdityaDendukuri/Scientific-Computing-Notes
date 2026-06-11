@@ -21,10 +21,23 @@ The method repeatedly halves the interval:
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the intermediate value theorem to prove that the initial bracket contains a root.
+    
+1. Show that the bisection update preserves the sign-change bracket.
+    
+1. Prove that the bracket length after $n$ steps is $(b-a)/2^n$.
+    
+1. Derive the error bound in the result above.
+
+:::
+
+
 ::: {.callout-tip icon=false}
 ## Remark
-**Stability:**  Bisection is the most robust method; it always converges if a bracket exists.
-**Convergence:**  **Linear** with rate $1/2$. Gains exactly 1 bit of accuracy per step.
+**(Bisection trade-off)**  Bisection is robust because it preserves a bracket, but its convergence is only linear. Each step gains exactly one bit of accuracy.
 :::
 
 
@@ -46,7 +59,7 @@ $$
 
 ::: {.callout-note icon=false}
 ## Theorem: Quadratic Convergence
-If $f''(x)$ is continuous near a simple root $x^*$ ($f'(x^*) \neq 0$), Newton's method converges **quadratically**:
+If $f''(x)$ is continuous near a simple root $x^*$ ($f'(x^*) \neq 0$), Newton's method converges quadratically:
 $$
 \begin{align}
 |x_{k+1} - x^*| \approx \frac{|f''(x^*)|}{2|f'(x^*)|} |x_k - x^*|^2.
@@ -55,34 +68,25 @@ $$
 :::
 
 
-::: {.callout-tip icon=false collapse=true}
-## Proof
-Expand $f(x^*)$ about $x_k$ using a second-order Taylor polynomial:
-$$
-\begin{align}
-0 = f(x^*) = f(x_k) + f'(x_k)(x^* - x_k) + \frac{f''(\xi_k)}{2}(x^* - x_k)^2
-\end{align}
-$$
-for some $\xi_k$ between $x^*$ and $x_k$. Dividing by $f'(x_k)$:
-$$
-\begin{align}
-0 = \frac{f(x_k)}{f'(x_k)} + x^* - x_k + \frac{f''(\xi_k)}{2f'(x_k)}(x^* - x_k)^2.
-\end{align}
-$$
-Substituting the Newton update $x_{k+1} = x_k - f(x_k)/f'(x_k)$:
-$$
-\begin{align}
-0 &= -(x_{k+1} - x_k) + x^* - x_k + \frac{f''(\xi_k)}{2f'(x_k)}(x^* - x_k)^2 \\
-    x_{k+1} - x^* &= \frac{f''(\xi_k)}{2f'(x_k)}(x_k - x^*)^2.
-\end{align}
-$$
-As $x_k \to x^*$, we have $\xi_k \to x^*$, yielding the quadratic error relation.
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Expand $f(x^*)$ about $x_k$ using a second-order Taylor formula.
+    
+1. Divide by $f'(x_k)$ and isolate the Newton correction $f(x_k)/f'(x_k)$.
+    
+1. Substitute $x_{k+1}=x_k-f(x_k)/f'(x_k)$.
+    
+1. Show that $|x_{k+1}-x^*| \leq C|x_k-x^*|^2$ once $x_k$ is close enough to a simple root.
+    
+1. Explain why the assumption $f'(x^*)\neq 0$ is essential.
+
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Failure Modes:** 
+**(Newton failure modes)** 
 1. $x_0$ too far from $x^*$.
 2. $f'(x_k) \approx 0$ (zero derivative).
 3. Multiple roots ($f'(x^*) = 0$): convergence degrades to linear with rate $1/2$.
@@ -108,6 +112,18 @@ The secant method converges with order $\phi = (1 + \sqrt{5})/2 \approx 1.618$ (
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Derive the secant update by replacing $f'(x_k)$ in Newton's method with a finite difference through $(x_{k-1},f(x_{k-1}))$ and $(x_k,f(x_k))$.
+    
+1. Compare the information used by Newton and secant.
+    
+1. Numerically estimate the convergence order for $f(x)=x^2-2$.
+
+:::
+
+
 ## Brent's Method
 
 A standard robust algorithm for one-dimensional root-finding.
@@ -123,7 +139,7 @@ Brent's method combines:
     
 1. **IQI:**  Inverse Quadratic Interpolation using 3 points.
 
-**Rule:**  It uses fast open steps by default, falling back to bisection only if the step is outside the bracket or not improving quickly enough.
+It uses fast open steps by default, falling back to bisection only if the step is outside the bracket or not improving quickly enough.
 :::
 
 
@@ -139,9 +155,9 @@ Brent's method combines:
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Bisection on $f(x) = x^3 - 2$ on $[1, 2]$ for 4 steps. Find the guaranteed error.
+1. Bisection on $f(x) = x^3 - 2$ on $[1, 2]$ for 4 steps. Find the guaranteed error using the result above.
     
-1. Newton on $f(x) = x^2 - 2$ from $x_0 = 1$. Verify the doubling of digits.
+1. Newton on $f(x) = x^2 - 2$ from $x_0 = 1$. Verify the doubling of digits using the result above.
     
 1. Prove that for $f(x) = x^2$, Newton converges to $0$ with linear rate $1/2$.
     

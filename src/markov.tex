@@ -14,8 +14,23 @@ Matrix $\bP \in \fR^{n \times n}$ where:
     \item $P_{ij} \geq 0$.
     \item $\sum_i P_{ij} = 1$ (Columns sum to 1).
 \end{enumerate}
-\textbf{Property:}\enspace $\lambda=1$ is always an eigenvalue (dominant).
 }
+\label{def:column-stochastic}
+
+\addThm{Spectrum of a Stochastic Matrix}{%
+If $\bP$ is column-stochastic, then $\lambda=1$ is an eigenvalue and every eigenvalue satisfies $|\lambda|\leq 1$.
+}
+\label{thm:stochastic-spectrum}
+
+\addExcr{%
+\begin{enumerate}
+    \item Show that $\mathbf{1}^T\bP=\mathbf{1}^T$ for a column-stochastic matrix.
+    \item Conclude that $1$ is a left eigenvalue of $\bP$, hence an eigenvalue.
+    \item Prove $|\lambda|\leq 1$ first for a row-stochastic matrix by taking the largest-magnitude entry of an eigenvector.
+    \item Apply the previous step to $\bP^T$ to prove Thm~\ref{thm:stochastic-spectrum}.
+\end{enumerate}
+}
+\label{ex:stochastic-spectrum}
 
 \addDef{Markov Chain}{%
 Probability distributions $\bx^{(k)}$ evolving by $\bx^{(k+1)} = \bP \bx^{(k)}$.
@@ -24,14 +39,16 @@ Probability distributions $\bx^{(k)}$ evolving by $\bx^{(k+1)} = \bP \bx^{(k)}$.
     \item Long-run behavior is governed by the eigendecomposition of $\bP$.
 \end{itemize}
 }
+\label{def:markov-chain}
 
 \addDef{Stationary Distribution}{%
-A probability vector $\boldsymbol{\pi}$ such that **$\bP \boldsymbol{\pi} = \boldsymbol{\pi}$**.
+A probability vector $\boldsymbol{\pi}$ such that $\bP \boldsymbol{\pi} = \boldsymbol{\pi}$.
 \begin{itemize}
     \item Right eigenvector of $\bP$ for $\lambda=1$.
     \item Represents the equilibrium state of the chain.
 \end{itemize}
 }
+\label{def:stationary-distribution}
 
 \subsubsection{Convergence and Mixing}
 
@@ -43,24 +60,61 @@ If $\bP$ is \textbf{irreducible} (all states reachable) and \textbf{primitive} (
     \item $\lim_{k\to\infty} \bP^k \bx^{(0)} = \boldsymbol{\pi}$ for any initial state.
 \end{enumerate}
 }
+\label{thm:pf-chains}
 
-\addDef{Spectral Gap and Mixing Time}{%
-The gap **$\delta = 1 - |\lambda_2|$** controls convergence speed.
-\begin{itemize}
-    \item \textbf{Mixing Time:}\enspace $k_{\varepsilon} \approx \log(1/\varepsilon) / \delta$.
-    \item \textbf{Insight:}\enspace Large gap = fast mixing. Connected graphs have larger gaps.
-\end{itemize}
+\addDef{Spectral Gap}{%
+The gap $\delta = 1 - |\lambda_2|$ controls convergence speed.
 }
+\label{def:spectral-gap}
+
+\addThm{Spectral Mixing Heuristic}{%
+For a diagonalizable primitive chain, the distance to stationarity is dominated asymptotically by the second eigenvalue:
+\begin{align*}
+    \|\bx^{(k)}-\boldsymbol{\pi}\| \approx C|\lambda_2|^k.
+\end{align*}
+Thus a larger spectral gap $\delta=1-|\lambda_2|$ means faster mixing, and the iteration count to reach tolerance $\varepsilon$ scales like
+\begin{align*}
+    k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
+\end{align*}
+when $\delta$ is small.
+}
+\label{thm:spectral-mixing}
+
+\addExcr{%
+\begin{enumerate}
+    \item Write an initial distribution as $\bx^{(0)}=\boldsymbol{\pi}+\sum_{i\geq 2} c_i\bv_i$ using eigenvectors of $\bP$.
+    \item Apply $\bP^k$ and use $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$.
+    \item Identify the slowest-decaying term.
+    \item Use $\log(1-\delta)\approx -\delta$ to derive the mixing-time estimate in Thm~\ref{thm:spectral-mixing}.
+\end{enumerate}
+}
+\label{ex:spectral-mixing}
 
 \subsubsection{Properties and Design}
 
 \addDef{Detailed Balance (Reversibility)}{%
 A chain is reversible if $\pi_j P_{ij} = \pi_i P_{ji}$ for all $i, j$.
-\begin{itemize}
-    \item \textbf{Implication:}\enspace Reversible chains have **real eigenvalues**.
-    \item \textbf{Symmetry:}\enspace $\bD_{\boldsymbol{\pi}}^{-1/2} \bP \bD_{\boldsymbol{\pi}}^{1/2}$ is symmetric.
-\end{itemize}
 }
+\label{def:detailed-balance}
+
+\addThm{Reversible Chains Have Real Spectrum}{%
+If $\bP$ satisfies detailed balance with stationary distribution $\boldsymbol{\pi}$ and $\bD_{\boldsymbol{\pi}}=\operatorname{diag}(\boldsymbol{\pi})$, then
+\begin{align*}
+    \bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}
+\end{align*}
+is symmetric. Therefore reversible chains have real eigenvalues.
+}
+\label{thm:reversible-real-spectrum}
+
+\addExcr{%
+\begin{enumerate}
+    \item Compute the $(i,j)$ entry of $\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}$.
+    \item Use detailed balance from Def~\ref{def:detailed-balance} to show that this entry equals the $(j,i)$ entry.
+    \item Explain why similarity preserves eigenvalues.
+    \item Conclude Thm~\ref{thm:reversible-real-spectrum}.
+\end{enumerate}
+}
+\label{ex:reversible-real-spectrum}
 
 \addRemark{%
 \textbf{(Design Tool: Metropolis-Hastings)}\enspace Construct a reversible chain for a desired $\boldsymbol{\pi}$ by accepting moves with probability $a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})$.
@@ -71,25 +125,10 @@ A chain is reversible if $\pi_j P_{ij} = \pi_i P_{ji}$ for all $i, j$.
 \addExcr{%
 \begin{enumerate}
     \item Construct $\bP$ for a 2-state chain with transition probabilities $\{0.1, 0.2\}$. Find $\boldsymbol{\pi}$.
-    \item Prove that $|\lambda| \leq 1$ for any stochastic matrix.
-    \item Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.\ $\lambda_2$.
+    \item Prove that $|\lambda| \leq 1$ for any stochastic matrix using Ex~\ref{ex:stochastic-spectrum}.
+    \item Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.\ $\lambda_2$ using Thm~\ref{thm:spectral-mixing}.
     \item Find $\boldsymbol{\pi}$ for a random walk on $K_4$ (complete graph).
 \end{enumerate}
-}
-
-\addPrf{%
-Let $\bP$ be a row-stochastic matrix ($\sum_j P_{ij} = 1$) and let $\bv$ be an eigenvector with eigenvalue $\lambda$. Let $v_k$ be the entry with the largest magnitude: $|v_k| = \max_i |v_i|$.
-From $\bP\bv = \lambda\bv$, the $k$-th component is:
-\begin{align*}
-    \lambda v_k = \sum_j P_{kj} v_j.
-\end{align*}
-Taking absolute values and using the triangle inequality:
-\begin{align*}
-    |\lambda| |v_k| &\leq \sum_j P_{kj} |v_j| \\
-    &\leq \left( \sum_j P_{kj} \right) \max_i |v_i| \\
-    &= 1 \cdot |v_k|.
-\end{align*}
-Since $|v_k| > 0$, we conclude $|\lambda| \leq 1$. The proof for column-stochastic matrices follows from $\sigma(\bP) = \sigma(\bP^T)$.
 }
 
 \end{document}

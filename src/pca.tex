@@ -13,8 +13,9 @@ Data matrix $\bX \in \fR^{n\times p}$ ($n$ samples, $p$ features) must be \textb
 \begin{align*}
     X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n X_{ij}.
 \end{align*}
-\textbf{Rule:}\enspace Throughout this section, $\bX$ is assumed centered.
+Throughout this section, $\bX$ is assumed centered.
 }
+\label{def:pca-centering}
 
 \addDef{Sample Covariance Matrix}{%
 The matrix $\bS = \frac{1}{n-1}\bX^T\bX \in \fR^{p\times p}$.
@@ -24,6 +25,16 @@ The matrix $\bS = \frac{1}{n-1}\bX^T\bX \in \fR^{p\times p}$.
     \item \textbf{Property:}\enspace $\bS$ is symmetric positive semi-definite (SPSD).
 \end{itemize}
 }
+\label{def:sample-covariance}
+
+\addExcr{%
+\begin{enumerate}
+    \item Show that centering makes each column of $\bX$ have mean zero.
+    \item Prove that the diagonal entries of $\bS$ are sample variances.
+    \item Prove that $\bS$ is symmetric positive semidefinite by computing $\bz^T\bS\bz$.
+\end{enumerate}
+}
+\label{ex:pca-covariance}
 
 \subsubsection{PCA via SVD}
 
@@ -35,10 +46,22 @@ Let $\bX = \bU\bsigma\bV^T$ be the SVD of the centered data matrix.
     \item \textbf{Variances:}\enspace $\lambda_i = \text{Var}(\bz_i) = \frac{\sigma_i^2}{n-1}$.
 \end{itemize}
 }
+\label{thm:pca-svd}
 
 \addRemark{%
-\textbf{Numerical Stability:}\enspace Never form $\bX^T\bX$ explicitly for PCA. Squaring the data matrix doubles the condition number ($\kappa(\bS) = \kappa(\bX)^2$). Compute PCA directly via the SVD of $\bX$.
+\textbf{(PCA stability)}\enspace Never form $\bX^T\bX$ explicitly for PCA. Squaring the data matrix doubles the condition number ($\kappa(\bS) = \kappa(\bX)^2$). Compute PCA directly via the SVD of $\bX$.
 }
+
+\addExcr{%
+\begin{enumerate}
+    \item Starting from $\bX=\bU\bsigma\bV^T$, compute $\bS=(n-1)^{-1}\bX^T\bX$.
+    \item Show that the columns of $\bV$ are eigenvectors of $\bS$.
+    \item Show that the corresponding eigenvalues are $\lambda_i=\sigma_i^2/(n-1)$.
+    \item Compute the score matrix $\bZ=\bX\bV$ and prove that $\operatorname{Cov}(\bZ)$ is diagonal.
+    \item Use Ex~\ref{ex:svd-normal-equations-warning} to explain the stability warning above.
+\end{enumerate}
+}
+\label{ex:pca-svd}
 
 \subsubsection{Variance and Dimensionality Reduction}
 
@@ -47,48 +70,48 @@ For the first $k$ components:
 \begin{align*}
     \text{PVE}_k = \frac{\sum_{i=1}^k \sigma_i^2}{\sum_{i=1}^p \sigma_i^2}.
 \end{align*}
-\textbf{Rule:}\enspace Choose $k$ to reach a target PVE (e.g., 95\%) or identify the "elbow" in a scree plot.
 }
+\label{def:pve}
 
 \addThm{Optimal Approximation}{%
-The rank-$k$ matrix $\bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T$ is the optimal $k$-dimensional linear approximation of the data in the Frobenius norm (Eckart-Young).
+The rank-$k$ matrix
+\begin{align*}
+    \bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T
+\end{align*}
+is the optimal $k$-dimensional linear approximation of the data in the Frobenius norm, by the Eckart-Young theorem.
 }
+\label{thm:pca-optimal-approximation}
+
+\addExcr{%
+\begin{enumerate}
+    \item Use Thm~\ref{thm:eckart-young} to prove Thm~\ref{thm:pca-optimal-approximation}.
+    \item Show that $\|\bX-\bX_k\|_F^2=\sum_{i>k}\sigma_i^2$.
+    \item Show that $\text{PVE}_k=1-\|\bX-\bX_k\|_F^2/\|\bX\|_F^2$.
+    \item Explain why a PVE threshold is a modeling choice, not a theorem.
+\end{enumerate}
+}
+\label{ex:pca-optimal-approximation}
 
 \subsubsection{Implementation Details}
 
 \addRemark{%
-\textbf{Standardization:}\enspace If features have different units (e.g., height in meters vs.\ weight in kg), PCA will be dominated by large-scale features. **Standardize** by dividing each centered column by its standard deviation: $X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j$.
+\textbf{(Standardization)}\enspace If features have different units, PCA will be dominated by large-scale features. Standardize by dividing each centered column by its standard deviation: $X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j$.
 }
 
 \addDef{Kernel PCA (High-Dimensional Case)}{%
 When $p \gg n$, work with the $n \times n$ Gram matrix $\mathbf{K} = \bX\bX^T$. Principal directions are recovered via $\bv_i = \bX^T \bu_i / \sigma_i$.
 }
+\label{def:kernel-pca}
 
 \subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
     \item Center $\bX = \begin{pmatrix} 2 & 1 \\ -1 & 3 \\ -1 & -4 \end{pmatrix}$ and compute $\bS$. Find the PVE for $k=1$.
-    \item Prove that PC scores $\bz_i, \bz_j$ are uncorrelated for $i \neq j$.
+    \item Prove that PC scores $\bz_i, \bz_j$ are uncorrelated for $i \neq j$ using Ex~\ref{ex:pca-svd}.
     \item Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?
     \item Verify that the sum of variances $\sum \lambda_i$ equals the total variance $\text{Tr}(\bS)$.
 \end{enumerate}
-}
-
-\addPrf{%
-The score matrix is $\bZ = \bX\bV$. The covariance of the scores is:
-\begin{align*}
-    \text{Cov}(\bZ) &= \frac{1}{n-1} \bZ^T \bZ \\
-    &= \frac{1}{n-1} (\bX\bV)^T (\bX\bV) \\
-    &= \bV^T \left( \frac{1}{n-1} \bX^T \bX \right) \bV.
-\end{align*}
-Since $\frac{1}{n-1} \bX^T \bX = \bS$ and $\bV$ contains the eigenvectors of $\bS$:
-\begin{align*}
-    \text{Cov}(\bZ) &= \bV^T \bS \bV \\
-    &= \bV^T (\bV \boldsymbol{\Lambda} \bV^T) \bV \\
-    &= \boldsymbol{\Lambda}.
-\end{align*}
-Since $\boldsymbol{\Lambda}$ is diagonal, the covariance between $\bz_i$ and $\bz_j$ is zero for $i \neq j$.
 }
 
 \end{document}

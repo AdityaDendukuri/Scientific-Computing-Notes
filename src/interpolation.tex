@@ -13,6 +13,17 @@ Constructing a polynomial that passes exactly through a given set of data points
 \addThm{Existence and Uniqueness}{%
 Given $n+1$ distinct points $(x_i, y_i)$, there exists a unique polynomial $P_n(x)$ of degree at most $n$ such that $P_n(x_i) = y_i$ for all $i = 0, \dots, n$.
 }
+\label{thm:interpolation-existence}
+
+\addExcr{%
+\begin{enumerate}
+    \item Count the number of coefficients in a degree-$n$ polynomial.
+    \item Write the interpolation equations as a Vandermonde linear system.
+    \item Use distinctness of the nodes to explain why the Vandermonde matrix is nonsingular.
+    \item Conclude Thm~\ref{thm:interpolation-existence}.
+\end{enumerate}
+}
+\label{ex:interpolation-existence}
 
 \subsubsection{Lagrange Form}
 
@@ -26,6 +37,17 @@ Provides an explicit construction for the interpolating polynomial.
 \end{align*}
 The interpolating polynomial is $P_n(x) = \sum_{i=0}^n y_i L_i(x)$.
 }
+\label{def:lagrange-basis}
+
+\addExcr{%
+\begin{enumerate}
+    \item Show that $L_i(x_j)=0$ when $i\neq j$.
+    \item Show that $L_i(x_i)=1$.
+    \item Use the previous two steps to prove that $P_n(x_j)=y_j$ for every node.
+    \item Explain why uniqueness follows from Thm~\ref{thm:interpolation-existence}.
+\end{enumerate}
+}
+\label{ex:lagrange-basis}
 
 \addRemark{%
 \textbf{Computational Cost:}\enspace Evaluation of the Lagrange form costs $O(n^2)$ operations. Adding a new point requires recomputing all basis polynomials.
@@ -42,6 +64,7 @@ A numerically stable and efficient refinement of the Lagrange form.
     P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}, \quad \text{where } w_i = \frac{1}{\prod_{j \neq i} (x_i - x_j)}.
 \end{align*}
 }
+\label{def:barycentric-formula}
 
 \addRemark{%
 \textbf{Advantages:}\enspace Evaluation costs only $O(n)$ once the weights $w_i$ are computed ($O(n^2)$). This is the standard recommended approach for general polynomial interpolation.
@@ -57,13 +80,24 @@ Equally spaced points are often a poor choice for high-degree interpolation.
 \textbf{The Runge Phenomenon:}\enspace For certain functions, such as $f(x) = 1/(1+25x^2)$ on $[-1, 1]$, the interpolation error near the boundaries increases exponentially as the degree $n \to \infty$. 
 }
 
-\addThm{Chebyshev Points}{%
-The optimal nodes for minimizing interpolation error on $[-1, 1]$ are the roots of the Chebyshev polynomials:
+\addThm{Chebyshev Nodes for Interpolation}{%
+The Chebyshev nodes from Def~\ref{def:cheb-nodes},
 \begin{align*}
     x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, \dots, n.
 \end{align*}
-Interpolation at Chebyshev points eliminates Runge's phenomenon and ensures near-optimal convergence.
+make the interpolation error polynomial small on $[-1,1]$. By Thm~\ref{thm:cheb-interpolation-error} and Thm~\ref{thm:cheb-error-polynomial}, this directly improves the worst-case interpolation error bound.
 }
+\label{thm:interpolation-cheb-nodes}
+
+\addExcr{%
+\begin{enumerate}
+    \item Translate the node formula above into the indexing convention of Def~\ref{def:cheb-nodes}.
+    \item Use Thm~\ref{thm:cheb-error-polynomial} to compute $\|\omega_{n+1}\|_\infty$ for these nodes.
+    \item Compare this with the error polynomial for equally spaced nodes numerically for $n=10,20,40$.
+    \item Explain why Chebyshev nodes reduce Runge oscillations without claiming that every function converges uniformly under every interpolation scheme.
+\end{enumerate}
+}
+\label{ex:interpolation-cheb-nodes}
 
 \subsubsection{Cubic Splines}
 
@@ -74,9 +108,10 @@ For large datasets, high-degree polynomial interpolation is avoided in favor of 
 \addDef{Cubic Spline}{%
 A piecewise cubic function $S(x)$ that is $C^2$ continuous (continuous values, first, and second derivatives) at the internal nodes.
 }
+\label{def:cubic-spline}
 
 \addRemark{%
-\textbf{Structure:}\enspace Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
+\textbf{(Spline linear system)}\enspace Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
 }
 
 \subsubsection{Exercises}

@@ -13,6 +13,20 @@ Given $n+1$ distinct points $(x_i, y_i)$, there exists a unique polynomial $P_n(
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Count the number of coefficients in a degree-$n$ polynomial.
+    
+1. Write the interpolation equations as a Vandermonde linear system.
+    
+1. Use distinctness of the nodes to explain why the Vandermonde matrix is nonsingular.
+    
+1. Conclude the result above.
+
+:::
+
+
 ## Lagrange Form
 
 
@@ -27,6 +41,20 @@ L_i(x) = \prod_{j=0, j \neq i}^n \frac{x - x_j}{x_i - x_j}.
 \end{align}
 $$
 The interpolating polynomial is $P_n(x) = \sum_{i=0}^n y_i L_i(x)$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Show that $L_i(x_j)=0$ when $i\neq j$.
+    
+1. Show that $L_i(x_i)=1$.
+    
+1. Use the previous two steps to prove that $P_n(x_j)=y_j$ for every node.
+    
+1. Explain why uniqueness follows from the result above.
+
 :::
 
 
@@ -71,14 +99,28 @@ Equally spaced points are often a poor choice for high-degree interpolation.
 
 
 ::: {.callout-note icon=false}
-## Theorem: Chebyshev Points
-The optimal nodes for minimizing interpolation error on $[-1, 1]$ are the roots of the Chebyshev polynomials:
+## Theorem: Chebyshev Nodes for Interpolation
+The Chebyshev nodes from the result above,
 $$
 \begin{align}
 x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 \end{align}
 $$
-Interpolation at Chebyshev points eliminates Runge's phenomenon and ensures near-optimal convergence.
+make the interpolation error polynomial small on $[-1,1]$. By the result above and the result above, this directly improves the worst-case interpolation error bound.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Translate the node formula above into the indexing convention of the result above.
+    
+1. Use the result above to compute $\|\omega_{n+1}\|_\infty$ for these nodes.
+    
+1. Compare this with the error polynomial for equally spaced nodes numerically for $n=10,20,40$.
+    
+1. Explain why Chebyshev nodes reduce Runge oscillations without claiming that every function converges uniformly under every interpolation scheme.
+
 :::
 
 
@@ -96,7 +138,7 @@ A piecewise cubic function $S(x)$ that is $C^2$ continuous (continuous values, f
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Structure:**  Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
+**(Spline linear system)**  Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
 :::
 
 

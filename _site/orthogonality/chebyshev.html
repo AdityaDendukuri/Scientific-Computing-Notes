@@ -673,8 +673,9 @@ window.Quarto = {
   <ul>
   <li><a href="#failure-of-the-monomial-basis" id="toc-failure-of-the-monomial-basis" class="nav-link active" data-scroll-target="#failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</a></li>
   <li><a href="#chebyshev-polynomials-t_k" id="toc-chebyshev-polynomials-t_k" class="nav-link" data-scroll-target="#chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</a></li>
-  <li><a href="#chebyshev-nodes" id="toc-chebyshev-nodes" class="nav-link" data-scroll-target="#chebyshev-nodes"><span class="header-section-number">16.3</span> Chebyshev Nodes</a></li>
-  <li><a href="#chebyshev-series" id="toc-chebyshev-series" class="nav-link" data-scroll-target="#chebyshev-series"><span class="header-section-number">16.4</span> Chebyshev Series</a></li>
+  <li><a href="#zeros-and-nodes" id="toc-zeros-and-nodes" class="nav-link" data-scroll-target="#zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</a></li>
+  <li><a href="#the-minimax-property" id="toc-the-minimax-property" class="nav-link" data-scroll-target="#the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</a></li>
+  <li><a href="#chebyshev-series" id="toc-chebyshev-series" class="nav-link" data-scroll-target="#chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/chebyshev.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -701,49 +702,50 @@ window.Quarto = {
 </header>
 
 
-<p>Minimax-optimal basis for polynomial approximation. Resolves ill-conditioning and oscillations of the monomial basis.</p>
+<p>Chebyshev polynomials are the polynomial analogue of Fourier modes on <span class="math inline">\([-1,1]\)</span>. They oscillate evenly, stay bounded, and give node sets that control interpolation error. The central idea is minimax: among polynomials of a fixed degree, Chebyshev polynomials spread error as evenly as possible instead of allowing large boundary spikes.</p>
 <section id="failure-of-the-monomial-basis" class="level2" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</h2>
-<ol type="1">
-<li><p><strong>Numerical:</strong> Vandermonde matrices <span class="math inline">\(V_{ij} = x_i^{j-1}\)</span> have condition numbers that grow exponentially with degree.</p></li>
-<li><p><strong>Analytical:</strong> <strong>Runge’s Phenomenon</strong>. Interpolating smooth functions at equally spaced nodes leads to divergence at boundaries as degree <span class="math inline">\(n \to \infty\)</span>.</p></li>
-</ol>
-<p>…</p>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Build <span class="math inline">\(n=15\)</span> Vandermonde matrix on equispaced nodes. Check <span class="math inline">\(\kappa_2(\bV)\)</span>.</p></li>
-<li><p>Plot Runge’s function <span class="math inline">\(f(x) = 1/(1+25x^2)\)</span> and its <span class="math inline">\(n=10\)</span> interpolant. Note boundary oscillations.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="chebyshev-polynomials-t_k" class="level2" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</h2>
-<p>Defined on <span class="math inline">\([-1, 1]\)</span> by <span class="math inline">\(T_k(x) = \cos(k \arccos x)\)</span>.</p>
+<p>Polynomial approximation has two separate failure modes. The first is numerical: the monomial basis <span class="math inline">\(1,x,x^2,...\)</span> leads to ill-conditioned Vandermonde matrices. The second is analytical: even exact interpolation at equally spaced nodes can oscillate badly near the interval endpoints.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Properties of <span class="math inline">\(T_k\)</span>
+<span class="screen-reader-only">Note</span>Definition: Interpolation Error Polynomial
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><p><strong>Recurrence:</strong> <span class="math inline">\(T_0=1, T_1=x, T_{k+1}=2x T_k - T_{k-1}\)</span>.</p></li>
-<li><p><strong>Boundedness:</strong> <span class="math inline">\(|T_k(x)| \leq 1\)</span> for all <span class="math inline">\(x \in [-1, 1]\)</span>.</p></li>
-<li><p><strong>Orthogonality:</strong> <span class="math inline">\(\int_{-1}^1 T_j T_k \frac{dx}{\sqrt{1-x^2}} = 0\)</span> for <span class="math inline">\(j \neq k\)</span>.</p></li>
-</ul>
+<p>Given distinct interpolation nodes <span class="math inline">\(x_1,...,x_n\)</span>, define <span class="math display">\[
+\begin{align}
+\omega_n(x)=\prod_{j=1}^n (x-x_j).
+\end{align}
+\]</span> This polynomial is zero at every node. Its size between the nodes controls how much interpolation can amplify the derivative of the target function.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Interpolation Error Formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(p_{n-1}\)</span> interpolate a function <span class="math inline">\(f\)</span> at <span class="math inline">\(n\)</span> distinct nodes <span class="math inline">\(x_1,...,x_n\)</span>. If <span class="math inline">\(f\)</span> has <span class="math inline">\(n\)</span> continuous derivatives on <span class="math inline">\([-1,1]\)</span>, then for each <span class="math inline">\(x\in[-1,1]\)</span> there exists a point <span class="math inline">\(\xi_x\in[-1,1]\)</span> such that <span class="math display">\[
+\begin{align}
+f(x)-p_{n-1}(x)
+    =
+    \frac{f^{(n)}(\xi_x)}{n!}\omega_n(x).
+\end{align}
+\]</span> Therefore, <span class="math display">\[
+\begin{align}
+\|f-p_{n-1}\|_\infty
+    \leq
+    \frac{\|f^{(n)}\|_\infty}{n!}\|\omega_n\|_\infty.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -757,15 +759,111 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Compute <span class="math inline">\(T_3, T_4\)</span> via recurrence.</p></li>
-<li><p>Plot <span class="math inline">\(T_0, ..., T_5\)</span>. Note they all oscillate between <span class="math inline">\(\pm 1\)</span>.</p></li>
+<li><p>For three nodes <span class="math inline">\(x_1,x_2,x_3\)</span>, write out <span class="math inline">\(\omega_3(x)\)</span> and verify that it vanishes at each node.</p></li>
+<li><p>Use the result above to explain why node choice matters even when <span class="math inline">\(f^{(n)}\)</span> is fixed.</p></li>
+<li><p>Build the degree-<span class="math inline">\(14\)</span> Vandermonde matrix on <span class="math inline">\(15\)</span> equally spaced nodes in <span class="math inline">\([-1,1]\)</span>. Compute <span class="math inline">\(\kappa_2(\bV)\)</span>.</p></li>
+<li><p>Plot Runge’s function <span class="math inline">\(f(x)=1/(1+25x^2)\)</span> and its degree-<span class="math inline">\(10\)</span> interpolant at equally spaced nodes. Compare the largest error in the middle of the interval with the largest error near the endpoints.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="chebyshev-nodes" class="level2" data-number="16.3">
-<h2 data-number="16.3" class="anchored" data-anchor-id="chebyshev-nodes"><span class="header-section-number">16.3</span> Chebyshev Nodes</h2>
-<p>Zeros of <span class="math inline">\(T_n(x)\)</span> provide the optimal node distribution for interpolation.</p>
+<section id="chebyshev-polynomials-t_k" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Chebyshev Polynomial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(x\in[-1,1]\)</span>, the degree-<span class="math inline">\(k\)</span> Chebyshev polynomial is <span class="math display">\[
+\begin{align}
+T_k(x)=\cos(k\arccos x).
+\end{align}
+\]</span> Equivalently, if <span class="math inline">\(x=\cos\theta\)</span>, then <span class="math display">\[
+\begin{align}
+T_k(\cos\theta)=\cos(k\theta).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Basic Chebyshev Identities
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The polynomials from the result above satisfy <span class="math display">\[
+\begin{align}
+T_0(x)=1,\qquad T_1(x)=x,\qquad
+    T_{k+1}(x)=2xT_k(x)-T_{k-1}(x).
+\end{align}
+\]</span> They are bounded by <span class="math inline">\(1\)</span> on <span class="math inline">\([-1,1]\)</span>: <span class="math display">\[
+\begin{align}
+|T_k(x)|\leq 1.
+\end{align}
+\]</span> They are orthogonal with respect to the weight <span class="math inline">\((1-x^2)^{-1/2}\)</span>: <span class="math display">\[
+\begin{align}
+\int_{-1}^1
+    T_j(x)T_k(x)\frac{dx}{\sqrt{1-x^2}}
+    =0,
+    \qquad j\neq k.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use <span class="math inline">\(\cos((k+1)\theta)+\cos((k-1)\theta)=2\cos\theta\cos(k\theta)\)</span> to prove the three-term recurrence in the result above.</p></li>
+<li><p>Compute <span class="math inline">\(T_2\)</span>, <span class="math inline">\(T_3\)</span>, and <span class="math inline">\(T_4\)</span> from the recurrence.</p></li>
+<li><p>Prove <span class="math inline">\(|T_k(x)|\leq 1\)</span> on <span class="math inline">\([-1,1]\)</span> directly from the result above.</p></li>
+<li><p>Substitute <span class="math inline">\(x=\cos\theta\)</span> into the weighted integral and reduce the orthogonality statement to Fourier cosine orthogonality on <span class="math inline">\([0,\pi]\)</span>.</p></li>
+<li><p>Plot <span class="math inline">\(T_0,...,T_5\)</span>. Mark the points where each polynomial reaches <span class="math inline">\(\pm 1\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="zeros-and-nodes" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Zeros and Extrema
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The zeros of <span class="math inline">\(T_n\)</span> are <span class="math display">\[
+\begin{align}
+x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
+    \qquad j=1,...,n.
+\end{align}
+\]</span> The extrema of <span class="math inline">\(T_n\)</span> occur at <span class="math display">\[
+\begin{align}
+y_j=\cos\left(\frac{j\pi}{n}\right),
+    \qquad j=0,...,n,
+\end{align}
+\]</span> and satisfy <span class="math inline">\(T_n(y_j)=(-1)^j\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -776,23 +874,35 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(x_k = \cos(\frac{(2k-1)\pi}{2n})\)</span> for <span class="math inline">\(k=1, ..., n\)</span>.</p>
-<ul>
-<li><strong>Node Clustering:</strong> Nodes cluster near boundaries <span class="math inline">\(\pm 1\)</span>. This suppresses Runge’s oscillations.</li>
-</ul>
+<p>The Chebyshev interpolation nodes are the zeros of <span class="math inline">\(T_n\)</span>: <span class="math display">\[
+\begin{align}
+x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
+    \qquad j=1,...,n.
+\end{align}
+\]</span> These nodes cluster near <span class="math inline">\(\pm 1\)</span>. The clustering is not cosmetic; it reduces the size of the interpolation error polynomial from the result above.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Theorem: Chebyshev Error Polynomial
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>The Minimax Property:</strong> Among all monic polynomials of degree <span class="math inline">\(n\)</span>, <span class="math inline">\(\tilde{T}_n = T_n/2^{n-1}\)</span> has the smallest possible maximum value on <span class="math inline">\([-1, 1]\)</span>. Using these nodes minimizes the interpolation error bound.</p>
+<p>If <span class="math inline">\(x_1,...,x_n\)</span> are the Chebyshev nodes from the result above, then <span class="math display">\[
+\begin{align}
+\omega_n(x)=\prod_{j=1}^n (x-x_j)
+    =
+    2^{1-n}T_n(x).
+\end{align}
+\]</span> Consequently, <span class="math display">\[
+\begin{align}
+\|\omega_n\|_\infty=2^{1-n}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -806,16 +916,103 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Plot 10 Chebyshev nodes vs.&nbsp;10 equispaced nodes. Note clustering.</p></li>
-<li><p>Repeat the Runge function experiment with Chebyshev nodes. Observe convergence.</p></li>
-<li><p>Compare <span class="math inline">\(\kappa_2\)</span> of Vandermonde vs.&nbsp;Chebyshev basis (<span class="math inline">\(V_{ij} = T_{j-1}(x_i)\)</span>).</p></li>
+<li><p>Starting from <span class="math inline">\(T_n(\cos\theta)=\cos(n\theta)\)</span>, solve <span class="math inline">\(\cos(n\theta)=0\)</span> and prove the zero formula in the result above.</p></li>
+<li><p>Solve <span class="math inline">\(\cos(n\theta)=\pm 1\)</span> and prove the extrema formula in the result above.</p></li>
+<li><p>Explain why the Chebyshev nodes cluster near <span class="math inline">\(\pm 1\)</span> by comparing the spacing of equally spaced <span class="math inline">\(\theta\)</span> values under <span class="math inline">\(x=\cos\theta\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(T_n\)</span> has leading coefficient <span class="math inline">\(2^{n-1}\)</span> for <span class="math inline">\(n\geq 1\)</span>.</p></li>
+<li><p>Use the previous step and the fact that <span class="math inline">\(T_n\)</span> has zeros <span class="math inline">\(x_1,...,x_n\)</span> to prove the result above.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="chebyshev-series" class="level2" data-number="16.4">
-<h2 data-number="16.4" class="anchored" data-anchor-id="chebyshev-series"><span class="header-section-number">16.4</span> Chebyshev Series</h2>
-<p>Truncated expansions <span class="math inline">\(f(x) \approx \sum c_k T_k(x)\)</span>.</p>
+<section id="the-minimax-property" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Chebyshev Minimax Polynomial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Among all monic polynomials <span class="math inline">\(q\)</span> of degree <span class="math inline">\(n\)</span> on <span class="math inline">\([-1,1]\)</span>, <span class="math display">\[
+\begin{align}
+2^{1-n}T_n(x)
+\end{align}
+\]</span> has the smallest possible infinity norm: <span class="math display">\[
+\begin{align}
+\|2^{1-n}T_n\|_\infty
+    =
+    2^{1-n}
+    \leq
+    \|q\|_\infty.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Let <span class="math inline">\(m(x)=2^{1-n}T_n(x)\)</span>. Use the result above to show that <span class="math inline">\(m\)</span> is monic and <span class="math inline">\(\|m\|_\infty=2^{1-n}\)</span>.</p></li>
+<li><p>Suppose another monic polynomial <span class="math inline">\(q\)</span> satisfies <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span>. Define <span class="math inline">\(r=q-m\)</span>. What is the degree of <span class="math inline">\(r\)</span>?</p></li>
+<li><p>Evaluate the signs of <span class="math inline">\(m\)</span> at the <span class="math inline">\(n+1\)</span> extrema from the result above.</p></li>
+<li><p>Use the assumption <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span> to show that <span class="math inline">\(r\)</span> changes sign between each pair of adjacent extrema.</p></li>
+<li><p>Conclude that <span class="math inline">\(r\)</span> has at least <span class="math inline">\(n\)</span> roots, contradicting its degree. This proves the result above.</p></li>
+<li><p>Combine the result above and the result above to explain why Chebyshev nodes are the natural interpolation nodes.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="chebyshev-series" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Chebyshev Series
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A Chebyshev expansion writes a function on <span class="math inline">\([-1,1]\)</span> as <span class="math display">\[
+\begin{align}
+f(x)\sim \sum_{k=0}^{\infty} c_kT_k(x).
+\end{align}
+\]</span> Using <span class="math inline">\(x=\cos\theta\)</span>, this is exactly a cosine series for the even function <span class="math inline">\(f(\cos\theta)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Coefficient Formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(k\geq 1\)</span>, <span class="math display">\[
+\begin{align}
+c_k=\frac{2}{\pi}\int_0^\pi f(\cos\theta)\cos(k\theta)\,d\theta,
+\end{align}
+\]</span> and <span class="math display">\[
+\begin{align}
+c_0=\frac{1}{\pi}\int_0^\pi f(\cos\theta)\,d\theta.
+\end{align}
+\]</span></p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -826,7 +1023,20 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(f\)</span> is analytic on <span class="math inline">\([-1, 1]\)</span>, the Chebyshev coefficients <span class="math inline">\(c_k\)</span> decay <strong>exponentially</strong>. Truncation error <span class="math inline">\(\|f - p_n\|_\infty = O(\rho^{-n})\)</span>. Just 20–30 terms often yield machine precision.</p>
+<p>If <span class="math inline">\(f\)</span> is analytic on and near <span class="math inline">\([-1,1]\)</span>, then its Chebyshev coefficients decay geometrically: <span class="math display">\[
+\begin{align}
+|c_k|\leq C\rho^{-k}
+    \qquad \text{for some } \rho&gt;1.
+\end{align}
+\]</span> The truncated series <span class="math display">\[
+\begin{align}
+p_n(x)=\sum_{k=0}^n c_kT_k(x)
+\end{align}
+\]</span> therefore satisfies <span class="math display">\[
+\begin{align}
+\|f-p_n\|_\infty=O(\rho^{-n}).
+\end{align}
+\]</span> This is called spectral accuracy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -839,7 +1049,20 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Connection to Fourier Series:</strong> The Chebyshev polynomials are closely related to the Fourier series. Specifically, <span class="math inline">\(T_n(x)\)</span> corresponds to the real part of a Fourier series on the unit circle under the mapping <span class="math inline">\(x = \cos \theta\)</span>. This connection explains their remarkable convergence properties for smooth functions.</p>
+<p><strong>(Fourier connection)</strong> Chebyshev methods are Fourier cosine methods after the change of variables <span class="math inline">\(x=\cos\theta\)</span>. This is why fast cosine transforms can compute Chebyshev coefficients efficiently.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Interpolation vs.&nbsp;expansion)</strong> Chebyshev interpolation chooses values at Chebyshev nodes. Chebyshev series choose coefficients in the Chebyshev basis. Both work well for the same reason: the basis oscillates evenly and avoids the endpoint instability of monomials.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -853,8 +1076,11 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Compute degree-<span class="math inline">\(n\)</span> fit to <span class="math inline">\(e^x\)</span> via <code>np.polynomial.chebyshev.chebfit</code>. Plot error vs.&nbsp;<span class="math inline">\(n\)</span>.</p></li>
-<li><p><strong>Spectral Differentiation:</strong> The derivative of a Chebyshev series satisfies a simple recurrence. Compare <code>chebder</code> accuracy to finite differences for <span class="math inline">\(f(x) = \sin(\pi x)\)</span>.</p></li>
+<li><p>Use the result above to rewrite a Chebyshev expansion as a cosine series in <span class="math inline">\(\theta\)</span>.</p></li>
+<li><p>Derive the coefficient formula in the result above from Fourier cosine orthogonality.</p></li>
+<li><p>Compute degree-<span class="math inline">\(n\)</span> Chebyshev fits to <span class="math inline">\(e^x\)</span> using <code>np.polynomial.chebyshev.chebfit</code>. Plot <span class="math inline">\(\|f-p_n\|_\infty\)</span> versus <span class="math inline">\(n\)</span> on a semilog scale.</p></li>
+<li><p>Repeat the previous experiment for <span class="math inline">\(f(x)=|x|\)</span>. Compare the coefficient decay with the analytic case in the result above.</p></li>
+<li><p>Use <code>chebder</code> to differentiate a Chebyshev approximation to <span class="math inline">\(f(x)=\sin(\pi x)\)</span>. Compare the derivative error with a finite-difference approximation using the same number of sample points.</p></li>
 </ol>
 </div>
 </div>

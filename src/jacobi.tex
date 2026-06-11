@@ -23,7 +23,7 @@ Decomposes $\bA$ into diagonal $\bD$ and remainder $\bR$: $\bA = \bD + \bR$.
 \label{def:jacobi-iteration}
 
 \addRemark{%
-\textbf{Performance:}\enspace
+\textbf{(Jacobi performance)}\enspace
 Jacobi iteration is \textbf{inherently parallel}, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.
 }
 
@@ -37,22 +37,54 @@ Splits $\bA = \bL_* + \bU_*$, where $\bL_*$ includes the diagonal.
 \end{align*}
 \begin{itemize}
     \item \textbf{Component form:}\enspace $x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j < i} a_{ij}x_j^{(k+1)} - \sum_{j > i} a_{ij}x_j^{(k)}\right)$.
-    \item \textbf{Key Idea:}\enspace Use updated values \emph{immediately} within the same sweep.
+    \item \textbf{Update rule:}\enspace Use updated values \emph{immediately} within the same sweep.
 \end{itemize}
 }
 \label{def:gs-iteration}
 
 \addRemark{%
-\textbf{Performance:}\enspace
+\textbf{(Gauss-Seidel performance)}\enspace
 Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges \textbf{twice as fast} as Jacobi and allows for in-place updates.
 }
 
 \subsubsection{Convergence Conditions}
 
+\addThm{Stationary Iteration Matrices}{%
+For $\bA=\bD+\bL+\bU$, where $\bL$ and $\bU$ are the strict lower and upper triangular parts,
+\begin{align*}
+    \bT_J = -\bD^{-1}(\bL+\bU)
+\end{align*}
+is the Jacobi iteration matrix, and
+\begin{align*}
+    \bT_{GS}=-(\bD+\bL)^{-1}\bU
+\end{align*}
+is the Gauss-Seidel iteration matrix. By Thm~\ref{thm:iteration-convergence}, each method converges for every initial guess exactly when the corresponding spectral radius is less than $1$.
+}
+\label{thm:jacobi-gs-iteration-matrices}
+
+\addExcr{%
+\begin{enumerate}
+    \item Rewrite Def~\ref{def:jacobi-iteration} in the form $\bx^{(k+1)}=\bT_J\bx^{(k)}+\bc_J$.
+    \item Rewrite Def~\ref{def:gs-iteration} in the form $\bx^{(k+1)}=\bT_{GS}\bx^{(k)}+\bc_{GS}$.
+    \item Apply Thm~\ref{thm:iteration-convergence} to prove the convergence criterion in Thm~\ref{thm:jacobi-gs-iteration-matrices}.
+    \item Compute $\bT_J$ and $\bT_{GS}$ for $\bA=\begin{pmatrix}2&1\\1&2\end{pmatrix}$.
+\end{enumerate}
+}
+\label{ex:jacobi-gs-iteration-matrices}
+
 \addThm{Diagonal Dominance}{%
 If $\bA$ is \textbf{strictly diagonally dominant} ($|a_{ii}| > \sum_{j \neq i} |a_{ij}|$), both Jacobi and Gauss-Seidel converge for any $\bx^{(0)}$.
 }
 \label{thm:diag-dom-convergence}
+
+\addExcr{%
+\begin{enumerate}
+    \item For Jacobi, use strict diagonal dominance to show that the infinity-norm row sums of $\bT_J$ are less than $1$.
+    \item Conclude $\rho(\bT_J)\leq \|\bT_J\|_\infty<1$.
+    \item Repeat the argument for Gauss-Seidel by isolating the largest component of the error equation.
+\end{enumerate}
+}
+\label{ex:diag-dom-convergence}
 
 \addThm{SPD Convergence}{%
 If $\bA$ is \textbf{SPD}, Gauss-Seidel is guaranteed to converge. Jacobi may still diverge.
@@ -74,14 +106,20 @@ Accelerates Gauss-Seidel by overshooting the update.
 \begin{align*}
     x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 \end{align*}
-\begin{itemize}
-    \item \textbf{Convergence Condition:}\enspace $0 < \omega < 2$ (Kahan's Theorem).
-\end{itemize}
 }
 \label{def:sor}
 
+\addThm{SOR Convergence Window}{%
+For SPD systems, SOR converges for relaxation parameters
+\begin{align*}
+    0<\omega<2.
+\end{align*}
+For model Poisson problems, well-chosen $\omega>1$ can reduce the iteration count substantially compared with Gauss-Seidel.
+}
+\label{thm:sor-convergence}
+
 \addRemark{%
-\textbf{Convergence Acceleration:}\enspace
+\textbf{(SOR acceleration)}\enspace
 For the 1D Poisson problem on a grid with spacing $h$:
 \begin{itemize}
     \item Jacobi and Gauss-Seidel require $O(n^2)$ iterations.
@@ -94,22 +132,30 @@ SOR effectively improves the convergence rate from $O(h^2)$ to $O(h)$.
 \begin{enumerate}
     \item \textbf{Optimal Tuning:}\enspace For $\rho_J = 0.95$, calculate the optimal $\omega^* = 2/(1 + \sqrt{1-\rho_J^2})$.
     \item \textbf{Convergence Sweep:}\enspace Implement SOR and plot iterations to convergence vs.\ $\omega \in [1, 2)$. Identify the ``cliff'' at $\omega^*$.
+    \item Check numerically that choices $\omega\leq 0$ or $\omega\geq 2$ fail on an SPD Poisson matrix, as predicted by Thm~\ref{thm:sor-convergence}.
 \end{enumerate}
 }
+\label{ex:sor-convergence}
 
 \subsubsection{Stopping Criteria}
 
+\addDef{Iterative Stopping Tests}{%
+Common stopping tests include
 \begin{enumerate}
-    \item \textbf{Absolute Residual:}\enspace $\|\br^{(k)}\| < \varepsilon$.
-    \item \textbf{Relative Residual:}\enspace $\|\br^{(k)}\|/\|\bb\| < \varepsilon$. (Scale invariant).
-    \item \textbf{Increment:}\enspace $\|\bx^{(k+1)} - \bx^{(k)}\| < \varepsilon$. (Cheap, but may stop prematurely if convergence is slow).
+    \item absolute residual: $\|\br^{(k)}\| < \varepsilon$,
+    \item relative residual: $\|\br^{(k)}\|/\|\bb\| < \varepsilon$,
+    \item increment: $\|\bx^{(k+1)}-\bx^{(k)}\|<\varepsilon$.
 \end{enumerate}
+Residual tests are tied to the equation; increment tests are cheap but can stop prematurely if convergence is slow.
+}
+\label{def:iterative-stopping-tests}
 
 \addExcr{%
 \begin{enumerate}
-    \item Why is a small residual not enough to guarantee a small error $\be^{(k)}$? (Condition number).
+    \item Why is a small residual not enough to guarantee a small error $\be^{(k)}$? Use Thm~\ref{thm:residual-error-bound}.
     \item Implement a robust solver that combines relative residual with a \texttt{max\_iter} budget.
 \end{enumerate}
 }
+\label{ex:jacobi-stopping}
 
 \end{document}

@@ -34,9 +34,9 @@ For a connected graph with $0 = \lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n
 
 1. $\lambda_1 = 0$ with eigenvector $\mathbf{1}$.
     
-1. **Multiplicity of 0:** Equals the number of connected components.
+1. **Multiplicity of 0:**  Equals the number of connected components.
     
-1. **Fiedler Value ($\lambda_2$):** Measures algebraic connectivity. $\lambda_2 > 0$ iff graph is connected.
+1. **Fiedler Value ($\lambda_2$):**  Measures algebraic connectivity. $\lambda_2 > 0$ iff graph is connected.
 
 :::
 

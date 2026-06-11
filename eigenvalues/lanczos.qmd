@@ -97,7 +97,7 @@ $$
 ::: {.callout-tip icon=false}
 ## Remark
 **Ghost Eigenvalues:** 
-In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. **Practical Rule:**  Use full or selective reorthogonalization to maintain basis integrity.
+In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. **(Reorthogonalization)**  Use full or selective reorthogonalization to maintain basis integrity.
 :::
 
 

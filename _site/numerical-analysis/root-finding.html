@@ -723,6 +723,24 @@ window.Quarto = {
 <p><strong>Error Bound:</strong> After <span class="math inline">\(n\)</span> steps, <span class="math inline">\(|x_n - x^*| \leq (b - a)/2^n\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the intermediate value theorem to prove that the initial bracket contains a root.</p></li>
+<li><p>Show that the bisection update preserves the sign-change bracket.</p></li>
+<li><p>Prove that the bracket length after <span class="math inline">\(n\)</span> steps is <span class="math inline">\((b-a)/2^n\)</span>.</p></li>
+<li><p>Derive the error bound in the result above.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -733,7 +751,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Stability:</strong> Bisection is the most robust method; it always converges if a bracket exists. <strong>Convergence:</strong> <strong>Linear</strong> with rate <span class="math inline">\(1/2\)</span>. Gains exactly 1 bit of accuracy per step.</p>
+<p><strong>(Bisection trade-off)</strong> Bisection is robust because it preserves a bracket, but its convergence is only linear. Each step gains exactly one bit of accuracy.</p>
 </div>
 </div>
 </section>
@@ -767,40 +785,30 @@ x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(f''(x)\)</span> is continuous near a simple root <span class="math inline">\(x^*\)</span> (<span class="math inline">\(f'(x^*) \neq 0\)</span>), Newton’s method converges <strong>quadratically</strong>: <span class="math display">\[
+<p>If <span class="math inline">\(f''(x)\)</span> is continuous near a simple root <span class="math inline">\(x^*\)</span> (<span class="math inline">\(f'(x^*) \neq 0\)</span>), Newton’s method converges quadratically: <span class="math display">\[
 \begin{align}
 |x_{k+1} - x^*| \approx \frac{|f''(x^*)|}{2|f'(x^*)|} |x_k - x^*|^2.
 \end{align}
 \]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
+<span class="screen-reader-only">Warning</span>Exercise
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Expand <span class="math inline">\(f(x^*)\)</span> about <span class="math inline">\(x_k\)</span> using a second-order Taylor polynomial: <span class="math display">\[
-\begin{align}
-0 = f(x^*) = f(x_k) + f'(x_k)(x^* - x_k) + \frac{f''(\xi_k)}{2}(x^* - x_k)^2
-\end{align}
-\]</span> for some <span class="math inline">\(\xi_k\)</span> between <span class="math inline">\(x^*\)</span> and <span class="math inline">\(x_k\)</span>. Dividing by <span class="math inline">\(f'(x_k)\)</span>: <span class="math display">\[
-\begin{align}
-0 = \frac{f(x_k)}{f'(x_k)} + x^* - x_k + \frac{f''(\xi_k)}{2f'(x_k)}(x^* - x_k)^2.
-\end{align}
-\]</span> Substituting the Newton update <span class="math inline">\(x_{k+1} = x_k - f(x_k)/f'(x_k)\)</span>: <span class="math display">\[
-\begin{align}
-0 &amp;= -(x_{k+1} - x_k) + x^* - x_k + \frac{f''(\xi_k)}{2f'(x_k)}(x^* - x_k)^2 \\
-    x_{k+1} - x^* &amp;= \frac{f''(\xi_k)}{2f'(x_k)}(x_k - x^*)^2.
-\end{align}
-\]</span> As <span class="math inline">\(x_k \to x^*\)</span>, we have <span class="math inline">\(\xi_k \to x^*\)</span>, yielding the quadratic error relation.</p>
-</div>
+<ol type="1">
+<li><p>Expand <span class="math inline">\(f(x^*)\)</span> about <span class="math inline">\(x_k\)</span> using a second-order Taylor formula.</p></li>
+<li><p>Divide by <span class="math inline">\(f'(x_k)\)</span> and isolate the Newton correction <span class="math inline">\(f(x_k)/f'(x_k)\)</span>.</p></li>
+<li><p>Substitute <span class="math inline">\(x_{k+1}=x_k-f(x_k)/f'(x_k)\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(|x_{k+1}-x^*| \leq C|x_k-x^*|^2\)</span> once <span class="math inline">\(x_k\)</span> is close enough to a simple root.</p></li>
+<li><p>Explain why the assumption <span class="math inline">\(f'(x^*)\neq 0\)</span> is essential.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -813,7 +821,7 @@ x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Failure Modes:</strong> 1. <span class="math inline">\(x_0\)</span> too far from <span class="math inline">\(x^*\)</span>. 2. <span class="math inline">\(f'(x_k) \approx 0\)</span> (zero derivative). 3. Multiple roots (<span class="math inline">\(f'(x^*) = 0\)</span>): convergence degrades to linear with rate <span class="math inline">\(1/2\)</span>.</p>
+<p><strong>(Newton failure modes)</strong> 1. <span class="math inline">\(x_0\)</span> too far from <span class="math inline">\(x^*\)</span>. 2. <span class="math inline">\(f'(x_k) \approx 0\)</span> (zero derivative). 3. Multiple roots (<span class="math inline">\(f'(x^*) = 0\)</span>): convergence degrades to linear with rate <span class="math inline">\(1/2\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -846,6 +854,23 @@ x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k) - f(x_{k-1})}.
 <p>The secant method converges with order <span class="math inline">\(\phi = (1 + \sqrt{5})/2 \approx 1.618\)</span> (the golden ratio). <strong>Efficiency:</strong> Faster than bisection, slower than Newton, but requires only 1 function evaluation per step (Newton requires 2: <span class="math inline">\(f\)</span> and <span class="math inline">\(f'\)</span>).</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Derive the secant update by replacing <span class="math inline">\(f'(x_k)\)</span> in Newton’s method with a finite difference through <span class="math inline">\((x_{k-1},f(x_{k-1}))\)</span> and <span class="math inline">\((x_k,f(x_k))\)</span>.</p></li>
+<li><p>Compare the information used by Newton and secant.</p></li>
+<li><p>Numerically estimate the convergence order for <span class="math inline">\(f(x)=x^2-2\)</span>.</p></li>
+</ol>
+</div>
+</div>
 </section>
 <section id="brents-method" class="level2" data-number="27.3">
 <h2 data-number="27.3" class="anchored" data-anchor-id="brents-method"><span class="header-section-number">27.3</span> Brent’s Method</h2>
@@ -866,7 +891,7 @@ x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k) - f(x_{k-1})}.
 <li><p><strong>Secant:</strong> For fast local convergence.</p></li>
 <li><p><strong>IQI:</strong> Inverse Quadratic Interpolation using 3 points.</p></li>
 </ol>
-<p><strong>Rule:</strong> It uses fast open steps by default, falling back to bisection only if the step is outside the bracket or not improving quickly enough.</p>
+<p>It uses fast open steps by default, falling back to bisection only if the step is outside the bracket or not improving quickly enough.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -896,8 +921,8 @@ x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k) - f(x_{k-1})}.
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Bisection on <span class="math inline">\(f(x) = x^3 - 2\)</span> on <span class="math inline">\([1, 2]\)</span> for 4 steps. Find the guaranteed error.</p></li>
-<li><p>Newton on <span class="math inline">\(f(x) = x^2 - 2\)</span> from <span class="math inline">\(x_0 = 1\)</span>. Verify the doubling of digits.</p></li>
+<li><p>Bisection on <span class="math inline">\(f(x) = x^3 - 2\)</span> on <span class="math inline">\([1, 2]\)</span> for 4 steps. Find the guaranteed error using the result above.</p></li>
+<li><p>Newton on <span class="math inline">\(f(x) = x^2 - 2\)</span> from <span class="math inline">\(x_0 = 1\)</span>. Verify the doubling of digits using the result above.</p></li>
 <li><p>Prove that for <span class="math inline">\(f(x) = x^2\)</span>, Newton converges to <span class="math inline">\(0\)</span> with linear rate <span class="math inline">\(1/2\)</span>.</p></li>
 <li><p>Find the root of <span class="math inline">\(e^x = 3x\)</span> near <span class="math inline">\(x=1\)</span> via Secant method. Compare evaluations vs.&nbsp;Newton.</p></li>
 </ol>

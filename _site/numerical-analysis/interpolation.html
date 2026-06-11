@@ -719,6 +719,24 @@ window.Quarto = {
 <p>Given <span class="math inline">\(n+1\)</span> distinct points <span class="math inline">\((x_i, y_i)\)</span>, there exists a unique polynomial <span class="math inline">\(P_n(x)\)</span> of degree at most <span class="math inline">\(n\)</span> such that <span class="math inline">\(P_n(x_i) = y_i\)</span> for all <span class="math inline">\(i = 0, ..., n\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Count the number of coefficients in a degree-<span class="math inline">\(n\)</span> polynomial.</p></li>
+<li><p>Write the interpolation equations as a Vandermonde linear system.</p></li>
+<li><p>Use distinctness of the nodes to explain why the Vandermonde matrix is nonsingular.</p></li>
+<li><p>Conclude the result above.</p></li>
+</ol>
+</div>
+</div>
 </section>
 <section id="lagrange-form" class="level2" data-number="25.2">
 <h2 data-number="25.2" class="anchored" data-anchor-id="lagrange-form"><span class="header-section-number">25.2</span> Lagrange Form</h2>
@@ -738,6 +756,24 @@ window.Quarto = {
 L_i(x) = \prod_{j=0, j \neq i}^n \frac{x - x_j}{x_i - x_j}.
 \end{align}
 \]</span> The interpolating polynomial is <span class="math inline">\(P_n(x) = \sum_{i=0}^n y_i L_i(x)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Show that <span class="math inline">\(L_i(x_j)=0\)</span> when <span class="math inline">\(i\neq j\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(L_i(x_i)=1\)</span>.</p></li>
+<li><p>Use the previous two steps to prove that <span class="math inline">\(P_n(x_j)=y_j\)</span> for every node.</p></li>
+<li><p>Explain why uniqueness follows from the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -810,15 +846,33 @@ P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x -
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Points
+<span class="screen-reader-only">Note</span>Theorem: Chebyshev Nodes for Interpolation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The optimal nodes for minimizing interpolation error on <span class="math inline">\([-1, 1]\)</span> are the roots of the Chebyshev polynomials: <span class="math display">\[
+<p>The Chebyshev nodes from the result above, <span class="math display">\[
 \begin{align}
 x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 \end{align}
-\]</span> Interpolation at Chebyshev points eliminates Runge’s phenomenon and ensures near-optimal convergence.</p>
+\]</span> make the interpolation error polynomial small on <span class="math inline">\([-1,1]\)</span>. By the result above and the result above, this directly improves the worst-case interpolation error bound.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Translate the node formula above into the indexing convention of the result above.</p></li>
+<li><p>Use the result above to compute <span class="math inline">\(\|\omega_{n+1}\|_\infty\)</span> for these nodes.</p></li>
+<li><p>Compare this with the error polynomial for equally spaced nodes numerically for <span class="math inline">\(n=10,20,40\)</span>.</p></li>
+<li><p>Explain why Chebyshev nodes reduce Runge oscillations without claiming that every function converges uniformly under every interpolation scheme.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -848,7 +902,7 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Structure:</strong> Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in <span class="math inline">\(O(n)\)</span> time.</p>
+<p><strong>(Spline linear system)</strong> Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in <span class="math inline">\(O(n)\)</span> time.</p>
 </div>
 </div>
 </section>

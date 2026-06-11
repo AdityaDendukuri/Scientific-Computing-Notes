@@ -721,7 +721,41 @@ window.Quarto = {
 \begin{align}
 T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 \end{align}
-\]</span> <strong>Error Bound:</strong> <span class="math inline">\(E = O(h^2)\)</span>. Doubling <span class="math inline">\(n\)</span> reduces error <span class="math inline">\(4\times\)</span>.</p>
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Trapezoidal Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(f\)</span> has two continuous derivatives on <span class="math inline">\([a,b]\)</span>, then the composite trapezoidal rule satisfies <span class="math display">\[
+\begin{align}
+I-T_n = O(h^2).
+\end{align}
+\]</span> Thus doubling <span class="math inline">\(n\)</span> reduces the leading error by a factor of about <span class="math inline">\(4\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Derive the one-panel trapezoidal rule by integrating the linear interpolant through <span class="math inline">\((a,f(a))\)</span> and <span class="math inline">\((b,f(b))\)</span>.</p></li>
+<li><p>Use Taylor expansion on one panel to show the local error is <span class="math inline">\(O(h^3)\)</span>.</p></li>
+<li><p>Sum over <span class="math inline">\(O(1/h)\)</span> panels to prove the global <span class="math inline">\(O(h^2)\)</span> statement in the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -738,7 +772,38 @@ T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 \begin{align}
 S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\text{even}\;i} f(x_i) \right].
 \end{align}
-\]</span> <strong>Error Bound:</strong> <span class="math inline">\(E = O(h^4)\)</span>. Exact for polynomials of degree <span class="math inline">\(\leq 3\)</span>.</p>
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Simpson Exactness and Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Simpson’s rule is exact for polynomials of degree at most <span class="math inline">\(3\)</span>. For sufficiently smooth <span class="math inline">\(f\)</span>, the composite Simpson rule has global error <span class="math inline">\(O(h^4)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Integrate the quadratic interpolant through <span class="math inline">\(x_0,x_1,x_2\)</span> to derive the Simpson weights <span class="math inline">\(1,4,1\)</span>.</p></li>
+<li><p>Verify exactness for <span class="math inline">\(1,x,x^2,x^3\)</span> on a symmetric panel.</p></li>
+<li><p>Use the exactness degree to explain why the leading error involves the fourth derivative.</p></li>
+<li><p>Compare the observed error reduction after halving <span class="math inline">\(h\)</span> with the result above.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -759,7 +824,7 @@ S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\te
 \begin{align}
 \int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i).
 \end{align}
-\]</span> <strong>Optimality:</strong> Exact for all polynomials of degree <span class="math inline">\(\leq 2p-1\)</span>. <strong>Nodes:</strong> Roots of the degree-<span class="math inline">\(p\)</span> Legendre polynomial <span class="math inline">\(P_p(x)\)</span>.</p>
+\]</span> The nodes are the roots of the degree-<span class="math inline">\(p\)</span> Legendre polynomial <span class="math inline">\(P_p(x)\)</span>, and the rule is exact for all polynomials of degree at most <span class="math inline">\(2p-1\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -772,7 +837,25 @@ S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\te
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Efficiency:</strong> <span class="math inline">\(p\)</span> Gauss points are as accurate as <span class="math inline">\(2p\)</span> Newton-Cotes points. Always prefer Gaussian quadrature for smooth, non-periodic functions.</p>
+<p><strong>(Gauss efficiency)</strong> Gaussian quadrature spends nodes where orthogonality says they are most useful. For smooth, non-periodic integrands, a small number of Gauss points often beats many equally spaced Newton-Cotes points.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>For <span class="math inline">\(p=2\)</span>, use the roots of <span class="math inline">\(P_2(x)=(3x^2-1)/2\)</span> to find the nodes.</p></li>
+<li><p>Solve for weights that integrate <span class="math inline">\(1\)</span> and <span class="math inline">\(x^2\)</span> exactly on <span class="math inline">\([-1,1]\)</span>.</p></li>
+<li><p>Verify that the resulting rule also integrates <span class="math inline">\(x\)</span> and <span class="math inline">\(x^3\)</span> exactly by symmetry.</p></li>
+<li><p>Explain why exactness through degree <span class="math inline">\(2p-1\)</span> is the maximum possible with <span class="math inline">\(2p\)</span> free parameters.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -796,7 +879,7 @@ A_{new} = \frac{4A(h/2) - A(h)}{3}.
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -805,7 +888,7 @@ A_{new} = \frac{4A(h/2) - A(h)}{3}.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Let <span class="math inline">\(A(h)\)</span> be an <span class="math inline">\(O(h^2)\)</span> approximation of the true value <span class="math inline">\(I\)</span>. Using a Taylor expansion in <span class="math inline">\(h\)</span>: <span class="math display">\[
 \begin{align}
@@ -839,7 +922,20 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Iterative application of Richardson extrapolation to the trapezoidal rule. <strong>Performance:</strong> Error decreases as <span class="math inline">\(O(h^{2k+2})\)</span> for smooth <span class="math inline">\(f\)</span>, converging rapidly.</p>
+<p>Iterative application of Richardson extrapolation to the trapezoidal rule.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Romberg idea)</strong> Romberg integration repeatedly cancels the leading even powers in the trapezoidal error expansion. It is effective when <span class="math inline">\(f\)</span> is smooth enough for that expansion to be accurate.</p>
 </div>
 </div>
 </section>
@@ -855,23 +951,40 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Design Goal:</strong> Automatically focus function evaluations where <span class="math inline">\(f\)</span> is “difficult” (steep gradients, oscillations) and use large steps where <span class="math inline">\(f\)</span> is smooth. <strong>Mechanism:</strong> Compare quadrature on one large panel vs.&nbsp;two small panels. If the difference is above tolerance <span class="math inline">\(\varepsilon\)</span>, recurse.</p>
+<p><strong>(Adaptive quadrature)</strong> Adaptive quadrature focuses function evaluations where <span class="math inline">\(f\)</span> is difficult and uses large panels where <span class="math inline">\(f\)</span> is smooth. The usual mechanism compares one large panel with two smaller panels; if the difference is above tolerance <span class="math inline">\(\varepsilon\)</span>, the method recurses.</p>
 </div>
 </div>
 </section>
 <section id="periodic-functions-and-spectral-accuracy" class="level2" data-number="26.5">
 <h2 data-number="26.5" class="anchored" data-anchor-id="periodic-functions-and-spectral-accuracy"><span class="header-section-number">26.5</span> Periodic Functions and Spectral Accuracy</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Theorem: Periodic Trapezoidal Spectral Accuracy
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Spectral Accuracy on Periodic Domains)</strong> For smooth, periodic functions on <span class="math inline">\([0, 2\pi]\)</span>, the <strong>Trapezoidal Rule</strong> is the optimal choice. It achieves <strong>Spectral Accuracy</strong> (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.</p>
+<p>For smooth periodic functions on <span class="math inline">\([0,2\pi]\)</span>, the trapezoidal rule can converge faster than any algebraic power of <span class="math inline">\(h\)</span>. For analytic periodic functions, the convergence is exponential.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Apply the trapezoidal rule to <span class="math inline">\(e^{ikx}\)</span> on <span class="math inline">\([0,2\pi]\)</span> and determine when the discrete sum is exactly zero.</p></li>
+<li><p>Use a Fourier series argument to explain why smooth periodic functions are integrated unusually well.</p></li>
+<li><p>Compare errors for <span class="math inline">\(\sin(x)\)</span>, <span class="math inline">\(\exp(\cos x)\)</span>, and <span class="math inline">\(|x-\pi|\)</span> as <span class="math inline">\(n\)</span> increases.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -888,9 +1001,9 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Doubling nodes in Trapezoidal rule reduces error by <span class="math inline">\(4\times\)</span>. How much does Simpson reduce it?</p></li>
-<li><p>Derive the <span class="math inline">\(p=2\)</span> Gauss points for <span class="math inline">\([-1, 1]\)</span>. (<em>Hint: roots of <span class="math inline">\(3x^2 - 1\)</span></em>).</p></li>
-<li><p>Use Richardson extrapolation to improve <span class="math inline">\(T(h)\)</span> and <span class="math inline">\(T(h/2)\)</span> to get Simpson’s rule.</p></li>
+<li><p>Doubling nodes in Trapezoidal rule reduces error by <span class="math inline">\(4\times\)</span>. Use the result above to predict Simpson’s reduction factor.</p></li>
+<li><p>Derive the <span class="math inline">\(p=2\)</span> Gauss points for <span class="math inline">\([-1, 1]\)</span> using the result above.</p></li>
+<li><p>Use Richardson extrapolation from the result above to improve <span class="math inline">\(T(h)\)</span> and <span class="math inline">\(T(h/2)\)</span> to get Simpson’s rule.</p></li>
 <li><p>Integration of <span class="math inline">\(\sin(x)\)</span> on <span class="math inline">\([0, 2\pi]\)</span> with <span class="math inline">\(n=4\)</span> nodes. Is the error <span class="math inline">\(0\)</span>? Why?</p></li>
 </ol>
 </div>

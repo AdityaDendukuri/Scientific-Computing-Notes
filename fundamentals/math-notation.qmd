@@ -86,7 +86,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Numerical Proofs:**  Often validate that an approximation is **stable** or that an error term **converges**. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
+**Numerical Proofs:**  Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
 :::
 
 
@@ -111,7 +111,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 - **Scalars:**  Lowercase italic ($a, b, x$).
   
-- **Vectors:**  Lowercase bold ($\bx, \by, \ba$). Default is **column vector**.
+- **Vectors:**  Lowercase bold ($\bx, \by, \ba$). Default is column vector.
   
 - **Matrices:**  Uppercase bold ($\bA, \bB, \bQ$).
   
@@ -161,5 +161,5 @@ $$
 ::: {.callout-tip icon=false}
 ## Remark
 **(Asymptotic Notation)** 
-Scaling of algorithms is described using **Big-O notation** ($O(n^2), O(n^3)$). Details in the Computational Complexity section.
+Scaling of algorithms is described using Big-O notation ($O(n^2), O(n^3)$). Details in the Computational Complexity section.
 :::

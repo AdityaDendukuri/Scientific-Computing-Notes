@@ -722,34 +722,43 @@ window.Quarto = {
 \begin{align}
 y_{n+1} = y_n + h f(t_n, y_n).
 \end{align}
-\]</span> <strong>Error:</strong> Local <span class="math inline">\(O(h^2)\)</span>, Global <span class="math inline">\(O(h)\)</span>. <strong>Stability:</strong> Unstable for stiff problems. Absolute stability requires <span class="math inline">\(|1 + h\lambda| \leq 1\)</span>.</p>
+\]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
+<span class="screen-reader-only">Note</span>Theorem: Forward Euler Order and Stability
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Apply Forward Euler to the test equation <span class="math inline">\(y' = \lambda y\)</span>: <span class="math display">\[
+<p>Forward Euler has local truncation error <span class="math inline">\(O(h^2)\)</span> and global error <span class="math inline">\(O(h)\)</span>. Applied to the test equation <span class="math inline">\(y'=\lambda y\)</span>, it is stable only when <span class="math display">\[
 \begin{align}
-y_{n+1} &amp;= y_n + h (\lambda y_n) \\
-    &amp;= (1 + h\lambda) y_n.
+|1+h\lambda|\leq 1.
 \end{align}
-\]</span> Recursive application gives <span class="math inline">\(y_n = (1 + h\lambda)^n y_0\)</span>. For the solution to remain bounded, we require the amplification factor to satisfy <span class="math inline">\(|1 + h\lambda| \leq 1\)</span>. For real <span class="math inline">\(\lambda &lt; 0\)</span>: <span class="math display">\[
-\begin{align}
--1 &amp;\leq 1 + h\lambda \leq 1 \\
-    -2 &amp;\leq h\lambda \leq 0 \\
-    h &amp;\leq \frac{2}{|\lambda|}.
-\end{align}
-\]</span> If the step size <span class="math inline">\(h\)</span> exceeds this limit, the numerical solution oscillates and grows exponentially.</p>
+\]</span></p>
 </div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use Taylor expansion of the exact solution to show that one Forward Euler step has local error <span class="math inline">\(O(h^2)\)</span>.</p></li>
+<li><p>Explain why accumulating <span class="math inline">\(O(1/h)\)</span> steps gives global error <span class="math inline">\(O(h)\)</span>.</p></li>
+<li><p>Apply Forward Euler to <span class="math inline">\(y'=\lambda y\)</span> and derive <span class="math inline">\(y_n=(1+h\lambda)^ny_0\)</span>.</p></li>
+<li><p>Derive the stability condition in the result above.</p></li>
+<li><p>For real <span class="math inline">\(\lambda&lt;0\)</span>, show that stability requires <span class="math inline">\(h\leq 2/|\lambda|\)</span>.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -766,7 +775,43 @@ y_{n+1} &amp;= y_n + h (\lambda y_n) \\
 \begin{align}
 y_{n+1} = y_n + h f(t_{n+1}, y_{n+1}).
 \end{align}
-\]</span> <strong>Rule:</strong> Requires solving a nonlinear system at each step (via Newton). <strong>Stability:</strong> <strong>A-Stable</strong> (unconditionally stable for all <span class="math inline">\(h\)</span> if <span class="math inline">\(\text{Re}(\lambda) &lt; 0\)</span>). The choice for stiff systems.</p>
+\]</span> It requires solving a nonlinear equation at each step, usually by Newton’s method.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Backward Euler A-Stability
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Applied to <span class="math inline">\(y'=\lambda y\)</span>, Backward Euler has amplification factor <span class="math display">\[
+\begin{align}
+R(z)=\frac{1}{1-z},
+    \qquad z=h\lambda.
+\end{align}
+\]</span> If <span class="math inline">\(\operatorname{Re}(\lambda)&lt;0\)</span>, then <span class="math inline">\(|R(h\lambda)|&lt;1\)</span> for every <span class="math inline">\(h&gt;0\)</span>. Thus Backward Euler is A-stable.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Apply the result above to <span class="math inline">\(y'=\lambda y\)</span> and solve for <span class="math inline">\(y_{n+1}\)</span> in terms of <span class="math inline">\(y_n\)</span>.</p></li>
+<li><p>Derive the amplification factor in the result above.</p></li>
+<li><p>Prove that <span class="math inline">\(|1/(1-z)|&lt;1\)</span> whenever <span class="math inline">\(\operatorname{Re}(z)&lt;0\)</span>.</p></li>
+<li><p>Explain why this matters for stiff decay problems.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -791,7 +836,7 @@ k_1 &amp;= f(t_n, y_n) \\
     k_4 &amp;= f(t_n + h, y_n + h k_3) \\
     y_{n+1} &amp;= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)
 \end{align}
-\]</span> <strong>Error:</strong> Local <span class="math inline">\(O(h^5)\)</span>, Global <strong><span class="math inline">\(O(h^4)\)</span></strong>. Standard default for non-stiff systems.</p>
+\]</span> It has local error <span class="math inline">\(O(h^5)\)</span> and global error <span class="math inline">\(O(h^4)\)</span> for smooth non-stiff problems.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -804,13 +849,30 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Uses an <strong>embedded pair</strong> to estimate local error <span class="math inline">\(e\)</span> without extra stages (Dormand-Prince). <strong>Mechanism:</strong> <span class="math inline">\(h_{\text{new}} = h_{\text{old}} (\varepsilon / \|e\|)^{1/5}\)</span>. The algorithm adjusts the step size <span class="math inline">\(h\)</span> dynamically to maintain the local error within a specified tolerance.</p>
+<p>Uses an embedded pair to estimate local error <span class="math inline">\(e\)</span> without extra stages (Dormand-Prince). <strong>Mechanism:</strong> <span class="math inline">\(h_{\text{new}} = h_{\text{old}} (\varepsilon / \|e\|)^{1/5}\)</span>. The algorithm adjusts the step size <span class="math inline">\(h\)</span> dynamically to maintain the local error within a specified tolerance.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>If the local error behaves like <span class="math inline">\(C h^5\)</span>, solve <span class="math inline">\(C h_{\text{new}}^5\approx\varepsilon\)</span> using an estimate <span class="math inline">\(e\approx C h_{\text{old}}^5\)</span>.</p></li>
+<li><p>Derive the exponent <span class="math inline">\(1/5\)</span> in the result above.</p></li>
+<li><p>Explain why practical codes multiply this formula by a safety factor less than <span class="math inline">\(1\)</span>.</p></li>
+</ol>
 </div>
 </div>
 </section>
 <section id="symplectic-integrators" class="level2" data-number="28.3">
 <h2 data-number="28.3" class="anchored" data-anchor-id="symplectic-integrators"><span class="header-section-number">28.3</span> Symplectic Integrators</h2>
-<p>Preserve the geometric structure of <strong>Hamiltonian systems</strong> (Energy conservation).</p>
+<p>Preserve the geometric structure of Hamiltonian systems (energy conservation).</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -821,13 +883,12 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(H = \frac{1}{2}v^2 + V(q)\)</span>, ensures no long-term energy drift:</p>
+<p>For <span class="math inline">\(H = \frac{1}{2}v^2 + V(q)\)</span>:</p>
 <ol type="1">
 <li><p><span class="math inline">\(v_{n+1/2} = v_n + \frac{h}{2} F_n\)</span></p></li>
 <li><p><span class="math inline">\(q_{n+1} = q_n + h v_{n+1/2}\)</span></p></li>
 <li><p><span class="math inline">\(v_{n+1} = v_{n+1/2} + \frac{h}{2} F_{n+1}\)</span></p></li>
 </ol>
-<p><strong>Property:</strong> Symplectic and time-reversible. Numerical energy oscillates but stays bounded.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -841,6 +902,23 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>(Numerical Energy Drift)</strong> Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Apply Velocity Verlet from the result above to the harmonic oscillator <span class="math inline">\(q'=v\)</span>, <span class="math inline">\(v'=-q\)</span>.</p></li>
+<li><p>Show that reversing the step size from <span class="math inline">\(h\)</span> to <span class="math inline">\(-h\)</span> undoes one Verlet step.</p></li>
+<li><p>Compare long-time energy behavior of Forward Euler, RK4, and Velocity Verlet numerically.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -858,7 +936,7 @@ k_1 &amp;= f(t_n, y_n) \\
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Solve <span class="math inline">\(y' = -y, y(0)=1\)</span> with Forward Euler for 4 steps. Compare error to <span class="math inline">\(e^{-1}\)</span>.</p></li>
-<li><p>Verify the stability limit of Forward Euler for <span class="math inline">\(y' = \lambda y\)</span> is <span class="math inline">\(h &lt; 2/|\lambda|\)</span>.</p></li>
+<li><p>Verify the stability limit of Forward Euler for <span class="math inline">\(y' = \lambda y\)</span> using the result above.</p></li>
 <li><p>Show that Forward Euler on a harmonic oscillator leads to unbounded energy growth.</p></li>
 <li><p>Implement RK45 for <span class="math inline">\(y' = \cos(t^2)\)</span> and plot the step-size <span class="math inline">\(h\)</span> over time.</p></li>
 </ol>

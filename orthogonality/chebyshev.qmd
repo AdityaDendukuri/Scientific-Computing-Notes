@@ -1,114 +1,318 @@
 # Chebyshev Polynomials
 
 
-Minimax-optimal basis for polynomial approximation. Resolves ill-conditioning and oscillations of the monomial basis.
+Chebyshev polynomials are the polynomial analogue of Fourier modes on $[-1,1]$. They oscillate evenly, stay bounded, and give node sets that control interpolation error. The central idea is minimax: among polynomials of a fixed degree, Chebyshev polynomials spread error as evenly as possible instead of allowing large boundary spikes.
 
 
 ## Failure of the Monomial Basis
 
 
-1. **Numerical:**  Vandermonde matrices $V_{ij} = x_i^{j-1}$ have condition numbers that grow exponentially with degree.
-    
-1. **Analytical:**  **Runge's Phenomenon**. Interpolating smooth functions at equally spaced nodes leads to divergence at boundaries as degree $n \to \infty$.
+Polynomial approximation has two separate failure modes. The first is numerical: the monomial basis $1,x,x^2,...$ leads to ill-conditioned Vandermonde matrices. The second is analytical: even exact interpolation at equally spaced nodes can oscillate badly near the interval endpoints.
 
 
-...
+::: {.callout-note icon=false}
+## Definition: Interpolation Error Polynomial
+Given distinct interpolation nodes $x_1,...,x_n$, define
+$$
+\begin{align}
+\omega_n(x)=\prod_{j=1}^n (x-x_j).
+\end{align}
+$$
+This polynomial is zero at every node. Its size between the nodes controls how much interpolation can amplify the derivative of the target function.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Interpolation Error Formula
+Let $p_{n-1}$ interpolate a function $f$ at $n$ distinct nodes $x_1,...,x_n$. If $f$ has $n$ continuous derivatives on $[-1,1]$, then for each $x\in[-1,1]$ there exists a point $\xi_x\in[-1,1]$ such that
+$$
+\begin{align}
+f(x)-p_{n-1}(x)
+    =
+    \frac{f^{(n)}(\xi_x)}{n!}\omega_n(x).
+\end{align}
+$$
+Therefore,
+$$
+\begin{align}
+\|f-p_{n-1}\|_\infty
+    \leq
+    \frac{\|f^{(n)}\|_\infty}{n!}\|\omega_n\|_\infty.
+\end{align}
+$$
+:::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Build $n=15$ Vandermonde matrix on equispaced nodes. Check $\kappa_2(\bV)$.
+1. For three nodes $x_1,x_2,x_3$, write out $\omega_3(x)$ and verify that it vanishes at each node.
     
-1. Plot Runge's function $f(x) = 1/(1+25x^2)$ and its $n=10$ interpolant. Note boundary oscillations.
+1. Use the result above to explain why node choice matters even when $f^{(n)}$ is fixed.
+    
+1. Build the degree-$14$ Vandermonde matrix on $15$ equally spaced nodes in $[-1,1]$. Compute $\kappa_2(\bV)$.
+    
+1. Plot Runge's function $f(x)=1/(1+25x^2)$ and its degree-$10$ interpolant at equally spaced nodes. Compare the largest error in the middle of the interval with the largest error near the endpoints.
 
 :::
 
 
 ## Chebyshev Polynomials ($T_k$)
 
-Defined on $[-1, 1]$ by $T_k(x) = \cos(k \arccos x)$.
+
+::: {.callout-note icon=false}
+## Definition: Chebyshev Polynomial
+For $x\in[-1,1]$, the degree-$k$ Chebyshev polynomial is
+$$
+\begin{align}
+T_k(x)=\cos(k\arccos x).
+\end{align}
+$$
+Equivalently, if $x=\cos\theta$, then
+$$
+\begin{align}
+T_k(\cos\theta)=\cos(k\theta).
+\end{align}
+$$
+:::
 
 
 ::: {.callout-note icon=false}
-## Definition: Properties of $T_k$
-
-- **Recurrence:**  $T_0=1, T_1=x, T_{k+1}=2x T_k - T_{k-1}$.
-    
-- **Boundedness:**  $|T_k(x)| \leq 1$ for all $x \in [-1, 1]$.
-    
-- **Orthogonality:**  $\int_{-1}^1 T_j T_k \frac{dx}{\sqrt{1-x^2}} = 0$ for $j \neq k$.
-
+## Theorem: Basic Chebyshev Identities
+The polynomials from the result above satisfy
+$$
+\begin{align}
+T_0(x)=1,\qquad T_1(x)=x,\qquad
+    T_{k+1}(x)=2xT_k(x)-T_{k-1}(x).
+\end{align}
+$$
+They are bounded by $1$ on $[-1,1]$:
+$$
+\begin{align}
+|T_k(x)|\leq 1.
+\end{align}
+$$
+They are orthogonal with respect to the weight $(1-x^2)^{-1/2}$:
+$$
+\begin{align}
+\int_{-1}^1
+    T_j(x)T_k(x)\frac{dx}{\sqrt{1-x^2}}
+    =0,
+    \qquad j\neq k.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Compute $T_3, T_4$ via recurrence.
+1. Use $\cos((k+1)\theta)+\cos((k-1)\theta)=2\cos\theta\cos(k\theta)$ to prove the three-term recurrence in the result above.
     
-1. Plot $T_0, ..., T_5$. Note they all oscillate between $\pm 1$.
+1. Compute $T_2$, $T_3$, and $T_4$ from the recurrence.
+    
+1. Prove $|T_k(x)|\leq 1$ on $[-1,1]$ directly from the result above.
+    
+1. Substitute $x=\cos\theta$ into the weighted integral and reduce the orthogonality statement to Fourier cosine orthogonality on $[0,\pi]$.
+    
+1. Plot $T_0,...,T_5$. Mark the points where each polynomial reaches $\pm 1$.
 
 :::
 
 
-## Chebyshev Nodes
+## Zeros and Nodes
 
-Zeros of $T_n(x)$ provide the optimal node distribution for interpolation.
+
+::: {.callout-note icon=false}
+## Theorem: Zeros and Extrema
+The zeros of $T_n$ are
+$$
+\begin{align}
+x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
+    \qquad j=1,...,n.
+\end{align}
+$$
+The extrema of $T_n$ occur at
+$$
+\begin{align}
+y_j=\cos\left(\frac{j\pi}{n}\right),
+    \qquad j=0,...,n,
+\end{align}
+$$
+and satisfy $T_n(y_j)=(-1)^j$.
+:::
 
 
 ::: {.callout-note icon=false}
 ## Definition: Chebyshev Nodes
-$x_k = \cos(\frac{(2k-1)\pi}{2n})$ for $k=1, ..., n$.
-
-- **Node Clustering:**  Nodes cluster near boundaries $\pm 1$. This suppresses Runge's oscillations.
-
+The Chebyshev interpolation nodes are the zeros of $T_n$:
+$$
+\begin{align}
+x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
+    \qquad j=1,...,n.
+\end{align}
+$$
+These nodes cluster near $\pm 1$. The clustering is not cosmetic; it reduces the size of the interpolation error polynomial from the result above.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**The Minimax Property:** 
-Among all monic polynomials of degree $n$, $\tilde{T}_n = T_n/2^{n-1}$ has the smallest possible maximum value on $[-1, 1]$. Using these nodes minimizes the interpolation error bound.
+::: {.callout-note icon=false}
+## Theorem: Chebyshev Error Polynomial
+If $x_1,...,x_n$ are the Chebyshev nodes from the result above, then
+$$
+\begin{align}
+\omega_n(x)=\prod_{j=1}^n (x-x_j)
+    =
+    2^{1-n}T_n(x).
+\end{align}
+$$
+Consequently,
+$$
+\begin{align}
+\|\omega_n\|_\infty=2^{1-n}.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Plot 10 Chebyshev nodes vs.\ 10 equispaced nodes. Note clustering.
+1. Starting from $T_n(\cos\theta)=\cos(n\theta)$, solve $\cos(n\theta)=0$ and prove the zero formula in the result above.
     
-1. Repeat the Runge function experiment with Chebyshev nodes. Observe convergence.
+1. Solve $\cos(n\theta)=\pm 1$ and prove the extrema formula in the result above.
     
-1. Compare $\kappa_2$ of Vandermonde vs.\ Chebyshev basis ($V_{ij} = T_{j-1}(x_i)$).
+1. Explain why the Chebyshev nodes cluster near $\pm 1$ by comparing the spacing of equally spaced $\theta$ values under $x=\cos\theta$.
+    
+1. Show that $T_n$ has leading coefficient $2^{n-1}$ for $n\geq 1$.
+    
+1. Use the previous step and the fact that $T_n$ has zeros $x_1,...,x_n$ to prove the result above.
+
+:::
+
+
+## The Minimax Property
+
+
+::: {.callout-note icon=false}
+## Theorem: Chebyshev Minimax Polynomial
+Among all monic polynomials $q$ of degree $n$ on $[-1,1]$,
+$$
+\begin{align}
+2^{1-n}T_n(x)
+\end{align}
+$$
+has the smallest possible infinity norm:
+$$
+\begin{align}
+\|2^{1-n}T_n\|_\infty
+    =
+    2^{1-n}
+    \leq
+    \|q\|_\infty.
+\end{align}
+$$
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Let $m(x)=2^{1-n}T_n(x)$. Use the result above to show that $m$ is monic and $\|m\|_\infty=2^{1-n}$.
+    
+1. Suppose another monic polynomial $q$ satisfies $\|q\|_\infty<2^{1-n}$. Define $r=q-m$. What is the degree of $r$?
+    
+1. Evaluate the signs of $m$ at the $n+1$ extrema from the result above.
+    
+1. Use the assumption $\|q\|_\infty<2^{1-n}$ to show that $r$ changes sign between each pair of adjacent extrema.
+    
+1. Conclude that $r$ has at least $n$ roots, contradicting its degree. This proves the result above.
+    
+1. Combine the result above and the result above to explain why Chebyshev nodes are the natural interpolation nodes.
 
 :::
 
 
 ## Chebyshev Series
 
-Truncated expansions $f(x) \approx \sum c_k T_k(x)$.
+
+::: {.callout-note icon=false}
+## Definition: Chebyshev Series
+A Chebyshev expansion writes a function on $[-1,1]$ as
+$$
+\begin{align}
+f(x)\sim \sum_{k=0}^{\infty} c_kT_k(x).
+\end{align}
+$$
+Using $x=\cos\theta$, this is exactly a cosine series for the even function $f(\cos\theta)$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Coefficient Formula
+For $k\geq 1$,
+$$
+\begin{align}
+c_k=\frac{2}{\pi}\int_0^\pi f(\cos\theta)\cos(k\theta)\,d\theta,
+\end{align}
+$$
+and
+$$
+\begin{align}
+c_0=\frac{1}{\pi}\int_0^\pi f(\cos\theta)\,d\theta.
+\end{align}
+$$
+:::
 
 
 ::: {.callout-note icon=false}
 ## Theorem: Spectral Accuracy
-If $f$ is analytic on $[-1, 1]$, the Chebyshev coefficients $c_k$ decay **exponentially**. Truncation error $\|f - p_n\|_\infty = O(\rho^{-n})$.
-Just 20--30 terms often yield machine precision.
+If $f$ is analytic on and near $[-1,1]$, then its Chebyshev coefficients decay geometrically:
+$$
+\begin{align}
+|c_k|\leq C\rho^{-k}
+    \qquad \text{for some } \rho>1.
+\end{align}
+$$
+The truncated series
+$$
+\begin{align}
+p_n(x)=\sum_{k=0}^n c_kT_k(x)
+\end{align}
+$$
+therefore satisfies
+$$
+\begin{align}
+\|f-p_n\|_\infty=O(\rho^{-n}).
+\end{align}
+$$
+This is called spectral accuracy.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Connection to Fourier Series:** 
-The Chebyshev polynomials are closely related to the Fourier series. Specifically, $T_n(x)$ corresponds to the real part of a Fourier series on the unit circle under the mapping $x = \cos \theta$. This connection explains their remarkable convergence properties for smooth functions.
+**(Fourier connection)**  Chebyshev methods are Fourier cosine methods after the change of variables $x=\cos\theta$. This is why fast cosine transforms can compute Chebyshev coefficients efficiently.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Interpolation vs.\ expansion)**  Chebyshev interpolation chooses values at Chebyshev nodes. Chebyshev series choose coefficients in the Chebyshev basis. Both work well for the same reason: the basis oscillates evenly and avoids the endpoint instability of monomials.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Compute degree-$n$ fit to $e^x$ via `np.polynomial.chebyshev.chebfit`. Plot error vs.\ $n$.
+1. Use the result above to rewrite a Chebyshev expansion as a cosine series in $\theta$.
     
-1. **Spectral Differentiation:**  The derivative of a Chebyshev series satisfies a simple recurrence. Compare `chebder` accuracy to finite differences for $f(x) = \sin(\pi x)$.
+1. Derive the coefficient formula in the result above from Fourier cosine orthogonality.
+    
+1. Compute degree-$n$ Chebyshev fits to $e^x$ using `np.polynomial.chebyshev.chebfit`. Plot $\|f-p_n\|_\infty$ versus $n$ on a semilog scale.
+    
+1. Repeat the previous experiment for $f(x)=|x|$. Compare the coefficient decay with the analytic case in the result above.
+    
+1. Use `chebder` to differentiate a Chebyshev approximation to $f(x)=\sin(\pi x)$. Compare the derivative error with a finite-difference approximation using the same number of sample points.
 
 :::

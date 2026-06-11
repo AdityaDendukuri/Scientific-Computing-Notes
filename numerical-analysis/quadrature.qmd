@@ -17,7 +17,30 @@ $$
 T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 \end{align}
 $$
-**Error Bound:**  $E = O(h^2)$. Doubling $n$ reduces error $4\times$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Trapezoidal Error
+If $f$ has two continuous derivatives on $[a,b]$, then the composite trapezoidal rule satisfies
+$$
+\begin{align}
+I-T_n = O(h^2).
+\end{align}
+$$
+Thus doubling $n$ reduces the leading error by a factor of about $4$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Derive the one-panel trapezoidal rule by integrating the linear interpolant through $(a,f(a))$ and $(b,f(b))$.
+    
+1. Use Taylor expansion on one panel to show the local error is $O(h^3)$.
+    
+1. Sum over $O(1/h)$ panels to prove the global $O(h^2)$ statement in the result above.
+
 :::
 
 
@@ -29,7 +52,26 @@ $$
 S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\text{even}\;i} f(x_i) \right].
 \end{align}
 $$
-**Error Bound:**  $E = O(h^4)$. Exact for polynomials of degree $\leq 3$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Simpson Exactness and Error
+Simpson's rule is exact for polynomials of degree at most $3$. For sufficiently smooth $f$, the composite Simpson rule has global error $O(h^4)$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Integrate the quadratic interpolant through $x_0,x_1,x_2$ to derive the Simpson weights $1,4,1$.
+    
+1. Verify exactness for $1,x,x^2,x^3$ on a symmetric panel.
+    
+1. Use the exactness degree to explain why the leading error involves the fourth derivative.
+    
+1. Compare the observed error reduction after halving $h$ with the result above.
+
 :::
 
 
@@ -46,14 +88,27 @@ $$
 \int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i).
 \end{align}
 $$
-**Optimality:**  Exact for all polynomials of degree $\leq 2p-1$.
-**Nodes:**  Roots of the degree-$p$ Legendre polynomial $P_p(x)$.
+The nodes are the roots of the degree-$p$ Legendre polynomial $P_p(x)$, and the rule is exact for all polynomials of degree at most $2p-1$.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Efficiency:**  $p$ Gauss points are as accurate as $2p$ Newton-Cotes points. Always prefer Gaussian quadrature for smooth, non-periodic functions.
+**(Gauss efficiency)**  Gaussian quadrature spends nodes where orthogonality says they are most useful. For smooth, non-periodic integrands, a small number of Gauss points often beats many equally spaced Newton-Cotes points.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. For $p=2$, use the roots of $P_2(x)=(3x^2-1)/2$ to find the nodes.
+    
+1. Solve for weights that integrate $1$ and $x^2$ exactly on $[-1,1]$.
+    
+1. Verify that the resulting rule also integrates $x$ and $x^3$ exactly by symmetry.
+    
+1. Explain why exactness through degree $2p-1$ is the maximum possible with $2p$ free parameters.
+
 :::
 
 
@@ -105,7 +160,12 @@ $$
 ::: {.callout-note icon=false}
 ## Definition: Romberg Integration
 Iterative application of Richardson extrapolation to the trapezoidal rule.
-**Performance:**  Error decreases as $O(h^{2k+2})$ for smooth $f$, converging rapidly.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Romberg idea)**  Romberg integration repeatedly cancels the leading even powers in the trapezoidal error expansion. It is effective when $f$ is smooth enough for that expansion to be accurate.
 :::
 
 
@@ -114,17 +174,28 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Design Goal:**  Automatically focus function evaluations where $f$ is "difficult" (steep gradients, oscillations) and use large steps where $f$ is smooth.
-**Mechanism:**  Compare quadrature on one large panel vs.\ two small panels. If the difference is above tolerance $\varepsilon$, recurse.
+**(Adaptive quadrature)**  Adaptive quadrature focuses function evaluations where $f$ is difficult and uses large panels where $f$ is smooth. The usual mechanism compares one large panel with two smaller panels; if the difference is above tolerance $\varepsilon$, the method recurses.
 :::
 
 
 ## Periodic Functions and Spectral Accuracy
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Spectral Accuracy on Periodic Domains)**  For smooth, periodic functions on $[0, 2\pi]$, the **Trapezoidal Rule** is the optimal choice. It achieves **Spectral Accuracy** (exponential convergence) because error terms in the Euler-Maclaurin expansion vanish at endpoints.
+::: {.callout-note icon=false}
+## Theorem: Periodic Trapezoidal Spectral Accuracy
+For smooth periodic functions on $[0,2\pi]$, the trapezoidal rule can converge faster than any algebraic power of $h$. For analytic periodic functions, the convergence is exponential.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Apply the trapezoidal rule to $e^{ikx}$ on $[0,2\pi]$ and determine when the discrete sum is exactly zero.
+    
+1. Use a Fourier series argument to explain why smooth periodic functions are integrated unusually well.
+    
+1. Compare errors for $\sin(x)$, $\exp(\cos x)$, and $|x-\pi|$ as $n$ increases.
+
 :::
 
 
@@ -134,11 +205,11 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Doubling nodes in Trapezoidal rule reduces error by $4\times$. How much does Simpson reduce it?
+1. Doubling nodes in Trapezoidal rule reduces error by $4\times$. Use the result above to predict Simpson's reduction factor.
     
-1. Derive the $p=2$ Gauss points for $[-1, 1]$. (*Hint: roots of $3x^2 - 1$*).
+1. Derive the $p=2$ Gauss points for $[-1, 1]$ using the result above.
     
-1. Use Richardson extrapolation to improve $T(h)$ and $T(h/2)$ to get Simpson's rule.
+1. Use Richardson extrapolation from the result above to improve $T(h)$ and $T(h/2)$ to get Simpson's rule.
     
 1. Integration of $\sin(x)$ on $[0, 2\pi]$ with $n=4$ nodes. Is the error $0$? Why?
 
