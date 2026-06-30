@@ -710,6 +710,23 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Periodic Grid Signal
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A discrete signal <span class="math inline">\(\bx\in\fC^n\)</span> is interpreted as one period of a periodic sequence: <span class="math display">\[
+\begin{align}
+x_{j+n}=x_j.
+\end{align}
+\]</span> The DFT represents this signal in the basis of discrete complex exponentials.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Definition: DFT Matrix
 </div>
 </div>
@@ -736,6 +753,116 @@ F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
 </div>
 <div class="callout-body-container callout-body">
 <p>The DFT is an isometry: <span class="math inline">\(\|\mathbf{F}\bx\|_2 = \|\bx\|_2\)</span>. Total energy is preserved between time and frequency domains.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(\mathbf{F}\)</span> is unitary, <span class="math inline">\(\mathbf{F}^*\mathbf{F}=\bI\)</span>. Hence <span class="math display">\[
+\begin{align}
+\|\mathbf{F}\bx\|_2^2
+    =
+    (\mathbf{F}\bx)^*(\mathbf{F}\bx)
+    =
+    \bx^*\mathbf{F}^*\mathbf{F}\bx
+    =
+    \bx^*\bx
+    =
+    \|\bx\|_2^2.
+\end{align}
+\]</span> Taking square roots gives the claim.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to compute the <span class="math inline">\((j,\ell)\)</span> entry of <span class="math inline">\(\mathbf{F}^*\mathbf{F}\)</span>.</p></li>
+<li><p>Evaluate the finite geometric sum that appears.</p></li>
+<li><p>Conclude <span class="math inline">\(\mathbf{F}^*\mathbf{F}=\bI\)</span>.</p></li>
+<li><p>Explain why this is the finite Fourier analog of orthonormal coordinates.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Frequency Bins
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For samples on <span class="math inline">\([0,2\pi)\)</span>, the integer frequency attached to index <span class="math inline">\(k\)</span> is usually ordered as <span class="math display">\[
+\begin{align}
+0,1,2,...,\lfloor n/2\rfloor,-\lfloor(n-1)/2\rfloor,...,-1.
+\end{align}
+\]</span> This is the ordering returned by <code>np.fft.fftfreq</code> after scaling by <span class="math inline">\(n\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Normalization convention)</strong> Some libraries put the factor <span class="math inline">\(1/n\)</span> in the inverse transform instead of using the unitary factor <span class="math inline">\(1/\sqrt n\)</span> in both directions. The formulas change by constants, but the frequency content is the same.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Nyquist Frequency and Aliasing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On <span class="math inline">\(n\)</span> equally spaced samples of a <span class="math inline">\(2\pi\)</span>-periodic signal, frequencies that differ by multiples of <span class="math inline">\(n\)</span> are indistinguishable: <span class="math display">\[
+\begin{align}
+e^{i(k+n)x_j}=e^{ikx_j}.
+\end{align}
+\]</span> The largest resolvable unsigned frequency is the Nyquist frequency, approximately <span class="math inline">\(n/2\)</span> modes per period.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Let <span class="math inline">\(x_j=2\pi j/n\)</span>. Prove <span class="math inline">\(e^{i(k+n)x_j}=e^{ikx_j}\)</span> for every grid point.</p></li>
+<li><p>For <span class="math inline">\(n=8\)</span>, list the frequency bin ordering from the result above.</p></li>
+<li><p>Sample <span class="math inline">\(\sin(7x)\)</span> on <span class="math inline">\(n=8\)</span> points and identify its aliased frequency.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -775,6 +902,29 @@ F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
 \]</span> <strong>Complexity:</strong> Reduced from <span class="math inline">\(O(n^2)\)</span> (direct) to <span class="math inline">\(O(n \log n)\)</span> (FFT).</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Circular convolution for <span class="math inline">\(n=3\)</span>)</strong> If <span class="math inline">\(\bc=(c_0,c_1,c_2)^T\)</span>, then <span class="math display">\[
+\begin{align}
+\bc * \bx =
+    \begin{pmatrix}
+        c_0&amp;c_2&amp;c_1\\
+        c_1&amp;c_0&amp;c_2\\
+        c_2&amp;c_1&amp;c_0
+    \end{pmatrix}
+    \begin{pmatrix}x_0\\x_1\\x_2\end{pmatrix}.
+\end{align}
+\]</span> The wraparound terms are a consequence of the periodic convention in the result above.</p>
+</div>
+</div>
 </section>
 <section id="the-fast-fourier-transform-fft" class="level2" data-number="32.3">
 <h2 data-number="32.3" class="anchored" data-anchor-id="the-fast-fourier-transform-fft"><span class="header-section-number">32.3</span> The Fast Fourier Transform (FFT)</h2>
@@ -795,6 +945,24 @@ F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
 </ul>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Split the DFT sum into even and odd input indices.</p></li>
+<li><p>Show that each part is an <span class="math inline">\(n/2\)</span>-point DFT multiplied by phase factors.</p></li>
+<li><p>Write the recurrence <span class="math inline">\(T(n)=2T(n/2)+O(n)\)</span>.</p></li>
+<li><p>Solve the recurrence to obtain the cost in the result above.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -806,6 +974,27 @@ F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Spectral Differentiation:</strong> For smooth periodic signals, differentiate by multiplying frequency components <span class="math inline">\(\hat{x}_k\)</span> by <span class="math inline">\(ik\)</span>. Provides exponential accuracy compared to polynomial accuracy of finite differences.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Fourier Differentiation Rule
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a smooth <span class="math inline">\(2\pi\)</span>-periodic function with Fourier series <span class="math display">\[
+\begin{align}
+f(x)=\sum_k \hat f_k e^{ikx},
+\end{align}
+\]</span> the derivative has coefficients <span class="math display">\[
+\begin{align}
+\widehat{f'}_k=ik\hat f_k.
+\end{align}
+\]</span></p>
 </div>
 </div>
 </section>
@@ -822,10 +1011,10 @@ F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Write out the <span class="math inline">\(4 \times 4\)</span> DFT matrix explicitly. Verify it is unitary.</p></li>
+<li><p>Write out the <span class="math inline">\(4 \times 4\)</span> DFT matrix explicitly. Verify it is unitary using the result above.</p></li>
 <li><p>Solve the periodic Poisson equation <span class="math inline">\(-u'' = f\)</span> via FFT. (<em>Hint: Laplacian is circulant</em>).</p></li>
 <li><p>Compare the speed of <code>np.fft.fft(x)</code> vs.&nbsp;<code>F @ x</code> for <span class="math inline">\(n=4096\)</span>.</p></li>
-<li><p>Implement spectral differentiation for <span class="math inline">\(f(x) = \sin(x)\)</span> and check error vs.&nbsp;<span class="math inline">\(n\)</span>.</p></li>
+<li><p>Implement spectral differentiation for <span class="math inline">\(f(x) = \sin(x)\)</span> using the result above and check error vs.&nbsp;<span class="math inline">\(n\)</span>.</p></li>
 </ol>
 </div>
 </div>

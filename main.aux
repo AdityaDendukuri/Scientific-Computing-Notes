@@ -128,374 +128,482 @@
 \newlabel{def:numpy-arrays}{{1.27}{31}{Arrays and Basic Operations}{defctr.1.27}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.8.2}Linear Algebra Operations}{31}{subsubsection.1.8.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.8.3}Key Idioms}{32}{subsubsection.1.8.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Direct Methods for Linear Systems}{33}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Linearity}{33}{subsection.2.1}\protected@file@percent }
-\newlabel{sub:linearity}{{2.1}{33}{Linearity}{subsection.2.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Linear Systems}{33}{subsubsection.2.1.1}\protected@file@percent }
-\newlabel{def:linear-system}{{2.1}{33}{Linear Systems}{defctr.2.1}{}}
-\newlabel{ex:linear-system-first-solve}{{2.1}{34}{Linear Systems}{Item.109}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Rows, Columns, and Geometry}{34}{subsubsection.2.1.2}\protected@file@percent }
-\newlabel{rem:column-perspective}{{2.2}{34}{Rows, Columns, and Geometry}{remarkctr.2.2}{}}
-\newlabel{thm:superposition}{{2.1}{34}{Rows, Columns, and Geometry}{thmctr.2.1}{}}
-\newlabel{ex:superposition-multiple-rhs}{{2.2}{34}{Rows, Columns, and Geometry}{Item.111}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Invertibility and Existence}{34}{subsubsection.2.1.3}\protected@file@percent }
-\newlabel{thm:invertibility-equivalences}{{2.2}{35}{Invertibility and Existence}{Item.116}{}}
-\newlabel{ex:invertibility-consistency}{{2.3}{35}{Invertibility and Existence}{Item.118}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Residuals and Approximate Solutions}{35}{subsubsection.2.1.4}\protected@file@percent }
-\newlabel{def:residual}{{2.2}{35}{Residuals and Approximate Solutions}{defctr.2.2}{}}
-\newlabel{rem:residual-vs-error}{{2.4}{35}{Residuals and Approximate Solutions}{remarkctr.2.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.5}Linear Combinations and Bases}{36}{subsubsection.2.1.5}\protected@file@percent }
-\newlabel{def:linear-independence}{{2.3}{36}{Linear Combinations and Bases}{defctr.2.3}{}}
-\newlabel{def:basis}{{2.4}{36}{Linear Combinations and Bases}{defctr.2.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.6}Rank}{36}{subsubsection.2.1.6}\protected@file@percent }
-\newlabel{def:rank}{{2.5}{36}{Rank}{defctr.2.5}{}}
-\newlabel{thm:rank-nullity}{{2.3}{36}{Rank}{thmctr.2.3}{}}
-\newlabel{ex:rank-nullity-general-solution}{{2.4}{37}{Rank}{Item.121}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.7}The Four Fundamental Subspaces}{37}{subsubsection.2.1.7}\protected@file@percent }
-\newlabel{thm:orthogonal-complements}{{2.4}{37}{The Four Fundamental Subspaces}{thmctr.2.4}{}}
-\newlabel{ex:four-subspaces-projection}{{2.5}{37}{The Four Fundamental Subspaces}{Item.128}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}LU Factorization}{38}{subsection.2.2}\protected@file@percent }
-\newlabel{sub:lu}{{2.2}{38}{LU Factorization}{subsection.2.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}LU and Gaussian Elimination}{38}{subsubsection.2.2.1}\protected@file@percent }
-\newlabel{def:lu}{{2.6}{38}{LU and Gaussian Elimination}{defctr.2.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Pivoting and Stability}{39}{subsubsection.2.2.2}\protected@file@percent }
-\newlabel{def:lup}{{2.7}{40}{Pivoting and Stability}{defctr.2.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Algorithm Cost Analysis}{40}{subsubsection.2.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Symmetric Positive Definite (SPD) Matrices}{41}{subsection.2.3}\protected@file@percent }
-\newlabel{sub:spd}{{2.3}{41}{Symmetric Positive Definite (SPD) Matrices}{subsection.2.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Definitions and Properties}{42}{subsubsection.2.3.1}\protected@file@percent }
-\newlabel{def:positive-definite}{{2.8}{42}{Definitions and Properties}{defctr.2.8}{}}
-\newlabel{def:positive-semidefinite}{{2.9}{42}{Definitions and Properties}{defctr.2.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}Geometry and Metric}{43}{subsubsection.2.3.2}\protected@file@percent }
-\newlabel{def:a-metric}{{2.10}{43}{Geometry and Metric}{defctr.2.10}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.3}Cholesky Decomposition}{44}{subsubsection.2.3.3}\protected@file@percent }
-\newlabel{def:cholesky}{{2.11}{44}{Cholesky Decomposition}{defctr.2.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Orthogonality and Least Squares}{46}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Orthogonal Matrices}{46}{subsection.3.1}\protected@file@percent }
-\newlabel{sub:orthogonal}{{3.1}{46}{Orthogonal Matrices}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Orthogonality and Orthonormal Bases}{46}{subsubsection.3.1.1}\protected@file@percent }
-\newlabel{def:orthogonal-vectors}{{3.1}{46}{Orthogonality and Orthonormal Bases}{defctr.3.1}{}}
-\newlabel{def:orthonormal-basis}{{3.2}{46}{Orthogonality and Orthonormal Bases}{defctr.3.2}{}}
-\newlabel{rem:orthonormal-coordinates}{{3.1}{46}{Orthogonality and Orthonormal Bases}{remarkctr.3.1}{}}
-\newlabel{ex:orthonormal-coordinates}{{3.1}{46}{Orthogonality and Orthonormal Bases}{Item.162}{}}
-\newlabel{def:orthogonal-matrix}{{3.3}{46}{Orthogonality and Orthonormal Bases}{defctr.3.3}{}}
-\newlabel{thm:orthogonal-invariance}{{3.1}{47}{Orthogonality and Orthonormal Bases}{Item.165}{}}
-\newlabel{ex:orthogonal-invariance}{{3.2}{47}{Orthogonality and Orthonormal Bases}{Item.169}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}QR Decomposition}{48}{subsubsection.3.1.2}\protected@file@percent }
-\newlabel{def:qr}{{3.4}{48}{QR Decomposition}{defctr.3.4}{}}
-\newlabel{def:householder}{{3.5}{48}{QR Decomposition}{defctr.3.5}{}}
-\newlabel{rem:householder-stability}{{3.4}{48}{QR Decomposition}{remarkctr.3.4}{}}
-\newlabel{ex:householder-qr}{{3.3}{48}{QR Decomposition}{Item.173}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Gram-Schmidt Process}{49}{subsubsection.3.1.3}\protected@file@percent }
-\newlabel{ex:gram-schmidt-vs-householder}{{3.4}{49}{Gram-Schmidt Process}{Item.176}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Orthogonal Projection}{49}{subsubsection.3.1.4}\protected@file@percent }
-\newlabel{def:orthogonal-projector}{{3.6}{50}{Orthogonal Projection}{defctr.3.6}{}}
-\newlabel{thm:closest-point}{{3.2}{50}{Orthogonal Projection}{thmctr.3.2}{}}
-\newlabel{ex:orthogonal-projection}{{3.5}{50}{Orthogonal Projection}{Item.181}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Vector and Matrix Norms}{50}{subsection.3.2}\protected@file@percent }
-\newlabel{sub:norm-theory}{{3.2}{50}{Vector and Matrix Norms}{subsection.3.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Vector Norms}{50}{subsubsection.3.2.1}\protected@file@percent }
-\newlabel{def:vector-norm}{{3.7}{50}{Vector Norms}{Item.184}{}}
-\newlabel{def:lp-norms}{{3.8}{51}{Vector Norms}{defctr.3.8}{}}
-\newlabel{thm:norm-inequalities}{{3.3}{51}{Vector Norms}{thmctr.3.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Matrix Norms}{51}{subsubsection.3.2.2}\protected@file@percent }
-\newlabel{def:matrix-norm}{{3.9}{51}{Matrix Norms}{defctr.3.9}{}}
-\newlabel{def:frobenius-norm}{{3.10}{51}{Matrix Norms}{defctr.3.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Stability and Condition Number}{52}{subsection.3.3}\protected@file@percent }
-\newlabel{sub:stability-theory}{{3.3}{52}{Stability and Condition Number}{subsection.3.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Residual, Forward Error, and Backward Error}{52}{subsubsection.3.3.1}\protected@file@percent }
-\newlabel{def:residual-forward-error}{{3.11}{52}{Residual, Forward Error, and Backward Error}{defctr.3.11}{}}
-\newlabel{ex:residual-forward-error}{{3.8}{52}{Residual, Forward Error, and Backward Error}{Item.192}{}}
-\newlabel{thm:residual-error-bound}{{3.4}{53}{Residual, Forward Error, and Backward Error}{thmctr.3.4}{}}
-\newlabel{ex:residual-error-bound}{{3.9}{53}{Residual, Forward Error, and Backward Error}{Item.196}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Why Factorize instead of Invert?}{53}{subsubsection.3.3.2}\protected@file@percent }
-\newlabel{ex:inverse-vs-factorization}{{3.10}{53}{Why Factorize instead of Invert?}{Item.199}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.3}Numerical Stability}{53}{subsubsection.3.3.3}\protected@file@percent }
-\newlabel{def:backward-stability}{{3.12}{53}{Numerical Stability}{defctr.3.12}{}}
-\newlabel{thm:linear-system-backward-error}{{3.5}{54}{Numerical Stability}{thmctr.3.5}{}}
-\newlabel{ex:linear-system-backward-error}{{3.11}{54}{Numerical Stability}{Item.204}{}}
-\newlabel{ex:backward-stability}{{3.12}{54}{Numerical Stability}{Item.208}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.4}Condition Number}{54}{subsubsection.3.3.4}\protected@file@percent }
-\newlabel{def:condition-number}{{3.13}{55}{Condition Number}{defctr.3.13}{}}
-\newlabel{ex:conditioning-and-stability}{{3.13}{55}{Condition Number}{Item.212}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.5}Solver Selection Hierarchy}{55}{subsubsection.3.3.5}\protected@file@percent }
-\newlabel{thm:solver-selection}{{3.6}{56}{Solver Selection Hierarchy}{Item.217}{}}
-\newlabel{ex:solver-selection-by-structure}{{3.14}{56}{Solver Selection Hierarchy}{Item.222}{}}
-\newlabel{def:iterative-refinement}{{3.14}{56}{Solver Selection Hierarchy}{Item.225}{}}
-\newlabel{ex:solver-selection-refinement}{{3.15}{56}{Solver Selection Hierarchy}{Item.228}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Overdetermined Systems and Least Squares}{57}{subsection.3.4}\protected@file@percent }
-\newlabel{sub:least-squares}{{3.4}{57}{Overdetermined Systems and Least Squares}{subsection.3.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.1}Least Squares Problem}{57}{subsubsection.3.4.1}\protected@file@percent }
-\newlabel{def:overdetermined}{{3.15}{57}{Least Squares Problem}{defctr.3.15}{}}
-\newlabel{def:least-squares-prob}{{3.16}{57}{Least Squares Problem}{defctr.3.16}{}}
-\newlabel{thm:least-squares-projection}{{3.7}{57}{Least Squares Problem}{thmctr.3.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.2}Normal Equations}{57}{subsubsection.3.4.2}\protected@file@percent }
-\newlabel{thm:normal-equations}{{3.8}{57}{Normal Equations}{thmctr.3.8}{}}
-\newlabel{ex:normal-equations-conditioning}{{3.16}{58}{Normal Equations}{Item.234}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.3}QR-Based Least Squares}{58}{subsubsection.3.4.3}\protected@file@percent }
-\newlabel{thm:least-squares-qr}{{3.9}{58}{QR-Based Least Squares}{thmctr.3.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.4}Rank Deficiency and Regularization}{59}{subsubsection.3.4.4}\protected@file@percent }
-\newlabel{def:ridge-regularization}{{3.17}{59}{Rank Deficiency and Regularization}{defctr.3.17}{}}
-\newlabel{ex:least-squares-qr-regularization}{{3.17}{59}{Rank Deficiency and Regularization}{Item.236}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.5}Polynomial Regression}{59}{subsubsection.3.4.5}\protected@file@percent }
-\newlabel{def:vandermonde}{{3.18}{59}{Polynomial Regression}{defctr.3.18}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Chebyshev Polynomials}{59}{subsection.3.5}\protected@file@percent }
-\newlabel{sub:chebyshev-theory}{{3.5}{59}{Chebyshev Polynomials}{subsection.3.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.1}Failure of the Monomial Basis}{60}{subsubsection.3.5.1}\protected@file@percent }
-\newlabel{def:cheb-error-polynomial}{{3.19}{60}{Failure of the Monomial Basis}{defctr.3.19}{}}
-\newlabel{thm:cheb-interpolation-error}{{3.10}{60}{Failure of the Monomial Basis}{thmctr.3.10}{}}
-\newlabel{ex:cheb-monomial-failure}{{3.19}{60}{Failure of the Monomial Basis}{Item.242}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.2}Chebyshev Polynomials ($T_k$)}{60}{subsubsection.3.5.2}\protected@file@percent }
-\newlabel{def:cheb-polynomial}{{3.20}{61}{Chebyshev Polynomials ($T_k$)}{defctr.3.20}{}}
-\newlabel{thm:cheb-identities}{{3.11}{61}{Chebyshev Polynomials ($T_k$)}{thmctr.3.11}{}}
-\newlabel{ex:cheb-basic-identities}{{3.20}{61}{Chebyshev Polynomials ($T_k$)}{Item.247}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.3}Zeros and Nodes}{61}{subsubsection.3.5.3}\protected@file@percent }
-\newlabel{thm:cheb-zeros-extrema}{{3.12}{61}{Zeros and Nodes}{thmctr.3.12}{}}
-\newlabel{def:cheb-nodes}{{3.21}{62}{Zeros and Nodes}{defctr.3.21}{}}
-\newlabel{thm:cheb-error-polynomial}{{3.13}{62}{Zeros and Nodes}{thmctr.3.13}{}}
-\newlabel{ex:cheb-nodes}{{3.21}{62}{Zeros and Nodes}{Item.252}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.4}The Minimax Property}{62}{subsubsection.3.5.4}\protected@file@percent }
-\newlabel{thm:cheb-minimax}{{3.14}{62}{The Minimax Property}{thmctr.3.14}{}}
-\newlabel{ex:cheb-minimax}{{3.22}{63}{The Minimax Property}{Item.258}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.5}Chebyshev Series}{63}{subsubsection.3.5.5}\protected@file@percent }
-\newlabel{def:cheb-series}{{3.22}{63}{Chebyshev Series}{defctr.3.22}{}}
-\newlabel{thm:cheb-coefficients}{{3.15}{63}{Chebyshev Series}{thmctr.3.15}{}}
-\newlabel{thm:spectral-accuracy}{{3.16}{64}{Chebyshev Series}{thmctr.3.16}{}}
-\newlabel{ex:cheb-series}{{3.23}{64}{Chebyshev Series}{Item.263}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Eigenvalues and the SVD}{64}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Eigenvalues and Eigenvectors}{64}{subsection.4.1}\protected@file@percent }
-\newlabel{sub:eigen-theory}{{4.1}{64}{Eigenvalues and Eigenvectors}{subsection.4.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Definitions and Basic Properties}{64}{subsubsection.4.1.1}\protected@file@percent }
-\newlabel{def:eigenvalue}{{4.1}{65}{Definitions and Basic Properties}{defctr.4.1}{}}
-\newlabel{def:char-poly}{{4.2}{65}{Definitions and Basic Properties}{defctr.4.2}{}}
-\newlabel{thm:similar-matrices}{{4.1}{65}{Definitions and Basic Properties}{thmctr.4.1}{}}
-\newlabel{def:diagonalization}{{4.3}{65}{Definitions and Basic Properties}{defctr.4.3}{}}
-\newlabel{thm:eigen-props}{{4.2}{65}{Definitions and Basic Properties}{Item.269}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Symmetric and Hermitian Matrices}{66}{subsubsection.4.1.2}\protected@file@percent }
-\newlabel{thm:spectral-symmetric}{{4.3}{66}{Symmetric and Hermitian Matrices}{Item.272}{}}
-\newlabel{def:hermitian}{{4.4}{66}{Symmetric and Hermitian Matrices}{defctr.4.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Iterative Algorithms}{66}{subsubsection.4.1.3}\protected@file@percent }
-\newlabel{def:power-iteration}{{4.5}{67}{Iterative Algorithms}{defctr.4.5}{}}
-\newlabel{def:inverse-iteration}{{4.6}{67}{Iterative Algorithms}{defctr.4.6}{}}
-\newlabel{def:rqi}{{4.7}{67}{Iterative Algorithms}{defctr.4.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Schur Decomposition and the QR Algorithm}{67}{subsubsection.4.1.4}\protected@file@percent }
-\newlabel{thm:schur}{{4.4}{68}{Schur Decomposition and the QR Algorithm}{thmctr.4.4}{}}
-\newlabel{def:qr-iteration}{{4.8}{68}{Schur Decomposition and the QR Algorithm}{Item.278}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Singular Value Decomposition}{68}{subsection.4.2}\protected@file@percent }
-\newlabel{sub:svd-theory}{{4.2}{68}{Singular Value Decomposition}{subsection.4.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}The SVD Theorem}{69}{subsubsection.4.2.1}\protected@file@percent }
-\newlabel{thm:svd}{{4.5}{69}{The SVD Theorem}{thmctr.4.5}{}}
-\newlabel{thm:svd-coordinates}{{4.6}{69}{The SVD Theorem}{thmctr.4.6}{}}
-\newlabel{ex:svd-coordinates}{{4.5}{69}{The SVD Theorem}{Item.288}{}}
-\newlabel{def:numerical-rank}{{4.9}{70}{The SVD Theorem}{defctr.4.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}The Four Fundamental Subspaces}{70}{subsubsection.4.2.2}\protected@file@percent }
-\newlabel{thm:svd-eig-relation}{{4.7}{70}{The Four Fundamental Subspaces}{thmctr.4.7}{}}
-\newlabel{ex:svd-normal-equations-warning}{{4.6}{70}{The Four Fundamental Subspaces}{Item.295}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Low-Rank Approximation}{71}{subsubsection.4.2.3}\protected@file@percent }
-\newlabel{thm:eckart-young}{{4.8}{71}{Low-Rank Approximation}{thmctr.4.8}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.4}The Pseudoinverse}{71}{subsubsection.4.2.4}\protected@file@percent }
-\newlabel{def:pseudoinverse}{{4.10}{71}{The Pseudoinverse}{defctr.4.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Lanczos Algorithm}{72}{subsection.4.3}\protected@file@percent }
-\newlabel{sub:lanczos-theory}{{4.3}{72}{Lanczos Algorithm}{subsection.4.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Krylov Subspaces}{72}{subsubsection.4.3.1}\protected@file@percent }
-\newlabel{def:krylov-subspace}{{4.11}{72}{Krylov Subspaces}{defctr.4.11}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}The Lanczos Recurrence}{72}{subsubsection.4.3.2}\protected@file@percent }
-\newlabel{thm:lanczos-relation}{{4.9}{72}{The Lanczos Recurrence}{thmctr.4.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Ritz Values and Vectors}{72}{subsubsection.4.3.3}\protected@file@percent }
-\newlabel{def:ritz-pair}{{4.12}{73}{Ritz Values and Vectors}{defctr.4.12}{}}
-\newlabel{thm:ritz-residual}{{4.10}{73}{Ritz Values and Vectors}{thmctr.4.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Jacobi Eigenvalue Algorithm}{73}{subsection.4.4}\protected@file@percent }
-\newlabel{sub:jacobi-theory}{{4.4}{73}{Jacobi Eigenvalue Algorithm}{subsection.4.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Givens Rotations}{74}{subsubsection.4.4.1}\protected@file@percent }
-\newlabel{def:givens-rotation}{{4.13}{74}{Givens Rotations}{defctr.4.13}{}}
-\newlabel{thm:jacobi-angle}{{4.11}{74}{Givens Rotations}{thmctr.4.11}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}The Jacobi Algorithm}{74}{subsubsection.4.4.2}\protected@file@percent }
-\newlabel{alg:jacobi-eigenvalue}{{4.14}{75}{The Jacobi Algorithm}{Item.305}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Convergence and Cost}{75}{subsubsection.4.4.3}\protected@file@percent }
-\newlabel{thm:jacobi-convergence}{{4.12}{75}{Convergence and Cost}{thmctr.4.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Iterative Methods for Linear Systems}{76}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Iterative Methods for Linear Systems}{76}{subsection.5.1}\protected@file@percent }
-\newlabel{sub:iterative-basics}{{5.1}{76}{Iterative Methods for Linear Systems}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Direct vs.\ Iterative Solvers}{76}{subsubsection.5.1.1}\protected@file@percent }
-\newlabel{def:krylov-subspace-general}{{5.1}{77}{Direct vs.\ Iterative Solvers}{defctr.5.1}{}}
-\newlabel{thm:krylov-approximation-principle}{{5.1}{77}{Direct vs.\ Iterative Solvers}{thmctr.5.1}{}}
-\newlabel{ex:krylov-approximation-principle}{{5.1}{77}{Direct vs.\ Iterative Solvers}{Item.313}{}}
-\newlabel{def:stationary-iteration}{{5.2}{77}{Direct vs.\ Iterative Solvers}{defctr.5.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Convergence and Spectral Radius}{78}{subsubsection.5.1.2}\protected@file@percent }
-\newlabel{def:spectral-radius}{{5.3}{78}{Convergence and Spectral Radius}{defctr.5.3}{}}
-\newlabel{thm:gelfand}{{5.2}{78}{Convergence and Spectral Radius}{thmctr.5.2}{}}
-\newlabel{thm:iteration-convergence}{{5.3}{78}{Convergence and Spectral Radius}{thmctr.5.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.3}Stopping Criteria}{78}{subsubsection.5.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.4}Fill-in and Sparse Storage}{79}{subsubsection.5.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Jacobi and Gauss-Seidel Methods}{79}{subsection.5.2}\protected@file@percent }
-\newlabel{sub:jacobi-gs}{{5.2}{79}{Jacobi and Gauss-Seidel Methods}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Jacobi Iteration}{79}{subsubsection.5.2.1}\protected@file@percent }
-\newlabel{def:jacobi-iteration}{{5.4}{79}{Jacobi Iteration}{defctr.5.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Gauss-Seidel Iteration}{80}{subsubsection.5.2.2}\protected@file@percent }
-\newlabel{def:gs-iteration}{{5.5}{80}{Gauss-Seidel Iteration}{defctr.5.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Convergence Conditions}{80}{subsubsection.5.2.3}\protected@file@percent }
-\newlabel{thm:jacobi-gs-iteration-matrices}{{5.4}{80}{Convergence Conditions}{thmctr.5.4}{}}
-\newlabel{ex:jacobi-gs-iteration-matrices}{{5.4}{80}{Convergence Conditions}{Item.322}{}}
-\newlabel{thm:diag-dom-convergence}{{5.5}{80}{Convergence Conditions}{thmctr.5.5}{}}
-\newlabel{ex:diag-dom-convergence}{{5.5}{81}{Convergence Conditions}{Item.325}{}}
-\newlabel{thm:spd-gs-convergence}{{5.6}{81}{Convergence Conditions}{thmctr.5.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Successive Over-Relaxation (SOR)}{81}{subsubsection.5.2.4}\protected@file@percent }
-\newlabel{def:sor}{{5.6}{81}{Successive Over-Relaxation (SOR)}{defctr.5.6}{}}
-\newlabel{thm:sor-convergence}{{5.7}{81}{Successive Over-Relaxation (SOR)}{thmctr.5.7}{}}
-\newlabel{ex:sor-convergence}{{5.7}{81}{Successive Over-Relaxation (SOR)}{Item.330}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.5}Stopping Criteria}{82}{subsubsection.5.2.5}\protected@file@percent }
-\newlabel{def:iterative-stopping-tests}{{5.7}{82}{Stopping Criteria}{Item.333}{}}
-\newlabel{ex:jacobi-stopping}{{5.8}{82}{Stopping Criteria}{Item.335}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conjugate Gradient Method}{82}{subsection.5.3}\protected@file@percent }
-\newlabel{sub:cg}{{5.3}{82}{Conjugate Gradient Method}{subsection.5.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Krylov Subspaces}{82}{subsubsection.5.3.1}\protected@file@percent }
-\newlabel{def:krylov-subspace-cg}{{5.8}{82}{Krylov Subspaces}{defctr.5.8}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}CG as a Projection Method}{83}{subsubsection.5.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.3}Conjugate Directions and A-Orthogonality}{83}{subsubsection.5.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.4}The CG Algorithm}{83}{subsubsection.5.3.4}\protected@file@percent }
-\newlabel{alg:cg}{{5.9}{84}{The CG Algorithm}{Item.340}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.5}Convergence Rate}{84}{subsubsection.5.3.5}\protected@file@percent }
-\newlabel{thm:cg-convergence}{{5.8}{84}{Convergence Rate}{thmctr.5.8}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.6}Preconditioning}{85}{subsubsection.5.3.6}\protected@file@percent }
-\newlabel{def:preconditioners}{{5.10}{85}{Preconditioning}{Item.343}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}GMRES}{85}{subsection.5.4}\protected@file@percent }
-\newlabel{sub:gmres-basics}{{5.4}{85}{GMRES}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Residual Minimization and Krylov Subspaces}{86}{subsubsection.5.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}The Arnoldi Process}{86}{subsubsection.5.4.2}\protected@file@percent }
-\newlabel{def:arnoldi-relation}{{5.11}{86}{The Arnoldi Process}{defctr.5.11}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.3}Reduction to Hessenberg Least Squares}{86}{subsubsection.5.4.3}\protected@file@percent }
-\newlabel{thm:gmres-ls}{{5.9}{87}{Reduction to Hessenberg Least Squares}{thmctr.5.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.4}Restarted GMRES($m$)}{87}{subsubsection.5.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.5}Convergence and Preconditioning}{87}{subsubsection.5.4.5}\protected@file@percent }
-\newlabel{thm:gmres-convergence}{{5.10}{87}{Convergence and Preconditioning}{thmctr.5.10}{}}
-\newlabel{def:gmres-preconditioning}{{5.12}{88}{Convergence and Preconditioning}{defctr.5.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Numerical Analysis}{88}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Polynomial Interpolation}{88}{subsection.6.1}\protected@file@percent }
-\newlabel{subsec:interpolation}{{6.1}{88}{Polynomial Interpolation}{subsection.6.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.1}Existence and Uniqueness}{88}{subsubsection.6.1.1}\protected@file@percent }
-\newlabel{thm:interpolation-existence}{{6.1}{88}{Existence and Uniqueness}{thmctr.6.1}{}}
-\newlabel{ex:interpolation-existence}{{6.1}{88}{Existence and Uniqueness}{Item.353}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.2}Lagrange Form}{89}{subsubsection.6.1.2}\protected@file@percent }
-\newlabel{def:lagrange-basis}{{6.1}{89}{Lagrange Form}{defctr.6.1}{}}
-\newlabel{ex:lagrange-basis}{{6.2}{89}{Lagrange Form}{Item.357}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.3}Barycentric Interpolation}{89}{subsubsection.6.1.3}\protected@file@percent }
-\newlabel{def:barycentric-formula}{{6.2}{89}{Barycentric Interpolation}{defctr.6.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.4}Runge's Phenomenon}{89}{subsubsection.6.1.4}\protected@file@percent }
-\newlabel{thm:interpolation-cheb-nodes}{{6.2}{90}{Runge's Phenomenon}{thmctr.6.2}{}}
-\newlabel{ex:interpolation-cheb-nodes}{{6.3}{90}{Runge's Phenomenon}{Item.361}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.5}Cubic Splines}{90}{subsubsection.6.1.5}\protected@file@percent }
-\newlabel{def:cubic-spline}{{6.3}{90}{Cubic Splines}{defctr.6.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.6}Exercises}{90}{subsubsection.6.1.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Numerical Quadrature}{90}{subsection.6.2}\protected@file@percent }
-\newlabel{subsec:quadrature}{{6.2}{90}{Numerical Quadrature}{subsection.6.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Newton-Cotes Rules}{91}{subsubsection.6.2.1}\protected@file@percent }
-\newlabel{def:trapezoidal-rule}{{6.4}{91}{Newton-Cotes Rules}{defctr.6.4}{}}
-\newlabel{thm:trapezoidal-error}{{6.3}{91}{Newton-Cotes Rules}{thmctr.6.3}{}}
-\newlabel{ex:trapezoidal-error}{{6.5}{91}{Newton-Cotes Rules}{Item.367}{}}
-\newlabel{def:simpsons-rule}{{6.5}{91}{Newton-Cotes Rules}{defctr.6.5}{}}
-\newlabel{thm:simpson-error}{{6.4}{91}{Newton-Cotes Rules}{thmctr.6.4}{}}
-\newlabel{ex:simpson-error}{{6.6}{91}{Newton-Cotes Rules}{Item.371}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Gaussian Quadrature}{92}{subsubsection.6.2.2}\protected@file@percent }
-\newlabel{thm:gauss-legendre}{{6.5}{92}{Gaussian Quadrature}{thmctr.6.5}{}}
-\newlabel{ex:gauss-legendre}{{6.7}{92}{Gaussian Quadrature}{Item.375}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}Richardson Extrapolation and Romberg Integration}{92}{subsubsection.6.2.3}\protected@file@percent }
-\newlabel{thm:richardson}{{6.6}{92}{Richardson Extrapolation and Romberg Integration}{thmctr.6.6}{}}
-\newlabel{def:romberg}{{6.6}{93}{Richardson Extrapolation and Romberg Integration}{defctr.6.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.4}Adaptive Quadrature}{93}{subsubsection.6.2.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.5}Periodic Functions and Spectral Accuracy}{93}{subsubsection.6.2.5}\protected@file@percent }
-\newlabel{thm:periodic-trapezoidal}{{6.7}{93}{Periodic Functions and Spectral Accuracy}{thmctr.6.7}{}}
-\newlabel{ex:periodic-trapezoidal}{{6.8}{93}{Periodic Functions and Spectral Accuracy}{Item.378}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.6}Exercises}{94}{subsubsection.6.2.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Root Finding}{94}{subsection.6.3}\protected@file@percent }
-\newlabel{subsec:root-finding}{{6.3}{94}{Root Finding}{subsection.6.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.1}Bracketing Methods}{94}{subsubsection.6.3.1}\protected@file@percent }
-\newlabel{thm:bisection}{{6.8}{94}{Bracketing Methods}{Item.384}{}}
-\newlabel{ex:bisection}{{6.10}{94}{Bracketing Methods}{Item.388}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.2}Open Methods}{95}{subsubsection.6.3.2}\protected@file@percent }
-\newlabel{def:newton-method}{{6.7}{95}{Open Methods}{defctr.6.7}{}}
-\newlabel{thm:newton-quadratic}{{6.9}{95}{Open Methods}{thmctr.6.9}{}}
-\newlabel{ex:newton-quadratic}{{6.11}{95}{Open Methods}{Item.393}{}}
-\newlabel{def:secant-method}{{6.8}{95}{Open Methods}{defctr.6.8}{}}
-\newlabel{thm:secant-superlinear}{{6.10}{95}{Open Methods}{thmctr.6.10}{}}
-\newlabel{ex:secant-method}{{6.12}{95}{Open Methods}{Item.396}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.3}Brent's Method}{96}{subsubsection.6.3.3}\protected@file@percent }
-\newlabel{thm:brent-hybrid}{{6.11}{96}{Brent's Method}{Item.399}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.4}Exercises}{96}{subsubsection.6.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Ordinary Differential Equations}{96}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Numerical Methods for ODEs}{96}{subsection.7.1}\protected@file@percent }
-\newlabel{subsec:ode-methods}{{7.1}{96}{Numerical Methods for ODEs}{subsection.7.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.1}Basic Methods}{96}{subsubsection.7.1.1}\protected@file@percent }
-\newlabel{def:forward-euler}{{7.1}{96}{Basic Methods}{defctr.7.1}{}}
-\newlabel{thm:forward-euler-stability}{{7.1}{97}{Basic Methods}{thmctr.7.1}{}}
-\newlabel{ex:forward-euler-stability}{{7.1}{97}{Basic Methods}{Item.408}{}}
-\newlabel{def:backward-euler}{{7.2}{97}{Basic Methods}{defctr.7.2}{}}
-\newlabel{thm:backward-euler-stability}{{7.2}{97}{Basic Methods}{thmctr.7.2}{}}
-\newlabel{ex:backward-euler-stability}{{7.2}{97}{Basic Methods}{Item.412}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.2}Runge-Kutta Methods}{98}{subsubsection.7.1.2}\protected@file@percent }
-\newlabel{def:rk4}{{7.3}{98}{Runge-Kutta Methods}{defctr.7.3}{}}
-\newlabel{thm:rk45-adaptivity}{{7.3}{98}{Runge-Kutta Methods}{thmctr.7.3}{}}
-\newlabel{ex:rk45-adaptivity}{{7.3}{98}{Runge-Kutta Methods}{Item.415}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.3}Symplectic Integrators}{98}{subsubsection.7.1.3}\protected@file@percent }
-\newlabel{def:velocity-verlet}{{7.4}{98}{Symplectic Integrators}{Item.418}{}}
-\newlabel{ex:velocity-verlet}{{7.4}{99}{Symplectic Integrators}{Item.421}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.4}Exercises}{99}{subsubsection.7.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}Applications}{99}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Principal Component Analysis (PCA)}{99}{subsection.8.1}\protected@file@percent }
-\newlabel{sub:pca-via-svd}{{8.1}{99}{Principal Component Analysis (PCA)}{subsection.8.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.1}Definitions and Preprocessing}{99}{subsubsection.8.1.1}\protected@file@percent }
-\newlabel{def:pca-centering}{{8.1}{99}{Definitions and Preprocessing}{defctr.8.1}{}}
-\newlabel{def:sample-covariance}{{8.2}{99}{Definitions and Preprocessing}{defctr.8.2}{}}
-\newlabel{ex:pca-covariance}{{8.1}{99}{Definitions and Preprocessing}{Item.428}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.2}PCA via SVD}{100}{subsubsection.8.1.2}\protected@file@percent }
-\newlabel{thm:pca-svd}{{8.1}{100}{PCA via SVD}{thmctr.8.1}{}}
-\newlabel{ex:pca-svd}{{8.2}{100}{PCA via SVD}{Item.433}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.3}Variance and Dimensionality Reduction}{100}{subsubsection.8.1.3}\protected@file@percent }
-\newlabel{def:pve}{{8.3}{100}{Variance and Dimensionality Reduction}{defctr.8.3}{}}
-\newlabel{thm:pca-optimal-approximation}{{8.2}{100}{Variance and Dimensionality Reduction}{thmctr.8.2}{}}
-\newlabel{ex:pca-optimal-approximation}{{8.3}{100}{Variance and Dimensionality Reduction}{Item.437}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.4}Implementation Details}{101}{subsubsection.8.1.4}\protected@file@percent }
-\newlabel{def:kernel-pca}{{8.4}{101}{Implementation Details}{defctr.8.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.5}Exercises}{101}{subsubsection.8.1.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Spectral Graph Theory and PageRank}{101}{subsection.8.2}\protected@file@percent }
-\newlabel{sub:spectral_graph_theory}{{8.2}{101}{Spectral Graph Theory and PageRank}{subsection.8.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.1}Graph Matrices}{101}{subsubsection.8.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.2}Spectral Clustering}{102}{subsubsection.8.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.3}Random Walks and PageRank}{102}{subsubsection.8.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.4}Exercises}{103}{subsubsection.8.2.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Linear Operators and the Poisson Equation}{103}{subsection.8.3}\protected@file@percent }
-\newlabel{sub:operators}{{8.3}{103}{Linear Operators and the Poisson Equation}{subsection.8.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.1}Differential Operators and Discretization}{103}{subsubsection.8.3.1}\protected@file@percent }
-\newlabel{thm:laplacian-eigenvalues}{{8.5}{103}{Differential Operators and Discretization}{thmctr.8.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.2}Operator Norms and Conditioning}{104}{subsubsection.8.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.3}Exercises}{104}{subsubsection.8.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Fourier Analysis as Change of Basis}{105}{subsection.8.4}\protected@file@percent }
-\newlabel{sub:fourier}{{8.4}{105}{Fourier Analysis as Change of Basis}{subsection.8.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.1}Discrete Fourier Transform (DFT)}{105}{subsubsection.8.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.2}Convolution and Circulant Matrices}{105}{subsubsection.8.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.3}The Fast Fourier Transform (FFT)}{105}{subsubsection.8.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.4}Exercises}{106}{subsubsection.8.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Markov Chains and Stochastic Matrices}{106}{subsection.8.5}\protected@file@percent }
-\newlabel{sub:markov}{{8.5}{106}{Markov Chains and Stochastic Matrices}{subsection.8.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.1}Definitions}{106}{subsubsection.8.5.1}\protected@file@percent }
-\newlabel{def:column-stochastic}{{8.16}{106}{Definitions}{Item.461}{}}
-\newlabel{thm:stochastic-spectrum}{{8.9}{106}{Definitions}{thmctr.8.9}{}}
-\newlabel{ex:stochastic-spectrum}{{8.8}{106}{Definitions}{Item.465}{}}
-\newlabel{def:markov-chain}{{8.17}{106}{Definitions}{defctr.8.17}{}}
-\newlabel{def:stationary-distribution}{{8.18}{106}{Definitions}{defctr.8.18}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.2}Convergence and Mixing}{107}{subsubsection.8.5.2}\protected@file@percent }
-\newlabel{thm:pf-chains}{{8.10}{107}{Convergence and Mixing}{Item.468}{}}
-\newlabel{def:spectral-gap}{{8.19}{107}{Convergence and Mixing}{defctr.8.19}{}}
-\newlabel{thm:spectral-mixing}{{8.11}{107}{Convergence and Mixing}{thmctr.8.11}{}}
-\newlabel{ex:spectral-mixing}{{8.9}{107}{Convergence and Mixing}{Item.472}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.3}Properties and Design}{107}{subsubsection.8.5.3}\protected@file@percent }
-\newlabel{def:detailed-balance}{{8.20}{107}{Properties and Design}{defctr.8.20}{}}
-\newlabel{thm:reversible-real-spectrum}{{8.12}{107}{Properties and Design}{thmctr.8.12}{}}
-\newlabel{ex:reversible-real-spectrum}{{8.10}{108}{Properties and Design}{Item.476}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.4}Exercises}{108}{subsubsection.8.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Koopman Theory, DMD, and SINDy}{108}{subsection.8.6}\protected@file@percent }
-\newlabel{sub:koopman}{{8.6}{108}{Koopman Theory, DMD, and SINDy}{subsection.8.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.1}Koopman Operator Theory}{108}{subsubsection.8.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.2}Dynamic Mode Decomposition (DMD)}{109}{subsubsection.8.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.3}SINDy: Sparse Identification}{109}{subsubsection.8.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.4}Exercises}{109}{subsubsection.8.6.4}\protected@file@percent }
-\gdef \@abspage@last{109}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Direct Methods for Linear Systems}{34}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Linearity}{34}{subsection.2.1}\protected@file@percent }
+\newlabel{sub:linearity}{{2.1}{34}{Linearity}{subsection.2.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Linear Systems}{34}{subsubsection.2.1.1}\protected@file@percent }
+\newlabel{def:linear-system}{{2.1}{34}{Linear Systems}{defctr.2.1}{}}
+\newlabel{ex:linear-system-first-solve}{{2.1}{35}{Linear Systems}{Item.109}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Rows, Columns, and Geometry}{35}{subsubsection.2.1.2}\protected@file@percent }
+\newlabel{rem:column-perspective}{{2.2}{35}{Rows, Columns, and Geometry}{remarkctr.2.2}{}}
+\newlabel{thm:superposition}{{2.1}{35}{Rows, Columns, and Geometry}{thmctr.2.1}{}}
+\newlabel{ex:superposition-multiple-rhs}{{2.2}{35}{Rows, Columns, and Geometry}{Item.111}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Invertibility and Existence}{35}{subsubsection.2.1.3}\protected@file@percent }
+\newlabel{thm:invertibility-equivalences}{{2.2}{36}{Invertibility and Existence}{Item.116}{}}
+\newlabel{ex:invertibility-consistency}{{2.3}{36}{Invertibility and Existence}{Item.118}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Residuals and Approximate Solutions}{36}{subsubsection.2.1.4}\protected@file@percent }
+\newlabel{def:residual}{{2.2}{36}{Residuals and Approximate Solutions}{defctr.2.2}{}}
+\newlabel{rem:residual-vs-error}{{2.4}{36}{Residuals and Approximate Solutions}{remarkctr.2.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.5}Linear Combinations and Bases}{37}{subsubsection.2.1.5}\protected@file@percent }
+\newlabel{def:linear-independence}{{2.3}{37}{Linear Combinations and Bases}{defctr.2.3}{}}
+\newlabel{def:basis}{{2.4}{37}{Linear Combinations and Bases}{defctr.2.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.6}Rank}{37}{subsubsection.2.1.6}\protected@file@percent }
+\newlabel{def:rank}{{2.5}{37}{Rank}{defctr.2.5}{}}
+\newlabel{thm:rank-nullity}{{2.3}{37}{Rank}{thmctr.2.3}{}}
+\newlabel{ex:rank-nullity-general-solution}{{2.4}{38}{Rank}{Item.121}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.7}The Four Fundamental Subspaces}{38}{subsubsection.2.1.7}\protected@file@percent }
+\newlabel{thm:orthogonal-complements}{{2.4}{38}{The Four Fundamental Subspaces}{thmctr.2.4}{}}
+\newlabel{ex:four-subspaces-projection}{{2.5}{38}{The Four Fundamental Subspaces}{Item.128}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}LU Factorization}{39}{subsection.2.2}\protected@file@percent }
+\newlabel{sub:lu}{{2.2}{39}{LU Factorization}{subsection.2.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}LU and Gaussian Elimination}{39}{subsubsection.2.2.1}\protected@file@percent }
+\newlabel{def:lu}{{2.6}{39}{LU and Gaussian Elimination}{defctr.2.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Pivoting and Stability}{40}{subsubsection.2.2.2}\protected@file@percent }
+\newlabel{def:lup}{{2.7}{41}{Pivoting and Stability}{defctr.2.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Algorithm Cost Analysis}{41}{subsubsection.2.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Symmetric Positive Definite (SPD) Matrices}{42}{subsection.2.3}\protected@file@percent }
+\newlabel{sub:spd}{{2.3}{42}{Symmetric Positive Definite (SPD) Matrices}{subsection.2.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Definitions and Properties}{43}{subsubsection.2.3.1}\protected@file@percent }
+\newlabel{def:positive-definite}{{2.8}{43}{Definitions and Properties}{defctr.2.8}{}}
+\newlabel{def:positive-semidefinite}{{2.9}{43}{Definitions and Properties}{defctr.2.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}Geometry and Metric}{44}{subsubsection.2.3.2}\protected@file@percent }
+\newlabel{def:a-metric}{{2.10}{44}{Geometry and Metric}{defctr.2.10}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.3}Cholesky Decomposition}{45}{subsubsection.2.3.3}\protected@file@percent }
+\newlabel{def:cholesky}{{2.11}{45}{Cholesky Decomposition}{defctr.2.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Orthogonality and Least Squares}{47}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Orthogonal Matrices}{47}{subsection.3.1}\protected@file@percent }
+\newlabel{sub:orthogonal}{{3.1}{47}{Orthogonal Matrices}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Orthogonality and Orthonormal Bases}{47}{subsubsection.3.1.1}\protected@file@percent }
+\newlabel{def:orthogonal-vectors}{{3.1}{47}{Orthogonality and Orthonormal Bases}{defctr.3.1}{}}
+\newlabel{def:orthonormal-basis}{{3.2}{47}{Orthogonality and Orthonormal Bases}{defctr.3.2}{}}
+\newlabel{rem:orthonormal-coordinates}{{3.1}{47}{Orthogonality and Orthonormal Bases}{remarkctr.3.1}{}}
+\newlabel{ex:orthonormal-coordinates}{{3.1}{47}{Orthogonality and Orthonormal Bases}{Item.162}{}}
+\newlabel{def:orthogonal-matrix}{{3.3}{47}{Orthogonality and Orthonormal Bases}{defctr.3.3}{}}
+\newlabel{thm:orthogonal-invariance}{{3.1}{48}{Orthogonality and Orthonormal Bases}{Item.165}{}}
+\newlabel{ex:orthogonal-invariance}{{3.2}{48}{Orthogonality and Orthonormal Bases}{Item.169}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}QR Decomposition}{49}{subsubsection.3.1.2}\protected@file@percent }
+\newlabel{def:qr}{{3.4}{49}{QR Decomposition}{defctr.3.4}{}}
+\newlabel{def:householder}{{3.5}{49}{QR Decomposition}{defctr.3.5}{}}
+\newlabel{rem:householder-stability}{{3.4}{49}{QR Decomposition}{remarkctr.3.4}{}}
+\newlabel{ex:householder-qr}{{3.3}{49}{QR Decomposition}{Item.173}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Gram-Schmidt Process}{50}{subsubsection.3.1.3}\protected@file@percent }
+\newlabel{ex:gram-schmidt-vs-householder}{{3.4}{50}{Gram-Schmidt Process}{Item.176}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Orthogonal Projection}{50}{subsubsection.3.1.4}\protected@file@percent }
+\newlabel{def:orthogonal-projector}{{3.6}{51}{Orthogonal Projection}{defctr.3.6}{}}
+\newlabel{thm:closest-point}{{3.2}{51}{Orthogonal Projection}{thmctr.3.2}{}}
+\newlabel{ex:orthogonal-projection}{{3.5}{51}{Orthogonal Projection}{Item.181}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Vector and Matrix Norms}{51}{subsection.3.2}\protected@file@percent }
+\newlabel{sub:norm-theory}{{3.2}{51}{Vector and Matrix Norms}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Vector Norms}{51}{subsubsection.3.2.1}\protected@file@percent }
+\newlabel{def:vector-norm}{{3.7}{51}{Vector Norms}{Item.184}{}}
+\newlabel{def:lp-norms}{{3.8}{52}{Vector Norms}{defctr.3.8}{}}
+\newlabel{thm:norm-inequalities}{{3.3}{52}{Vector Norms}{thmctr.3.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Matrix Norms}{52}{subsubsection.3.2.2}\protected@file@percent }
+\newlabel{def:matrix-norm}{{3.9}{52}{Matrix Norms}{defctr.3.9}{}}
+\newlabel{def:frobenius-norm}{{3.10}{52}{Matrix Norms}{defctr.3.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Stability and Condition Number}{53}{subsection.3.3}\protected@file@percent }
+\newlabel{sub:stability-theory}{{3.3}{53}{Stability and Condition Number}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Residual, Forward Error, and Backward Error}{53}{subsubsection.3.3.1}\protected@file@percent }
+\newlabel{def:residual-forward-error}{{3.11}{53}{Residual, Forward Error, and Backward Error}{defctr.3.11}{}}
+\newlabel{ex:residual-forward-error}{{3.8}{53}{Residual, Forward Error, and Backward Error}{Item.192}{}}
+\newlabel{thm:residual-error-bound}{{3.4}{54}{Residual, Forward Error, and Backward Error}{thmctr.3.4}{}}
+\newlabel{ex:residual-error-bound}{{3.9}{54}{Residual, Forward Error, and Backward Error}{Item.196}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Why Factorize instead of Invert?}{54}{subsubsection.3.3.2}\protected@file@percent }
+\newlabel{ex:inverse-vs-factorization}{{3.10}{54}{Why Factorize instead of Invert?}{Item.199}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.3}Numerical Stability}{54}{subsubsection.3.3.3}\protected@file@percent }
+\newlabel{def:backward-stability}{{3.12}{54}{Numerical Stability}{defctr.3.12}{}}
+\newlabel{thm:linear-system-backward-error}{{3.5}{55}{Numerical Stability}{thmctr.3.5}{}}
+\newlabel{ex:linear-system-backward-error}{{3.11}{55}{Numerical Stability}{Item.204}{}}
+\newlabel{ex:backward-stability}{{3.12}{55}{Numerical Stability}{Item.208}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.4}Condition Number}{55}{subsubsection.3.3.4}\protected@file@percent }
+\newlabel{def:condition-number}{{3.13}{56}{Condition Number}{defctr.3.13}{}}
+\newlabel{ex:conditioning-and-stability}{{3.13}{56}{Condition Number}{Item.212}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.5}Solver Selection Hierarchy}{56}{subsubsection.3.3.5}\protected@file@percent }
+\newlabel{thm:solver-selection}{{3.6}{57}{Solver Selection Hierarchy}{Item.217}{}}
+\newlabel{ex:solver-selection-by-structure}{{3.14}{57}{Solver Selection Hierarchy}{Item.222}{}}
+\newlabel{def:iterative-refinement}{{3.14}{57}{Solver Selection Hierarchy}{Item.225}{}}
+\newlabel{ex:solver-selection-refinement}{{3.15}{57}{Solver Selection Hierarchy}{Item.228}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Overdetermined Systems and Least Squares}{58}{subsection.3.4}\protected@file@percent }
+\newlabel{sub:least-squares}{{3.4}{58}{Overdetermined Systems and Least Squares}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.1}Least Squares Problem}{58}{subsubsection.3.4.1}\protected@file@percent }
+\newlabel{def:overdetermined}{{3.15}{58}{Least Squares Problem}{defctr.3.15}{}}
+\newlabel{def:least-squares-prob}{{3.16}{58}{Least Squares Problem}{defctr.3.16}{}}
+\newlabel{thm:least-squares-projection}{{3.7}{58}{Least Squares Problem}{thmctr.3.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.2}Normal Equations}{58}{subsubsection.3.4.2}\protected@file@percent }
+\newlabel{thm:normal-equations}{{3.8}{58}{Normal Equations}{thmctr.3.8}{}}
+\newlabel{ex:normal-equations-conditioning}{{3.16}{59}{Normal Equations}{Item.234}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.3}QR-Based Least Squares}{59}{subsubsection.3.4.3}\protected@file@percent }
+\newlabel{thm:least-squares-qr}{{3.9}{59}{QR-Based Least Squares}{thmctr.3.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.4}Rank Deficiency and Regularization}{60}{subsubsection.3.4.4}\protected@file@percent }
+\newlabel{thm:min-norm-least-squares}{{3.10}{60}{Rank Deficiency and Regularization}{thmctr.3.10}{}}
+\newlabel{ex:min-norm-least-squares}{{3.17}{60}{Rank Deficiency and Regularization}{Item.238}{}}
+\newlabel{def:ridge-regularization}{{3.17}{60}{Rank Deficiency and Regularization}{defctr.3.17}{}}
+\newlabel{def:weighted-least-squares}{{3.18}{60}{Rank Deficiency and Regularization}{defctr.3.18}{}}
+\newlabel{thm:weighted-normal-equations}{{3.11}{60}{Rank Deficiency and Regularization}{thmctr.3.11}{}}
+\newlabel{ex:least-squares-qr-regularization}{{3.18}{61}{Rank Deficiency and Regularization}{Item.241}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.5}Polynomial Regression}{61}{subsubsection.3.4.5}\protected@file@percent }
+\newlabel{def:vandermonde}{{3.19}{61}{Polynomial Regression}{defctr.3.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Chebyshev Polynomials}{61}{subsection.3.5}\protected@file@percent }
+\newlabel{sub:chebyshev-theory}{{3.5}{61}{Chebyshev Polynomials}{subsection.3.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.1}Failure of the Monomial Basis}{61}{subsubsection.3.5.1}\protected@file@percent }
+\newlabel{def:cheb-error-polynomial}{{3.20}{62}{Failure of the Monomial Basis}{defctr.3.20}{}}
+\newlabel{thm:cheb-interpolation-error}{{3.12}{62}{Failure of the Monomial Basis}{thmctr.3.12}{}}
+\newlabel{ex:cheb-monomial-failure}{{3.20}{62}{Failure of the Monomial Basis}{Item.247}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.2}Chebyshev Polynomials ($T_k$)}{62}{subsubsection.3.5.2}\protected@file@percent }
+\newlabel{def:cheb-polynomial}{{3.21}{62}{Chebyshev Polynomials ($T_k$)}{defctr.3.21}{}}
+\newlabel{thm:cheb-identities}{{3.13}{63}{Chebyshev Polynomials ($T_k$)}{thmctr.3.13}{}}
+\newlabel{ex:cheb-basic-identities}{{3.21}{63}{Chebyshev Polynomials ($T_k$)}{Item.252}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.3}Zeros and Nodes}{63}{subsubsection.3.5.3}\protected@file@percent }
+\newlabel{thm:cheb-zeros-extrema}{{3.14}{63}{Zeros and Nodes}{thmctr.3.14}{}}
+\newlabel{def:cheb-nodes}{{3.22}{63}{Zeros and Nodes}{defctr.3.22}{}}
+\newlabel{thm:cheb-error-polynomial}{{3.15}{64}{Zeros and Nodes}{thmctr.3.15}{}}
+\newlabel{ex:cheb-nodes}{{3.22}{64}{Zeros and Nodes}{Item.257}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.4}The Minimax Property}{64}{subsubsection.3.5.4}\protected@file@percent }
+\newlabel{thm:cheb-minimax}{{3.16}{64}{The Minimax Property}{thmctr.3.16}{}}
+\newlabel{ex:cheb-minimax}{{3.23}{65}{The Minimax Property}{Item.263}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.5}Chebyshev Series}{65}{subsubsection.3.5.5}\protected@file@percent }
+\newlabel{def:cheb-series}{{3.23}{65}{Chebyshev Series}{defctr.3.23}{}}
+\newlabel{thm:cheb-coefficients}{{3.17}{65}{Chebyshev Series}{thmctr.3.17}{}}
+\newlabel{thm:spectral-accuracy}{{3.18}{65}{Chebyshev Series}{thmctr.3.18}{}}
+\newlabel{ex:cheb-series}{{3.24}{66}{Chebyshev Series}{Item.268}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Eigenvalues and the SVD}{66}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Eigenvalues and Eigenvectors}{66}{subsection.4.1}\protected@file@percent }
+\newlabel{sub:eigen-theory}{{4.1}{66}{Eigenvalues and Eigenvectors}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Definitions and Basic Properties}{66}{subsubsection.4.1.1}\protected@file@percent }
+\newlabel{def:eigenvalue}{{4.1}{66}{Definitions and Basic Properties}{defctr.4.1}{}}
+\newlabel{def:char-poly}{{4.2}{66}{Definitions and Basic Properties}{defctr.4.2}{}}
+\newlabel{thm:similar-matrices}{{4.1}{67}{Definitions and Basic Properties}{thmctr.4.1}{}}
+\newlabel{def:diagonalization}{{4.3}{67}{Definitions and Basic Properties}{defctr.4.3}{}}
+\newlabel{thm:eigen-props}{{4.2}{67}{Definitions and Basic Properties}{Item.274}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Symmetric and Hermitian Matrices}{68}{subsubsection.4.1.2}\protected@file@percent }
+\newlabel{thm:spectral-symmetric}{{4.3}{68}{Symmetric and Hermitian Matrices}{Item.277}{}}
+\newlabel{def:hermitian}{{4.4}{68}{Symmetric and Hermitian Matrices}{defctr.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Iterative Algorithms}{68}{subsubsection.4.1.3}\protected@file@percent }
+\newlabel{def:power-iteration}{{4.5}{69}{Iterative Algorithms}{defctr.4.5}{}}
+\newlabel{def:inverse-iteration}{{4.6}{69}{Iterative Algorithms}{defctr.4.6}{}}
+\newlabel{def:rqi}{{4.7}{69}{Iterative Algorithms}{defctr.4.7}{}}
+\newlabel{def:eigen-method-selection}{{4.8}{69}{Iterative Algorithms}{defctr.4.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Schur Decomposition and the QR Algorithm}{70}{subsubsection.4.1.4}\protected@file@percent }
+\newlabel{thm:schur}{{4.4}{70}{Schur Decomposition and the QR Algorithm}{thmctr.4.4}{}}
+\newlabel{def:qr-iteration}{{4.9}{70}{Schur Decomposition and the QR Algorithm}{Item.283}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Singular Value Decomposition}{71}{subsection.4.2}\protected@file@percent }
+\newlabel{sub:svd-theory}{{4.2}{71}{Singular Value Decomposition}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}The SVD Theorem}{71}{subsubsection.4.2.1}\protected@file@percent }
+\newlabel{thm:svd}{{4.5}{71}{The SVD Theorem}{thmctr.4.5}{}}
+\newlabel{thm:svd-coordinates}{{4.6}{71}{The SVD Theorem}{thmctr.4.6}{}}
+\newlabel{ex:svd-coordinates}{{4.5}{72}{The SVD Theorem}{Item.293}{}}
+\newlabel{def:numerical-rank}{{4.10}{72}{The SVD Theorem}{defctr.4.10}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}The Four Fundamental Subspaces}{72}{subsubsection.4.2.2}\protected@file@percent }
+\newlabel{thm:svd-eig-relation}{{4.7}{72}{The Four Fundamental Subspaces}{thmctr.4.7}{}}
+\newlabel{ex:svd-normal-equations-warning}{{4.6}{73}{The Four Fundamental Subspaces}{Item.300}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Low-Rank Approximation}{73}{subsubsection.4.2.3}\protected@file@percent }
+\newlabel{thm:eckart-young}{{4.8}{73}{Low-Rank Approximation}{thmctr.4.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.4}The Pseudoinverse}{73}{subsubsection.4.2.4}\protected@file@percent }
+\newlabel{def:pseudoinverse}{{4.11}{73}{The Pseudoinverse}{defctr.4.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Lanczos Algorithm}{74}{subsection.4.3}\protected@file@percent }
+\newlabel{sub:lanczos-theory}{{4.3}{74}{Lanczos Algorithm}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Krylov Subspaces}{74}{subsubsection.4.3.1}\protected@file@percent }
+\newlabel{def:krylov-subspace}{{4.12}{74}{Krylov Subspaces}{defctr.4.12}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}The Lanczos Recurrence}{74}{subsubsection.4.3.2}\protected@file@percent }
+\newlabel{thm:lanczos-relation}{{4.9}{75}{The Lanczos Recurrence}{thmctr.4.9}{}}
+\newlabel{prop:lanczos-galerkin}{{4.10}{75}{The Lanczos Recurrence}{thmctr.4.10}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Ritz Values and Vectors}{75}{subsubsection.4.3.3}\protected@file@percent }
+\newlabel{def:ritz-pair}{{4.13}{75}{Ritz Values and Vectors}{defctr.4.13}{}}
+\newlabel{thm:ritz-residual}{{4.11}{75}{Ritz Values and Vectors}{thmctr.4.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Jacobi Eigenvalue Algorithm}{76}{subsection.4.4}\protected@file@percent }
+\newlabel{sub:jacobi-theory}{{4.4}{76}{Jacobi Eigenvalue Algorithm}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Givens Rotations}{76}{subsubsection.4.4.1}\protected@file@percent }
+\newlabel{def:givens-rotation}{{4.14}{76}{Givens Rotations}{defctr.4.14}{}}
+\newlabel{thm:jacobi-angle}{{4.12}{76}{Givens Rotations}{thmctr.4.12}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}The Jacobi Algorithm}{77}{subsubsection.4.4.2}\protected@file@percent }
+\newlabel{alg:jacobi-eigenvalue}{{4.15}{77}{The Jacobi Algorithm}{Item.310}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Convergence and Cost}{78}{subsubsection.4.4.3}\protected@file@percent }
+\newlabel{thm:jacobi-convergence}{{4.13}{78}{Convergence and Cost}{thmctr.4.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Iterative Methods for Linear Systems}{79}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Iterative Methods for Linear Systems}{79}{subsection.5.1}\protected@file@percent }
+\newlabel{sub:iterative-basics}{{5.1}{79}{Iterative Methods for Linear Systems}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Direct vs.\ Iterative Solvers}{79}{subsubsection.5.1.1}\protected@file@percent }
+\newlabel{def:krylov-subspace-general}{{5.1}{79}{Direct vs.\ Iterative Solvers}{defctr.5.1}{}}
+\newlabel{thm:krylov-approximation-principle}{{5.1}{79}{Direct vs.\ Iterative Solvers}{thmctr.5.1}{}}
+\newlabel{ex:krylov-approximation-principle}{{5.1}{80}{Direct vs.\ Iterative Solvers}{Item.318}{}}
+\newlabel{def:stationary-iteration}{{5.2}{80}{Direct vs.\ Iterative Solvers}{defctr.5.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Convergence and Spectral Radius}{80}{subsubsection.5.1.2}\protected@file@percent }
+\newlabel{def:spectral-radius}{{5.3}{80}{Convergence and Spectral Radius}{defctr.5.3}{}}
+\newlabel{thm:gelfand}{{5.2}{80}{Convergence and Spectral Radius}{thmctr.5.2}{}}
+\newlabel{thm:iteration-convergence}{{5.3}{80}{Convergence and Spectral Radius}{thmctr.5.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.3}Stopping Criteria}{81}{subsubsection.5.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.4}Fill-in and Sparse Storage}{81}{subsubsection.5.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Jacobi and Gauss-Seidel Methods}{82}{subsection.5.2}\protected@file@percent }
+\newlabel{sub:jacobi-gs}{{5.2}{82}{Jacobi and Gauss-Seidel Methods}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Jacobi Iteration}{82}{subsubsection.5.2.1}\protected@file@percent }
+\newlabel{def:jacobi-iteration}{{5.4}{82}{Jacobi Iteration}{defctr.5.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Gauss-Seidel Iteration}{82}{subsubsection.5.2.2}\protected@file@percent }
+\newlabel{def:gs-iteration}{{5.5}{82}{Gauss-Seidel Iteration}{defctr.5.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Convergence Conditions}{83}{subsubsection.5.2.3}\protected@file@percent }
+\newlabel{thm:jacobi-gs-iteration-matrices}{{5.4}{83}{Convergence Conditions}{thmctr.5.4}{}}
+\newlabel{ex:jacobi-gs-iteration-matrices}{{5.4}{83}{Convergence Conditions}{Item.327}{}}
+\newlabel{thm:diag-dom-convergence}{{5.5}{83}{Convergence Conditions}{thmctr.5.5}{}}
+\newlabel{ex:diag-dom-convergence}{{5.5}{83}{Convergence Conditions}{Item.330}{}}
+\newlabel{thm:spd-gs-convergence}{{5.6}{83}{Convergence Conditions}{thmctr.5.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Successive Over-Relaxation (SOR)}{84}{subsubsection.5.2.4}\protected@file@percent }
+\newlabel{def:sor}{{5.6}{84}{Successive Over-Relaxation (SOR)}{defctr.5.6}{}}
+\newlabel{thm:sor-convergence}{{5.7}{84}{Successive Over-Relaxation (SOR)}{thmctr.5.7}{}}
+\newlabel{ex:sor-convergence}{{5.7}{84}{Successive Over-Relaxation (SOR)}{Item.335}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.5}Stopping Criteria}{84}{subsubsection.5.2.5}\protected@file@percent }
+\newlabel{def:iterative-stopping-tests}{{5.7}{84}{Stopping Criteria}{Item.338}{}}
+\newlabel{ex:jacobi-stopping}{{5.8}{84}{Stopping Criteria}{Item.340}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conjugate Gradient Method}{85}{subsection.5.3}\protected@file@percent }
+\newlabel{sub:cg}{{5.3}{85}{Conjugate Gradient Method}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Krylov Subspaces}{85}{subsubsection.5.3.1}\protected@file@percent }
+\newlabel{def:krylov-subspace-cg}{{5.8}{85}{Krylov Subspaces}{defctr.5.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}CG as a Projection Method}{85}{subsubsection.5.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.3}Conjugate Directions and A-Orthogonality}{86}{subsubsection.5.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.4}The CG Algorithm}{86}{subsubsection.5.3.4}\protected@file@percent }
+\newlabel{alg:cg}{{5.9}{86}{The CG Algorithm}{Item.345}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.5}Convergence Rate}{87}{subsubsection.5.3.5}\protected@file@percent }
+\newlabel{thm:cg-convergence}{{5.8}{87}{Convergence Rate}{thmctr.5.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.6}Preconditioning}{87}{subsubsection.5.3.6}\protected@file@percent }
+\newlabel{def:preconditioners}{{5.10}{88}{Preconditioning}{Item.348}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}GMRES}{88}{subsection.5.4}\protected@file@percent }
+\newlabel{sub:gmres-basics}{{5.4}{88}{GMRES}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Residual Minimization and Krylov Subspaces}{88}{subsubsection.5.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}The Arnoldi Process}{89}{subsubsection.5.4.2}\protected@file@percent }
+\newlabel{def:arnoldi-relation}{{5.11}{89}{The Arnoldi Process}{defctr.5.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.3}Reduction to Hessenberg Least Squares}{89}{subsubsection.5.4.3}\protected@file@percent }
+\newlabel{thm:gmres-ls}{{5.9}{89}{Reduction to Hessenberg Least Squares}{thmctr.5.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.4}Restarted GMRES($m$)}{90}{subsubsection.5.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.5}Convergence and Preconditioning}{90}{subsubsection.5.4.5}\protected@file@percent }
+\newlabel{thm:gmres-convergence}{{5.10}{90}{Convergence and Preconditioning}{thmctr.5.10}{}}
+\newlabel{def:gmres-preconditioning}{{5.12}{90}{Convergence and Preconditioning}{defctr.5.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Numerical Analysis}{91}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Polynomial Interpolation}{91}{subsection.6.1}\protected@file@percent }
+\newlabel{subsec:interpolation}{{6.1}{91}{Polynomial Interpolation}{subsection.6.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.1}Existence and Uniqueness}{91}{subsubsection.6.1.1}\protected@file@percent }
+\newlabel{thm:interpolation-existence}{{6.1}{91}{Existence and Uniqueness}{thmctr.6.1}{}}
+\newlabel{ex:interpolation-existence}{{6.1}{91}{Existence and Uniqueness}{Item.358}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.2}Lagrange Form}{91}{subsubsection.6.1.2}\protected@file@percent }
+\newlabel{def:lagrange-basis}{{6.1}{91}{Lagrange Form}{defctr.6.1}{}}
+\newlabel{ex:lagrange-basis}{{6.2}{91}{Lagrange Form}{Item.362}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.3}Barycentric Interpolation}{92}{subsubsection.6.1.3}\protected@file@percent }
+\newlabel{def:barycentric-formula}{{6.2}{92}{Barycentric Interpolation}{defctr.6.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.4}Interpolation Error}{92}{subsubsection.6.1.4}\protected@file@percent }
+\newlabel{thm:polynomial-interpolation-error}{{6.2}{92}{Interpolation Error}{thmctr.6.2}{}}
+\newlabel{ex:polynomial-interpolation-error}{{6.3}{92}{Interpolation Error}{Item.367}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.5}Runge's Phenomenon}{92}{subsubsection.6.1.5}\protected@file@percent }
+\newlabel{thm:interpolation-cheb-nodes}{{6.3}{93}{Runge's Phenomenon}{thmctr.6.3}{}}
+\newlabel{ex:interpolation-cheb-nodes}{{6.4}{93}{Runge's Phenomenon}{Item.371}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.6}Cubic Splines}{93}{subsubsection.6.1.6}\protected@file@percent }
+\newlabel{def:cubic-spline}{{6.3}{93}{Cubic Splines}{defctr.6.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.7}Exercises}{93}{subsubsection.6.1.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Numerical Quadrature}{93}{subsection.6.2}\protected@file@percent }
+\newlabel{subsec:quadrature}{{6.2}{93}{Numerical Quadrature}{subsection.6.2}{}}
+\newlabel{def:quadrature-rule}{{6.4}{94}{Numerical Quadrature}{defctr.6.4}{}}
+\newlabel{def:degree-exactness}{{6.5}{94}{Numerical Quadrature}{defctr.6.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Newton-Cotes Rules}{94}{subsubsection.6.2.1}\protected@file@percent }
+\newlabel{def:trapezoidal-rule}{{6.6}{94}{Newton-Cotes Rules}{defctr.6.6}{}}
+\newlabel{prop:trapezoid-exactness}{{6.4}{94}{Newton-Cotes Rules}{thmctr.6.4}{}}
+\newlabel{thm:trapezoidal-error}{{6.5}{94}{Newton-Cotes Rules}{thmctr.6.5}{}}
+\newlabel{ex:trapezoidal-error}{{6.6}{94}{Newton-Cotes Rules}{Item.377}{}}
+\newlabel{def:simpsons-rule}{{6.7}{95}{Newton-Cotes Rules}{defctr.6.7}{}}
+\newlabel{thm:simpson-error}{{6.6}{95}{Newton-Cotes Rules}{thmctr.6.6}{}}
+\newlabel{ex:simpson-error}{{6.7}{95}{Newton-Cotes Rules}{Item.381}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Gaussian Quadrature}{95}{subsubsection.6.2.2}\protected@file@percent }
+\newlabel{thm:gauss-legendre}{{6.7}{95}{Gaussian Quadrature}{thmctr.6.7}{}}
+\newlabel{ex:gauss-legendre}{{6.8}{95}{Gaussian Quadrature}{Item.385}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}Richardson Extrapolation and Romberg Integration}{96}{subsubsection.6.2.3}\protected@file@percent }
+\newlabel{thm:richardson}{{6.8}{96}{Richardson Extrapolation and Romberg Integration}{thmctr.6.8}{}}
+\newlabel{def:romberg}{{6.8}{96}{Richardson Extrapolation and Romberg Integration}{defctr.6.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.4}Adaptive Quadrature}{96}{subsubsection.6.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.5}Periodic Functions and Spectral Accuracy}{97}{subsubsection.6.2.5}\protected@file@percent }
+\newlabel{thm:periodic-trapezoidal}{{6.9}{97}{Periodic Functions and Spectral Accuracy}{thmctr.6.9}{}}
+\newlabel{ex:periodic-trapezoidal}{{6.9}{97}{Periodic Functions and Spectral Accuracy}{Item.388}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.6}Exercises}{97}{subsubsection.6.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Root Finding}{98}{subsection.6.3}\protected@file@percent }
+\newlabel{subsec:root-finding}{{6.3}{98}{Root Finding}{subsection.6.3}{}}
+\newlabel{def:root-stopping-tests}{{6.9}{98}{Root Finding}{defctr.6.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.1}Bracketing Methods}{98}{subsubsection.6.3.1}\protected@file@percent }
+\newlabel{thm:bisection}{{6.10}{98}{Bracketing Methods}{Item.395}{}}
+\newlabel{ex:bisection}{{6.11}{98}{Bracketing Methods}{Item.399}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.2}Open Methods}{98}{subsubsection.6.3.2}\protected@file@percent }
+\newlabel{def:fixed-point-iteration}{{6.10}{98}{Open Methods}{defctr.6.10}{}}
+\newlabel{ex:fixed-point-iteration}{{6.12}{99}{Open Methods}{Item.402}{}}
+\newlabel{def:newton-method}{{6.11}{99}{Open Methods}{defctr.6.11}{}}
+\newlabel{thm:newton-quadratic}{{6.11}{99}{Open Methods}{thmctr.6.11}{}}
+\newlabel{ex:newton-quadratic}{{6.13}{99}{Open Methods}{Item.407}{}}
+\newlabel{thm:newton-multiple-root}{{6.12}{99}{Open Methods}{thmctr.6.12}{}}
+\newlabel{ex:newton-multiple-root}{{6.14}{100}{Open Methods}{Item.411}{}}
+\newlabel{def:secant-method}{{6.12}{100}{Open Methods}{defctr.6.12}{}}
+\newlabel{thm:secant-superlinear}{{6.13}{100}{Open Methods}{thmctr.6.13}{}}
+\newlabel{ex:secant-method}{{6.15}{100}{Open Methods}{Item.414}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.3}Brent's Method}{100}{subsubsection.6.3.3}\protected@file@percent }
+\newlabel{thm:brent-hybrid}{{6.14}{100}{Brent's Method}{Item.417}{}}
+\newlabel{def:root-method-selection}{{6.13}{100}{Brent's Method}{defctr.6.13}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.4}Exercises}{101}{subsubsection.6.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Ordinary Differential Equations}{101}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Numerical Methods for ODEs}{101}{subsection.7.1}\protected@file@percent }
+\newlabel{subsec:ode-methods}{{7.1}{101}{Numerical Methods for ODEs}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.1}Initial Value Problems}{101}{subsubsection.7.1.1}\protected@file@percent }
+\newlabel{def:ode-ivp}{{7.1}{101}{Initial Value Problems}{defctr.7.1}{}}
+\newlabel{def:ode-flow-map}{{7.2}{101}{Initial Value Problems}{defctr.7.2}{}}
+\newlabel{def:autonomous-ode}{{7.3}{102}{Initial Value Problems}{defctr.7.3}{}}
+\newlabel{thm:ode-existence-uniqueness}{{7.1}{102}{Initial Value Problems}{thmctr.7.1}{}}
+\newlabel{ex:ode-nonunique}{{7.1}{102}{Initial Value Problems}{Item.425}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.2}Error and Convergence}{102}{subsubsection.7.1.2}\protected@file@percent }
+\newlabel{def:ode-local-error}{{7.4}{102}{Error and Convergence}{defctr.7.4}{}}
+\newlabel{def:ode-global-error}{{7.5}{102}{Error and Convergence}{defctr.7.5}{}}
+\newlabel{thm:local-to-global-ode}{{7.2}{102}{Error and Convergence}{thmctr.7.2}{}}
+\newlabel{ex:local-to-global-ode}{{7.2}{103}{Error and Convergence}{Item.429}{}}
+\newlabel{def:ode-consistency-stability}{{7.6}{103}{Error and Convergence}{defctr.7.6}{}}
+\newlabel{thm:ode-lax-principle}{{7.3}{103}{Error and Convergence}{thmctr.7.3}{}}
+\newlabel{ex:ode-lax-principle}{{7.3}{103}{Error and Convergence}{Item.433}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.3}Euler Methods}{103}{subsubsection.7.1.3}\protected@file@percent }
+\newlabel{def:forward-euler}{{7.7}{103}{Euler Methods}{defctr.7.7}{}}
+\newlabel{thm:forward-euler-error}{{7.4}{103}{Euler Methods}{thmctr.7.4}{}}
+\newlabel{ex:forward-euler-error}{{7.4}{104}{Euler Methods}{Item.437}{}}
+\newlabel{def:backward-euler}{{7.8}{104}{Euler Methods}{defctr.7.8}{}}
+\newlabel{def:implicit-step-newton}{{7.9}{104}{Euler Methods}{defctr.7.9}{}}
+\newlabel{thm:backward-euler-error}{{7.5}{104}{Euler Methods}{thmctr.7.5}{}}
+\newlabel{ex:backward-euler-error}{{7.5}{104}{Euler Methods}{Item.441}{}}
+\newlabel{def:trapezoidal-ode}{{7.10}{104}{Euler Methods}{defctr.7.10}{}}
+\newlabel{thm:trapezoidal-ode-order}{{7.6}{104}{Euler Methods}{thmctr.7.6}{}}
+\newlabel{ex:trapezoidal-ode-order}{{7.6}{105}{Euler Methods}{Item.445}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.4}Absolute Stability and Stiffness}{105}{subsubsection.7.1.4}\protected@file@percent }
+\newlabel{def:ode-stability-function}{{7.11}{105}{Absolute Stability and Stiffness}{defctr.7.11}{}}
+\newlabel{def:absolute-stability-region}{{7.12}{105}{Absolute Stability and Stiffness}{defctr.7.12}{}}
+\newlabel{thm:euler-stability-functions}{{7.7}{105}{Absolute Stability and Stiffness}{thmctr.7.7}{}}
+\newlabel{ex:euler-stability-functions}{{7.7}{106}{Absolute Stability and Stiffness}{Item.449}{}}
+\newlabel{def:a-stability-l-stability}{{7.13}{106}{Absolute Stability and Stiffness}{defctr.7.13}{}}
+\newlabel{def:stiffness}{{7.14}{106}{Absolute Stability and Stiffness}{defctr.7.14}{}}
+\newlabel{ex:stiff-example}{{7.8}{106}{Absolute Stability and Stiffness}{Item.453}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.5}Runge-Kutta Methods}{107}{subsubsection.7.1.5}\protected@file@percent }
+\newlabel{def:explicit-rk}{{7.15}{107}{Runge-Kutta Methods}{defctr.7.15}{}}
+\newlabel{def:explicit-midpoint}{{7.16}{107}{Runge-Kutta Methods}{defctr.7.16}{}}
+\newlabel{ex:explicit-midpoint}{{7.9}{107}{Runge-Kutta Methods}{Item.457}{}}
+\newlabel{def:rk4}{{7.17}{107}{Runge-Kutta Methods}{defctr.7.17}{}}
+\newlabel{thm:rk4-stability}{{7.8}{108}{Runge-Kutta Methods}{thmctr.7.8}{}}
+\newlabel{ex:rk4-stability}{{7.10}{108}{Runge-Kutta Methods}{Item.461}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.6}Adaptive Time Stepping}{108}{subsubsection.7.1.6}\protected@file@percent }
+\newlabel{def:embedded-rk}{{7.18}{108}{Adaptive Time Stepping}{defctr.7.18}{}}
+\newlabel{def:weighted-error-test}{{7.19}{108}{Adaptive Time Stepping}{defctr.7.19}{}}
+\newlabel{thm:adaptive-step-formula}{{7.9}{108}{Adaptive Time Stepping}{thmctr.7.9}{}}
+\newlabel{ex:adaptive-step-formula}{{7.11}{109}{Adaptive Time Stepping}{Item.465}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.7}Linear Multistep Methods}{109}{subsubsection.7.1.7}\protected@file@percent }
+\newlabel{def:linear-multistep}{{7.20}{109}{Linear Multistep Methods}{defctr.7.20}{}}
+\newlabel{def:ab2}{{7.21}{109}{Linear Multistep Methods}{defctr.7.21}{}}
+\newlabel{def:am2}{{7.22}{109}{Linear Multistep Methods}{defctr.7.22}{}}
+\newlabel{def:bdf2}{{7.23}{109}{Linear Multistep Methods}{defctr.7.23}{}}
+\newlabel{def:zero-stability}{{7.24}{109}{Linear Multistep Methods}{defctr.7.24}{}}
+\newlabel{thm:dahlquist-equivalence}{{7.10}{109}{Linear Multistep Methods}{thmctr.7.10}{}}
+\newlabel{ex:zero-stability}{{7.12}{110}{Linear Multistep Methods}{Item.469}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.8}Systems and Eigenvalues}{110}{subsubsection.7.1.8}\protected@file@percent }
+\newlabel{def:first-order-system}{{7.25}{110}{Systems and Eigenvalues}{defctr.7.25}{}}
+\newlabel{thm:linear-ode-matrix-exponential}{{7.11}{110}{Systems and Eigenvalues}{thmctr.7.11}{}}
+\newlabel{ex:linear-ode-matrix-exponential}{{7.13}{110}{Systems and Eigenvalues}{Item.473}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.9}Hamiltonian and Symplectic Methods}{111}{subsubsection.7.1.9}\protected@file@percent }
+\newlabel{def:hamiltonian-system}{{7.26}{111}{Hamiltonian and Symplectic Methods}{defctr.7.26}{}}
+\newlabel{def:velocity-verlet}{{7.27}{111}{Hamiltonian and Symplectic Methods}{defctr.7.27}{}}
+\newlabel{thm:forward-euler-oscillator-energy}{{7.12}{111}{Hamiltonian and Symplectic Methods}{thmctr.7.12}{}}
+\newlabel{ex:oscillator-energy}{{7.14}{111}{Hamiltonian and Symplectic Methods}{Item.476}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.10}Method Choice}{112}{subsubsection.7.1.10}\protected@file@percent }
+\newlabel{def:ode-method-choice}{{7.28}{112}{Method Choice}{defctr.7.28}{}}
+\newlabel{ex:ode-method-choice}{{7.15}{112}{Method Choice}{Item.480}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Applications}{112}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Principal Component Analysis (PCA)}{112}{subsection.8.1}\protected@file@percent }
+\newlabel{sub:pca-via-svd}{{8.1}{112}{Principal Component Analysis (PCA)}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.1}Definitions and Preprocessing}{112}{subsubsection.8.1.1}\protected@file@percent }
+\newlabel{def:pca-centering}{{8.1}{112}{Definitions and Preprocessing}{defctr.8.1}{}}
+\newlabel{def:sample-covariance}{{8.2}{113}{Definitions and Preprocessing}{defctr.8.2}{}}
+\newlabel{ex:pca-covariance}{{8.1}{113}{Definitions and Preprocessing}{Item.483}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.2}PCA via SVD}{113}{subsubsection.8.1.2}\protected@file@percent }
+\newlabel{thm:pca-svd}{{8.1}{113}{PCA via SVD}{thmctr.8.1}{}}
+\newlabel{ex:pca-svd}{{8.2}{113}{PCA via SVD}{Item.488}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.3}Variance and Dimensionality Reduction}{114}{subsubsection.8.1.3}\protected@file@percent }
+\newlabel{def:pve}{{8.3}{114}{Variance and Dimensionality Reduction}{defctr.8.3}{}}
+\newlabel{thm:pca-optimal-approximation}{{8.2}{114}{Variance and Dimensionality Reduction}{thmctr.8.2}{}}
+\newlabel{ex:pca-optimal-approximation}{{8.3}{114}{Variance and Dimensionality Reduction}{Item.492}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.4}Implementation Details}{114}{subsubsection.8.1.4}\protected@file@percent }
+\newlabel{def:kernel-pca}{{8.4}{114}{Implementation Details}{defctr.8.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.1.5}Exercises}{114}{subsubsection.8.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Spectral Graph Theory and PageRank}{115}{subsection.8.2}\protected@file@percent }
+\newlabel{sub:spectral_graph_theory}{{8.2}{115}{Spectral Graph Theory and PageRank}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.1}Graph Matrices}{115}{subsubsection.8.2.1}\protected@file@percent }
+\newlabel{def:graph-adjacency-degree}{{8.5}{115}{Graph Matrices}{defctr.8.5}{}}
+\newlabel{def:graph-laplacian}{{8.6}{115}{Graph Matrices}{defctr.8.6}{}}
+\newlabel{prop:graph-laplacian-psd}{{8.3}{115}{Graph Matrices}{thmctr.8.3}{}}
+\newlabel{thm:graph-spectral-properties}{{8.4}{116}{Graph Matrices}{Item.499}{}}
+\newlabel{ex:graph-laplacian-spectrum}{{8.5}{116}{Graph Matrices}{Item.503}{}}
+\newlabel{def:normalized-laplacians}{{8.7}{116}{Graph Matrices}{defctr.8.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.2}Spectral Clustering}{116}{subsubsection.8.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.3}Random Walks and PageRank}{117}{subsubsection.8.2.3}\protected@file@percent }
+\newlabel{def:graph-random-walk}{{8.8}{117}{Random Walks and PageRank}{defctr.8.8}{}}
+\newlabel{ex:graph-random-walk}{{8.6}{117}{Random Walks and PageRank}{Item.509}{}}
+\newlabel{def:pagerank-google}{{8.9}{117}{Random Walks and PageRank}{defctr.8.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.4}Exercises}{117}{subsubsection.8.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Linear Operators and the Poisson Equation}{118}{subsection.8.3}\protected@file@percent }
+\newlabel{sub:operators}{{8.3}{118}{Linear Operators and the Poisson Equation}{subsection.8.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.1}Differential Operators and Discretization}{118}{subsubsection.8.3.1}\protected@file@percent }
+\newlabel{def:linear-operator}{{8.10}{118}{Differential Operators and Discretization}{defctr.8.10}{}}
+\newlabel{def:dirichlet-poisson}{{8.11}{118}{Differential Operators and Discretization}{defctr.8.11}{}}
+\newlabel{def:grid-function}{{8.12}{118}{Differential Operators and Discretization}{defctr.8.12}{}}
+\newlabel{def:finite-difference-stencil}{{8.13}{118}{Differential Operators and Discretization}{defctr.8.13}{}}
+\newlabel{ex:finite-difference-stencil}{{8.8}{119}{Differential Operators and Discretization}{Item.517}{}}
+\newlabel{def:discrete-laplacian-1d}{{8.14}{119}{Differential Operators and Discretization}{defctr.8.14}{}}
+\newlabel{thm:laplacian-eigenvalues}{{8.6}{119}{Differential Operators and Discretization}{thmctr.8.6}{}}
+\newlabel{ex:laplacian-eigenvalues}{{8.9}{119}{Differential Operators and Discretization}{Item.523}{}}
+\newlabel{thm:poisson-structure}{{8.7}{119}{Differential Operators and Discretization}{thmctr.8.7}{}}
+\newlabel{ex:poisson-structure}{{8.10}{119}{Differential Operators and Discretization}{Item.527}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.2}Operator Norms and Conditioning}{120}{subsubsection.8.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.3}Exercises}{120}{subsubsection.8.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Fourier Analysis as Change of Basis}{120}{subsection.8.4}\protected@file@percent }
+\newlabel{sub:fourier}{{8.4}{120}{Fourier Analysis as Change of Basis}{subsection.8.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.1}Discrete Fourier Transform (DFT)}{120}{subsubsection.8.4.1}\protected@file@percent }
+\newlabel{def:periodic-grid-signal}{{8.16}{121}{Discrete Fourier Transform (DFT)}{defctr.8.16}{}}
+\newlabel{def:dft-matrix}{{8.17}{121}{Discrete Fourier Transform (DFT)}{defctr.8.17}{}}
+\newlabel{thm:dft-parseval}{{8.8}{121}{Discrete Fourier Transform (DFT)}{thmctr.8.8}{}}
+\newlabel{ex:dft-parseval}{{8.12}{121}{Discrete Fourier Transform (DFT)}{Item.535}{}}
+\newlabel{def:frequency-bins}{{8.18}{121}{Discrete Fourier Transform (DFT)}{defctr.8.18}{}}
+\newlabel{def:nyquist-aliasing}{{8.19}{121}{Discrete Fourier Transform (DFT)}{defctr.8.19}{}}
+\newlabel{ex:nyquist-aliasing}{{8.13}{122}{Discrete Fourier Transform (DFT)}{Item.538}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.2}Convolution and Circulant Matrices}{122}{subsubsection.8.4.2}\protected@file@percent }
+\newlabel{def:circulant-matrix}{{8.20}{122}{Convolution and Circulant Matrices}{defctr.8.20}{}}
+\newlabel{thm:convolution-theorem}{{8.9}{122}{Convolution and Circulant Matrices}{thmctr.8.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.3}The Fast Fourier Transform (FFT)}{122}{subsubsection.8.4.3}\protected@file@percent }
+\newlabel{thm:cooley-tukey}{{8.10}{122}{The Fast Fourier Transform (FFT)}{thmctr.8.10}{}}
+\newlabel{ex:cooley-tukey}{{8.14}{123}{The Fast Fourier Transform (FFT)}{Item.542}{}}
+\newlabel{thm:fourier-differentiation}{{8.11}{123}{The Fast Fourier Transform (FFT)}{thmctr.8.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.4}Exercises}{123}{subsubsection.8.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Markov Chains and Stochastic Matrices}{123}{subsection.8.5}\protected@file@percent }
+\newlabel{sub:markov}{{8.5}{123}{Markov Chains and Stochastic Matrices}{subsection.8.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.1}Definitions}{123}{subsubsection.8.5.1}\protected@file@percent }
+\newlabel{def:probability-vector}{{8.21}{123}{Definitions}{defctr.8.21}{}}
+\newlabel{def:column-stochastic}{{8.22}{124}{Definitions}{Item.548}{}}
+\newlabel{thm:stochastic-spectrum}{{8.12}{124}{Definitions}{thmctr.8.12}{}}
+\newlabel{ex:stochastic-spectrum}{{8.16}{124}{Definitions}{Item.552}{}}
+\newlabel{def:markov-chain}{{8.23}{124}{Definitions}{defctr.8.23}{}}
+\newlabel{def:stationary-distribution}{{8.24}{124}{Definitions}{defctr.8.24}{}}
+\newlabel{def:reducible-periodic}{{8.25}{125}{Definitions}{defctr.8.25}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.2}Convergence and Mixing}{125}{subsubsection.8.5.2}\protected@file@percent }
+\newlabel{thm:pf-chains}{{8.13}{125}{Convergence and Mixing}{Item.555}{}}
+\newlabel{def:spectral-gap}{{8.26}{125}{Convergence and Mixing}{defctr.8.26}{}}
+\newlabel{thm:spectral-mixing}{{8.14}{125}{Convergence and Mixing}{thmctr.8.14}{}}
+\newlabel{ex:spectral-mixing}{{8.17}{125}{Convergence and Mixing}{Item.559}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.3}Properties and Design}{126}{subsubsection.8.5.3}\protected@file@percent }
+\newlabel{def:detailed-balance}{{8.27}{126}{Properties and Design}{defctr.8.27}{}}
+\newlabel{thm:reversible-real-spectrum}{{8.15}{126}{Properties and Design}{thmctr.8.15}{}}
+\newlabel{ex:reversible-real-spectrum}{{8.18}{126}{Properties and Design}{Item.563}{}}
+\newlabel{thm:mh-detailed-balance}{{8.16}{126}{Properties and Design}{thmctr.8.16}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.4}Exercises}{127}{subsubsection.8.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Koopman Theory, DMD, and SINDy}{127}{subsection.8.6}\protected@file@percent }
+\newlabel{sub:koopman}{{8.6}{127}{Koopman Theory, DMD, and SINDy}{subsection.8.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.1}Koopman Operator Theory}{127}{subsubsection.8.6.1}\protected@file@percent }
+\newlabel{def:koopman-observables}{{8.28}{127}{Koopman Operator Theory}{defctr.8.28}{}}
+\newlabel{prop:koopman-linearity}{{8.17}{127}{Koopman Operator Theory}{thmctr.8.17}{}}
+\newlabel{def:koopman-eigenfunctions}{{8.29}{128}{Koopman Operator Theory}{defctr.8.29}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.2}Dynamic Mode Decomposition (DMD)}{128}{subsubsection.8.6.2}\protected@file@percent }
+\newlabel{def:dmd-algorithm}{{8.30}{128}{Dynamic Mode Decomposition (DMD)}{Item.572}{}}
+\newlabel{thm:dmd-least-squares}{{8.18}{128}{Dynamic Mode Decomposition (DMD)}{thmctr.8.18}{}}
+\newlabel{ex:dmd-least-squares}{{8.20}{128}{Dynamic Mode Decomposition (DMD)}{Item.576}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.3}SINDy: Sparse Identification}{129}{subsubsection.8.6.3}\protected@file@percent }
+\newlabel{def:sindy}{{8.31}{129}{SINDy: Sparse Identification}{defctr.8.31}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.6.4}Exercises}{129}{subsubsection.8.6.4}\protected@file@percent }
+\gdef \@abspage@last{129}

@@ -1019,7 +1019,7 @@ window.Quarto = {
 <p><strong>(Applications)</strong></p>
 <ol type="1">
 <li><p><strong>Covariance:</strong> Generate <code>X = np.random.randn(100, 4)</code>. Verify <code>X.T @ X</code> is SPD via Cholesky.</p></li>
-<li><p><strong>Gram Matrix:</strong> Prove that <span class="math inline">\(\mathbf{G} = \bX^T\bX\)</span> is at least positive semi-definite for any <span class="math inline">\(\bX\)</span>, and PD if <span class="math inline">\(\bX\)</span> has full column rank.</p></li>
+<li><p><strong>Gram Matrix:</strong> Prove that <span class="math inline">\(\mathbf{G} = \bX^T\bX\)</span> is at least positive semidefinite for any <span class="math inline">\(\bX\)</span>, and PD if <span class="math inline">\(\bX\)</span> has full column rank.</p></li>
 </ol>
 </div>
 </div>
@@ -1077,7 +1077,7 @@ window.Quarto = {
     &amp;= (\bX \bv)^T (\bX \bv) \\
     &amp;= \|\bX \bv\|_2^2.
 \end{align}
-\]</span> Since the squared Euclidean norm is always non-negative, <span class="math inline">\(\bv^T \mathbf{G} \bv \geq 0\)</span>, proving <span class="math inline">\(\mathbf{G}\)</span> is positive semi-definite. If <span class="math inline">\(\bX\)</span> has full column rank, then <span class="math inline">\(\bX \bv = \bzero\)</span> iff <span class="math inline">\(\bv = \bzero\)</span>. Thus <span class="math inline">\(\bv^T \mathbf{G} \bv &gt; 0\)</span> for all nonzero <span class="math inline">\(\bv\)</span>, making <span class="math inline">\(\mathbf{G}\)</span> positive definite.</p>
+\]</span> Since the squared Euclidean norm is always non-negative, <span class="math inline">\(\bv^T \mathbf{G} \bv \geq 0\)</span>, proving <span class="math inline">\(\mathbf{G}\)</span> is positive semidefinite. If <span class="math inline">\(\bX\)</span> has full column rank, then <span class="math inline">\(\bX \bv = \bzero\)</span> iff <span class="math inline">\(\bv = \bzero\)</span>. Thus <span class="math inline">\(\bv^T \mathbf{G} \bv &gt; 0\)</span> for all nonzero <span class="math inline">\(\bv\)</span>, making <span class="math inline">\(\mathbf{G}\)</span> positive definite.</p>
 </div>
 </div>
 </div>

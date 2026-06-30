@@ -1,7 +1,8 @@
 # Koopman Theory, DMD, and SINDy
 
 
-Data-driven discovery of linear models for nonlinear dynamics.
+Koopman analysis studies nonlinear dynamics through linear evolution of observables. DMD fits a finite-dimensional linear model from snapshots. SINDy fits sparse governing equations from a chosen function library.
+
 
 ## Koopman Operator Theory
 
@@ -17,6 +18,48 @@ $\bx^{(k+1)} = \mathbf{F}(\bx^{(k)})$ on $\mathcal{M} \subseteq \fR^n$.
 **Lifting:**  $\mathcal{K}$ is linear even if $\mathbf{F}$ is nonlinear, at the cost of being infinite-dimensional.
 :::
 
+
+::: {.callout-note icon=false}
+## Proposition: Koopman Linearity
+The Koopman operator in the result above is linear on observables:
+$$
+\begin{align}
+\mathcal{K}(\alpha g+\beta h)=\alpha\mathcal{K}g+\beta\mathcal{K}h.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For every state $\bx$,
+$$
+\begin{align}
+[\mathcal{K}(\alpha g+\beta h)](\bx)
+    &=
+    (\alpha g+\beta h)(\mathbf{F}(\bx))\\
+    &=
+    \alpha g(\mathbf{F}(\bx))+\beta h(\mathbf{F}(\bx))\\
+    &=
+    [\alpha\mathcal{K}g+\beta\mathcal{K}h](\bx).
+\end{align}
+$$
+Since this holds for every $\bx$, the two observables are equal.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Nonlinear map)**  Let $x_{k+1}=x_k^2$. For observables $g_1(x)=x$ and $g_2(x)=x^2$,
+$$
+\begin{align}
+(\mathcal{K}g_1)(x)=x^2=g_2(x),
+    \qquad
+    (\mathcal{K}g_2)(x)=x^4.
+\end{align}
+$$
+The state map is nonlinear, but the operator $g\mapsto g\circ F$ is linear on the space of observables.
+:::
 
 ::: {.callout-note icon=false}
 ## Definition: Koopman Eigenfunctions
@@ -50,6 +93,32 @@ $$
 :::
 
 
+::: {.callout-note icon=false}
+## Theorem: DMD Least Squares Model
+The best-fit linear map in Frobenius norm is
+$$
+\begin{align}
+\bA_*=\bY\bX^\dagger.
+\end{align}
+$$
+The reduced operator in the result above is the projection of this map onto the rank-$r$ left singular subspace of $\bX$.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the least squares normal equations to derive $\bA_*=\bY\bX^\dagger$.
+    
+1. Substitute the truncated SVD $\bX\approx\bU_r\bsigma_r\bV_r^T$.
+    
+1. Show that $\bU_r^T\bA_*\bU_r=\bU_r^T\bY\bV_r\bsigma_r^{-1}$.
+    
+1. Interpret this as the small operator $\tilde{\bA}$ in the result above.
+
+:::
+
+
 ::: {.callout-tip icon=false}
 ## Remark
 **Interpretation:**  DMD decomposes data into spatiotemporal modes $\boldsymbol{\phi}_i$ with associated frequencies and growth rates. It is the data-driven approximation of the Koopman operator using the identity dictionary.
@@ -70,33 +139,32 @@ Identifies governing equations $\dot{\bx} = \mathbf{\Xi}^T \boldsymbol{\Theta}(\
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(DMD vs.\ SINDy)**  DMD fits a linear time-advance map for snapshot data. SINDy fits a sparse differential equation in a chosen library. DMD returns modes and growth rates; SINDy returns equation coefficients.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Noisy derivatives)**  SINDy is sensitive to derivative estimates. Smoothing, weak-form regression, or integral formulations are often needed when data are noisy.
+:::
+
+
 ## Exercises
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Prove the linearity of the Koopman operator.
+1. Prove the result above without looking at the proof.
     
 1. Implement DMD for a 2D damped oscillator. Verify the identified eigenvalues.
     
 1. Build a polynomial library $\boldsymbol{\Theta}$ for $\bx \in \fR^2$ up to degree 2.
     
 1. Use SINDy (via STLS) to identify the Lotka-Volterra predator-prey model from noisy data.
+    
+1. Compare DMD and SINDy on the same two-dimensional linear system. Which quantities should agree?
 
-:::
-
-
-::: {.callout-tip icon=false collapse=true}
-## Proof
-For any state $\bx \in \mathcal{M}$, observables $g, h$, and scalars $\alpha, \beta$, consider the action of $\mathcal{K}$ on the linear combination:
-$$
-\begin{align}
-[\mathcal{K}(\alpha g + \beta h)](\bx) &= (\alpha g + \beta h)(\mathbf{F}(\bx)) \\
-    &= \alpha g(\mathbf{F}(\bx)) + \beta h(\mathbf{F}(\bx)) \\
-    &= \alpha (\mathcal{K}g)(\bx) + \beta (\mathcal{K}h)(\bx) \\
-    &= [\alpha \mathcal{K}g + \beta \mathcal{K}h](\bx).
-\end{align}
-$$
-Since this holds for all $\bx$, $\mathcal{K}(\alpha g + \beta h) = \alpha \mathcal{K}g + \beta \mathcal{K}h$.
 :::

@@ -702,6 +702,25 @@ window.Quarto = {
 
 
 <p>Iterative methods for solving <span class="math inline">\(f(x) = 0\)</span> for continuous <span class="math inline">\(f : \fR \to \fR\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Stopping Tests for Root Finding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Common stopping tests are <span class="math display">\[
+\begin{align}
+|f(x_k)|\leq `tol`_f,
+    \qquad
+    |x_{k+1}-x_k|\leq `tol`_x(1+|x_k|).
+\end{align}
+\]</span> A small residual alone can be misleading when <span class="math inline">\(f'(x^*)\)</span> is small. A small step alone can be misleading when the iteration stagnates.</p>
+</div>
+</div>
 <section id="bracketing-methods" class="level2" data-number="27.1">
 <h2 data-number="27.1" class="anchored" data-anchor-id="bracketing-methods"><span class="header-section-number">27.1</span> Bracketing Methods</h2>
 <p>Guaranteed convergence to a root within a known interval.</p>
@@ -754,10 +773,57 @@ window.Quarto = {
 <p><strong>(Bisection trade-off)</strong> Bisection is robust because it preserves a bracket, but its convergence is only linear. Each step gains exactly one bit of accuracy.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Bracketing default)</strong> If a sign-changing interval is known and function evaluations are cheap, use a bracketed method. It gives a certificate that a root remains inside the current interval.</p>
+</div>
+</div>
 </section>
 <section id="open-methods" class="level2" data-number="27.2">
 <h2 data-number="27.2" class="anchored" data-anchor-id="open-methods"><span class="header-section-number">27.2</span> Open Methods</h2>
 <p>Faster local convergence, but sensitive to the initial guess <span class="math inline">\(x_0\)</span> and may diverge.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Fixed-Point Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A root problem can be rewritten as <span class="math inline">\(x=g(x)\)</span> and iterated by <span class="math display">\[
+\begin{align}
+x_{k+1}=g(x_k).
+\end{align}
+\]</span> If <span class="math inline">\(|g'(x^*)|&lt;1\)</span>, the fixed point is locally attracting.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the mean value theorem to show <span class="math inline">\(|x_{k+1}-x^*|\leq L|x_k-x^*|\)</span> if <span class="math inline">\(|g'(x)|\leq L&lt;1\)</span> near <span class="math inline">\(x^*\)</span>.</p></li>
+<li><p>Rewrite Newton’s method as a fixed-point iteration.</p></li>
+<li><p>Compute <span class="math inline">\(g'(x^*)\)</span> for Newton’s fixed-point map at a simple root.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -822,6 +888,41 @@ x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}.
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>(Newton failure modes)</strong> 1. <span class="math inline">\(x_0\)</span> too far from <span class="math inline">\(x^*\)</span>. 2. <span class="math inline">\(f'(x_k) \approx 0\)</span> (zero derivative). 3. Multiple roots (<span class="math inline">\(f'(x^*) = 0\)</span>): convergence degrades to linear with rate <span class="math inline">\(1/2\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Newton on a Multiple Root
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(f(x)=(x-x^*)^m q(x)\)</span> with <span class="math inline">\(q(x^*)\neq 0\)</span> and <span class="math inline">\(m&gt;1\)</span>, then Newton’s method converges locally linearly with asymptotic factor <span class="math display">\[
+\begin{align}
+1-\frac{1}{m}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Compute <span class="math inline">\(f'(x)\)</span> for <span class="math inline">\(f(x)=(x-x^*)^m q(x)\)</span>.</p></li>
+<li><p>Substitute <span class="math inline">\(f\)</span> and <span class="math inline">\(f'\)</span> into the Newton update.</p></li>
+<li><p>Keep the leading term as <span class="math inline">\(x_k\to x^*\)</span>.</p></li>
+<li><p>Derive the factor in the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -907,6 +1008,19 @@ x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k) - f(x_{k-1})}.
 <p><strong>Implementation:</strong> Used in <code>scipy.optimize.brentq</code>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Method Selection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
 </section>
 <section id="exercises" class="level2" data-number="27.4">
 <h2 data-number="27.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">27.4</span> Exercises</h2>
@@ -923,8 +1037,9 @@ x_{k+1} = x_k - f(x_k)\frac{x_k - x_{k-1}}{f(x_k) - f(x_{k-1})}.
 <ol type="1">
 <li><p>Bisection on <span class="math inline">\(f(x) = x^3 - 2\)</span> on <span class="math inline">\([1, 2]\)</span> for 4 steps. Find the guaranteed error using the result above.</p></li>
 <li><p>Newton on <span class="math inline">\(f(x) = x^2 - 2\)</span> from <span class="math inline">\(x_0 = 1\)</span>. Verify the doubling of digits using the result above.</p></li>
-<li><p>Prove that for <span class="math inline">\(f(x) = x^2\)</span>, Newton converges to <span class="math inline">\(0\)</span> with linear rate <span class="math inline">\(1/2\)</span>.</p></li>
+<li><p>Prove that for <span class="math inline">\(f(x) = x^2\)</span>, Newton converges to <span class="math inline">\(0\)</span> with linear rate <span class="math inline">\(1/2\)</span> using the result above.</p></li>
 <li><p>Find the root of <span class="math inline">\(e^x = 3x\)</span> near <span class="math inline">\(x=1\)</span> via Secant method. Compare evaluations vs.&nbsp;Newton.</p></li>
+<li><p>Construct an example where <span class="math inline">\(|f(x_k)|\)</span> is small but <span class="math inline">\(|x_k-x^*|\)</span> is not small. Relate it to the result above.</p></li>
 </ol>
 </div>
 </div>

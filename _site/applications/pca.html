@@ -736,7 +736,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 <ul>
 <li><p><strong>Diagonal:</strong> <span class="math inline">\(S_{jj}\)</span> is the variance of feature <span class="math inline">\(j\)</span>.</p></li>
 <li><p><strong>Off-diagonal:</strong> <span class="math inline">\(S_{ij}\)</span> is the covariance between features <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>.</p></li>
-<li><p><strong>Property:</strong> <span class="math inline">\(\bS\)</span> is symmetric positive semi-definite (SPSD).</p></li>
+<li><p><strong>Property:</strong> <span class="math inline">\(\bS\)</span> is symmetric positive semidefinite (SPSD).</p></li>
 </ul>
 </div>
 </div>
@@ -776,6 +776,30 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 <li><p><strong>Principal Components (Scores):</strong> <span class="math inline">\(\bZ = \bX\bV = \bU\bsigma\)</span>.</p></li>
 <li><p><strong>Variances:</strong> <span class="math inline">\(\lambda_i = \text{Var}(\bz_i) = \frac{\sigma_i^2}{n-1}\)</span>.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(\bX=\bU\bsigma\bV^T\)</span>, <span class="math display">\[
+\begin{align}
+\bS
+    =
+    \frac{1}{n-1}\bX^T\bX
+    =
+    \bV\left(\frac{\bsigma^2}{n-1}\right)\bV^T.
+\end{align}
+\]</span> Thus the columns of <span class="math inline">\(\bV\)</span> diagonalize the covariance matrix. The scores satisfy <span class="math inline">\(\bZ=\bX\bV=\bU\bsigma\)</span>, so their sample covariance is diagonal with entries <span class="math inline">\(\sigma_i^2/(n-1)\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -879,6 +903,19 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>(Standardization)</strong> If features have different units, PCA will be dominated by large-scale features. Standardize by dividing each centered column by its standard deviation: <span class="math inline">\(X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Interpretation)</strong> Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix; it does not by itself explain why that variation occurs.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">

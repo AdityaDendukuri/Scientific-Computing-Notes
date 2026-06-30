@@ -4,9 +4,20 @@
 \subsection{Markov Chains and Stochastic Matrices}
 \label{sub:markov}
 
-Modeling random processes where future state depends only on the current state.
+\textBox{%
+Markov chains model random processes whose next state depends only on the current state. With the column convention used here, probability vectors are columns and the update is $\bx^{(k+1)}=\bP\bx^{(k)}$.
+}
 
 \subsubsection{Definitions}
+
+\addDef{Probability Vector}{%
+A vector $\bx\in\fR^n$ is a probability vector if
+\begin{align*}
+    x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
+\end{align*}
+The entry $x_i$ is the probability of state $i$.
+}
+\label{def:probability-vector}
 
 \addDef{Column-Stochastic Matrix}{%
 Matrix $\bP \in \fR^{n \times n}$ where:
@@ -17,10 +28,28 @@ Matrix $\bP \in \fR^{n \times n}$ where:
 }
 \label{def:column-stochastic}
 
+\addRemark{%
+\textbf{(Column convention)}\enspace Column $j$ of $\bP$ contains the probabilities of moving from state $j$ to all possible next states. Some texts use row-stochastic matrices and row probability vectors. The two conventions are transposes of each other.
+}
+
 \addThm{Spectrum of a Stochastic Matrix}{%
 If $\bP$ is column-stochastic, then $\lambda=1$ is an eigenvalue and every eigenvalue satisfies $|\lambda|\leq 1$.
 }
 \label{thm:stochastic-spectrum}
+
+\addPrf{%
+Since $\mathbf{1}^T\bP=\mathbf{1}^T$, $1$ is a left eigenvalue, hence an eigenvalue. To bound the spectrum, apply the row-stochastic argument to $\bP^T$: if $\bP^T\bv=\lambda\bv$ and $|v_j|=\|\bv\|_\infty$, then
+\begin{align*}
+    |\lambda|\,|v_j|
+    =
+    \left|\sum_i P_{ij}v_i\right|
+    \leq
+    \sum_i P_{ij}|v_i|
+    \leq
+    |v_j|.
+\end{align*}
+Thus $|\lambda|\leq 1$.
+}
 
 \addExcr{%
 \begin{enumerate}
@@ -49,6 +78,41 @@ A probability vector $\boldsymbol{\pi}$ such that $\bP \boldsymbol{\pi} = \bolds
 \end{itemize}
 }
 \label{def:stationary-distribution}
+
+\addExmpl{%
+\textbf{(Two-state chain)}\enspace Let
+\begin{align*}
+    \bP=
+    \begin{pmatrix}
+        1-a & b\\
+        a & 1-b
+    \end{pmatrix},
+    \qquad 0<a,b<1.
+\end{align*}
+Solving $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$ with $\pi_1+\pi_2=1$ gives
+\begin{align*}
+    \boldsymbol{\pi}
+    =
+    \frac{1}{a+b}
+    \begin{pmatrix} b\\ a\end{pmatrix}.
+\end{align*}
+}
+
+\addDef{Reducible and Periodic Chains}{%
+A chain is reducible if some state cannot be reached from another state. A state has period $d>1$ if returns to that state occur only at times divisible by $d$. A primitive chain is irreducible and aperiodic.
+}
+\label{def:reducible-periodic}
+
+\addExmpl{%
+\textbf{(Two failure modes)}\enspace The identity matrix is reducible: every state is absorbing. The matrix
+\begin{align*}
+    \begin{pmatrix}
+    0&1\\
+    1&0
+    \end{pmatrix}
+\end{align*}
+is irreducible but periodic with period $2$, so the distribution oscillates instead of converging.
+}
 
 \subsubsection{Convergence and Mixing}
 
@@ -120,6 +184,37 @@ is symmetric. Therefore reversible chains have real eigenvalues.
 \textbf{(Design Tool: Metropolis-Hastings)}\enspace Construct a reversible chain for a desired $\boldsymbol{\pi}$ by accepting moves with probability $a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})$.
 }
 
+\addThm{Metropolis-Hastings Detailed Balance}{%
+Let $Q_{ij}$ be a proposal probability from state $j$ to state $i$. Define
+\begin{align*}
+    A_{ij}
+    =
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right),
+    \qquad i\neq j.
+\end{align*}
+The transition probabilities $P_{ij}=Q_{ij}A_{ij}$ for $i\neq j$, with the remaining probability kept at state $j$, satisfy detailed balance with $\boldsymbol{\pi}$.
+}
+\label{thm:mh-detailed-balance}
+
+\addPrf{%
+For $i\neq j$,
+\begin{align*}
+    \pi_j P_{ij}
+    =
+    \pi_j Q_{ij}
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right)
+    =
+    \min(\pi_j Q_{ij},\pi_i Q_{ji}).
+\end{align*}
+The same calculation with $i$ and $j$ interchanged gives
+\begin{align*}
+    \pi_i P_{ji}
+    =
+    \min(\pi_i Q_{ji},\pi_j Q_{ij}).
+\end{align*}
+Thus $\pi_jP_{ij}=\pi_iP_{ji}$.
+}
+
 \subsubsection{Exercises}
 
 \addExcr{%
@@ -128,6 +223,8 @@ is symmetric. Therefore reversible chains have real eigenvalues.
     \item Prove that $|\lambda| \leq 1$ for any stochastic matrix using Ex~\ref{ex:stochastic-spectrum}.
     \item Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.\ $\lambda_2$ using Thm~\ref{thm:spectral-mixing}.
     \item Find $\boldsymbol{\pi}$ for a random walk on $K_4$ (complete graph).
+    \item Give one reducible chain and one periodic irreducible chain. Explain which part of Thm~\ref{thm:pf-chains} fails.
+    \item Verify detailed balance for a three-state Metropolis-Hastings chain using Thm~\ref{thm:mh-detailed-balance}.
 \end{enumerate}
 }
 

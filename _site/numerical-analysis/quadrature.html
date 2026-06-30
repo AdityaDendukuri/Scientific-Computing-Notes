@@ -704,6 +704,51 @@ window.Quarto = {
 
 
 <p>Approximating <span class="math inline">\(I = \int_a^b f(x)\,dx\)</span> via weighted sums: <span class="math inline">\(\sum_{i=1}^n w_i f(x_i)\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Quadrature Rule
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A quadrature rule approximates an integral by function values: <span class="math display">\[
+\begin{align}
+\int_a^b f(x)\,dx
+    \approx
+    \sum_{i=1}^p w_i f(x_i).
+\end{align}
+\]</span> The nodes <span class="math inline">\(x_i\)</span> choose where <span class="math inline">\(f\)</span> is sampled, and the weights <span class="math inline">\(w_i\)</span> choose how those samples are averaged.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Degree of Exactness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A quadrature rule has degree of exactness <span class="math inline">\(m\)</span> if it integrates every polynomial of degree at most <span class="math inline">\(m\)</span> exactly, and fails for at least one polynomial of degree <span class="math inline">\(m+1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Interpolation view)</strong> Newton-Cotes rules interpolate <span class="math inline">\(f\)</span> at selected nodes and integrate the interpolating polynomial. The quadrature error is therefore controlled by interpolation error and smoothness of <span class="math inline">\(f\)</span>.</p>
+</div>
+</div>
 <section id="newton-cotes-rules" class="level2" data-number="26.1">
 <h2 data-number="26.1" class="anchored" data-anchor-id="newton-cotes-rules"><span class="header-section-number">26.1</span> Newton-Cotes Rules</h2>
 <p>Uses equally-spaced nodes. Higher-order rules are prone to Runge’s phenomenon.</p>
@@ -722,6 +767,35 @@ window.Quarto = {
 T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 \end{align}
 \]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Trapezoid Exactness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The one-panel trapezoidal rule is exact for polynomials of degree at most <span class="math inline">\(1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>On <span class="math inline">\([a,b]\)</span>, the trapezoidal rule integrates the line through <span class="math inline">\((a,f(a))\)</span> and <span class="math inline">\((b,f(b))\)</span>. If <span class="math inline">\(f\)</span> itself is constant or linear, this interpolant equals <span class="math inline">\(f\)</span>, so the integral is exact.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -786,6 +860,19 @@ S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\te
 </div>
 <div class="callout-body-container callout-body">
 <p>Simpson’s rule is exact for polynomials of degree at most <span class="math inline">\(3\)</span>. For sufficiently smooth <span class="math inline">\(f\)</span>, the composite Simpson rule has global error <span class="math inline">\(O(h^4)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Degree effect)</strong> Simpson’s rule uses a quadratic interpolant, but symmetry cancels the cubic error term. This is why its exactness degree is <span class="math inline">\(3\)</span>, not merely <span class="math inline">\(2\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -879,7 +966,7 @@ A_{new} = \frac{4A(h/2) - A(h)}{3}.
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -888,7 +975,7 @@ A_{new} = \frac{4A(h/2) - A(h)}{3}.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Let <span class="math inline">\(A(h)\)</span> be an <span class="math inline">\(O(h^2)\)</span> approximation of the true value <span class="math inline">\(I\)</span>. Using a Taylor expansion in <span class="math inline">\(h\)</span>: <span class="math display">\[
 \begin{align}
@@ -954,6 +1041,32 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 <p><strong>(Adaptive quadrature)</strong> Adaptive quadrature focuses function evaluations where <span class="math inline">\(f\)</span> is difficult and uses large panels where <span class="math inline">\(f\)</span> is smooth. The usual mechanism compares one large panel with two smaller panels; if the difference is above tolerance <span class="math inline">\(\varepsilon\)</span>, the method recurses.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Nonsmooth integrands)</strong> Algebraic error rates assume enough derivatives. Corners, jumps, and endpoint singularities reduce the observed order. Adaptive quadrature helps by isolating nonsmooth regions, but it cannot restore smoothness.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Monte Carlo contrast)</strong> Deterministic quadrature is efficient in low dimension for smooth functions. Monte Carlo convergence is only <span class="math inline">\(O(N^{-1/2})\)</span>, but its rate is largely dimension-independent, which makes it useful for high-dimensional integrals.</p>
+</div>
+</div>
 </section>
 <section id="periodic-functions-and-spectral-accuracy" class="level2" data-number="26.5">
 <h2 data-number="26.5" class="anchored" data-anchor-id="periodic-functions-and-spectral-accuracy"><span class="header-section-number">26.5</span> Periodic Functions and Spectral Accuracy</h2>
@@ -1005,6 +1118,7 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 <li><p>Derive the <span class="math inline">\(p=2\)</span> Gauss points for <span class="math inline">\([-1, 1]\)</span> using the result above.</p></li>
 <li><p>Use Richardson extrapolation from the result above to improve <span class="math inline">\(T(h)\)</span> and <span class="math inline">\(T(h/2)\)</span> to get Simpson’s rule.</p></li>
 <li><p>Integration of <span class="math inline">\(\sin(x)\)</span> on <span class="math inline">\([0, 2\pi]\)</span> with <span class="math inline">\(n=4\)</span> nodes. Is the error <span class="math inline">\(0\)</span>? Why?</p></li>
+<li><p>Compare composite Simpson on <span class="math inline">\(f(x)=|x-1/2|\)</span> with a smooth quartic. Estimate the observed order.</p></li>
 </ol>
 </div>
 </div>

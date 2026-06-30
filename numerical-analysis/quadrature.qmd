@@ -4,6 +4,32 @@
 Approximating $I = \int_a^b f(x)\,dx$ via weighted sums: $\sum_{i=1}^n w_i f(x_i)$.
 
 
+::: {.callout-note icon=false}
+## Definition: Quadrature Rule
+A quadrature rule approximates an integral by function values:
+$$
+\begin{align}
+\int_a^b f(x)\,dx
+    \approx
+    \sum_{i=1}^p w_i f(x_i).
+\end{align}
+$$
+The nodes $x_i$ choose where $f$ is sampled, and the weights $w_i$ choose how those samples are averaged.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Degree of Exactness
+A quadrature rule has degree of exactness $m$ if it integrates every polynomial of degree at most $m$ exactly, and fails for at least one polynomial of degree $m+1$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Interpolation view)**  Newton-Cotes rules interpolate $f$ at selected nodes and integrate the interpolating polynomial. The quadrature error is therefore controlled by interpolation error and smoothness of $f$.
+:::
+
+
 ## Newton-Cotes Rules
 
 Uses equally-spaced nodes. Higher-order rules are prone to Runge's phenomenon.
@@ -17,6 +43,18 @@ $$
 T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 \end{align}
 $$
+:::
+
+
+::: {.callout-note icon=false}
+## Proposition: Trapezoid Exactness
+The one-panel trapezoidal rule is exact for polynomials of degree at most $1$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+On $[a,b]$, the trapezoidal rule integrates the line through $(a,f(a))$ and $(b,f(b))$. If $f$ itself is constant or linear, this interpolant equals $f$, so the integral is exact.
 :::
 
 
@@ -58,6 +96,12 @@ $$
 ::: {.callout-note icon=false}
 ## Theorem: Simpson Exactness and Error
 Simpson's rule is exact for polynomials of degree at most $3$. For sufficiently smooth $f$, the composite Simpson rule has global error $O(h^4)$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Degree effect)**  Simpson's rule uses a quadratic interpolant, but symmetry cancels the cubic error term. This is why its exactness degree is $3$, not merely $2$.
 :::
 
 
@@ -178,6 +222,18 @@ Iterative application of Richardson extrapolation to the trapezoidal rule.
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Nonsmooth integrands)**  Algebraic error rates assume enough derivatives. Corners, jumps, and endpoint singularities reduce the observed order. Adaptive quadrature helps by isolating nonsmooth regions, but it cannot restore smoothness.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Monte Carlo contrast)**  Deterministic quadrature is efficient in low dimension for smooth functions. Monte Carlo convergence is only $O(N^{-1/2})$, but its rate is largely dimension-independent, which makes it useful for high-dimensional integrals.
+:::
+
+
 ## Periodic Functions and Spectral Accuracy
 
 
@@ -212,5 +268,7 @@ For smooth periodic functions on $[0,2\pi]$, the trapezoidal rule can converge f
 1. Use Richardson extrapolation from the result above to improve $T(h)$ and $T(h/2)$ to get Simpson's rule.
     
 1. Integration of $\sin(x)$ on $[0, 2\pi]$ with $n=4$ nodes. Is the error $0$? Why?
+    
+1. Compare composite Simpson on $f(x)=|x-1/2|$ with a smooth quartic. Estimate the observed order.
 
 :::

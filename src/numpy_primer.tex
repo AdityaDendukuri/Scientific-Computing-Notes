@@ -59,6 +59,14 @@ Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BL
 \texttt{np.linalg.solve(A, b)} is faster and more stable than \texttt{np.linalg.inv(A) @ b}. Explicit inversion is almost never desirable in scientific computation.
 }
 
+\addRemark{%
+\textbf{(Computed equality)}\enspace Use \texttt{np.allclose(x, y)} or \texttt{np.isclose(x, y)} for computed floating-point quantities. Exact equality is appropriate for integers, booleans, and deliberately exact structural checks.
+}
+
+\addRemark{%
+\textbf{(Sparse matrices)}\enspace Large discretized PDE and graph problems should usually use \texttt{scipy.sparse}, not dense NumPy arrays. Use \texttt{scipy.sparse.linalg} for sparse solves, eigenvalue computations, CG, and GMRES.
+}
+
 \addExcr{%
 \begin{enumerate}
   \item Solve a $2 \times 2$ system and verify the residual $\|\bA\bx - \bb\|$.
@@ -72,7 +80,8 @@ Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BL
 \begin{itemize}
   \item \textbf{Element-wise:} \texttt{*} and \texttt{**} are entry-wise. Matrix powers use \texttt{np.linalg.matrix\_power}.
   \item \textbf{Broadcasting:} Automatic dimension expansion. \texttt{A * v} scales columns of $\bA$ by entries of $v$.
-  \item \textbf{Views vs.\ Copies:} \texttt{B = A} is a view (modifying \texttt{B} changes \texttt{A}). Use \texttt{B = A.copy()} for independent data. Slices are also views.
+  \item \textbf{Aliases, Views, Copies:} \texttt{B = A} makes a second name for the same array. Slices are usually views. Use \texttt{B = A.copy()} for independent data.
+  \item \textbf{Sparse construction:} use \texttt{scipy.sparse.diags} for banded matrices and \texttt{scipy.sparse.csr\_matrix} for efficient arithmetic.
 \end{itemize}
 
 \addExcr{%

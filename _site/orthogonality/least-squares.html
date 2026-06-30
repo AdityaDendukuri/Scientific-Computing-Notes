@@ -897,6 +897,41 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Minimum-Norm Least Squares
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For any <span class="math inline">\(\bA\)</span>, the vector <span class="math display">\[
+\begin{align}
+\hat{\bx}=\bA^\dagger\bb
+\end{align}
+\]</span> is the least squares minimizer with smallest Euclidean norm.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Write <span class="math inline">\(\bA=\bU\bsigma\bV^T\)</span>.</p></li>
+<li><p>Transform the least squares problem into SVD coordinates.</p></li>
+<li><p>Identify which coordinates are determined by nonzero singular values.</p></li>
+<li><p>Show that setting nullspace coordinates to zero gives the minimum-norm solution in the result above.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Definition: Ridge-Regularized Least Squares
 </div>
 </div>
@@ -914,6 +949,62 @@ window.Quarto = {
 \]</span></p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Weighted Least Squares
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given positive weights <span class="math inline">\(w_i\)</span>, weighted least squares solves <span class="math display">\[
+\begin{align}
+\min_{\bx}\|\mathbf{W}^{1/2}(\bA\bx-\bb)\|_2^2,
+    \qquad
+    \mathbf{W}=\operatorname{diag}(w_1,...,w_m).
+\end{align}
+\]</span> Large <span class="math inline">\(w_i\)</span> forces the fit to match observation <span class="math inline">\(i\)</span> more strongly.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Weighted Normal Equations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The weighted least squares problem in the result above satisfies <span class="math display">\[
+\begin{align}
+\bA^T\mathbf{W}\bA\hat{\bx}=\bA^T\mathbf{W}\bb.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Apply the ordinary normal equations from the result above to the transformed system <span class="math display">\[
+\begin{align}
+\mathbf{W}^{1/2}\bA\bx\approx \mathbf{W}^{1/2}\bb.
+\end{align}
+\]</span> This gives <span class="math inline">\((\mathbf{W}^{1/2}\bA)^T(\mathbf{W}^{1/2}\bA)\hat{\bx}=(\mathbf{W}^{1/2}\bA)^T\mathbf{W}^{1/2}\bb\)</span>, which simplifies to the stated equation.</p>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -927,6 +1018,7 @@ window.Quarto = {
 <ol type="1">
 <li><p>Return to the result above. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.</p></li>
 <li><p><strong>Regularization:</strong> If <span class="math inline">\(\bA\)</span> is rank-deficient, <span class="math inline">\(\|\hat{\bx}\|\)</span> can explode. Add a penalty term <span class="math inline">\(\lambda \|\bx\|_2^2\)</span> (Ridge Regression). How do the normal equations change?</p></li>
+<li><p>Derive the result above by differentiating the weighted objective directly.</p></li>
 </ol>
 </div>
 </div>

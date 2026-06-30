@@ -1,9 +1,16 @@
 # Spectral Graph Theory and PageRank
 
 
-Encoding graph topology into matrix spectrum for connectivity, clustering, and ranking.
+Graph algorithms become numerical linear algebra after choosing matrix conventions. Undirected graphs lead to symmetric Laplacians. Directed ranking problems lead to stochastic matrices and eigenvectors.
+
 
 ## Graph Matrices
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Convention)**  For undirected graphs, $\bA$ is symmetric. For directed random walks in this section, probability vectors are columns and $P_{ij}$ is the probability of moving from node $j$ to node $i$.
+:::
 
 
 ::: {.callout-note icon=false}
@@ -23,10 +30,54 @@ Defined as **$\bL = \bD - \bA$**.
 
 - **Discrete Derivative:**  $(\bL \boldsymbol{f})_i = \sum_{j \sim i} w_{ij} (f_i - f_j)$.
     
-- **Quadratic Form:**  $\bx^T \bL \bx = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2$.
+- **Quadratic Form:**  $\bx^T \bL \bx = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2$, with each undirected edge counted once.
 
 :::
 
+
+::: {.callout-note icon=false}
+## Proposition: Laplacian Positive Semidefinite
+For an undirected weighted graph with nonnegative weights, $\bL$ is symmetric positive semidefinite and $\bL\mathbf{1}=\bzero$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Symmetry follows from $w_{ij}=w_{ji}$. Using the quadratic form in the result above,
+$$
+\begin{align}
+\bx^T\bL\bx
+    =
+    \sum_{(i,j)\in E} w_{ij}(x_i-x_j)^2
+    \geq 0.
+\end{align}
+$$
+Thus $\bL$ is positive semidefinite. If $\bx=\mathbf{1}$, every difference $x_i-x_j$ is zero, and direct substitution gives $\bL\mathbf{1}=\bzero$.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Three-node path)**  For $1-2-3$,
+$$
+\begin{align}
+\bA=
+    \begin{pmatrix}
+    0&1&0\\
+    1&0&1\\
+    0&1&0
+    \end{pmatrix},
+    \qquad
+    \bL=
+    \begin{pmatrix}
+    1&-1&0\\
+    -1&2&-1\\
+    0&-1&1
+    \end{pmatrix}.
+\end{align}
+$$
+The zero eigenvector is $\mathbf{1}$ because constant signals have no graph variation.
+:::
 
 ::: {.callout-note icon=false}
 ## Theorem: Spectral Properties
@@ -41,13 +92,33 @@ For a connected graph with $0 = \lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the result above to show $\bL\mathbf{1}=\bzero$.
+    
+1. Derive $\bx^T\bL\bx=\sum_{(i,j)\in E}w_{ij}(x_i-x_j)^2$ for edges counted once.
+    
+1. Conclude that $\bL$ is positive semidefinite for an undirected graph.
+    
+1. Show that if a graph has two connected components, then there are two independent vectors in $\mathcal{N}(\bL)$.
+
+:::
+
+
 ::: {.callout-note icon=false}
 ## Definition: Normalized Laplacians
 
 - **Symmetric:**  $\bL_{\text{sym}} = \bD^{-1/2} \bL \bD^{-1/2}$. (Eigenvalues in $[0, 2]$).
     
-- **Random Walk:**  $\bL_{\text{rw}} = \bD^{-1} \bL = \bI - \bP$.
+- **Random Walk:**  $\bL_{\text{rw}} = \bI-\bA\bD^{-1}$ under the column-stochastic convention.
 
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Degree normalization)**  The unnormalized Laplacian can let high-degree vertices dominate cuts. Normalized Laplacians measure variation relative to vertex degree.
 :::
 
 
@@ -72,11 +143,23 @@ Minimizing a graph cut (RatioCut) is NP-hard. Spectral methods relax this to an 
 
 ::: {.callout-note icon=false}
 ## Definition: Random Walk Matrix
-Transition matrix $\bP = \bD^{-1} \bA$.
+Transition matrix $\bP = \bA\bD^{-1}$ under the column-stochastic convention.
 
 - $P_{ij} = w_{ij}/d_j$ is the probability of moving from $j$ to $i$.
     
 - **Stationary Distribution:**  $\boldsymbol{\pi}$ such that $\bP\boldsymbol{\pi} = \boldsymbol{\pi}$. For undirected graphs, $\pi_i = d_i / \sum d_j$.
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Show that the columns of $\bP=\bA\bD^{-1}$ sum to one.
+    
+1. For the path graph $1-2-3$, compute $\bP$.
+    
+1. Verify that $\pi_i=d_i/\sum_j d_j$ satisfies $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$.
 
 :::
 
@@ -86,17 +169,23 @@ Transition matrix $\bP = \bD^{-1} \bA$.
 Models a random surfer on a directed web graph with teleportation:
 $$
 \begin{align}
-\mathbf{G} = d \bS + \frac{1-d}{N} \mathbf{J}
+\mathbf{G} = d \bS + \frac{1-d}{N} \mathbf{J},
 \end{align}
 $$
 
 - $d$ is the damping factor (standard: 0.85).
     
-- $\bS$ is the link matrix (stochastic, handles dangling nodes).
+- $\bS$ is column-stochastic and handles dangling nodes.
     
 - $\mathbf{J}$ is the all-ones matrix (teleportation).
 
 **Computation:**  PageRank vector $\mathbf{r}$ is the dominant eigenvector of $\mathbf{G}$, computed via power iteration.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Dangling nodes)**  A page with no outgoing links gives a zero column before normalization. The standard fix replaces that column by the uniform probability vector before forming $\bS$.
 :::
 
 
@@ -110,7 +199,7 @@ $$
     
 1. Show that $\bL \mathbf{1} = \bzero$ for any graph.
     
-1. Prove $\bL$ is positive semi-definite using the quadratic form.
+1. Prove $\bL$ is positive semidefinite using the quadratic form.
     
 1. Implement PageRank power iteration for a 10-node random graph.
 

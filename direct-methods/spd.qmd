@@ -238,7 +238,7 @@ The factorization costs $O(n^3)$, but each solve costs only $O(n^2)$.
 
 1. **Covariance:**  Generate `X = np.random.randn(100, 4)`. Verify `X.T @ X` is SPD via Cholesky.
     
-1. **Gram Matrix:**  Prove that $\mathbf{G} = \bX^T\bX$ is at least positive semi-definite for any $\bX$, and PD if $\bX$ has full column rank.
+1. **Gram Matrix:**  Prove that $\mathbf{G} = \bX^T\bX$ is at least positive semidefinite for any $\bX$, and PD if $\bX$ has full column rank.
 
 :::
 
@@ -280,7 +280,7 @@ $$
     &= \|\bX \bv\|_2^2.
 \end{align}
 $$
-Since the squared Euclidean norm is always non-negative, $\bv^T \mathbf{G} \bv \geq 0$, proving $\mathbf{G}$ is positive semi-definite.
+Since the squared Euclidean norm is always non-negative, $\bv^T \mathbf{G} \bv \geq 0$, proving $\mathbf{G}$ is positive semidefinite.
 If $\bX$ has full column rank, then $\bX \bv = \bzero$ iff $\bv = \bzero$. Thus $\bv^T \mathbf{G} \bv > 0$ for all nonzero $\bv$, making $\mathbf{G}$ positive definite.
 :::
 

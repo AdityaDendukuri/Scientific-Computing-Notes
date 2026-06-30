@@ -24,148 +24,155 @@
 \contentsline {subsubsection}{\numberline {1.8.1}Arrays and Basic Operations}{31}{subsubsection.1.8.1}%
 \contentsline {subsubsection}{\numberline {1.8.2}Linear Algebra Operations}{31}{subsubsection.1.8.2}%
 \contentsline {subsubsection}{\numberline {1.8.3}Key Idioms}{32}{subsubsection.1.8.3}%
-\contentsline {section}{\numberline {2}Direct Methods for Linear Systems}{33}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Linearity}{33}{subsection.2.1}%
-\contentsline {subsubsection}{\numberline {2.1.1}Linear Systems}{33}{subsubsection.2.1.1}%
-\contentsline {subsubsection}{\numberline {2.1.2}Rows, Columns, and Geometry}{34}{subsubsection.2.1.2}%
-\contentsline {subsubsection}{\numberline {2.1.3}Invertibility and Existence}{34}{subsubsection.2.1.3}%
-\contentsline {subsubsection}{\numberline {2.1.4}Residuals and Approximate Solutions}{35}{subsubsection.2.1.4}%
-\contentsline {subsubsection}{\numberline {2.1.5}Linear Combinations and Bases}{36}{subsubsection.2.1.5}%
-\contentsline {subsubsection}{\numberline {2.1.6}Rank}{36}{subsubsection.2.1.6}%
-\contentsline {subsubsection}{\numberline {2.1.7}The Four Fundamental Subspaces}{37}{subsubsection.2.1.7}%
-\contentsline {subsection}{\numberline {2.2}LU Factorization}{38}{subsection.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.1}LU and Gaussian Elimination}{38}{subsubsection.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.2}Pivoting and Stability}{39}{subsubsection.2.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.3}Algorithm Cost Analysis}{40}{subsubsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.3}Symmetric Positive Definite (SPD) Matrices}{41}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}Definitions and Properties}{42}{subsubsection.2.3.1}%
-\contentsline {subsubsection}{\numberline {2.3.2}Geometry and Metric}{43}{subsubsection.2.3.2}%
-\contentsline {subsubsection}{\numberline {2.3.3}Cholesky Decomposition}{44}{subsubsection.2.3.3}%
-\contentsline {section}{\numberline {3}Orthogonality and Least Squares}{46}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Orthogonal Matrices}{46}{subsection.3.1}%
-\contentsline {subsubsection}{\numberline {3.1.1}Orthogonality and Orthonormal Bases}{46}{subsubsection.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.2}QR Decomposition}{48}{subsubsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.3}Gram-Schmidt Process}{49}{subsubsection.3.1.3}%
-\contentsline {subsubsection}{\numberline {3.1.4}Orthogonal Projection}{49}{subsubsection.3.1.4}%
-\contentsline {subsection}{\numberline {3.2}Vector and Matrix Norms}{50}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Vector Norms}{50}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Matrix Norms}{51}{subsubsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.3}Stability and Condition Number}{52}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.1}Residual, Forward Error, and Backward Error}{52}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.2}Why Factorize instead of Invert?}{53}{subsubsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.3}Numerical Stability}{53}{subsubsection.3.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.4}Condition Number}{54}{subsubsection.3.3.4}%
-\contentsline {subsubsection}{\numberline {3.3.5}Solver Selection Hierarchy}{55}{subsubsection.3.3.5}%
-\contentsline {subsection}{\numberline {3.4}Overdetermined Systems and Least Squares}{57}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Least Squares Problem}{57}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Normal Equations}{57}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.3}QR-Based Least Squares}{58}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {3.4.4}Rank Deficiency and Regularization}{59}{subsubsection.3.4.4}%
-\contentsline {subsubsection}{\numberline {3.4.5}Polynomial Regression}{59}{subsubsection.3.4.5}%
-\contentsline {subsection}{\numberline {3.5}Chebyshev Polynomials}{59}{subsection.3.5}%
-\contentsline {subsubsection}{\numberline {3.5.1}Failure of the Monomial Basis}{60}{subsubsection.3.5.1}%
-\contentsline {subsubsection}{\numberline {3.5.2}Chebyshev Polynomials ($T_k$)}{60}{subsubsection.3.5.2}%
-\contentsline {subsubsection}{\numberline {3.5.3}Zeros and Nodes}{61}{subsubsection.3.5.3}%
-\contentsline {subsubsection}{\numberline {3.5.4}The Minimax Property}{62}{subsubsection.3.5.4}%
-\contentsline {subsubsection}{\numberline {3.5.5}Chebyshev Series}{63}{subsubsection.3.5.5}%
-\contentsline {section}{\numberline {4}Eigenvalues and the SVD}{64}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Eigenvalues and Eigenvectors}{64}{subsection.4.1}%
-\contentsline {subsubsection}{\numberline {4.1.1}Definitions and Basic Properties}{64}{subsubsection.4.1.1}%
-\contentsline {subsubsection}{\numberline {4.1.2}Symmetric and Hermitian Matrices}{66}{subsubsection.4.1.2}%
-\contentsline {subsubsection}{\numberline {4.1.3}Iterative Algorithms}{66}{subsubsection.4.1.3}%
-\contentsline {subsubsection}{\numberline {4.1.4}Schur Decomposition and the QR Algorithm}{67}{subsubsection.4.1.4}%
-\contentsline {subsection}{\numberline {4.2}Singular Value Decomposition}{68}{subsection.4.2}%
-\contentsline {subsubsection}{\numberline {4.2.1}The SVD Theorem}{69}{subsubsection.4.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2}The Four Fundamental Subspaces}{70}{subsubsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.3}Low-Rank Approximation}{71}{subsubsection.4.2.3}%
-\contentsline {subsubsection}{\numberline {4.2.4}The Pseudoinverse}{71}{subsubsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.3}Lanczos Algorithm}{72}{subsection.4.3}%
-\contentsline {subsubsection}{\numberline {4.3.1}Krylov Subspaces}{72}{subsubsection.4.3.1}%
-\contentsline {subsubsection}{\numberline {4.3.2}The Lanczos Recurrence}{72}{subsubsection.4.3.2}%
-\contentsline {subsubsection}{\numberline {4.3.3}Ritz Values and Vectors}{72}{subsubsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.4}Jacobi Eigenvalue Algorithm}{73}{subsection.4.4}%
-\contentsline {subsubsection}{\numberline {4.4.1}Givens Rotations}{74}{subsubsection.4.4.1}%
-\contentsline {subsubsection}{\numberline {4.4.2}The Jacobi Algorithm}{74}{subsubsection.4.4.2}%
-\contentsline {subsubsection}{\numberline {4.4.3}Convergence and Cost}{75}{subsubsection.4.4.3}%
-\contentsline {section}{\numberline {5}Iterative Methods for Linear Systems}{76}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Iterative Methods for Linear Systems}{76}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}Direct vs.\ Iterative Solvers}{76}{subsubsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.2}Convergence and Spectral Radius}{78}{subsubsection.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.3}Stopping Criteria}{78}{subsubsection.5.1.3}%
-\contentsline {subsubsection}{\numberline {5.1.4}Fill-in and Sparse Storage}{79}{subsubsection.5.1.4}%
-\contentsline {subsection}{\numberline {5.2}Jacobi and Gauss-Seidel Methods}{79}{subsection.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.1}Jacobi Iteration}{79}{subsubsection.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.2.2}Gauss-Seidel Iteration}{80}{subsubsection.5.2.2}%
-\contentsline {subsubsection}{\numberline {5.2.3}Convergence Conditions}{80}{subsubsection.5.2.3}%
-\contentsline {subsubsection}{\numberline {5.2.4}Successive Over-Relaxation (SOR)}{81}{subsubsection.5.2.4}%
-\contentsline {subsubsection}{\numberline {5.2.5}Stopping Criteria}{82}{subsubsection.5.2.5}%
-\contentsline {subsection}{\numberline {5.3}Conjugate Gradient Method}{82}{subsection.5.3}%
-\contentsline {subsubsection}{\numberline {5.3.1}Krylov Subspaces}{82}{subsubsection.5.3.1}%
-\contentsline {subsubsection}{\numberline {5.3.2}CG as a Projection Method}{83}{subsubsection.5.3.2}%
-\contentsline {subsubsection}{\numberline {5.3.3}Conjugate Directions and A-Orthogonality}{83}{subsubsection.5.3.3}%
-\contentsline {subsubsection}{\numberline {5.3.4}The CG Algorithm}{83}{subsubsection.5.3.4}%
-\contentsline {subsubsection}{\numberline {5.3.5}Convergence Rate}{84}{subsubsection.5.3.5}%
-\contentsline {subsubsection}{\numberline {5.3.6}Preconditioning}{85}{subsubsection.5.3.6}%
-\contentsline {subsection}{\numberline {5.4}GMRES}{85}{subsection.5.4}%
-\contentsline {subsubsection}{\numberline {5.4.1}Residual Minimization and Krylov Subspaces}{86}{subsubsection.5.4.1}%
-\contentsline {subsubsection}{\numberline {5.4.2}The Arnoldi Process}{86}{subsubsection.5.4.2}%
-\contentsline {subsubsection}{\numberline {5.4.3}Reduction to Hessenberg Least Squares}{86}{subsubsection.5.4.3}%
-\contentsline {subsubsection}{\numberline {5.4.4}Restarted GMRES($m$)}{87}{subsubsection.5.4.4}%
-\contentsline {subsubsection}{\numberline {5.4.5}Convergence and Preconditioning}{87}{subsubsection.5.4.5}%
-\contentsline {section}{\numberline {6}Numerical Analysis}{88}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Polynomial Interpolation}{88}{subsection.6.1}%
-\contentsline {subsubsection}{\numberline {6.1.1}Existence and Uniqueness}{88}{subsubsection.6.1.1}%
-\contentsline {subsubsection}{\numberline {6.1.2}Lagrange Form}{89}{subsubsection.6.1.2}%
-\contentsline {subsubsection}{\numberline {6.1.3}Barycentric Interpolation}{89}{subsubsection.6.1.3}%
-\contentsline {subsubsection}{\numberline {6.1.4}Runge's Phenomenon}{89}{subsubsection.6.1.4}%
-\contentsline {subsubsection}{\numberline {6.1.5}Cubic Splines}{90}{subsubsection.6.1.5}%
-\contentsline {subsubsection}{\numberline {6.1.6}Exercises}{90}{subsubsection.6.1.6}%
-\contentsline {subsection}{\numberline {6.2}Numerical Quadrature}{90}{subsection.6.2}%
-\contentsline {subsubsection}{\numberline {6.2.1}Newton-Cotes Rules}{91}{subsubsection.6.2.1}%
-\contentsline {subsubsection}{\numberline {6.2.2}Gaussian Quadrature}{92}{subsubsection.6.2.2}%
-\contentsline {subsubsection}{\numberline {6.2.3}Richardson Extrapolation and Romberg Integration}{92}{subsubsection.6.2.3}%
-\contentsline {subsubsection}{\numberline {6.2.4}Adaptive Quadrature}{93}{subsubsection.6.2.4}%
-\contentsline {subsubsection}{\numberline {6.2.5}Periodic Functions and Spectral Accuracy}{93}{subsubsection.6.2.5}%
-\contentsline {subsubsection}{\numberline {6.2.6}Exercises}{94}{subsubsection.6.2.6}%
-\contentsline {subsection}{\numberline {6.3}Root Finding}{94}{subsection.6.3}%
-\contentsline {subsubsection}{\numberline {6.3.1}Bracketing Methods}{94}{subsubsection.6.3.1}%
-\contentsline {subsubsection}{\numberline {6.3.2}Open Methods}{95}{subsubsection.6.3.2}%
-\contentsline {subsubsection}{\numberline {6.3.3}Brent's Method}{96}{subsubsection.6.3.3}%
-\contentsline {subsubsection}{\numberline {6.3.4}Exercises}{96}{subsubsection.6.3.4}%
-\contentsline {section}{\numberline {7}Ordinary Differential Equations}{96}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Numerical Methods for ODEs}{96}{subsection.7.1}%
-\contentsline {subsubsection}{\numberline {7.1.1}Basic Methods}{96}{subsubsection.7.1.1}%
-\contentsline {subsubsection}{\numberline {7.1.2}Runge-Kutta Methods}{98}{subsubsection.7.1.2}%
-\contentsline {subsubsection}{\numberline {7.1.3}Symplectic Integrators}{98}{subsubsection.7.1.3}%
-\contentsline {subsubsection}{\numberline {7.1.4}Exercises}{99}{subsubsection.7.1.4}%
-\contentsline {section}{\numberline {8}Applications}{99}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Principal Component Analysis (PCA)}{99}{subsection.8.1}%
-\contentsline {subsubsection}{\numberline {8.1.1}Definitions and Preprocessing}{99}{subsubsection.8.1.1}%
-\contentsline {subsubsection}{\numberline {8.1.2}PCA via SVD}{100}{subsubsection.8.1.2}%
-\contentsline {subsubsection}{\numberline {8.1.3}Variance and Dimensionality Reduction}{100}{subsubsection.8.1.3}%
-\contentsline {subsubsection}{\numberline {8.1.4}Implementation Details}{101}{subsubsection.8.1.4}%
-\contentsline {subsubsection}{\numberline {8.1.5}Exercises}{101}{subsubsection.8.1.5}%
-\contentsline {subsection}{\numberline {8.2}Spectral Graph Theory and PageRank}{101}{subsection.8.2}%
-\contentsline {subsubsection}{\numberline {8.2.1}Graph Matrices}{101}{subsubsection.8.2.1}%
-\contentsline {subsubsection}{\numberline {8.2.2}Spectral Clustering}{102}{subsubsection.8.2.2}%
-\contentsline {subsubsection}{\numberline {8.2.3}Random Walks and PageRank}{102}{subsubsection.8.2.3}%
-\contentsline {subsubsection}{\numberline {8.2.4}Exercises}{103}{subsubsection.8.2.4}%
-\contentsline {subsection}{\numberline {8.3}Linear Operators and the Poisson Equation}{103}{subsection.8.3}%
-\contentsline {subsubsection}{\numberline {8.3.1}Differential Operators and Discretization}{103}{subsubsection.8.3.1}%
-\contentsline {subsubsection}{\numberline {8.3.2}Operator Norms and Conditioning}{104}{subsubsection.8.3.2}%
-\contentsline {subsubsection}{\numberline {8.3.3}Exercises}{104}{subsubsection.8.3.3}%
-\contentsline {subsection}{\numberline {8.4}Fourier Analysis as Change of Basis}{105}{subsection.8.4}%
-\contentsline {subsubsection}{\numberline {8.4.1}Discrete Fourier Transform (DFT)}{105}{subsubsection.8.4.1}%
-\contentsline {subsubsection}{\numberline {8.4.2}Convolution and Circulant Matrices}{105}{subsubsection.8.4.2}%
-\contentsline {subsubsection}{\numberline {8.4.3}The Fast Fourier Transform (FFT)}{105}{subsubsection.8.4.3}%
-\contentsline {subsubsection}{\numberline {8.4.4}Exercises}{106}{subsubsection.8.4.4}%
-\contentsline {subsection}{\numberline {8.5}Markov Chains and Stochastic Matrices}{106}{subsection.8.5}%
-\contentsline {subsubsection}{\numberline {8.5.1}Definitions}{106}{subsubsection.8.5.1}%
-\contentsline {subsubsection}{\numberline {8.5.2}Convergence and Mixing}{107}{subsubsection.8.5.2}%
-\contentsline {subsubsection}{\numberline {8.5.3}Properties and Design}{107}{subsubsection.8.5.3}%
-\contentsline {subsubsection}{\numberline {8.5.4}Exercises}{108}{subsubsection.8.5.4}%
-\contentsline {subsection}{\numberline {8.6}Koopman Theory, DMD, and SINDy}{108}{subsection.8.6}%
-\contentsline {subsubsection}{\numberline {8.6.1}Koopman Operator Theory}{108}{subsubsection.8.6.1}%
-\contentsline {subsubsection}{\numberline {8.6.2}Dynamic Mode Decomposition (DMD)}{109}{subsubsection.8.6.2}%
-\contentsline {subsubsection}{\numberline {8.6.3}SINDy: Sparse Identification}{109}{subsubsection.8.6.3}%
-\contentsline {subsubsection}{\numberline {8.6.4}Exercises}{109}{subsubsection.8.6.4}%
+\contentsline {section}{\numberline {2}Direct Methods for Linear Systems}{34}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Linearity}{34}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Linear Systems}{34}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Rows, Columns, and Geometry}{35}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Invertibility and Existence}{35}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}Residuals and Approximate Solutions}{36}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.1.5}Linear Combinations and Bases}{37}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.1.6}Rank}{37}{subsubsection.2.1.6}%
+\contentsline {subsubsection}{\numberline {2.1.7}The Four Fundamental Subspaces}{38}{subsubsection.2.1.7}%
+\contentsline {subsection}{\numberline {2.2}LU Factorization}{39}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}LU and Gaussian Elimination}{39}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Pivoting and Stability}{40}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Algorithm Cost Analysis}{41}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.3}Symmetric Positive Definite (SPD) Matrices}{42}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Definitions and Properties}{43}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Geometry and Metric}{44}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Cholesky Decomposition}{45}{subsubsection.2.3.3}%
+\contentsline {section}{\numberline {3}Orthogonality and Least Squares}{47}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Orthogonal Matrices}{47}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Orthogonality and Orthonormal Bases}{47}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}QR Decomposition}{49}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Gram-Schmidt Process}{50}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}Orthogonal Projection}{50}{subsubsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.2}Vector and Matrix Norms}{51}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Vector Norms}{51}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Matrix Norms}{52}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}Stability and Condition Number}{53}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Residual, Forward Error, and Backward Error}{53}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Why Factorize instead of Invert?}{54}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Numerical Stability}{54}{subsubsection.3.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.4}Condition Number}{55}{subsubsection.3.3.4}%
+\contentsline {subsubsection}{\numberline {3.3.5}Solver Selection Hierarchy}{56}{subsubsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.4}Overdetermined Systems and Least Squares}{58}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Least Squares Problem}{58}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Normal Equations}{58}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}QR-Based Least Squares}{59}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Rank Deficiency and Regularization}{60}{subsubsection.3.4.4}%
+\contentsline {subsubsection}{\numberline {3.4.5}Polynomial Regression}{61}{subsubsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.5}Chebyshev Polynomials}{61}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Failure of the Monomial Basis}{61}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Chebyshev Polynomials ($T_k$)}{62}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}Zeros and Nodes}{63}{subsubsection.3.5.3}%
+\contentsline {subsubsection}{\numberline {3.5.4}The Minimax Property}{64}{subsubsection.3.5.4}%
+\contentsline {subsubsection}{\numberline {3.5.5}Chebyshev Series}{65}{subsubsection.3.5.5}%
+\contentsline {section}{\numberline {4}Eigenvalues and the SVD}{66}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Eigenvalues and Eigenvectors}{66}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Definitions and Basic Properties}{66}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Symmetric and Hermitian Matrices}{68}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}Iterative Algorithms}{68}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Schur Decomposition and the QR Algorithm}{70}{subsubsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.2}Singular Value Decomposition}{71}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}The SVD Theorem}{71}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}The Four Fundamental Subspaces}{72}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Low-Rank Approximation}{73}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}The Pseudoinverse}{73}{subsubsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.3}Lanczos Algorithm}{74}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Krylov Subspaces}{74}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}The Lanczos Recurrence}{74}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.3}Ritz Values and Vectors}{75}{subsubsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.4}Jacobi Eigenvalue Algorithm}{76}{subsection.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.1}Givens Rotations}{76}{subsubsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.2}The Jacobi Algorithm}{77}{subsubsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.3}Convergence and Cost}{78}{subsubsection.4.4.3}%
+\contentsline {section}{\numberline {5}Iterative Methods for Linear Systems}{79}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Iterative Methods for Linear Systems}{79}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Direct vs.\ Iterative Solvers}{79}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Convergence and Spectral Radius}{80}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Stopping Criteria}{81}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Fill-in and Sparse Storage}{81}{subsubsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.2}Jacobi and Gauss-Seidel Methods}{82}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Jacobi Iteration}{82}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Gauss-Seidel Iteration}{82}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Convergence Conditions}{83}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Successive Over-Relaxation (SOR)}{84}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Stopping Criteria}{84}{subsubsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.3}Conjugate Gradient Method}{85}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Krylov Subspaces}{85}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}CG as a Projection Method}{85}{subsubsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.3}Conjugate Directions and A-Orthogonality}{86}{subsubsection.5.3.3}%
+\contentsline {subsubsection}{\numberline {5.3.4}The CG Algorithm}{86}{subsubsection.5.3.4}%
+\contentsline {subsubsection}{\numberline {5.3.5}Convergence Rate}{87}{subsubsection.5.3.5}%
+\contentsline {subsubsection}{\numberline {5.3.6}Preconditioning}{87}{subsubsection.5.3.6}%
+\contentsline {subsection}{\numberline {5.4}GMRES}{88}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Residual Minimization and Krylov Subspaces}{88}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}The Arnoldi Process}{89}{subsubsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.3}Reduction to Hessenberg Least Squares}{89}{subsubsection.5.4.3}%
+\contentsline {subsubsection}{\numberline {5.4.4}Restarted GMRES($m$)}{90}{subsubsection.5.4.4}%
+\contentsline {subsubsection}{\numberline {5.4.5}Convergence and Preconditioning}{90}{subsubsection.5.4.5}%
+\contentsline {section}{\numberline {6}Numerical Analysis}{91}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Polynomial Interpolation}{91}{subsection.6.1}%
+\contentsline {subsubsection}{\numberline {6.1.1}Existence and Uniqueness}{91}{subsubsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.2}Lagrange Form}{91}{subsubsection.6.1.2}%
+\contentsline {subsubsection}{\numberline {6.1.3}Barycentric Interpolation}{92}{subsubsection.6.1.3}%
+\contentsline {subsubsection}{\numberline {6.1.4}Interpolation Error}{92}{subsubsection.6.1.4}%
+\contentsline {subsubsection}{\numberline {6.1.5}Runge's Phenomenon}{92}{subsubsection.6.1.5}%
+\contentsline {subsubsection}{\numberline {6.1.6}Cubic Splines}{93}{subsubsection.6.1.6}%
+\contentsline {subsubsection}{\numberline {6.1.7}Exercises}{93}{subsubsection.6.1.7}%
+\contentsline {subsection}{\numberline {6.2}Numerical Quadrature}{93}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Newton-Cotes Rules}{94}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}Gaussian Quadrature}{95}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.3}Richardson Extrapolation and Romberg Integration}{96}{subsubsection.6.2.3}%
+\contentsline {subsubsection}{\numberline {6.2.4}Adaptive Quadrature}{96}{subsubsection.6.2.4}%
+\contentsline {subsubsection}{\numberline {6.2.5}Periodic Functions and Spectral Accuracy}{97}{subsubsection.6.2.5}%
+\contentsline {subsubsection}{\numberline {6.2.6}Exercises}{97}{subsubsection.6.2.6}%
+\contentsline {subsection}{\numberline {6.3}Root Finding}{98}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {6.3.1}Bracketing Methods}{98}{subsubsection.6.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.2}Open Methods}{98}{subsubsection.6.3.2}%
+\contentsline {subsubsection}{\numberline {6.3.3}Brent's Method}{100}{subsubsection.6.3.3}%
+\contentsline {subsubsection}{\numberline {6.3.4}Exercises}{101}{subsubsection.6.3.4}%
+\contentsline {section}{\numberline {7}Ordinary Differential Equations}{101}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Numerical Methods for ODEs}{101}{subsection.7.1}%
+\contentsline {subsubsection}{\numberline {7.1.1}Initial Value Problems}{101}{subsubsection.7.1.1}%
+\contentsline {subsubsection}{\numberline {7.1.2}Error and Convergence}{102}{subsubsection.7.1.2}%
+\contentsline {subsubsection}{\numberline {7.1.3}Euler Methods}{103}{subsubsection.7.1.3}%
+\contentsline {subsubsection}{\numberline {7.1.4}Absolute Stability and Stiffness}{105}{subsubsection.7.1.4}%
+\contentsline {subsubsection}{\numberline {7.1.5}Runge-Kutta Methods}{107}{subsubsection.7.1.5}%
+\contentsline {subsubsection}{\numberline {7.1.6}Adaptive Time Stepping}{108}{subsubsection.7.1.6}%
+\contentsline {subsubsection}{\numberline {7.1.7}Linear Multistep Methods}{109}{subsubsection.7.1.7}%
+\contentsline {subsubsection}{\numberline {7.1.8}Systems and Eigenvalues}{110}{subsubsection.7.1.8}%
+\contentsline {subsubsection}{\numberline {7.1.9}Hamiltonian and Symplectic Methods}{111}{subsubsection.7.1.9}%
+\contentsline {subsubsection}{\numberline {7.1.10}Method Choice}{112}{subsubsection.7.1.10}%
+\contentsline {section}{\numberline {8}Applications}{112}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Principal Component Analysis (PCA)}{112}{subsection.8.1}%
+\contentsline {subsubsection}{\numberline {8.1.1}Definitions and Preprocessing}{112}{subsubsection.8.1.1}%
+\contentsline {subsubsection}{\numberline {8.1.2}PCA via SVD}{113}{subsubsection.8.1.2}%
+\contentsline {subsubsection}{\numberline {8.1.3}Variance and Dimensionality Reduction}{114}{subsubsection.8.1.3}%
+\contentsline {subsubsection}{\numberline {8.1.4}Implementation Details}{114}{subsubsection.8.1.4}%
+\contentsline {subsubsection}{\numberline {8.1.5}Exercises}{114}{subsubsection.8.1.5}%
+\contentsline {subsection}{\numberline {8.2}Spectral Graph Theory and PageRank}{115}{subsection.8.2}%
+\contentsline {subsubsection}{\numberline {8.2.1}Graph Matrices}{115}{subsubsection.8.2.1}%
+\contentsline {subsubsection}{\numberline {8.2.2}Spectral Clustering}{116}{subsubsection.8.2.2}%
+\contentsline {subsubsection}{\numberline {8.2.3}Random Walks and PageRank}{117}{subsubsection.8.2.3}%
+\contentsline {subsubsection}{\numberline {8.2.4}Exercises}{117}{subsubsection.8.2.4}%
+\contentsline {subsection}{\numberline {8.3}Linear Operators and the Poisson Equation}{118}{subsection.8.3}%
+\contentsline {subsubsection}{\numberline {8.3.1}Differential Operators and Discretization}{118}{subsubsection.8.3.1}%
+\contentsline {subsubsection}{\numberline {8.3.2}Operator Norms and Conditioning}{120}{subsubsection.8.3.2}%
+\contentsline {subsubsection}{\numberline {8.3.3}Exercises}{120}{subsubsection.8.3.3}%
+\contentsline {subsection}{\numberline {8.4}Fourier Analysis as Change of Basis}{120}{subsection.8.4}%
+\contentsline {subsubsection}{\numberline {8.4.1}Discrete Fourier Transform (DFT)}{120}{subsubsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.2}Convolution and Circulant Matrices}{122}{subsubsection.8.4.2}%
+\contentsline {subsubsection}{\numberline {8.4.3}The Fast Fourier Transform (FFT)}{122}{subsubsection.8.4.3}%
+\contentsline {subsubsection}{\numberline {8.4.4}Exercises}{123}{subsubsection.8.4.4}%
+\contentsline {subsection}{\numberline {8.5}Markov Chains and Stochastic Matrices}{123}{subsection.8.5}%
+\contentsline {subsubsection}{\numberline {8.5.1}Definitions}{123}{subsubsection.8.5.1}%
+\contentsline {subsubsection}{\numberline {8.5.2}Convergence and Mixing}{125}{subsubsection.8.5.2}%
+\contentsline {subsubsection}{\numberline {8.5.3}Properties and Design}{126}{subsubsection.8.5.3}%
+\contentsline {subsubsection}{\numberline {8.5.4}Exercises}{127}{subsubsection.8.5.4}%
+\contentsline {subsection}{\numberline {8.6}Koopman Theory, DMD, and SINDy}{127}{subsection.8.6}%
+\contentsline {subsubsection}{\numberline {8.6.1}Koopman Operator Theory}{127}{subsubsection.8.6.1}%
+\contentsline {subsubsection}{\numberline {8.6.2}Dynamic Mode Decomposition (DMD)}{128}{subsubsection.8.6.2}%
+\contentsline {subsubsection}{\numberline {8.6.3}SINDy: Sparse Identification}{129}{subsubsection.8.6.3}%
+\contentsline {subsubsection}{\numberline {8.6.4}Exercises}{129}{subsubsection.8.6.4}%

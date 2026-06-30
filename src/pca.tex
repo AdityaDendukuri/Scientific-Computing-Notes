@@ -22,7 +22,7 @@ The matrix $\bS = \frac{1}{n-1}\bX^T\bX \in \fR^{p\times p}$.
 \begin{itemize}
     \item \textbf{Diagonal:}\enspace $S_{jj}$ is the variance of feature $j$.
     \item \textbf{Off-diagonal:}\enspace $S_{ij}$ is the covariance between features $i$ and $j$.
-    \item \textbf{Property:}\enspace $\bS$ is symmetric positive semi-definite (SPSD).
+    \item \textbf{Property:}\enspace $\bS$ is symmetric positive semidefinite (SPSD).
 \end{itemize}
 }
 \label{def:sample-covariance}
@@ -47,6 +47,18 @@ Let $\bX = \bU\bsigma\bV^T$ be the SVD of the centered data matrix.
 \end{itemize}
 }
 \label{thm:pca-svd}
+
+\addPrf{%
+Since $\bX=\bU\bsigma\bV^T$,
+\begin{align*}
+    \bS
+    =
+    \frac{1}{n-1}\bX^T\bX
+    =
+    \bV\left(\frac{\bsigma^2}{n-1}\right)\bV^T.
+\end{align*}
+Thus the columns of $\bV$ diagonalize the covariance matrix. The scores satisfy $\bZ=\bX\bV=\bU\bsigma$, so their sample covariance is diagonal with entries $\sigma_i^2/(n-1)$.
+}
 
 \addRemark{%
 \textbf{(PCA stability)}\enspace Never form $\bX^T\bX$ explicitly for PCA. Squaring the data matrix doubles the condition number ($\kappa(\bS) = \kappa(\bX)^2$). Compute PCA directly via the SVD of $\bX$.
@@ -96,6 +108,10 @@ is the optimal $k$-dimensional linear approximation of the data in the Frobenius
 
 \addRemark{%
 \textbf{(Standardization)}\enspace If features have different units, PCA will be dominated by large-scale features. Standardize by dividing each centered column by its standard deviation: $X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j$.
+}
+
+\addRemark{%
+\textbf{(Interpretation)}\enspace Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix; it does not by itself explain why that variation occurs.
 }
 
 \addDef{Kernel PCA (High-Dimensional Case)}{%

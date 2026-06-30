@@ -9,6 +9,10 @@
 Iterative method for finding extreme eigenpairs of large, symmetric matrices without explicit $O(n^2)$ formation.
 }
 
+\addRemark{%
+\textbf{(Symmetric assumption)}\enspace Lanczos applies to symmetric or Hermitian matrices. For nonsymmetric matrices, use Arnoldi or GMRES-type constructions.
+}
+
 \subsubsection{Krylov Subspaces}
 
 \addDef{Krylov Subspace}{%
@@ -16,6 +20,10 @@ $\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, \dots,\, \b
 $\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
 }
 \label{def:krylov-subspace}
+
+\addRemark{%
+\textbf{(Power iteration with memory)}\enspace Power iteration keeps only the newest vector. Lanczos keeps an orthonormal basis for the whole Krylov subspace, so it can approximate several eigenvalues at once.
+}
 
 \subsubsection{The Lanczos Recurrence}
 
@@ -31,6 +39,25 @@ The process builds an orthonormal basis $V_k = [\bv_1, \dots, \bv_k]$ for $\math
 \end{itemize}
 }
 \label{thm:lanczos-relation}
+
+\addProp{Galerkin Projection}{%
+In exact arithmetic,
+\begin{align*}
+    T_k=V_k^T\bA V_k.
+\end{align*}
+Thus Lanczos replaces the large symmetric matrix $\bA$ by a small symmetric tridiagonal projection.
+}
+\label{prop:lanczos-galerkin}
+
+\addPrf{%
+Left multiply the Lanczos relation in Thm~\ref{thm:lanczos-relation} by $V_k^T$:
+\begin{align*}
+    V_k^T\bA V_k
+    =
+    V_k^T V_k T_k+\beta_k V_k^T\bv_{k+1}\be_k^T.
+\end{align*}
+Since the Lanczos vectors are orthonormal, $V_k^T V_k=\bI$ and $V_k^T\bv_{k+1}=\bzero$. Hence $V_k^T\bA V_k=T_k$.
+}
 
 \addRemark{%
 \textbf{Performance Advantage:}\enspace
@@ -88,7 +115,7 @@ The Lanczos algorithm applied to a symmetric system $\bA\bx=\bb$ is mathematical
 \addExcr{%
 \begin{enumerate}
     \item Carry out 2 steps of Lanczos for $\bA = \text{diag}(5, 3, 1)$ starting with $\bv_1 = \frac{1}{\sqrt{3}}\mathbf{1}$.
-    \item Show that $T_k = V_k^T \bA V_k$ (Galerkin Projection).
+    \item Verify Prop~\ref{prop:lanczos-galerkin} numerically for a random symmetric matrix.
     \item Implement Lanczos on a $50 \times 50$ Hilbert matrix. Count spurious eigenvalues without reorthogonalization.
 \end{enumerate}
 }

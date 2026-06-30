@@ -11,6 +11,15 @@ Fourier analysis provides a framework for representing functions and data in ter
 
 \subsubsection{Discrete Fourier Transform (DFT)}
 
+\addDef{Periodic Grid Signal}{%
+A discrete signal $\bx\in\fC^n$ is interpreted as one period of a periodic sequence:
+\begin{align*}
+    x_{j+n}=x_j.
+\end{align*}
+The DFT represents this signal in the basis of discrete complex exponentials.
+}
+\label{def:periodic-grid-signal}
+
 \addDef{DFT Matrix}{%
 Unitary matrix $\mathbf{F} \in \fC^{n \times n}$ with entries:
 \begin{align*}
@@ -21,10 +30,69 @@ Unitary matrix $\mathbf{F} \in \fC^{n \times n}$ with entries:
     \item \textbf{Inverse DFT:}\enspace $\mathbf{F}^{-1} = \mathbf{F}^*$.
 \end{itemize}
 }
+\label{def:dft-matrix}
 
 \addThm{Parseval's Theorem}{%
 The DFT is an isometry: $\|\mathbf{F}\bx\|_2 = \|\bx\|_2$. Total energy is preserved between time and frequency domains.
 }
+\label{thm:dft-parseval}
+
+\addPrf{%
+Since $\mathbf{F}$ is unitary, $\mathbf{F}^*\mathbf{F}=\bI$. Hence
+\begin{align*}
+    \|\mathbf{F}\bx\|_2^2
+    =
+    (\mathbf{F}\bx)^*(\mathbf{F}\bx)
+    =
+    \bx^*\mathbf{F}^*\mathbf{F}\bx
+    =
+    \bx^*\bx
+    =
+    \|\bx\|_2^2.
+\end{align*}
+Taking square roots gives the claim.
+}
+
+\addExcr{%
+\begin{enumerate}
+    \item Use Def~\ref{def:dft-matrix} to compute the $(j,\ell)$ entry of $\mathbf{F}^*\mathbf{F}$.
+    \item Evaluate the finite geometric sum that appears.
+    \item Conclude $\mathbf{F}^*\mathbf{F}=\bI$.
+    \item Explain why this is the finite Fourier analog of orthonormal coordinates.
+\end{enumerate}
+}
+\label{ex:dft-parseval}
+
+\addDef{Frequency Bins}{%
+For samples on $[0,2\pi)$, the integer frequency attached to index $k$ is usually ordered as
+\begin{align*}
+    0,1,2,\dots,\lfloor n/2\rfloor,-\lfloor(n-1)/2\rfloor,\dots,-1.
+\end{align*}
+This is the ordering returned by \texttt{np.fft.fftfreq} after scaling by $n$.
+}
+\label{def:frequency-bins}
+
+\addRemark{%
+\textbf{(Normalization convention)}\enspace Some libraries put the factor $1/n$ in the inverse transform instead of using the unitary factor $1/\sqrt n$ in both directions. The formulas change by constants, but the frequency content is the same.
+}
+
+\addDef{Nyquist Frequency and Aliasing}{%
+On $n$ equally spaced samples of a $2\pi$-periodic signal, frequencies that differ by multiples of $n$ are indistinguishable:
+\begin{align*}
+    e^{i(k+n)x_j}=e^{ikx_j}.
+\end{align*}
+The largest resolvable unsigned frequency is the Nyquist frequency, approximately $n/2$ modes per period.
+}
+\label{def:nyquist-aliasing}
+
+\addExcr{%
+\begin{enumerate}
+    \item Let $x_j=2\pi j/n$. Prove $e^{i(k+n)x_j}=e^{ikx_j}$ for every grid point.
+    \item For $n=8$, list the frequency bin ordering from Def~\ref{def:frequency-bins}.
+    \item Sample $\sin(7x)$ on $n=8$ points and identify its aliased frequency.
+\end{enumerate}
+}
+\label{ex:nyquist-aliasing}
 
 \subsubsection{Convolution and Circulant Matrices}
 
@@ -35,6 +103,7 @@ Matrix $\mathbf{C}$ where each row is a cyclic shift of the first column $\bc$.
     \item \textbf{Eigenvalues:}\enspace The eigenvalues of $\mathbf{C}$ are the DFT coefficients of its first column.
 \end{itemize}
 }
+\label{def:circulant-matrix}
 
 \addThm{Convolution Theorem}{%
 Circular convolution $\bz = \bc * \bx$ is equivalent to pointwise multiplication in frequency:
@@ -42,6 +111,21 @@ Circular convolution $\bz = \bc * \bx$ is equivalent to pointwise multiplication
     \mathbf{F}(\bc * \bx) = (\mathbf{F}\bc) \odot (\mathbf{F}\bx).
 \end{align*}
 \textbf{Complexity:}\enspace Reduced from $O(n^2)$ (direct) to $O(n \log n)$ (FFT).
+}
+\label{thm:convolution-theorem}
+
+\addExmpl{%
+\textbf{(Circular convolution for $n=3$)}\enspace If $\bc=(c_0,c_1,c_2)^T$, then
+\begin{align*}
+    \bc * \bx =
+    \begin{pmatrix}
+        c_0&c_2&c_1\\
+        c_1&c_0&c_2\\
+        c_2&c_1&c_0
+    \end{pmatrix}
+    \begin{pmatrix}x_0\\x_1\\x_2\end{pmatrix}.
+\end{align*}
+The wraparound terms are a consequence of the periodic convention in Def~\ref{def:periodic-grid-signal}.
 }
 
 \subsubsection{The Fast Fourier Transform (FFT)}
@@ -53,19 +137,42 @@ Computes the DFT in \textbf{$O(n \log n)$} flops for $n = 2^p$.
     \item \textbf{NumPy:}\enspace Use \texttt{np.fft.fft} and \texttt{np.fft.ifft}.
 \end{itemize}
 }
+\label{thm:cooley-tukey}
+
+\addExcr{%
+\begin{enumerate}
+    \item Split the DFT sum into even and odd input indices.
+    \item Show that each part is an $n/2$-point DFT multiplied by phase factors.
+    \item Write the recurrence $T(n)=2T(n/2)+O(n)$.
+    \item Solve the recurrence to obtain the cost in Thm~\ref{thm:cooley-tukey}.
+\end{enumerate}
+}
+\label{ex:cooley-tukey}
 
 \addRemark{%
 \textbf{Spectral Differentiation:}\enspace For smooth periodic signals, differentiate by multiplying frequency components $\hat{x}_k$ by $ik$. Provides exponential accuracy compared to polynomial accuracy of finite differences.
 }
 
+\addThm{Fourier Differentiation Rule}{%
+For a smooth $2\pi$-periodic function with Fourier series
+\begin{align*}
+    f(x)=\sum_k \hat f_k e^{ikx},
+\end{align*}
+the derivative has coefficients
+\begin{align*}
+    \widehat{f'}_k=ik\hat f_k.
+\end{align*}
+}
+\label{thm:fourier-differentiation}
+
 \subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Write out the $4 \times 4$ DFT matrix explicitly. Verify it is unitary.
+    \item Write out the $4 \times 4$ DFT matrix explicitly. Verify it is unitary using Ex~\ref{ex:dft-parseval}.
     \item Solve the periodic Poisson equation $-u'' = f$ via FFT. (\textit{Hint: Laplacian is circulant}).
     \item Compare the speed of \texttt{np.fft.fft(x)} vs.\ \texttt{F @ x} for $n=4096$.
-    \item Implement spectral differentiation for $f(x) = \sin(x)$ and check error vs.\ $n$.
+    \item Implement spectral differentiation for $f(x) = \sin(x)$ using Thm~\ref{thm:fourier-differentiation} and check error vs.\ $n$.
 \end{enumerate}
 }
 

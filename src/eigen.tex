@@ -62,6 +62,18 @@ where $\bD$ is diagonal. The columns of $\bV$ are eigenvectors and the diagonal 
 \textbf{(Multiplicity and defectiveness)}\enspace Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity $2$ but only one independent eigenvector; such a matrix is \textbf{defective} and cannot be diagonalized.
 }
 
+\addExmpl{%
+\textbf{(Defective matrix)}\enspace
+\begin{align*}
+    \bA=
+    \begin{pmatrix}
+    1&1\\
+    0&1
+    \end{pmatrix}
+\end{align*}
+has characteristic polynomial $(1-\lambda)^2$. Solving $(\bA-\bI)\bv=\bzero$ gives only one independent eigenvector, so $\bA$ is not diagonalizable.
+}
+
 \addThm{Key Properties}{%
 \begin{enumerate}
     \item \textbf{Trace:}\enspace $\sum \lambda_i = \text{tr}(\bA)$.
@@ -157,6 +169,20 @@ Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\b
 \end{itemize}
 }
 \label{def:rqi}
+
+\addDef{Eigenvalue Method Selection}{%
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Goal} & \textbf{Typical method} \\ \hline
+Largest eigenvalue of large matrix & Power iteration \\
+Eigenvalue near a shift & Inverse iteration \\
+Fast local refinement, symmetric case & Rayleigh quotient iteration \\
+Full dense spectrum & QR algorithm \\
+Few extreme eigenvalues, symmetric sparse matrix & Lanczos \\
+\end{tabular}
+\end{center}
+}
+\label{def:eigen-method-selection}
 
 \addExcr{%
 \begin{enumerate}

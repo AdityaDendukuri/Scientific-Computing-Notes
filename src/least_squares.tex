@@ -121,6 +121,25 @@ The first term is minimized (set to zero) when $\bR\bx = \bQ^T\bb$, and the seco
 If $\bA$ does not have full column rank, there may be infinitely many least squares minimizers. The SVD selects the minimizer with smallest Euclidean norm. Regularization modifies the problem to penalize large coefficients and improve conditioning.
 }
 
+\addThm{Minimum-Norm Least Squares}{%
+For any $\bA$, the vector
+\begin{align*}
+    \hat{\bx}=\bA^\dagger\bb
+\end{align*}
+is the least squares minimizer with smallest Euclidean norm.
+}
+\label{thm:min-norm-least-squares}
+
+\addExcr{%
+\begin{enumerate}
+    \item Write $\bA=\bU\bsigma\bV^T$.
+    \item Transform the least squares problem into SVD coordinates.
+    \item Identify which coordinates are determined by nonzero singular values.
+    \item Show that setting nullspace coordinates to zero gives the minimum-norm solution in Thm~\ref{thm:min-norm-least-squares}.
+\end{enumerate}
+}
+\label{ex:min-norm-least-squares}
+
 \addDef{Ridge-Regularized Least Squares}{%
 For $\lambda>0$, ridge regression solves
 \begin{align*}
@@ -135,10 +154,38 @@ The normal equations become
 }
 \label{def:ridge-regularization}
 
+\addDef{Weighted Least Squares}{%
+Given positive weights $w_i$, weighted least squares solves
+\begin{align*}
+    \min_{\bx}\|\mathbf{W}^{1/2}(\bA\bx-\bb)\|_2^2,
+    \qquad
+    \mathbf{W}=\operatorname{diag}(w_1,\dots,w_m).
+\end{align*}
+Large $w_i$ forces the fit to match observation $i$ more strongly.
+}
+\label{def:weighted-least-squares}
+
+\addThm{Weighted Normal Equations}{%
+The weighted least squares problem in Def~\ref{def:weighted-least-squares} satisfies
+\begin{align*}
+    \bA^T\mathbf{W}\bA\hat{\bx}=\bA^T\mathbf{W}\bb.
+\end{align*}
+}
+\label{thm:weighted-normal-equations}
+
+\addPrf{%
+Apply the ordinary normal equations from Thm~\ref{thm:normal-equations} to the transformed system
+\begin{align*}
+    \mathbf{W}^{1/2}\bA\bx\approx \mathbf{W}^{1/2}\bb.
+\end{align*}
+This gives $(\mathbf{W}^{1/2}\bA)^T(\mathbf{W}^{1/2}\bA)\hat{\bx}=(\mathbf{W}^{1/2}\bA)^T\mathbf{W}^{1/2}\bb$, which simplifies to the stated equation.
+}
+
 \addExcr{%
 \begin{enumerate}
     \item Return to Ex~\ref{ex:normal-equations-conditioning}. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.
     \item \textbf{Regularization:}\enspace If $\bA$ is rank-deficient, $\|\hat{\bx}\|$ can explode. Add a penalty term $\lambda \|\bx\|_2^2$ (Ridge Regression). How do the normal equations change?
+    \item Derive Thm~\ref{thm:weighted-normal-equations} by differentiating the weighted objective directly.
 \end{enumerate}
 }
 \label{ex:least-squares-qr-regularization}

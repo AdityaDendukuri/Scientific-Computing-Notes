@@ -8,6 +8,18 @@ Fourier analysis provides a framework for representing functions and data in ter
 
 
 ::: {.callout-note icon=false}
+## Definition: Periodic Grid Signal
+A discrete signal $\bx\in\fC^n$ is interpreted as one period of a periodic sequence:
+$$
+\begin{align}
+x_{j+n}=x_j.
+\end{align}
+$$
+The DFT represents this signal in the basis of discrete complex exponentials.
+:::
+
+
+::: {.callout-note icon=false}
 ## Definition: DFT Matrix
 Unitary matrix $\mathbf{F} \in \fC^{n \times n}$ with entries:
 $$
@@ -26,6 +38,82 @@ $$
 ::: {.callout-note icon=false}
 ## Theorem: Parseval's Theorem
 The DFT is an isometry: $\|\mathbf{F}\bx\|_2 = \|\bx\|_2$. Total energy is preserved between time and frequency domains.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Since $\mathbf{F}$ is unitary, $\mathbf{F}^*\mathbf{F}=\bI$. Hence
+$$
+\begin{align}
+\|\mathbf{F}\bx\|_2^2
+    =
+    (\mathbf{F}\bx)^*(\mathbf{F}\bx)
+    =
+    \bx^*\mathbf{F}^*\mathbf{F}\bx
+    =
+    \bx^*\bx
+    =
+    \|\bx\|_2^2.
+\end{align}
+$$
+Taking square roots gives the claim.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the result above to compute the $(j,\ell)$ entry of $\mathbf{F}^*\mathbf{F}$.
+    
+1. Evaluate the finite geometric sum that appears.
+    
+1. Conclude $\mathbf{F}^*\mathbf{F}=\bI$.
+    
+1. Explain why this is the finite Fourier analog of orthonormal coordinates.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Frequency Bins
+For samples on $[0,2\pi)$, the integer frequency attached to index $k$ is usually ordered as
+$$
+\begin{align}
+0,1,2,...,\lfloor n/2\rfloor,-\lfloor(n-1)/2\rfloor,...,-1.
+\end{align}
+$$
+This is the ordering returned by `np.fft.fftfreq` after scaling by $n$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Normalization convention)**  Some libraries put the factor $1/n$ in the inverse transform instead of using the unitary factor $1/\sqrt n$ in both directions. The formulas change by constants, but the frequency content is the same.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Nyquist Frequency and Aliasing
+On $n$ equally spaced samples of a $2\pi$-periodic signal, frequencies that differ by multiples of $n$ are indistinguishable:
+$$
+\begin{align}
+e^{i(k+n)x_j}=e^{ikx_j}.
+\end{align}
+$$
+The largest resolvable unsigned frequency is the Nyquist frequency, approximately $n/2$ modes per period.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Let $x_j=2\pi j/n$. Prove $e^{i(k+n)x_j}=e^{ikx_j}$ for every grid point.
+    
+1. For $n=8$, list the frequency bin ordering from the result above.
+    
+1. Sample $\sin(7x)$ on $n=8$ points and identify its aliased frequency.
+
 :::
 
 
@@ -55,6 +143,22 @@ $$
 :::
 
 
+::: {.callout-note icon=false}
+## Example
+**(Circular convolution for $n=3$)**  If $\bc=(c_0,c_1,c_2)^T$, then
+$$
+\begin{align}
+\bc * \bx =
+    \begin{pmatrix}
+        c_0&c_2&c_1\\
+        c_1&c_0&c_2\\
+        c_2&c_1&c_0
+    \end{pmatrix}
+    \begin{pmatrix}x_0\\x_1\\x_2\end{pmatrix}.
+\end{align}
+$$
+The wraparound terms are a consequence of the periodic convention in the result above.
+:::
 ## The Fast Fourier Transform (FFT)
 
 
@@ -69,9 +173,40 @@ Computes the DFT in **$O(n \log n)$** flops for $n = 2^p$.
 :::
 
 
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Split the DFT sum into even and odd input indices.
+    
+1. Show that each part is an $n/2$-point DFT multiplied by phase factors.
+    
+1. Write the recurrence $T(n)=2T(n/2)+O(n)$.
+    
+1. Solve the recurrence to obtain the cost in the result above.
+
+:::
+
+
 ::: {.callout-tip icon=false}
 ## Remark
 **Spectral Differentiation:**  For smooth periodic signals, differentiate by multiplying frequency components $\hat{x}_k$ by $ik$. Provides exponential accuracy compared to polynomial accuracy of finite differences.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Fourier Differentiation Rule
+For a smooth $2\pi$-periodic function with Fourier series
+$$
+\begin{align}
+f(x)=\sum_k \hat f_k e^{ikx},
+\end{align}
+$$
+the derivative has coefficients
+$$
+\begin{align}
+\widehat{f'}_k=ik\hat f_k.
+\end{align}
+$$
 :::
 
 
@@ -81,12 +216,12 @@ Computes the DFT in **$O(n \log n)$** flops for $n = 2^p$.
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Write out the $4 \times 4$ DFT matrix explicitly. Verify it is unitary.
+1. Write out the $4 \times 4$ DFT matrix explicitly. Verify it is unitary using the result above.
     
 1. Solve the periodic Poisson equation $-u'' = f$ via FFT. (*Hint: Laplacian is circulant*).
     
 1. Compare the speed of `np.fft.fft(x)` vs.\ `F @ x` for $n=4096$.
     
-1. Implement spectral differentiation for $f(x) = \sin(x)$ and check error vs.\ $n$.
+1. Implement spectral differentiation for $f(x) = \sin(x)$ using the result above and check error vs.\ $n$.
 
 :::

@@ -671,10 +671,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#basic-methods" id="toc-basic-methods" class="nav-link active" data-scroll-target="#basic-methods"><span class="header-section-number">28.1</span> Basic Methods</a></li>
-  <li><a href="#runge-kutta-methods" id="toc-runge-kutta-methods" class="nav-link" data-scroll-target="#runge-kutta-methods"><span class="header-section-number">28.2</span> Runge-Kutta Methods</a></li>
-  <li><a href="#symplectic-integrators" id="toc-symplectic-integrators" class="nav-link" data-scroll-target="#symplectic-integrators"><span class="header-section-number">28.3</span> Symplectic Integrators</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">28.4</span> Exercises</a></li>
+  <li><a href="#initial-value-problems" id="toc-initial-value-problems" class="nav-link active" data-scroll-target="#initial-value-problems"><span class="header-section-number">28.1</span> Initial Value Problems</a></li>
+  <li><a href="#error-and-convergence" id="toc-error-and-convergence" class="nav-link" data-scroll-target="#error-and-convergence"><span class="header-section-number">28.2</span> Error and Convergence</a></li>
+  <li><a href="#euler-methods" id="toc-euler-methods" class="nav-link" data-scroll-target="#euler-methods"><span class="header-section-number">28.3</span> Euler Methods</a></li>
+  <li><a href="#absolute-stability-and-stiffness" id="toc-absolute-stability-and-stiffness" class="nav-link" data-scroll-target="#absolute-stability-and-stiffness"><span class="header-section-number">28.4</span> Absolute Stability and Stiffness</a></li>
+  <li><a href="#runge-kutta-methods" id="toc-runge-kutta-methods" class="nav-link" data-scroll-target="#runge-kutta-methods"><span class="header-section-number">28.5</span> Runge-Kutta Methods</a></li>
+  <li><a href="#adaptive-time-stepping" id="toc-adaptive-time-stepping" class="nav-link" data-scroll-target="#adaptive-time-stepping"><span class="header-section-number">28.6</span> Adaptive Time Stepping</a></li>
+  <li><a href="#linear-multistep-methods" id="toc-linear-multistep-methods" class="nav-link" data-scroll-target="#linear-multistep-methods"><span class="header-section-number">28.7</span> Linear Multistep Methods</a></li>
+  <li><a href="#systems-and-eigenvalues" id="toc-systems-and-eigenvalues" class="nav-link" data-scroll-target="#systems-and-eigenvalues"><span class="header-section-number">28.8</span> Systems and Eigenvalues</a></li>
+  <li><a href="#hamiltonian-and-symplectic-methods" id="toc-hamiltonian-and-symplectic-methods" class="nav-link" data-scroll-target="#hamiltonian-and-symplectic-methods"><span class="header-section-number">28.9</span> Hamiltonian and Symplectic Methods</a></li>
+  <li><a href="#method-choice" id="toc-method-choice" class="nav-link" data-scroll-target="#method-choice"><span class="header-section-number">28.10</span> Method Choice</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/odes/ode-methods.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -701,26 +707,56 @@ window.Quarto = {
 </header>
 
 
-<p>Numerical integration of the <em>initial value problem</em> (IVP): <span class="math display">\[
-\begin{align}
-\frac{dy}{dt} = f(t, y), \qquad y(t_0) = y_0.
-\end{align}
-\]</span></p>
-<section id="basic-methods" class="level2" data-number="28.1">
-<h2 data-number="28.1" class="anchored" data-anchor-id="basic-methods"><span class="header-section-number">28.1</span> Basic Methods</h2>
+<p>An ordinary differential equation prescribes the derivative of an unknown function. A time stepping method replaces the exact flow by a sequence of computable updates. The numerical questions are accuracy, stability, stiffness, and cost per step.</p>
+<section id="initial-value-problems" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="initial-value-problems"><span class="header-section-number">28.1</span> Initial Value Problems</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Forward Euler (Explicit)
+<span class="screen-reader-only">Note</span>Definition: Initial Value Problem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Advance via forward difference: <span class="math display">\[
+<p>An initial value problem (IVP) has the form <span class="math display">\[
 \begin{align}
-y_{n+1} = y_n + h f(t_n, y_n).
+\by'(t)=\boldsymbol{f}(t,\by(t)), \qquad \by(t_0)=\by_0,
+\end{align}
+\]</span> where <span class="math inline">\(\by(t)\in\fR^m\)</span>. The scalar case is <span class="math inline">\(m=1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(IVP vs.&nbsp;BVP)</strong> In an IVP, all data are given at one time. In a boundary value problem, conditions are imposed at different points, such as <span class="math inline">\(u(0)=u(1)=0\)</span>. IVPs are naturally marched forward; BVPs usually lead to global linear or nonlinear systems.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Flow Map
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the IVP in the result above, the exact flow map <span class="math inline">\(\varphi_h\)</span> satisfies <span class="math display">\[
+\begin{align}
+\by(t+h)=\varphi_h(t,\by(t)).
+\end{align}
+\]</span> A one-step method replaces <span class="math inline">\(\varphi_h\)</span> by a computable map <span class="math inline">\(\Phi_h\)</span>: <span class="math display">\[
+\begin{align}
+\by_{n+1}=\Phi_h(t_n,\by_n), \qquad t_n=t_0+nh.
 \end{align}
 \]</span></p>
 </div>
@@ -731,15 +767,41 @@ y_{n+1} = y_n + h f(t_n, y_n).
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Forward Euler Order and Stability
+<span class="screen-reader-only">Note</span>Definition: Autonomous System
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Forward Euler has local truncation error <span class="math inline">\(O(h^2)\)</span> and global error <span class="math inline">\(O(h)\)</span>. Applied to the test equation <span class="math inline">\(y'=\lambda y\)</span>, it is stable only when <span class="math display">\[
+<p>An ODE is autonomous if <span class="math inline">\(\boldsymbol{f}\)</span> does not depend explicitly on time: <span class="math display">\[
 \begin{align}
-|1+h\lambda|\leq 1.
+\by'=\boldsymbol{f}(\by).
 \end{align}
-\]</span></p>
+\]</span> Non-autonomous systems can be made autonomous by adding <span class="math inline">\(t'=1\)</span> as one more equation.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Existence and Uniqueness Condition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\boldsymbol{f}(t,\by)\)</span> is continuous in <span class="math inline">\(t\)</span> and Lipschitz continuous in <span class="math inline">\(\by\)</span> on a neighborhood of <span class="math inline">\((t_0,\by_0)\)</span>, then the IVP in the result above has a unique local solution.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Role of Lipschitz continuity)</strong> Numerical convergence is meaningful only when the exact IVP is well posed. If nearby initial data can lead to different solution branches, small rounding or truncation errors may not remain small.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -753,141 +815,624 @@ y_{n+1} = y_n + h f(t_n, y_n).
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Use Taylor expansion of the exact solution to show that one Forward Euler step has local error <span class="math inline">\(O(h^2)\)</span>.</p></li>
-<li><p>Explain why accumulating <span class="math inline">\(O(1/h)\)</span> steps gives global error <span class="math inline">\(O(h)\)</span>.</p></li>
-<li><p>Apply Forward Euler to <span class="math inline">\(y'=\lambda y\)</span> and derive <span class="math inline">\(y_n=(1+h\lambda)^ny_0\)</span>.</p></li>
-<li><p>Derive the stability condition in the result above.</p></li>
-<li><p>For real <span class="math inline">\(\lambda&lt;0\)</span>, show that stability requires <span class="math inline">\(h\leq 2/|\lambda|\)</span>.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Backward Euler (Implicit)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Advance via backward difference: <span class="math display">\[
-\begin{align}
-y_{n+1} = y_n + h f(t_{n+1}, y_{n+1}).
-\end{align}
-\]</span> It requires solving a nonlinear equation at each step, usually by Newton’s method.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Backward Euler A-Stability
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Applied to <span class="math inline">\(y'=\lambda y\)</span>, Backward Euler has amplification factor <span class="math display">\[
-\begin{align}
-R(z)=\frac{1}{1-z},
-    \qquad z=h\lambda.
-\end{align}
-\]</span> If <span class="math inline">\(\operatorname{Re}(\lambda)&lt;0\)</span>, then <span class="math inline">\(|R(h\lambda)|&lt;1\)</span> for every <span class="math inline">\(h&gt;0\)</span>. Thus Backward Euler is A-stable.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Apply the result above to <span class="math inline">\(y'=\lambda y\)</span> and solve for <span class="math inline">\(y_{n+1}\)</span> in terms of <span class="math inline">\(y_n\)</span>.</p></li>
-<li><p>Derive the amplification factor in the result above.</p></li>
-<li><p>Prove that <span class="math inline">\(|1/(1-z)|&lt;1\)</span> whenever <span class="math inline">\(\operatorname{Re}(z)&lt;0\)</span>.</p></li>
-<li><p>Explain why this matters for stiff decay problems.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="runge-kutta-methods" class="level2" data-number="28.2">
-<h2 data-number="28.2" class="anchored" data-anchor-id="runge-kutta-methods"><span class="header-section-number">28.2</span> Runge-Kutta Methods</h2>
-<p>Multistage methods that match higher-order Taylor expansions without requiring analytic derivatives of <span class="math inline">\(f\)</span>.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: RK4 (Classical 4th Order)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Evaluates <span class="math inline">\(f\)</span> at four stages per step: <span class="math display">\[
-\begin{align}
-k_1 &amp;= f(t_n, y_n) \\
-    k_2 &amp;= f(t_n + h/2, y_n + h k_1 / 2) \\
-    k_3 &amp;= f(t_n + h/2, y_n + h k_2 / 2) \\
-    k_4 &amp;= f(t_n + h, y_n + h k_3) \\
-    y_{n+1} &amp;= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)
-\end{align}
-\]</span> It has local error <span class="math inline">\(O(h^5)\)</span> and global error <span class="math inline">\(O(h^4)\)</span> for smooth non-stiff problems.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Adaptive Step Control (RK45)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Uses an embedded pair to estimate local error <span class="math inline">\(e\)</span> without extra stages (Dormand-Prince). <strong>Mechanism:</strong> <span class="math inline">\(h_{\text{new}} = h_{\text{old}} (\varepsilon / \|e\|)^{1/5}\)</span>. The algorithm adjusts the step size <span class="math inline">\(h\)</span> dynamically to maintain the local error within a specified tolerance.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>If the local error behaves like <span class="math inline">\(C h^5\)</span>, solve <span class="math inline">\(C h_{\text{new}}^5\approx\varepsilon\)</span> using an estimate <span class="math inline">\(e\approx C h_{\text{old}}^5\)</span>.</p></li>
-<li><p>Derive the exponent <span class="math inline">\(1/5\)</span> in the result above.</p></li>
-<li><p>Explain why practical codes multiply this formula by a safety factor less than <span class="math inline">\(1\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(y'=2\sqrt{|y|}\)</span>, <span class="math inline">\(y(0)=0\)</span>, has more than one solution.</p></li>
+<li><p>Identify which hypothesis of the result above fails.</p></li>
+<li><p>Explain why a time stepping method cannot be expected to select a unique physical branch without extra information.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="symplectic-integrators" class="level2" data-number="28.3">
-<h2 data-number="28.3" class="anchored" data-anchor-id="symplectic-integrators"><span class="header-section-number">28.3</span> Symplectic Integrators</h2>
-<p>Preserve the geometric structure of Hamiltonian systems (energy conservation).</p>
+<section id="error-and-convergence" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="error-and-convergence"><span class="header-section-number">28.2</span> Error and Convergence</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Velocity Verlet
+<span class="screen-reader-only">Note</span>Definition: Local Truncation Error
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(H = \frac{1}{2}v^2 + V(q)\)</span>:</p>
+<p>For a one-step method <span class="math inline">\(\by_{n+1}=\Phi_h(t_n,\by_n)\)</span>, the local truncation error is the one-step defect made from exact data: <span class="math display">\[
+\begin{align}
+\boldsymbol{\tau}_{n+1}
+    =
+    \frac{\by(t_{n+1})-\Phi_h(t_n,\by(t_n))}{h}.
+\end{align}
+\]</span> The method is consistent if <span class="math inline">\(\|\boldsymbol{\tau}_{n+1}\|\to 0\)</span> as <span class="math inline">\(h\to 0\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Global Error and Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The global error at <span class="math inline">\(t_n\)</span> is <span class="math display">\[
+\begin{align}
+\be_n=\by(t_n)-\by_n.
+\end{align}
+\]</span> A method has order <span class="math inline">\(p\)</span> on a fixed interval <span class="math inline">\([t_0,T]\)</span> if <span class="math display">\[
+\begin{align}
+\max_{0\leq n\leq N}\|\be_n\|=O(h^p),
+    \qquad Nh=T-t_0.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Local to Global Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a stable one-step method, a one-step defect <span class="math inline">\(O(h^{p+1})\)</span> gives global error <span class="math inline">\(O(h^p)\)</span> on a fixed time interval.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ol type="1">
-<li><p><span class="math inline">\(v_{n+1/2} = v_n + \frac{h}{2} F_n\)</span></p></li>
-<li><p><span class="math inline">\(q_{n+1} = q_n + h v_{n+1/2}\)</span></p></li>
-<li><p><span class="math inline">\(v_{n+1} = v_{n+1/2} + \frac{h}{2} F_{n+1}\)</span></p></li>
+<li><p>Suppose each step contributes a local error of size <span class="math inline">\(O(h^{p+1})\)</span>.</p></li>
+<li><p>Count the number of steps needed to reach a fixed final time.</p></li>
+<li><p>Explain why this gives <span class="math inline">\(O(h^p)\)</span> global error when previous errors are not amplified strongly.</p></li>
+<li><p>State where stability enters this argument.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Consistency, Stability, Convergence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For time stepping methods, consistency means the discrete update matches the differential equation as <span class="math inline">\(h\to 0\)</span>. Stability means perturbations introduced at one step do not grow uncontrollably over a fixed interval. Convergence means <span class="math inline">\(\by_n\to\by(t_n)\)</span> as <span class="math inline">\(h\to 0\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: ODE Lax Principle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a consistent one-step method applied to a Lipschitz IVP, stability on a fixed interval implies convergence. For linear multistep methods, consistency plus zero-stability implies convergence.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Write the error recurrence for a one-step method by subtracting the numerical update from the exact one-step update.</p></li>
+<li><p>Bound the propagated error using a Lipschitz constant for <span class="math inline">\(\boldsymbol{f}\)</span>.</p></li>
+<li><p>Add the local defect term from the result above.</p></li>
+<li><p>Apply a discrete Gronwall argument to justify the first statement in the result above.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="euler-methods" class="level2" data-number="28.3">
+<h2 data-number="28.3" class="anchored" data-anchor-id="euler-methods"><span class="header-section-number">28.3</span> Euler Methods</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Forward Euler
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The explicit Euler method uses the slope at the left endpoint: <span class="math display">\[
+\begin{align}
+\by_{n+1}=\by_n+h\boldsymbol{f}(t_n,\by_n).
+\end{align}
+\]</span> It is explicit because the right side is known before step <span class="math inline">\(n+1\)</span> is computed.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Forward Euler Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Forward Euler has local truncation error <span class="math inline">\(O(h)\)</span> in the sense of the result above, one-step defect <span class="math inline">\(O(h^2)\)</span>, and global error <span class="math inline">\(O(h)\)</span> for smooth solutions on fixed intervals.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Taylor expand the exact solution: <span class="math display">\[\by(t_{n+1})=\by(t_n)+h\by'(t_n)+\frac{h^2}{2}\by''(\xi_n).\]</span></p></li>
+<li><p>Substitute <span class="math inline">\(\by'(t_n)=\boldsymbol{f}(t_n,\by(t_n))\)</span>.</p></li>
+<li><p>Compare with the result above.</p></li>
+<li><p>Use the result above to obtain the global order.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Forward Euler on decay)</strong> For <span class="math inline">\(y'=-y\)</span>, <span class="math inline">\(y(0)=1\)</span>, Forward Euler gives <span class="math display">\[
+\begin{align}
+y_n=(1-h)^n.
+\end{align}
+\]</span> At <span class="math inline">\(t=1\)</span> with <span class="math inline">\(h=1/4\)</span>, this gives <span class="math inline">\((3/4)^4=81/256\approx 0.3164\)</span>, while the exact value is <span class="math inline">\(e^{-1}\approx 0.3679\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Backward Euler
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The implicit Euler method uses the slope at the right endpoint: <span class="math display">\[
+\begin{align}
+\by_{n+1}=\by_n+h\boldsymbol{f}(t_{n+1},\by_{n+1}).
+\end{align}
+\]</span> At each step one solves a nonlinear equation for <span class="math inline">\(\by_{n+1}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Implicit Step Equation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For Backward Euler, define <span class="math display">\[
+\begin{align}
+\bg(\bY)=\bY-\by_n-h\boldsymbol{f}(t_{n+1},\bY).
+\end{align}
+\]</span> The next step is the root <span class="math inline">\(\bg(\bY)=\bzero\)</span>. Newton’s method requires linear systems with <span class="math display">\[
+\begin{align}
+\bI-h\bJ_f(t_{n+1},\bY),
+\end{align}
+\]</span> where <span class="math inline">\(\bJ_f\)</span> is the Jacobian of <span class="math inline">\(\boldsymbol{f}\)</span> with respect to <span class="math inline">\(\by\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Backward Euler Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Backward Euler is first order: its one-step defect is <span class="math inline">\(O(h^2)\)</span> and its global error is <span class="math inline">\(O(h)\)</span> for smooth solutions.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Taylor expand <span class="math inline">\(\by(t_n)\)</span> about <span class="math inline">\(t_{n+1}\)</span>.</p></li>
+<li><p>Rearrange the expansion to express <span class="math inline">\(\by(t_{n+1})\)</span> in terms of <span class="math inline">\(\by(t_n)\)</span> and <span class="math inline">\(\by'(t_{n+1})\)</span>.</p></li>
+<li><p>Substitute <span class="math inline">\(\by'(t_{n+1})=\boldsymbol{f}(t_{n+1},\by(t_{n+1}))\)</span>.</p></li>
+<li><p>Compare with the result above.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Trapezoidal Method
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The implicit trapezoidal method averages endpoint slopes: <span class="math display">\[
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left[\boldsymbol{f}(t_n,\by_n)+\boldsymbol{f}(t_{n+1},\by_{n+1})\right].
+\end{align}
+\]</span> It is also called Crank-Nicolson when used for time-dependent PDE discretizations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Trapezoidal Order
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The trapezoidal method has one-step defect <span class="math inline">\(O(h^3)\)</span> and global error <span class="math inline">\(O(h^2)\)</span> for smooth solutions.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Write the exact integral identity <span class="math display">\[\by(t_{n+1})=\by(t_n)+\int_{t_n}^{t_{n+1}}\boldsymbol{f}(t,\by(t))\,dt.\]</span></p></li>
+<li><p>Approximate the integral by the scalar trapezoidal rule from the result above.</p></li>
+<li><p>Use the result above to explain the one-step defect.</p></li>
+<li><p>Convert the one-step defect to global order using the result above.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="absolute-stability-and-stiffness" class="level2" data-number="28.4">
+<h2 data-number="28.4" class="anchored" data-anchor-id="absolute-stability-and-stiffness"><span class="header-section-number">28.4</span> Absolute Stability and Stiffness</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Test Equation and Stability Function
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The scalar test equation is <span class="math display">\[
+\begin{align}
+y'=\lambda y, \qquad \operatorname{Re}(\lambda)&lt;0.
+\end{align}
+\]</span> For a one-step method applied to this equation, the update has the form <span class="math display">\[
+\begin{align}
+y_{n+1}=R(z)y_n, \qquad z=h\lambda.
+\end{align}
+\]</span> The function <span class="math inline">\(R\)</span> is the stability function.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Absolute Stability Region
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The absolute stability region of a one-step method is <span class="math display">\[
+\begin{align}
+\mathcal{S}=\{z\in\fC:\ |R(z)|\leq 1\}.
+\end{align}
+\]</span> The method is stable on the test equation when <span class="math inline">\(h\lambda\in\mathcal{S}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Euler Stability Functions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the test equation in the result above, <span class="math display">\[
+\begin{align}
+R_{\mathrm{FE}}(z)=1+z,\qquad
+    R_{\mathrm{BE}}(z)=\frac{1}{1-z},\qquad
+    R_{\mathrm{TR}}(z)=\frac{1+z/2}{1-z/2}.
+\end{align}
+\]</span> Forward Euler is stable in the disk <span class="math inline">\(|1+z|\leq 1\)</span>. Backward Euler and trapezoidal rule are A-stable.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-29" class="callout-29-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For Forward Euler, <span class="math inline">\(y_{n+1}=y_n+h\lambda y_n=(1+z)y_n\)</span>. For Backward Euler, <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n+h\lambda y_{n+1}
+    \quad\Rightarrow\quad
+    y_{n+1}=\frac{1}{1-z}y_n.
+\end{align}
+\]</span> For trapezoidal rule, <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n+\frac{z}{2}(y_n+y_{n+1})
+    \quad\Rightarrow\quad
+    y_{n+1}=\frac{1+z/2}{1-z/2}y_n.
+\end{align}
+\]</span> If <span class="math inline">\(\operatorname{Re}(z)\leq 0\)</span>, then <span class="math inline">\(|1|\leq |1-z|\)</span> and <span class="math inline">\(|1+z/2|\leq |1-z/2|\)</span>, so Backward Euler and trapezoidal rule are A-stable.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Draw the Forward Euler stability disk from <span class="math inline">\(|1+z|\leq 1\)</span>.</p></li>
+<li><p>For real <span class="math inline">\(\lambda&lt;0\)</span>, show that Forward Euler requires <span class="math inline">\(h\leq 2/|\lambda|\)</span>.</p></li>
+<li><p>Verify <span class="math inline">\(|1+z/2|\leq |1-z/2|\)</span> when <span class="math inline">\(\operatorname{Re}(z)\leq 0\)</span> by squaring both sides.</p></li>
+<li><p>Explain why A-stability does not imply L-stability.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: A-Stability and L-Stability
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A method is A-stable if its stability region contains the full left half-plane: <span class="math display">\[
+\begin{align}
+\{z\in\fC:\operatorname{Re}(z)\leq 0\}\subseteq\mathcal{S}.
+\end{align}
+\]</span> An A-stable method is L-stable if additionally <span class="math inline">\(R(z)\to 0\)</span> as <span class="math inline">\(z\to -\infty\)</span> along the real axis.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Damping)</strong> Backward Euler is L-stable, so very fast decaying modes are strongly damped. The trapezoidal method is A-stable but not L-stable, since <span class="math inline">\(R_{\mathrm{TR}}(z)\to -1\)</span> as <span class="math inline">\(z\to -\infty\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Stiffness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An IVP is stiff when stability forces an explicit method to take much smaller steps than accuracy requires. For a linear system <span class="math display">\[
+\begin{align}
+\by'=\bA\by,
+\end{align}
+\]</span> the eigenvalues of <span class="math inline">\(\bA\)</span> determine the explicit stability restriction through <span class="math inline">\(h\lambda_i\in\mathcal{S}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Fast decay with slow forcing)</strong> The equation <span class="math display">\[
+\begin{align}
+y'=-1000(y-\cos t)-\sin t
+\end{align}
+\]</span> has exact solution <span class="math inline">\(y(t)=\cos t\)</span> for consistent initial data. The solution varies on an <span class="math inline">\(O(1)\)</span> time scale, but Forward Euler is restricted by the fast stable mode near <span class="math inline">\(\lambda=-1000\)</span> and requires <span class="math inline">\(h\lesssim 0.002\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Verify directly that <span class="math inline">\(y(t)=\cos t\)</span> solves the stiff example above.</p></li>
+<li><p>Linearize the equation around the exact solution and identify the error equation.</p></li>
+<li><p>Apply the result above to obtain the Forward Euler stability restriction.</p></li>
+<li><p>Explain why this restriction is unrelated to the visible time scale of <span class="math inline">\(\cos t\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="runge-kutta-methods" class="level2" data-number="28.5">
+<h2 data-number="28.5" class="anchored" data-anchor-id="runge-kutta-methods"><span class="header-section-number">28.5</span> Runge-Kutta Methods</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Explicit Runge-Kutta Method
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An <span class="math inline">\(s\)</span>-stage explicit Runge-Kutta method has stages <span class="math display">\[
+\begin{align}
+\boldsymbol{k}_i
+    =
+    \boldsymbol{f}\left(t_n+c_i h,\,
+    \by_n+h\sum_{j&lt;i} a_{ij}\boldsymbol{k}_j\right),
+    \qquad i=1,...,s,
+\end{align}
+\]</span> and update <span class="math display">\[
+\begin{align}
+\by_{n+1}=\by_n+h\sum_{i=1}^s b_i\boldsymbol{k}_i.
+\end{align}
+\]</span> The coefficients are collected in a Butcher tableau.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Explicit Midpoint Method
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The two-stage explicit midpoint method is <span class="math display">\[
+\begin{align}
+\boldsymbol{k}_1 &amp;= \boldsymbol{f}(t_n,\by_n),\\
+    \boldsymbol{k}_2 &amp;= \boldsymbol{f}(t_n+h/2,\by_n+h\boldsymbol{k}_1/2),\\
+    \by_{n+1} &amp;= \by_n+h\boldsymbol{k}_2.
+\end{align}
+\]</span> It has global order <span class="math inline">\(2\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Taylor expand the exact solution to second order.</p></li>
+<li><p>Taylor expand <span class="math inline">\(\boldsymbol{f}(t_n+h/2,\by_n+h\boldsymbol{k}_1/2)\)</span> about <span class="math inline">\((t_n,\by_n)\)</span>.</p></li>
+<li><p>Match terms to show second-order consistency.</p></li>
+<li><p>Derive the stability function of explicit midpoint on <span class="math inline">\(y'=\lambda y\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: RK4
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The classical fourth-order Runge-Kutta method is <span class="math display">\[
+\begin{align}
+\boldsymbol{k}_1 &amp;= \boldsymbol{f}(t_n, \by_n),\\
+    \boldsymbol{k}_2 &amp;= \boldsymbol{f}(t_n + h/2, \by_n + h \boldsymbol{k}_1 / 2),\\
+    \boldsymbol{k}_3 &amp;= \boldsymbol{f}(t_n + h/2, \by_n + h \boldsymbol{k}_2 / 2),\\
+    \boldsymbol{k}_4 &amp;= \boldsymbol{f}(t_n + h, \by_n + h \boldsymbol{k}_3),\\
+    \by_{n+1} &amp;= \by_n + \frac{h}{6}(\boldsymbol{k}_1 + 2\boldsymbol{k}_2 + 2\boldsymbol{k}_3 + \boldsymbol{k}_4).
+\end{align}
+\]</span> It has one-step defect <span class="math inline">\(O(h^5)\)</span> and global error <span class="math inline">\(O(h^4)\)</span> for smooth nonstiff problems.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: RK4 Stability Polynomial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Applied to <span class="math inline">\(y'=\lambda y\)</span>, RK4 has stability function <span class="math display">\[
+\begin{align}
+R(z)=1+z+\frac{z^2}{2}+\frac{z^3}{6}+\frac{z^4}{24}.
+\end{align}
+\]</span> This is the degree-four Taylor polynomial of <span class="math inline">\(e^z\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Apply the result above to <span class="math inline">\(y'=\lambda y\)</span>.</p></li>
+<li><p>Express each stage in terms of <span class="math inline">\(z=h\lambda\)</span> and <span class="math inline">\(y_n\)</span>.</p></li>
+<li><p>Substitute the stages into the RK4 update.</p></li>
+<li><p>Derive the stability polynomial in the result above.</p></li>
 </ol>
 </div>
 </div>
@@ -901,7 +1446,72 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Numerical Energy Drift)</strong> Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.</p>
+<p><strong>(High order is not stiffness control)</strong> RK4 has higher accuracy than Forward Euler on nonstiff problems, but its stability region is still bounded. For stiff decay, an explicit high-order method can remain limited by stability rather than accuracy.</p>
+</div>
+</div>
+</section>
+<section id="adaptive-time-stepping" class="level2" data-number="28.6">
+<h2 data-number="28.6" class="anchored" data-anchor-id="adaptive-time-stepping"><span class="header-section-number">28.6</span> Adaptive Time Stepping</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Embedded Runge-Kutta Pair
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An embedded pair computes two approximations of different orders from shared stages: <span class="math display">\[
+\begin{align}
+\by_{n+1}^{[p]}, \qquad \by_{n+1}^{[p+1]}.
+\end{align}
+\]</span> The difference <span class="math display">\[
+\begin{align}
+\be_{n+1}=\by_{n+1}^{[p+1]}-\by_{n+1}^{[p]}
+\end{align}
+\]</span> estimates the local error of the lower-order method.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Weighted Error Test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Adaptive solvers usually accept a step when <span class="math display">\[
+\begin{align}
+\left\|
+    \frac{\be_{n+1}}
+    {\mathrm{atol}+\mathrm{rtol}\,|\by_{n+1}|}
+    \right\|
+    \leq 1,
+\end{align}
+\]</span> where the absolute value and division are componentwise.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Adaptive Step Formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the local error estimate satisfies <span class="math inline">\(\|\be\|\approx Ch^{p+1}\)</span>, then a step size targeting tolerance <span class="math inline">\(\varepsilon\)</span> is <span class="math display">\[
+\begin{align}
+h_{\mathrm{new}}
+    =
+    s\,h_{\mathrm{old}}
+    \left(\frac{\varepsilon}{\|\be\|}\right)^{1/(p+1)},
+\end{align}
+\]</span> where <span class="math inline">\(0&lt;s&lt;1\)</span> is a safety factor.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -915,15 +1525,393 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Apply Velocity Verlet from the result above to the harmonic oscillator <span class="math inline">\(q'=v\)</span>, <span class="math inline">\(v'=-q\)</span>.</p></li>
+<li><p>Assume <span class="math inline">\(\|\be_{\mathrm{old}}\|\approx C h_{\mathrm{old}}^{p+1}\)</span>.</p></li>
+<li><p>Solve <span class="math inline">\(C h_{\mathrm{new}}^{p+1}\approx \varepsilon\)</span>.</p></li>
+<li><p>Eliminate <span class="math inline">\(C\)</span> using the old error estimate.</p></li>
+<li><p>Explain why production codes also limit the maximum growth and shrinkage of <span class="math inline">\(h\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(RK45)</strong> Dormand-Prince RK45 is a common embedded explicit pair. It is a good default for smooth nonstiff IVPs, not for stiff systems.</p>
+</div>
+</div>
+</section>
+<section id="linear-multistep-methods" class="level2" data-number="28.7">
+<h2 data-number="28.7" class="anchored" data-anchor-id="linear-multistep-methods"><span class="header-section-number">28.7</span> Linear Multistep Methods</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Linear Multistep Method
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <span class="math inline">\(k\)</span>-step linear multistep method has the form <span class="math display">\[
+\begin{align}
+\sum_{j=0}^k \alpha_j \by_{n+j}
+    =
+    h\sum_{j=0}^k \beta_j \boldsymbol{f}(t_{n+j},\by_{n+j}).
+\end{align}
+\]</span> It reuses previous solution values and previous right-hand side evaluations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Adams-Bashforth 2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The two-step Adams-Bashforth method is explicit: <span class="math display">\[
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left(3\boldsymbol{f}(t_n,\by_n)-\boldsymbol{f}(t_{n-1},\by_{n-1})\right).
+\end{align}
+\]</span> It has global order <span class="math inline">\(2\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Adams-Moulton 2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The two-step Adams-Moulton method is implicit: <span class="math display">\[
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left(\boldsymbol{f}(t_{n+1},\by_{n+1})+\boldsymbol{f}(t_n,\by_n)\right).
+\end{align}
+\]</span> This is the trapezoidal method from the result above.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: BDF2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The second-order backward differentiation formula is <span class="math display">\[
+\begin{align}
+\frac{3\by_{n+1}-4\by_n+\by_{n-1}}{2h}
+    =
+    \boldsymbol{f}(t_{n+1},\by_{n+1}).
+\end{align}
+\]</span> BDF methods are standard implicit methods for stiff IVPs.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Zero-Stability
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A linear multistep method is zero-stable if perturbations in starting values remain uniformly bounded as <span class="math inline">\(h\to 0\)</span> on a fixed interval. Algebraically, the roots of <span class="math display">\[
+\begin{align}
+\rho(\xi)=\sum_{j=0}^k \alpha_j \xi^j
+\end{align}
+\]</span> must satisfy <span class="math inline">\(|\xi|\leq 1\)</span>, and roots on the unit circle must be simple.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Dahlquist Equivalence Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a consistent linear multistep method applied to a well-posed IVP, convergence is equivalent to zero-stability.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>For AB2, write the polynomial <span class="math inline">\(\rho(\xi)\)</span>.</p></li>
+<li><p>Check the root condition in the result above.</p></li>
+<li><p>Repeat for BDF2.</p></li>
+<li><p>Explain why consistency alone is not enough for a multistep method.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(BDF for stiffness)</strong> BDF methods trade implicit linear or nonlinear solves for much larger stable time steps on stiff decay problems. Variable-order BDF methods are used in many stiff ODE codes.</p>
+</div>
+</div>
+</section>
+<section id="systems-and-eigenvalues" class="level2" data-number="28.8">
+<h2 data-number="28.8" class="anchored" data-anchor-id="systems-and-eigenvalues"><span class="header-section-number">28.8</span> Systems and Eigenvalues</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: First-Order System Form
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A higher-order scalar equation can be rewritten as a first-order system. For example, <span class="math display">\[
+\begin{align}
+q''=F(q,q',t)
+\end{align}
+\]</span> becomes <span class="math display">\[
+\begin{align}
+q'=v,\qquad v'=F(q,v,t).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Linear Constant-Coefficient System
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\by'=\bA\by,\qquad \by(0)=\by_0,
+\end{align}
+\]</span> the exact solution is <span class="math display">\[
+\begin{align}
+\by(t)=e^{t\bA}\by_0.
+\end{align}
+\]</span> If <span class="math inline">\(\bA=\bV\bD\bV^{-1}\)</span>, then <span class="math display">\[
+\begin{align}
+\by(t)=\bV e^{t\bD}\bV^{-1}\by_0.
+\end{align}
+\]</span> Each eigenvalue controls one modal growth, decay, or oscillation rate.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Differentiate <span class="math inline">\(e^{t\bA}\by_0\)</span> to verify the first formula in the result above.</p></li>
+<li><p>Substitute <span class="math inline">\(\bA=\bV\bD\bV^{-1}\)</span> into the matrix exponential.</p></li>
+<li><p>For <span class="math inline">\(\lambda=a+ib\)</span>, interpret <span class="math inline">\(e^{\lambda t}\)</span> in terms of growth and oscillation.</p></li>
+<li><p>Explain why eigenvalues of the Jacobian predict local stiffness for nonlinear systems.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Jacobian spectrum)</strong> Near a state <span class="math inline">\(\by_*\)</span>, nonlinear dynamics are locally approximated by <span class="math inline">\(\be'=\bJ_f(\by_*)\be\)</span>. Large negative eigenvalues produce fast stable transients. Eigenvalues near the imaginary axis produce oscillation or slow decay.</p>
+</div>
+</div>
+</section>
+<section id="hamiltonian-and-symplectic-methods" class="level2" data-number="28.9">
+<h2 data-number="28.9" class="anchored" data-anchor-id="hamiltonian-and-symplectic-methods"><span class="header-section-number">28.9</span> Hamiltonian and Symplectic Methods</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Hamiltonian System
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For position <span class="math inline">\(\bq\)</span> and velocity or momentum <span class="math inline">\(\bv\)</span>, a separable Hamiltonian has <span class="math display">\[
+\begin{align}
+H(\bq,\bv)=\frac{1}{2}\|\bv\|^2+V(\bq),
+    \qquad
+    \bq'=\bv,\qquad
+    \bv'=\bF(\bq)=-\nabla V(\bq).
+\end{align}
+\]</span> The exact flow conserves <span class="math inline">\(H\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Velocity Verlet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the Hamiltonian system in the result above, Velocity Verlet is <span class="math display">\[
+\begin{align}
+\bv_{n+1/2} &amp;= \bv_n+\frac{h}{2}\bF(\bq_n),\\
+    \bq_{n+1} &amp;= \bq_n+h\bv_{n+1/2},\\
+    \bv_{n+1} &amp;= \bv_{n+1/2}+\frac{h}{2}\bF(\bq_{n+1}).
+\end{align}
+\]</span> It is second order, time reversible, and symplectic.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Harmonic Oscillator Energy Test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(q'=v\)</span>, <span class="math inline">\(v'=-q\)</span>, Forward Euler maps the energy <span class="math display">\[
+\begin{align}
+E(q,v)=\frac{1}{2}(q^2+v^2)
+\end{align}
+\]</span> to <span class="math inline">\((1+h^2)E(q,v)\)</span> after one step. Thus Forward Euler has artificial energy growth on this oscillator.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-63-contents" aria-controls="callout-63" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-63" class="callout-63-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Forward Euler gives <span class="math display">\[
+\begin{align}
+q_{n+1}=q_n+hv_n,\qquad
+    v_{n+1}=v_n-hq_n.
+\end{align}
+\]</span> Therefore <span class="math display">\[
+\begin{align}
+q_{n+1}^2+v_{n+1}^2
+    =
+    (q_n+hv_n)^2+(v_n-hq_n)^2
+    =
+    (1+h^2)(q_n^2+v_n^2).
+\end{align}
+\]</span> Multiplying by <span class="math inline">\(1/2\)</span> proves the claim.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Apply Velocity Verlet to <span class="math inline">\(q'=v\)</span>, <span class="math inline">\(v'=-q\)</span>.</p></li>
 <li><p>Show that reversing the step size from <span class="math inline">\(h\)</span> to <span class="math inline">\(-h\)</span> undoes one Verlet step.</p></li>
 <li><p>Compare long-time energy behavior of Forward Euler, RK4, and Velocity Verlet numerically.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Symplectic accuracy)</strong> For long Hamiltonian simulations, preserving phase-space geometry can matter more than minimizing one-step error. Symplectic methods usually keep the energy error bounded and oscillatory over long times.</p>
+</div>
+</div>
 </section>
-<section id="exercises" class="level2" data-number="28.4">
-<h2 data-number="28.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">28.4</span> Exercises</h2>
+<section id="method-choice" class="level2" data-number="28.10">
+<h2 data-number="28.10" class="anchored" data-anchor-id="method-choice"><span class="header-section-number">28.10</span> Method Choice</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Common Solver Regimes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(SciPy interface)</strong> In <code>scipy.integrate.solve\_ivp</code>, methods such as <code>RK45</code> and <code>DOP853</code> are explicit nonstiff solvers. Methods such as <code>BDF</code> and <code>Radau</code> are intended for stiff problems and benefit from Jacobian information.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -935,10 +1923,10 @@ k_1 &amp;= f(t_n, y_n) \\
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Solve <span class="math inline">\(y' = -y, y(0)=1\)</span> with Forward Euler for 4 steps. Compare error to <span class="math inline">\(e^{-1}\)</span>.</p></li>
-<li><p>Verify the stability limit of Forward Euler for <span class="math inline">\(y' = \lambda y\)</span> using the result above.</p></li>
-<li><p>Show that Forward Euler on a harmonic oscillator leads to unbounded energy growth.</p></li>
-<li><p>Implement RK45 for <span class="math inline">\(y' = \cos(t^2)\)</span> and plot the step-size <span class="math inline">\(h\)</span> over time.</p></li>
+<li><p>For <span class="math inline">\(y'=-y\)</span>, compare Forward Euler, RK4, and RK45 on accuracy versus function evaluations.</p></li>
+<li><p>For the stiff example in the result above, compare RK45 and BDF using the same tolerance.</p></li>
+<li><p>For a sparse semidiscrete heat equation <span class="math inline">\(\by'=\bA\by\)</span>, identify why Jacobian sparsity matters.</p></li>
+<li><p>For the harmonic oscillator, compare final-time error and energy error for RK4 and Velocity Verlet.</p></li>
 </ol>
 </div>
 </div>

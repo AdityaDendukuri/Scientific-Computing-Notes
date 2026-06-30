@@ -701,9 +701,22 @@ window.Quarto = {
 </header>
 
 
-<p>Encoding graph topology into matrix spectrum for connectivity, clustering, and ranking.</p>
+<p>Graph algorithms become numerical linear algebra after choosing matrix conventions. Undirected graphs lead to symmetric Laplacians. Directed ranking problems lead to stochastic matrices and eigenvectors.</p>
 <section id="graph-matrices" class="level2" data-number="30.1">
 <h2 data-number="30.1" class="anchored" data-anchor-id="graph-matrices"><span class="header-section-number">30.1</span> Graph Matrices</h2>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Convention)</strong> For undirected graphs, <span class="math inline">\(\bA\)</span> is symmetric. For directed random walks in this section, probability vectors are columns and <span class="math inline">\(P_{ij}\)</span> is the probability of moving from node <span class="math inline">\(j\)</span> to node <span class="math inline">\(i\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -734,8 +747,73 @@ window.Quarto = {
 <p>Defined as <strong><span class="math inline">\(\bL = \bD - \bA\)</span></strong>.</p>
 <ul>
 <li><p><strong>Discrete Derivative:</strong> <span class="math inline">\((\bL \boldsymbol{f})_i = \sum_{j \sim i} w_{ij} (f_i - f_j)\)</span>.</p></li>
-<li><p><strong>Quadratic Form:</strong> <span class="math inline">\(\bx^T \bL \bx = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2\)</span>.</p></li>
+<li><p><strong>Quadratic Form:</strong> <span class="math inline">\(\bx^T \bL \bx = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2\)</span>, with each undirected edge counted once.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Laplacian Positive Semidefinite
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For an undirected weighted graph with nonnegative weights, <span class="math inline">\(\bL\)</span> is symmetric positive semidefinite and <span class="math inline">\(\bL\mathbf{1}=\bzero\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Symmetry follows from <span class="math inline">\(w_{ij}=w_{ji}\)</span>. Using the quadratic form in the result above, <span class="math display">\[
+\begin{align}
+\bx^T\bL\bx
+    =
+    \sum_{(i,j)\in E} w_{ij}(x_i-x_j)^2
+    \geq 0.
+\end{align}
+\]</span> Thus <span class="math inline">\(\bL\)</span> is positive semidefinite. If <span class="math inline">\(\bx=\mathbf{1}\)</span>, every difference <span class="math inline">\(x_i-x_j\)</span> is zero, and direct substitution gives <span class="math inline">\(\bL\mathbf{1}=\bzero\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Three-node path)</strong> For <span class="math inline">\(1-2-3\)</span>, <span class="math display">\[
+\begin{align}
+\bA=
+    \begin{pmatrix}
+    0&amp;1&amp;0\\
+    1&amp;0&amp;1\\
+    0&amp;1&amp;0
+    \end{pmatrix},
+    \qquad
+    \bL=
+    \begin{pmatrix}
+    1&amp;-1&amp;0\\
+    -1&amp;2&amp;-1\\
+    0&amp;-1&amp;1
+    \end{pmatrix}.
+\end{align}
+\]</span> The zero eigenvector is <span class="math inline">\(\mathbf{1}\)</span> because constant signals have no graph variation.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -756,6 +834,24 @@ window.Quarto = {
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the result above to show <span class="math inline">\(\bL\mathbf{1}=\bzero\)</span>.</p></li>
+<li><p>Derive <span class="math inline">\(\bx^T\bL\bx=\sum_{(i,j)\in E}w_{ij}(x_i-x_j)^2\)</span> for edges counted once.</p></li>
+<li><p>Conclude that <span class="math inline">\(\bL\)</span> is positive semidefinite for an undirected graph.</p></li>
+<li><p>Show that if a graph has two connected components, then there are two independent vectors in <span class="math inline">\(\mathcal{N}(\bL)\)</span>.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -768,8 +864,21 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <ul>
 <li><p><strong>Symmetric:</strong> <span class="math inline">\(\bL_{\text{sym}} = \bD^{-1/2} \bL \bD^{-1/2}\)</span>. (Eigenvalues in <span class="math inline">\([0, 2]\)</span>).</p></li>
-<li><p><strong>Random Walk:</strong> <span class="math inline">\(\bL_{\text{rw}} = \bD^{-1} \bL = \bI - \bP\)</span>.</p></li>
+<li><p><strong>Random Walk:</strong> <span class="math inline">\(\bL_{\text{rw}} = \bI-\bA\bD^{-1}\)</span> under the column-stochastic convention.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Degree normalization)</strong> The unnormalized Laplacian can let high-degree vertices dominate cuts. Normalized Laplacians measure variation relative to vertex degree.</p>
 </div>
 </div>
 </section>
@@ -806,11 +915,28 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Transition matrix <span class="math inline">\(\bP = \bD^{-1} \bA\)</span>.</p>
+<p>Transition matrix <span class="math inline">\(\bP = \bA\bD^{-1}\)</span> under the column-stochastic convention.</p>
 <ul>
 <li><p><span class="math inline">\(P_{ij} = w_{ij}/d_j\)</span> is the probability of moving from <span class="math inline">\(j\)</span> to <span class="math inline">\(i\)</span>.</p></li>
 <li><p><strong>Stationary Distribution:</strong> <span class="math inline">\(\boldsymbol{\pi}\)</span> such that <span class="math inline">\(\bP\boldsymbol{\pi} = \boldsymbol{\pi}\)</span>. For undirected graphs, <span class="math inline">\(\pi_i = d_i / \sum d_j\)</span>.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Show that the columns of <span class="math inline">\(\bP=\bA\bD^{-1}\)</span> sum to one.</p></li>
+<li><p>For the path graph <span class="math inline">\(1-2-3\)</span>, compute <span class="math inline">\(\bP\)</span>.</p></li>
+<li><p>Verify that <span class="math inline">\(\pi_i=d_i/\sum_j d_j\)</span> satisfies <span class="math inline">\(\bP\boldsymbol{\pi}=\boldsymbol{\pi}\)</span>.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -825,15 +951,28 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Models a random surfer on a directed web graph with teleportation: <span class="math display">\[
 \begin{align}
-\mathbf{G} = d \bS + \frac{1-d}{N} \mathbf{J}
+\mathbf{G} = d \bS + \frac{1-d}{N} \mathbf{J},
 \end{align}
 \]</span></p>
 <ul>
 <li><p><span class="math inline">\(d\)</span> is the damping factor (standard: 0.85).</p></li>
-<li><p><span class="math inline">\(\bS\)</span> is the link matrix (stochastic, handles dangling nodes).</p></li>
+<li><p><span class="math inline">\(\bS\)</span> is column-stochastic and handles dangling nodes.</p></li>
 <li><p><span class="math inline">\(\mathbf{J}\)</span> is the all-ones matrix (teleportation).</p></li>
 </ul>
 <p><strong>Computation:</strong> PageRank vector <span class="math inline">\(\mathbf{r}\)</span> is the dominant eigenvector of <span class="math inline">\(\mathbf{G}\)</span>, computed via power iteration.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Dangling nodes)</strong> A page with no outgoing links gives a zero column before normalization. The standard fix replaces that column by the uniform probability vector before forming <span class="math inline">\(\bS\)</span>.</p>
 </div>
 </div>
 </section>
@@ -852,7 +991,7 @@ window.Quarto = {
 <ol type="1">
 <li><p>Construct <span class="math inline">\(\bL\)</span> for a 3-vertex path graph. Find its eigenvalues by hand.</p></li>
 <li><p>Show that <span class="math inline">\(\bL \mathbf{1} = \bzero\)</span> for any graph.</p></li>
-<li><p>Prove <span class="math inline">\(\bL\)</span> is positive semi-definite using the quadratic form.</p></li>
+<li><p>Prove <span class="math inline">\(\bL\)</span> is positive semidefinite using the quadratic form.</p></li>
 <li><p>Implement PageRank power iteration for a 10-node random graph.</p></li>
 </ol>
 </div>

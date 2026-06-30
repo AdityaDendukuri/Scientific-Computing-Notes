@@ -1,162 +1,839 @@
 # Numerical Methods for ODEs
 
 
-Numerical integration of the *initial value problem* (IVP):
-$$
-\begin{align}
-\frac{dy}{dt} = f(t, y), \qquad y(t_0) = y_0.
-\end{align}
-$$
+An ordinary differential equation prescribes the derivative of an unknown function. A time stepping method replaces the exact flow by a sequence of computable updates. The numerical questions are accuracy, stability, stiffness, and cost per step.
 
-## Basic Methods
+
+## Initial Value Problems
 
 
 ::: {.callout-note icon=false}
-## Definition: Forward Euler (Explicit)
-Advance via forward difference:
+## Definition: Initial Value Problem
+An initial value problem (IVP) has the form
 $$
 \begin{align}
-y_{n+1} = y_n + h f(t_n, y_n).
+\by'(t)=\boldsymbol{f}(t,\by(t)), \qquad \by(t_0)=\by_0,
+\end{align}
+$$
+where $\by(t)\in\fR^m$. The scalar case is $m=1$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(IVP vs.\ BVP)**  In an IVP, all data are given at one time. In a boundary value problem, conditions are imposed at different points, such as $u(0)=u(1)=0$. IVPs are naturally marched forward; BVPs usually lead to global linear or nonlinear systems.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Flow Map
+For the IVP in the result above, the exact flow map $\varphi_h$ satisfies
+$$
+\begin{align}
+\by(t+h)=\varphi_h(t,\by(t)).
+\end{align}
+$$
+A one-step method replaces $\varphi_h$ by a computable map $\Phi_h$:
+$$
+\begin{align}
+\by_{n+1}=\Phi_h(t_n,\by_n), \qquad t_n=t_0+nh.
 \end{align}
 $$
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Forward Euler Order and Stability
-Forward Euler has local truncation error $O(h^2)$ and global error $O(h)$. Applied to the test equation $y'=\lambda y$, it is stable only when
+## Definition: Autonomous System
+An ODE is autonomous if $\boldsymbol{f}$ does not depend explicitly on time:
 $$
 \begin{align}
-|1+h\lambda|\leq 1.
+\by'=\boldsymbol{f}(\by).
 \end{align}
 $$
+Non-autonomous systems can be made autonomous by adding $t'=1$ as one more equation.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Existence and Uniqueness Condition
+If $\boldsymbol{f}(t,\by)$ is continuous in $t$ and Lipschitz continuous in $\by$ on a neighborhood of $(t_0,\by_0)$, then the IVP in the result above has a unique local solution.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Role of Lipschitz continuity)**  Numerical convergence is meaningful only when the exact IVP is well posed. If nearby initial data can lead to different solution branches, small rounding or truncation errors may not remain small.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Use Taylor expansion of the exact solution to show that one Forward Euler step has local error $O(h^2)$.
+1. Show that $y'=2\sqrt{|y|}$, $y(0)=0$, has more than one solution.
     
-1. Explain why accumulating $O(1/h)$ steps gives global error $O(h)$.
+1. Identify which hypothesis of the result above fails.
     
-1. Apply Forward Euler to $y'=\lambda y$ and derive $y_n=(1+h\lambda)^ny_0$.
-    
-1. Derive the stability condition in the result above.
-    
-1. For real $\lambda<0$, show that stability requires $h\leq 2/|\lambda|$.
+1. Explain why a time stepping method cannot be expected to select a unique physical branch without extra information.
 
 :::
 
 
+## Error and Convergence
+
+
 ::: {.callout-note icon=false}
-## Definition: Backward Euler (Implicit)
-Advance via backward difference:
+## Definition: Local Truncation Error
+For a one-step method $\by_{n+1}=\Phi_h(t_n,\by_n)$, the local truncation error is the one-step defect made from exact data:
 $$
 \begin{align}
-y_{n+1} = y_n + h f(t_{n+1}, y_{n+1}).
+\boldsymbol{\tau}_{n+1}
+    =
+    \frac{\by(t_{n+1})-\Phi_h(t_n,\by(t_n))}{h}.
 \end{align}
 $$
-It requires solving a nonlinear equation at each step, usually by Newton's method.
+The method is consistent if $\|\boldsymbol{\tau}_{n+1}\|\to 0$ as $h\to 0$.
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Backward Euler A-Stability
-Applied to $y'=\lambda y$, Backward Euler has amplification factor
+## Definition: Global Error and Order
+The global error at $t_n$ is
 $$
 \begin{align}
-R(z)=\frac{1}{1-z},
-    \qquad z=h\lambda.
+\be_n=\by(t_n)-\by_n.
 \end{align}
 $$
-If $\operatorname{Re}(\lambda)<0$, then $|R(h\lambda)|<1$ for every $h>0$. Thus Backward Euler is A-stable.
+A method has order $p$ on a fixed interval $[t_0,T]$ if
+$$
+\begin{align}
+\max_{0\leq n\leq N}\|\be_n\|=O(h^p),
+    \qquad Nh=T-t_0.
+\end{align}
+$$
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Local to Global Error
+For a stable one-step method, a one-step defect $O(h^{p+1})$ gives global error $O(h^p)$ on a fixed time interval.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Apply the result above to $y'=\lambda y$ and solve for $y_{n+1}$ in terms of $y_n$.
+1. Suppose each step contributes a local error of size $O(h^{p+1})$.
     
-1. Derive the amplification factor in the result above.
+1. Count the number of steps needed to reach a fixed final time.
     
-1. Prove that $|1/(1-z)|<1$ whenever $\operatorname{Re}(z)<0$.
+1. Explain why this gives $O(h^p)$ global error when previous errors are not amplified strongly.
     
-1. Explain why this matters for stiff decay problems.
+1. State where stability enters this argument.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Consistency, Stability, Convergence
+For time stepping methods, consistency means the discrete update matches the differential equation as $h\to 0$. Stability means perturbations introduced at one step do not grow uncontrollably over a fixed interval. Convergence means $\by_n\to\by(t_n)$ as $h\to 0$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: ODE Lax Principle
+For a consistent one-step method applied to a Lipschitz IVP, stability on a fixed interval implies convergence. For linear multistep methods, consistency plus zero-stability implies convergence.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Write the error recurrence for a one-step method by subtracting the numerical update from the exact one-step update.
+    
+1. Bound the propagated error using a Lipschitz constant for $\boldsymbol{f}$.
+    
+1. Add the local defect term from the result above.
+    
+1. Apply a discrete Gronwall argument to justify the first statement in the result above.
+
+:::
+
+
+## Euler Methods
+
+
+::: {.callout-note icon=false}
+## Definition: Forward Euler
+The explicit Euler method uses the slope at the left endpoint:
+$$
+\begin{align}
+\by_{n+1}=\by_n+h\boldsymbol{f}(t_n,\by_n).
+\end{align}
+$$
+It is explicit because the right side is known before step $n+1$ is computed.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Forward Euler Error
+Forward Euler has local truncation error $O(h)$ in the sense of the result above, one-step defect $O(h^2)$, and global error $O(h)$ for smooth solutions on fixed intervals.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Taylor expand the exact solution:
+    $$\by(t_{n+1})=\by(t_n)+h\by'(t_n)+\frac{h^2}{2}\by''(\xi_n).$$
+    
+1. Substitute $\by'(t_n)=\boldsymbol{f}(t_n,\by(t_n))$.
+    
+1. Compare with the result above.
+    
+1. Use the result above to obtain the global order.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Forward Euler on decay)**  For $y'=-y$, $y(0)=1$, Forward Euler gives
+$$
+\begin{align}
+y_n=(1-h)^n.
+\end{align}
+$$
+At $t=1$ with $h=1/4$, this gives $(3/4)^4=81/256\approx 0.3164$, while the exact value is $e^{-1}\approx 0.3679$.
+:::
+
+::: {.callout-note icon=false}
+## Definition: Backward Euler
+The implicit Euler method uses the slope at the right endpoint:
+$$
+\begin{align}
+\by_{n+1}=\by_n+h\boldsymbol{f}(t_{n+1},\by_{n+1}).
+\end{align}
+$$
+At each step one solves a nonlinear equation for $\by_{n+1}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Implicit Step Equation
+For Backward Euler, define
+$$
+\begin{align}
+\bg(\bY)=\bY-\by_n-h\boldsymbol{f}(t_{n+1},\bY).
+\end{align}
+$$
+The next step is the root $\bg(\bY)=\bzero$. Newton's method requires linear systems with
+$$
+\begin{align}
+\bI-h\bJ_f(t_{n+1},\bY),
+\end{align}
+$$
+where $\bJ_f$ is the Jacobian of $\boldsymbol{f}$ with respect to $\by$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Backward Euler Error
+Backward Euler is first order: its one-step defect is $O(h^2)$ and its global error is $O(h)$ for smooth solutions.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Taylor expand $\by(t_n)$ about $t_{n+1}$.
+    
+1. Rearrange the expansion to express $\by(t_{n+1})$ in terms of $\by(t_n)$ and $\by'(t_{n+1})$.
+    
+1. Substitute $\by'(t_{n+1})=\boldsymbol{f}(t_{n+1},\by(t_{n+1}))$.
+    
+1. Compare with the result above.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Trapezoidal Method
+The implicit trapezoidal method averages endpoint slopes:
+$$
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left[\boldsymbol{f}(t_n,\by_n)+\boldsymbol{f}(t_{n+1},\by_{n+1})\right].
+\end{align}
+$$
+It is also called Crank-Nicolson when used for time-dependent PDE discretizations.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Trapezoidal Order
+The trapezoidal method has one-step defect $O(h^3)$ and global error $O(h^2)$ for smooth solutions.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Write the exact integral identity
+    $$\by(t_{n+1})=\by(t_n)+\int_{t_n}^{t_{n+1}}\boldsymbol{f}(t,\by(t))\,dt.$$
+    
+1. Approximate the integral by the scalar trapezoidal rule from the result above.
+    
+1. Use the result above to explain the one-step defect.
+    
+1. Convert the one-step defect to global order using the result above.
+
+:::
+
+
+## Absolute Stability and Stiffness
+
+
+::: {.callout-note icon=false}
+## Definition: Test Equation and Stability Function
+The scalar test equation is
+$$
+\begin{align}
+y'=\lambda y, \qquad \operatorname{Re}(\lambda)<0.
+\end{align}
+$$
+For a one-step method applied to this equation, the update has the form
+$$
+\begin{align}
+y_{n+1}=R(z)y_n, \qquad z=h\lambda.
+\end{align}
+$$
+The function $R$ is the stability function.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Absolute Stability Region
+The absolute stability region of a one-step method is
+$$
+\begin{align}
+\mathcal{S}=\{z\in\fC:\ |R(z)|\leq 1\}.
+\end{align}
+$$
+The method is stable on the test equation when $h\lambda\in\mathcal{S}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Euler Stability Functions
+For the test equation in the result above,
+$$
+\begin{align}
+R_{\mathrm{FE}}(z)=1+z,\qquad
+    R_{\mathrm{BE}}(z)=\frac{1}{1-z},\qquad
+    R_{\mathrm{TR}}(z)=\frac{1+z/2}{1-z/2}.
+\end{align}
+$$
+Forward Euler is stable in the disk $|1+z|\leq 1$. Backward Euler and trapezoidal rule are A-stable.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For Forward Euler, $y_{n+1}=y_n+h\lambda y_n=(1+z)y_n$. For Backward Euler,
+$$
+\begin{align}
+y_{n+1}=y_n+h\lambda y_{n+1}
+    \quad\Rightarrow\quad
+    y_{n+1}=\frac{1}{1-z}y_n.
+\end{align}
+$$
+For trapezoidal rule,
+$$
+\begin{align}
+y_{n+1}=y_n+\frac{z}{2}(y_n+y_{n+1})
+    \quad\Rightarrow\quad
+    y_{n+1}=\frac{1+z/2}{1-z/2}y_n.
+\end{align}
+$$
+If $\operatorname{Re}(z)\leq 0$, then $|1|\leq |1-z|$ and $|1+z/2|\leq |1-z/2|$, so Backward Euler and trapezoidal rule are A-stable.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Draw the Forward Euler stability disk from $|1+z|\leq 1$.
+    
+1. For real $\lambda<0$, show that Forward Euler requires $h\leq 2/|\lambda|$.
+    
+1. Verify $|1+z/2|\leq |1-z/2|$ when $\operatorname{Re}(z)\leq 0$ by squaring both sides.
+    
+1. Explain why A-stability does not imply L-stability.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: A-Stability and L-Stability
+A method is A-stable if its stability region contains the full left half-plane:
+$$
+\begin{align}
+\{z\in\fC:\operatorname{Re}(z)\leq 0\}\subseteq\mathcal{S}.
+\end{align}
+$$
+An A-stable method is L-stable if additionally $R(z)\to 0$ as $z\to -\infty$ along the real axis.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Damping)**  Backward Euler is L-stable, so very fast decaying modes are strongly damped. The trapezoidal method is A-stable but not L-stable, since $R_{\mathrm{TR}}(z)\to -1$ as $z\to -\infty$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Stiffness
+An IVP is stiff when stability forces an explicit method to take much smaller steps than accuracy requires. For a linear system
+$$
+\begin{align}
+\by'=\bA\by,
+\end{align}
+$$
+the eigenvalues of $\bA$ determine the explicit stability restriction through $h\lambda_i\in\mathcal{S}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Fast decay with slow forcing)**  The equation
+$$
+\begin{align}
+y'=-1000(y-\cos t)-\sin t
+\end{align}
+$$
+has exact solution $y(t)=\cos t$ for consistent initial data. The solution varies on an $O(1)$ time scale, but Forward Euler is restricted by the fast stable mode near $\lambda=-1000$ and requires $h\lesssim 0.002$.
+:::
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Verify directly that $y(t)=\cos t$ solves the stiff example above.
+    
+1. Linearize the equation around the exact solution and identify the error equation.
+    
+1. Apply the result above to obtain the Forward Euler stability restriction.
+    
+1. Explain why this restriction is unrelated to the visible time scale of $\cos t$.
 
 :::
 
 
 ## Runge-Kutta Methods
 
-Multistage methods that match higher-order Taylor expansions without requiring analytic derivatives of $f$.
-
 
 ::: {.callout-note icon=false}
-## Definition: RK4 (Classical 4th Order)
-Evaluates $f$ at four stages per step:
+## Definition: Explicit Runge-Kutta Method
+An $s$-stage explicit Runge-Kutta method has stages
 $$
 \begin{align}
-k_1 &= f(t_n, y_n) \\
-    k_2 &= f(t_n + h/2, y_n + h k_1 / 2) \\
-    k_3 &= f(t_n + h/2, y_n + h k_2 / 2) \\
-    k_4 &= f(t_n + h, y_n + h k_3) \\
-    y_{n+1} &= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)
+\boldsymbol{k}_i
+    =
+    \boldsymbol{f}\left(t_n+c_i h,\,
+    \by_n+h\sum_{j<i} a_{ij}\boldsymbol{k}_j\right),
+    \qquad i=1,...,s,
 \end{align}
 $$
-It has local error $O(h^5)$ and global error $O(h^4)$ for smooth non-stiff problems.
+and update
+$$
+\begin{align}
+\by_{n+1}=\by_n+h\sum_{i=1}^s b_i\boldsymbol{k}_i.
+\end{align}
+$$
+The coefficients are collected in a Butcher tableau.
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Adaptive Step Control (RK45)
-Uses an embedded pair to estimate local error $e$ without extra stages (Dormand-Prince).
-**Mechanism:**  $h_{\text{new}} = h_{\text{old}} (\varepsilon / \|e\|)^{1/5}$.
-The algorithm adjusts the step size $h$ dynamically to maintain the local error within a specified tolerance.
+## Definition: Explicit Midpoint Method
+The two-stage explicit midpoint method is
+$$
+\begin{align}
+\boldsymbol{k}_1 &= \boldsymbol{f}(t_n,\by_n),\\
+    \boldsymbol{k}_2 &= \boldsymbol{f}(t_n+h/2,\by_n+h\boldsymbol{k}_1/2),\\
+    \by_{n+1} &= \by_n+h\boldsymbol{k}_2.
+\end{align}
+$$
+It has global order $2$.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. If the local error behaves like $C h^5$, solve $C h_{\text{new}}^5\approx\varepsilon$ using an estimate $e\approx C h_{\text{old}}^5$.
+1. Taylor expand the exact solution to second order.
     
-1. Derive the exponent $1/5$ in the result above.
+1. Taylor expand $\boldsymbol{f}(t_n+h/2,\by_n+h\boldsymbol{k}_1/2)$ about $(t_n,\by_n)$.
     
-1. Explain why practical codes multiply this formula by a safety factor less than $1$.
+1. Match terms to show second-order consistency.
+    
+1. Derive the stability function of explicit midpoint on $y'=\lambda y$.
 
 :::
 
 
-## Symplectic Integrators
-
-Preserve the geometric structure of Hamiltonian systems (energy conservation).
+::: {.callout-note icon=false}
+## Definition: RK4
+The classical fourth-order Runge-Kutta method is
+$$
+\begin{align}
+\boldsymbol{k}_1 &= \boldsymbol{f}(t_n, \by_n),\\
+    \boldsymbol{k}_2 &= \boldsymbol{f}(t_n + h/2, \by_n + h \boldsymbol{k}_1 / 2),\\
+    \boldsymbol{k}_3 &= \boldsymbol{f}(t_n + h/2, \by_n + h \boldsymbol{k}_2 / 2),\\
+    \boldsymbol{k}_4 &= \boldsymbol{f}(t_n + h, \by_n + h \boldsymbol{k}_3),\\
+    \by_{n+1} &= \by_n + \frac{h}{6}(\boldsymbol{k}_1 + 2\boldsymbol{k}_2 + 2\boldsymbol{k}_3 + \boldsymbol{k}_4).
+\end{align}
+$$
+It has one-step defect $O(h^5)$ and global error $O(h^4)$ for smooth nonstiff problems.
+:::
 
 
 ::: {.callout-note icon=false}
-## Definition: Velocity Verlet
-For $H = \frac{1}{2}v^2 + V(q)$:
+## Theorem: RK4 Stability Polynomial
+Applied to $y'=\lambda y$, RK4 has stability function
+$$
+\begin{align}
+R(z)=1+z+\frac{z^2}{2}+\frac{z^3}{6}+\frac{z^4}{24}.
+\end{align}
+$$
+This is the degree-four Taylor polynomial of $e^z$.
+:::
 
-1. $v_{n+1/2} = v_n + \frac{h}{2} F_n$
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Apply the result above to $y'=\lambda y$.
     
-1. $q_{n+1} = q_n + h v_{n+1/2}$
+1. Express each stage in terms of $z=h\lambda$ and $y_n$.
     
-1. $v_{n+1} = v_{n+1/2} + \frac{h}{2} F_{n+1}$
+1. Substitute the stages into the RK4 update.
+    
+1. Derive the stability polynomial in the result above.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Numerical Energy Drift)**  Standard explicit methods like Forward Euler or RK4 exhibit monotonic energy growth or decay in Hamiltonian systems. Symplectic methods are required for long-term physical simulations to ensure energy stability.
+**(High order is not stiffness control)**  RK4 has higher accuracy than Forward Euler on nonstiff problems, but its stability region is still bounded. For stiff decay, an explicit high-order method can remain limited by stability rather than accuracy.
+:::
+
+
+## Adaptive Time Stepping
+
+
+::: {.callout-note icon=false}
+## Definition: Embedded Runge-Kutta Pair
+An embedded pair computes two approximations of different orders from shared stages:
+$$
+\begin{align}
+\by_{n+1}^{[p]}, \qquad \by_{n+1}^{[p+1]}.
+\end{align}
+$$
+The difference
+$$
+\begin{align}
+\be_{n+1}=\by_{n+1}^{[p+1]}-\by_{n+1}^{[p]}
+\end{align}
+$$
+estimates the local error of the lower-order method.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Weighted Error Test
+Adaptive solvers usually accept a step when
+$$
+\begin{align}
+\left\|
+    \frac{\be_{n+1}}
+    {\mathrm{atol}+\mathrm{rtol}\,|\by_{n+1}|}
+    \right\|
+    \leq 1,
+\end{align}
+$$
+where the absolute value and division are componentwise.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Adaptive Step Formula
+If the local error estimate satisfies $\|\be\|\approx Ch^{p+1}$, then a step size targeting tolerance $\varepsilon$ is
+$$
+\begin{align}
+h_{\mathrm{new}}
+    =
+    s\,h_{\mathrm{old}}
+    \left(\frac{\varepsilon}{\|\be\|}\right)^{1/(p+1)},
+\end{align}
+$$
+where $0<s<1$ is a safety factor.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Apply Velocity Verlet from the result above to the harmonic oscillator $q'=v$, $v'=-q$.
+1. Assume $\|\be_{\mathrm{old}}\|\approx C h_{\mathrm{old}}^{p+1}$.
+    
+1. Solve $C h_{\mathrm{new}}^{p+1}\approx \varepsilon$.
+    
+1. Eliminate $C$ using the old error estimate.
+    
+1. Explain why production codes also limit the maximum growth and shrinkage of $h$.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(RK45)**  Dormand-Prince RK45 is a common embedded explicit pair. It is a good default for smooth nonstiff IVPs, not for stiff systems.
+:::
+
+
+## Linear Multistep Methods
+
+
+::: {.callout-note icon=false}
+## Definition: Linear Multistep Method
+A $k$-step linear multistep method has the form
+$$
+\begin{align}
+\sum_{j=0}^k \alpha_j \by_{n+j}
+    =
+    h\sum_{j=0}^k \beta_j \boldsymbol{f}(t_{n+j},\by_{n+j}).
+\end{align}
+$$
+It reuses previous solution values and previous right-hand side evaluations.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Adams-Bashforth 2
+The two-step Adams-Bashforth method is explicit:
+$$
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left(3\boldsymbol{f}(t_n,\by_n)-\boldsymbol{f}(t_{n-1},\by_{n-1})\right).
+\end{align}
+$$
+It has global order $2$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Adams-Moulton 2
+The two-step Adams-Moulton method is implicit:
+$$
+\begin{align}
+\by_{n+1}
+    =
+    \by_n+\frac{h}{2}\left(\boldsymbol{f}(t_{n+1},\by_{n+1})+\boldsymbol{f}(t_n,\by_n)\right).
+\end{align}
+$$
+This is the trapezoidal method from the result above.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: BDF2
+The second-order backward differentiation formula is
+$$
+\begin{align}
+\frac{3\by_{n+1}-4\by_n+\by_{n-1}}{2h}
+    =
+    \boldsymbol{f}(t_{n+1},\by_{n+1}).
+\end{align}
+$$
+BDF methods are standard implicit methods for stiff IVPs.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Zero-Stability
+A linear multistep method is zero-stable if perturbations in starting values remain uniformly bounded as $h\to 0$ on a fixed interval. Algebraically, the roots of
+$$
+\begin{align}
+\rho(\xi)=\sum_{j=0}^k \alpha_j \xi^j
+\end{align}
+$$
+must satisfy $|\xi|\leq 1$, and roots on the unit circle must be simple.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Dahlquist Equivalence Theorem
+For a consistent linear multistep method applied to a well-posed IVP, convergence is equivalent to zero-stability.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. For AB2, write the polynomial $\rho(\xi)$.
+    
+1. Check the root condition in the result above.
+    
+1. Repeat for BDF2.
+    
+1. Explain why consistency alone is not enough for a multistep method.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(BDF for stiffness)**  BDF methods trade implicit linear or nonlinear solves for much larger stable time steps on stiff decay problems. Variable-order BDF methods are used in many stiff ODE codes.
+:::
+
+
+## Systems and Eigenvalues
+
+
+::: {.callout-note icon=false}
+## Definition: First-Order System Form
+A higher-order scalar equation can be rewritten as a first-order system. For example,
+$$
+\begin{align}
+q''=F(q,q',t)
+\end{align}
+$$
+becomes
+$$
+\begin{align}
+q'=v,\qquad v'=F(q,v,t).
+\end{align}
+$$
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Linear Constant-Coefficient System
+For
+$$
+\begin{align}
+\by'=\bA\by,\qquad \by(0)=\by_0,
+\end{align}
+$$
+the exact solution is
+$$
+\begin{align}
+\by(t)=e^{t\bA}\by_0.
+\end{align}
+$$
+If $\bA=\bV\bD\bV^{-1}$, then
+$$
+\begin{align}
+\by(t)=\bV e^{t\bD}\bV^{-1}\by_0.
+\end{align}
+$$
+Each eigenvalue controls one modal growth, decay, or oscillation rate.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Differentiate $e^{t\bA}\by_0$ to verify the first formula in the result above.
+    
+1. Substitute $\bA=\bV\bD\bV^{-1}$ into the matrix exponential.
+    
+1. For $\lambda=a+ib$, interpret $e^{\lambda t}$ in terms of growth and oscillation.
+    
+1. Explain why eigenvalues of the Jacobian predict local stiffness for nonlinear systems.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Jacobian spectrum)**  Near a state $\by_*$, nonlinear dynamics are locally approximated by $\be'=\bJ_f(\by_*)\be$. Large negative eigenvalues produce fast stable transients. Eigenvalues near the imaginary axis produce oscillation or slow decay.
+:::
+
+
+## Hamiltonian and Symplectic Methods
+
+
+::: {.callout-note icon=false}
+## Definition: Hamiltonian System
+For position $\bq$ and velocity or momentum $\bv$, a separable Hamiltonian has
+$$
+\begin{align}
+H(\bq,\bv)=\frac{1}{2}\|\bv\|^2+V(\bq),
+    \qquad
+    \bq'=\bv,\qquad
+    \bv'=\bF(\bq)=-\nabla V(\bq).
+\end{align}
+$$
+The exact flow conserves $H$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Velocity Verlet
+For the Hamiltonian system in the result above, Velocity Verlet is
+$$
+\begin{align}
+\bv_{n+1/2} &= \bv_n+\frac{h}{2}\bF(\bq_n),\\
+    \bq_{n+1} &= \bq_n+h\bv_{n+1/2},\\
+    \bv_{n+1} &= \bv_{n+1/2}+\frac{h}{2}\bF(\bq_{n+1}).
+\end{align}
+$$
+It is second order, time reversible, and symplectic.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Harmonic Oscillator Energy Test
+For $q'=v$, $v'=-q$, Forward Euler maps the energy
+$$
+\begin{align}
+E(q,v)=\frac{1}{2}(q^2+v^2)
+\end{align}
+$$
+to $(1+h^2)E(q,v)$ after one step. Thus Forward Euler has artificial energy growth on this oscillator.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Forward Euler gives
+$$
+\begin{align}
+q_{n+1}=q_n+hv_n,\qquad
+    v_{n+1}=v_n-hq_n.
+\end{align}
+$$
+Therefore
+$$
+\begin{align}
+q_{n+1}^2+v_{n+1}^2
+    =
+    (q_n+hv_n)^2+(v_n-hq_n)^2
+    =
+    (1+h^2)(q_n^2+v_n^2).
+\end{align}
+$$
+Multiplying by $1/2$ proves the claim.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Apply Velocity Verlet to $q'=v$, $v'=-q$.
     
 1. Show that reversing the step size from $h$ to $-h$ undoes one Verlet step.
     
@@ -165,18 +842,45 @@ For $H = \frac{1}{2}v^2 + V(q)$:
 :::
 
 
-## Exercises
+::: {.callout-tip icon=false}
+## Remark
+**(Symplectic accuracy)**  For long Hamiltonian simulations, preserving phase-space geometry can matter more than minimizing one-step error. Symplectic methods usually keep the energy error bounded and oscillatory over long times.
+:::
+
+
+## Method Choice
+
+
+::: {.callout-note icon=false}
+## Definition: Common Solver Regimes
+
+\begin{tabular}{ll}
+**Problem** & **Typical method** \\ \hline
+Smooth nonstiff IVP & Adaptive explicit RK, such as RK45 \\
+High-accuracy nonstiff IVP & Higher-order adaptive explicit RK \\
+Stiff IVP & Implicit BDF or implicit Runge-Kutta \\
+Hamiltonian long-time simulation & Symplectic method, such as Verlet \\
+Large stiff system & Implicit method with sparse Jacobian solves \\
+\end{tabular}
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(SciPy interface)**  In `scipy.integrate.solve\_ivp`, methods such as `RK45` and `DOP853` are explicit nonstiff solvers. Methods such as `BDF` and `Radau` are intended for stiff problems and benefit from Jacobian information.
+:::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Solve $y' = -y, y(0)=1$ with Forward Euler for 4 steps. Compare error to $e^{-1}$.
+1. For $y'=-y$, compare Forward Euler, RK4, and RK45 on accuracy versus function evaluations.
     
-1. Verify the stability limit of Forward Euler for $y' = \lambda y$ using the result above.
+1. For the stiff example in the result above, compare RK45 and BDF using the same tolerance.
     
-1. Show that Forward Euler on a harmonic oscillator leads to unbounded energy growth.
+1. For a sparse semidiscrete heat equation $\by'=\bA\by$, identify why Jacobian sparsity matters.
     
-1. Implement RK45 for $y' = \cos(t^2)$ and plot the step-size $h$ over time.
+1. For the harmonic oscillator, compare final-time error and energy error for RK4 and Velocity Verlet.
 
 :::

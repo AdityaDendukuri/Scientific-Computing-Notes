@@ -3,6 +3,21 @@
 
 Iterative methods for solving $f(x) = 0$ for continuous $f : \fR \to \fR$.
 
+
+::: {.callout-note icon=false}
+## Definition: Stopping Tests for Root Finding
+Common stopping tests are
+$$
+\begin{align}
+|f(x_k)|\leq `tol`_f,
+    \qquad
+    |x_{k+1}-x_k|\leq `tol`_x(1+|x_k|).
+\end{align}
+$$
+A small residual alone can be misleading when $f'(x^*)$ is small. A small step alone can be misleading when the iteration stagnates.
+:::
+
+
 ## Bracketing Methods
 
 Guaranteed convergence to a root within a known interval.
@@ -41,9 +56,39 @@ The method repeatedly halves the interval:
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Bracketing default)**  If a sign-changing interval is known and function evaluations are cheap, use a bracketed method. It gives a certificate that a root remains inside the current interval.
+:::
+
+
 ## Open Methods
 
 Faster local convergence, but sensitive to the initial guess $x_0$ and may diverge.
+
+
+::: {.callout-note icon=false}
+## Definition: Fixed-Point Iteration
+A root problem can be rewritten as $x=g(x)$ and iterated by
+$$
+\begin{align}
+x_{k+1}=g(x_k).
+\end{align}
+$$
+If $|g'(x^*)|<1$, the fixed point is locally attracting.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Use the mean value theorem to show $|x_{k+1}-x^*|\leq L|x_k-x^*|$ if $|g'(x)|\leq L<1$ near $x^*$.
+    
+1. Rewrite Newton's method as a fixed-point iteration.
+    
+1. Compute $g'(x^*)$ for Newton's fixed-point map at a simple root.
+
+:::
 
 
 ::: {.callout-note icon=false}
@@ -90,6 +135,31 @@ $$
 1. $x_0$ too far from $x^*$.
 2. $f'(x_k) \approx 0$ (zero derivative).
 3. Multiple roots ($f'(x^*) = 0$): convergence degrades to linear with rate $1/2$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Newton on a Multiple Root
+If $f(x)=(x-x^*)^m q(x)$ with $q(x^*)\neq 0$ and $m>1$, then Newton's method converges locally linearly with asymptotic factor
+$$
+\begin{align}
+1-\frac{1}{m}.
+\end{align}
+$$
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Compute $f'(x)$ for $f(x)=(x-x^*)^m q(x)$.
+    
+1. Substitute $f$ and $f'$ into the Newton update.
+    
+1. Keep the leading term as $x_k\to x^*$.
+    
+1. Derive the factor in the result above.
+
 :::
 
 
@@ -149,6 +219,20 @@ It uses fast open steps by default, falling back to bisection only if the step i
 :::
 
 
+::: {.callout-note icon=false}
+## Definition: Method Selection
+
+\begin{tabular}{ll}
+**Available information** & **Typical method** \\ \hline
+Sign-changing bracket & Bisection or Brent \\
+Good initial guess and derivative & Newton \\
+Good initial guesses, no derivative & Secant \\
+Need robust scalar default & Brent \\
+\end{tabular}
+
+:::
+
+
 ## Exercises
 
 
@@ -159,8 +243,10 @@ It uses fast open steps by default, falling back to bisection only if the step i
     
 1. Newton on $f(x) = x^2 - 2$ from $x_0 = 1$. Verify the doubling of digits using the result above.
     
-1. Prove that for $f(x) = x^2$, Newton converges to $0$ with linear rate $1/2$.
+1. Prove that for $f(x) = x^2$, Newton converges to $0$ with linear rate $1/2$ using the result above.
     
 1. Find the root of $e^x = 3x$ near $x=1$ via Secant method. Compare evaluations vs.\ Newton.
+    
+1. Construct an example where $|f(x_k)|$ is small but $|x_k-x^*|$ is not small. Relate it to the result above.
 
 :::

@@ -74,6 +74,21 @@ where $\bD$ is diagonal. The columns of $\bV$ are eigenvectors and the diagonal 
 
 
 ::: {.callout-note icon=false}
+## Example
+**(Defective matrix)** 
+$$
+\begin{align}
+\bA=
+    \begin{pmatrix}
+    1&1\\
+    0&1
+    \end{pmatrix}
+\end{align}
+$$
+has characteristic polynomial $(1-\lambda)^2$. Solving $(\bA-\bI)\bv=\bzero$ gives only one independent eigenvector, so $\bA$ is not diagonalizable.
+:::
+
+::: {.callout-note icon=false}
 ## Theorem: Key Properties
 
 1. **Trace:**  $\sum \lambda_i = \text{tr}(\bA)$.
@@ -188,6 +203,21 @@ Apply power iteration to $(\bA - \sigma\bI)^{-1}$.
 Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\bv^{(k)}$ at each step.
 
 - **Convergence:**  **Cubic** for symmetric matrices (digits triple each step).
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Eigenvalue Method Selection
+
+\begin{tabular}{ll}
+**Goal** & **Typical method** \\ \hline
+Largest eigenvalue of large matrix & Power iteration \\
+Eigenvalue near a shift & Inverse iteration \\
+Fast local refinement, symmetric case & Rayleigh quotient iteration \\
+Full dense spectrum & QR algorithm \\
+Few extreme eigenvalues, symmetric sparse matrix & Lanczos \\
+\end{tabular}
 
 :::
 

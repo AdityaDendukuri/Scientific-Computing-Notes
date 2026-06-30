@@ -70,6 +70,30 @@ A numerically stable and efficient refinement of the Lagrange form.
 \textbf{Advantages:}\enspace Evaluation costs only $O(n)$ once the weights $w_i$ are computed ($O(n^2)$). This is the standard recommended approach for general polynomial interpolation.
 }
 
+\subsubsection{Interpolation Error}
+
+\addThm{Polynomial Interpolation Error}{%
+Let $P_n$ interpolate $f$ at distinct nodes $x_0,\dots,x_n$. If $f$ has $n+1$ continuous derivatives, then for each $x$ there exists $\xi_x$ in the interval containing the nodes and $x$ such that
+\begin{align*}
+    f(x)-P_n(x)
+    =
+    \frac{f^{(n+1)}(\xi_x)}{(n+1)!}
+    \prod_{j=0}^n (x-x_j).
+\end{align*}
+}
+\label{thm:polynomial-interpolation-error}
+
+\addExcr{%
+\begin{enumerate}
+    \item Define $\omega(x)=\prod_{j=0}^n(x-x_j)$.
+    \item For a fixed $x$, construct $g(t)=f(t)-P_n(t)-c\omega(t)$ so that $g(x)=0$.
+    \item Count the zeros of $g$.
+    \item Apply Rolle's theorem $n+1$ times.
+    \item Solve for $c$ and derive Thm~\ref{thm:polynomial-interpolation-error}.
+\end{enumerate}
+}
+\label{ex:polynomial-interpolation-error}
+
 \subsubsection{Runge's Phenomenon}
 
 \textBox{%

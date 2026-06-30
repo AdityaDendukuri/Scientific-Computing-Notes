@@ -26,7 +26,7 @@ The matrix $\bS = \frac{1}{n-1}\bX^T\bX \in \fR^{p\times p}$.
     
 - **Off-diagonal:**  $S_{ij}$ is the covariance between features $i$ and $j$.
     
-- **Property:**  $\bS$ is symmetric positive semi-definite (SPSD).
+- **Property:**  $\bS$ is symmetric positive semidefinite (SPSD).
 
 :::
 
@@ -56,6 +56,22 @@ Let $\bX = \bU\bsigma\bV^T$ be the SVD of the centered data matrix.
     
 - **Variances:**  $\lambda_i = \text{Var}(\bz_i) = \frac{\sigma_i^2}{n-1}$.
 
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Since $\bX=\bU\bsigma\bV^T$,
+$$
+\begin{align}
+\bS
+    =
+    \frac{1}{n-1}\bX^T\bX
+    =
+    \bV\left(\frac{\bsigma^2}{n-1}\right)\bV^T.
+\end{align}
+$$
+Thus the columns of $\bV$ diagonalize the covariance matrix. The scores satisfy $\bZ=\bX\bV=\bU\bsigma$, so their sample covariance is diagonal with entries $\sigma_i^2/(n-1)$.
 :::
 
 
@@ -127,6 +143,12 @@ is the optimal $k$-dimensional linear approximation of the data in the Frobenius
 ::: {.callout-tip icon=false}
 ## Remark
 **(Standardization)**  If features have different units, PCA will be dominated by large-scale features. Standardize by dividing each centered column by its standard deviation: $X_{ij} \leftarrow (X_{ij} - \bar{x}_j)/s_j$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Interpretation)**  Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix; it does not by itself explain why that variation occurs.
 :::
 
 

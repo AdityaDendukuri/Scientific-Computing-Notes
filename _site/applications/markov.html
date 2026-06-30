@@ -701,9 +701,26 @@ window.Quarto = {
 </header>
 
 
-<p>Modeling random processes where future state depends only on the current state.</p>
+<p>Markov chains model random processes whose next state depends only on the current state. With the column convention used here, probability vectors are columns and the update is <span class="math inline">\(\bx^{(k+1)}=\bP\bx^{(k)}\)</span>.</p>
 <section id="definitions" class="level2" data-number="33.1">
 <h2 data-number="33.1" class="anchored" data-anchor-id="definitions"><span class="header-section-number">33.1</span> Definitions</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Probability Vector
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A vector <span class="math inline">\(\bx\in\fR^n\)</span> is a probability vector if <span class="math display">\[
+\begin{align}
+x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
+\end{align}
+\]</span> The entry <span class="math inline">\(x_i\)</span> is the probability of state <span class="math inline">\(i\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -721,6 +738,19 @@ window.Quarto = {
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Column convention)</strong> Column <span class="math inline">\(j\)</span> of <span class="math inline">\(\bP\)</span> contains the probabilities of moving from state <span class="math inline">\(j\)</span> to all possible next states. Some texts use row-stochastic matrices and row probability vectors. The two conventions are transposes of each other.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -732,6 +762,32 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>If <span class="math inline">\(\bP\)</span> is column-stochastic, then <span class="math inline">\(\lambda=1\)</span> is an eigenvalue and every eigenvalue satisfies <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(\mathbf{1}^T\bP=\mathbf{1}^T\)</span>, <span class="math inline">\(1\)</span> is a left eigenvalue, hence an eigenvalue. To bound the spectrum, apply the row-stochastic argument to <span class="math inline">\(\bP^T\)</span>: if <span class="math inline">\(\bP^T\bv=\lambda\bv\)</span> and <span class="math inline">\(|v_j|=\|\bv\|_\infty\)</span>, then <span class="math display">\[
+\begin{align}
+|\lambda|\,|v_j|
+    =
+    \left|\sum_i P_{ij}v_i\right|
+    \leq
+    \sum_i P_{ij}|v_i|
+    \leq
+    |v_j|.
+\end{align}
+\]</span> Thus <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -784,6 +840,68 @@ window.Quarto = {
 <li><p>Right eigenvector of <span class="math inline">\(\bP\)</span> for <span class="math inline">\(\lambda=1\)</span>.</p></li>
 <li><p>Represents the equilibrium state of the chain.</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Two-state chain)</strong> Let <span class="math display">\[
+\begin{align}
+\bP=
+    \begin{pmatrix}
+        1-a &amp; b\\
+        a &amp; 1-b
+    \end{pmatrix},
+    \qquad 0&lt;a,b&lt;1.
+\end{align}
+\]</span> Solving <span class="math inline">\(\bP\boldsymbol{\pi}=\boldsymbol{\pi}\)</span> with <span class="math inline">\(\pi_1+\pi_2=1\)</span> gives <span class="math display">\[
+\begin{align}
+\boldsymbol{\pi}
+    =
+    \frac{1}{a+b}
+    \begin{pmatrix} b\\ a\end{pmatrix}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Reducible and Periodic Chains
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A chain is reducible if some state cannot be reached from another state. A state has period <span class="math inline">\(d&gt;1\)</span> if returns to that state occur only at times divisible by <span class="math inline">\(d\)</span>. A primitive chain is irreducible and aperiodic.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Two failure modes)</strong> The identity matrix is reducible: every state is absorbing. The matrix <span class="math display">\[
+\begin{align}
+\begin{pmatrix}
+    0&amp;1\\
+    1&amp;0
+    \end{pmatrix}
+\end{align}
+\]</span> is irreducible but periodic with period <span class="math inline">\(2\)</span>, so the distribution oscillates instead of converging.</p>
 </div>
 </div>
 </section>
@@ -923,6 +1041,57 @@ k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
 <p><strong>(Design Tool: Metropolis-Hastings)</strong> Construct a reversible chain for a desired <span class="math inline">\(\boldsymbol{\pi}\)</span> by accepting moves with probability <span class="math inline">\(a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})\)</span>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Metropolis-Hastings Detailed Balance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(Q_{ij}\)</span> be a proposal probability from state <span class="math inline">\(j\)</span> to state <span class="math inline">\(i\)</span>. Define <span class="math display">\[
+\begin{align}
+A_{ij}
+    =
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right),
+    \qquad i\neq j.
+\end{align}
+\]</span> The transition probabilities <span class="math inline">\(P_{ij}=Q_{ij}A_{ij}\)</span> for <span class="math inline">\(i\neq j\)</span>, with the remaining probability kept at state <span class="math inline">\(j\)</span>, satisfy detailed balance with <span class="math inline">\(\boldsymbol{\pi}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(i\neq j\)</span>, <span class="math display">\[
+\begin{align}
+\pi_j P_{ij}
+    =
+    \pi_j Q_{ij}
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right)
+    =
+    \min(\pi_j Q_{ij},\pi_i Q_{ji}).
+\end{align}
+\]</span> The same calculation with <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> interchanged gives <span class="math display">\[
+\begin{align}
+\pi_i P_{ji}
+    =
+    \min(\pi_i Q_{ji},\pi_j Q_{ij}).
+\end{align}
+\]</span> Thus <span class="math inline">\(\pi_jP_{ij}=\pi_iP_{ji}\)</span>.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="exercises" class="level2" data-number="33.4">
 <h2 data-number="33.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">33.4</span> Exercises</h2>
@@ -941,6 +1110,8 @@ k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
 <li><p>Prove that <span class="math inline">\(|\lambda| \leq 1\)</span> for any stochastic matrix using the result above.</p></li>
 <li><p>Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.&nbsp;<span class="math inline">\(\lambda_2\)</span> using the result above.</p></li>
 <li><p>Find <span class="math inline">\(\boldsymbol{\pi}\)</span> for a random walk on <span class="math inline">\(K_4\)</span> (complete graph).</p></li>
+<li><p>Give one reducible chain and one periodic irreducible chain. Explain which part of the result above fails.</p></li>
+<li><p>Verify detailed balance for a three-state Metropolis-Hastings chain using the result above.</p></li>
 </ol>
 </div>
 </div>

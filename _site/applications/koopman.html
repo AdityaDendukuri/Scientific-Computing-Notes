@@ -700,7 +700,7 @@ window.Quarto = {
 </header>
 
 
-<p>Data-driven discovery of linear models for nonlinear dynamics.</p>
+<p>Koopman analysis studies nonlinear dynamics through linear evolution of observables. DMD fits a finite-dimensional linear model from snapshots. SINDy fits sparse governing equations from a chosen function library.</p>
 <section id="koopman-operator-theory" class="level2" data-number="34.1">
 <h2 data-number="34.1" class="anchored" data-anchor-id="koopman-operator-theory"><span class="header-section-number">34.1</span> Koopman Operator Theory</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -719,6 +719,68 @@ window.Quarto = {
 <li><p> Linear operator acting on observables: <span class="math inline">\((\mathcal{K}g)(\bx) = g(\mathbf{F}(\bx))\)</span>.</p></li>
 </ul>
 <p><strong>Lifting:</strong> <span class="math inline">\(\mathcal{K}\)</span> is linear even if <span class="math inline">\(\mathbf{F}\)</span> is nonlinear, at the cost of being infinite-dimensional.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Koopman Linearity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Koopman operator in the result above is linear on observables: <span class="math display">\[
+\begin{align}
+\mathcal{K}(\alpha g+\beta h)=\alpha\mathcal{K}g+\beta\mathcal{K}h.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For every state <span class="math inline">\(\bx\)</span>, <span class="math display">\[
+\begin{align}
+[\mathcal{K}(\alpha g+\beta h)](\bx)
+    &amp;=
+    (\alpha g+\beta h)(\mathbf{F}(\bx))\\
+    &amp;=
+    \alpha g(\mathbf{F}(\bx))+\beta h(\mathbf{F}(\bx))\\
+    &amp;=
+    [\alpha\mathcal{K}g+\beta\mathcal{K}h](\bx).
+\end{align}
+\]</span> Since this holds for every <span class="math inline">\(\bx\)</span>, the two observables are equal.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Nonlinear map)</strong> Let <span class="math inline">\(x_{k+1}=x_k^2\)</span>. For observables <span class="math inline">\(g_1(x)=x\)</span> and <span class="math inline">\(g_2(x)=x^2\)</span>, <span class="math display">\[
+\begin{align}
+(\mathcal{K}g_1)(x)=x^2=g_2(x),
+    \qquad
+    (\mathcal{K}g_2)(x)=x^4.
+\end{align}
+\]</span> The state map is nonlinear, but the operator <span class="math inline">\(g\mapsto g\circ F\)</span> is linear on the space of observables.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -763,6 +825,41 @@ window.Quarto = {
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: DMD Least Squares Model
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The best-fit linear map in Frobenius norm is <span class="math display">\[
+\begin{align}
+\bA_*=\bY\bX^\dagger.
+\end{align}
+\]</span> The reduced operator in the result above is the projection of this map onto the rank-<span class="math inline">\(r\)</span> left singular subspace of <span class="math inline">\(\bX\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the least squares normal equations to derive <span class="math inline">\(\bA_*=\bY\bX^\dagger\)</span>.</p></li>
+<li><p>Substitute the truncated SVD <span class="math inline">\(\bX\approx\bU_r\bsigma_r\bV_r^T\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\bU_r^T\bA_*\bU_r=\bU_r^T\bY\bV_r\bsigma_r^{-1}\)</span>.</p></li>
+<li><p>Interpret this as the small operator <span class="math inline">\(\tilde{\bA}\)</span> in the result above.</p></li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -796,6 +893,32 @@ window.Quarto = {
 </ul>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(DMD vs.&nbsp;SINDy)</strong> DMD fits a linear time-advance map for snapshot data. SINDy fits a sparse differential equation in a chosen library. DMD returns modes and growth rates; SINDy returns equation coefficients.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Noisy derivatives)</strong> SINDy is sensitive to derivative estimates. Smoothing, weak-form regression, or integral formulations are often needed when data are noisy.</p>
+</div>
+</div>
 </section>
 <section id="exercises" class="level2" data-number="34.4">
 <h2 data-number="34.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">34.4</span> Exercises</h2>
@@ -810,34 +933,12 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Prove the linearity of the Koopman operator.</p></li>
+<li><p>Prove the result above without looking at the proof.</p></li>
 <li><p>Implement DMD for a 2D damped oscillator. Verify the identified eigenvalues.</p></li>
 <li><p>Build a polynomial library <span class="math inline">\(\boldsymbol{\Theta}\)</span> for <span class="math inline">\(\bx \in \fR^2\)</span> up to degree 2.</p></li>
 <li><p>Use SINDy (via STLS) to identify the Lotka-Volterra predator-prey model from noisy data.</p></li>
+<li><p>Compare DMD and SINDy on the same two-dimensional linear system. Which quantities should agree?</p></li>
 </ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>For any state <span class="math inline">\(\bx \in \mathcal{M}\)</span>, observables <span class="math inline">\(g, h\)</span>, and scalars <span class="math inline">\(\alpha, \beta\)</span>, consider the action of <span class="math inline">\(\mathcal{K}\)</span> on the linear combination: <span class="math display">\[
-\begin{align}
-[\mathcal{K}(\alpha g + \beta h)](\bx) &amp;= (\alpha g + \beta h)(\mathbf{F}(\bx)) \\
-    &amp;= \alpha g(\mathbf{F}(\bx)) + \beta h(\mathbf{F}(\bx)) \\
-    &amp;= \alpha (\mathcal{K}g)(\bx) + \beta (\mathcal{K}h)(\bx) \\
-    &amp;= [\alpha \mathcal{K}g + \beta \mathcal{K}h](\bx).
-\end{align}
-\]</span> Since this holds for all <span class="math inline">\(\bx\)</span>, <span class="math inline">\(\mathcal{K}(\alpha g + \beta h) = \alpha \mathcal{K}g + \beta \mathcal{K}h\)</span>.</p>
-</div>
 </div>
 </div>
 

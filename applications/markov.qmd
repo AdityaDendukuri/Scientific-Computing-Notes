@@ -1,9 +1,22 @@
 # Markov Chains and Stochastic Matrices
 
 
-Modeling random processes where future state depends only on the current state.
+Markov chains model random processes whose next state depends only on the current state. With the column convention used here, probability vectors are columns and the update is $\bx^{(k+1)}=\bP\bx^{(k)}$.
+
 
 ## Definitions
+
+
+::: {.callout-note icon=false}
+## Definition: Probability Vector
+A vector $\bx\in\fR^n$ is a probability vector if
+$$
+\begin{align}
+x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
+\end{align}
+$$
+The entry $x_i$ is the probability of state $i$.
+:::
 
 
 ::: {.callout-note icon=false}
@@ -17,9 +30,33 @@ Matrix $\bP \in \fR^{n \times n}$ where:
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Column convention)**  Column $j$ of $\bP$ contains the probabilities of moving from state $j$ to all possible next states. Some texts use row-stochastic matrices and row probability vectors. The two conventions are transposes of each other.
+:::
+
+
 ::: {.callout-note icon=false}
 ## Theorem: Spectrum of a Stochastic Matrix
 If $\bP$ is column-stochastic, then $\lambda=1$ is an eigenvalue and every eigenvalue satisfies $|\lambda|\leq 1$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Since $\mathbf{1}^T\bP=\mathbf{1}^T$, $1$ is a left eigenvalue, hence an eigenvalue. To bound the spectrum, apply the row-stochastic argument to $\bP^T$: if $\bP^T\bv=\lambda\bv$ and $|v_j|=\|\bv\|_\infty$, then
+$$
+\begin{align}
+|\lambda|\,|v_j|
+    =
+    \left|\sum_i P_{ij}v_i\right|
+    \leq
+    \sum_i P_{ij}|v_i|
+    \leq
+    |v_j|.
+\end{align}
+$$
+Thus $|\lambda|\leq 1$.
 :::
 
 
@@ -59,6 +96,49 @@ A probability vector $\boldsymbol{\pi}$ such that $\bP \boldsymbol{\pi} = \bolds
 :::
 
 
+::: {.callout-note icon=false}
+## Example
+**(Two-state chain)**  Let
+$$
+\begin{align}
+\bP=
+    \begin{pmatrix}
+        1-a & b\\
+        a & 1-b
+    \end{pmatrix},
+    \qquad 0<a,b<1.
+\end{align}
+$$
+Solving $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$ with $\pi_1+\pi_2=1$ gives
+$$
+\begin{align}
+\boldsymbol{\pi}
+    =
+    \frac{1}{a+b}
+    \begin{pmatrix} b\\ a\end{pmatrix}.
+\end{align}
+$$
+:::
+
+::: {.callout-note icon=false}
+## Definition: Reducible and Periodic Chains
+A chain is reducible if some state cannot be reached from another state. A state has period $d>1$ if returns to that state occur only at times divisible by $d$. A primitive chain is irreducible and aperiodic.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Two failure modes)**  The identity matrix is reducible: every state is absorbing. The matrix
+$$
+\begin{align}
+\begin{pmatrix}
+    0&1\\
+    1&0
+    \end{pmatrix}
+\end{align}
+$$
+is irreducible but periodic with period $2$, so the distribution oscillates instead of converging.
+:::
 ## Convergence and Mixing
 
 
@@ -154,6 +234,46 @@ is symmetric. Therefore reversible chains have real eigenvalues.
 :::
 
 
+::: {.callout-note icon=false}
+## Theorem: Metropolis-Hastings Detailed Balance
+Let $Q_{ij}$ be a proposal probability from state $j$ to state $i$. Define
+$$
+\begin{align}
+A_{ij}
+    =
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right),
+    \qquad i\neq j.
+\end{align}
+$$
+The transition probabilities $P_{ij}=Q_{ij}A_{ij}$ for $i\neq j$, with the remaining probability kept at state $j$, satisfy detailed balance with $\boldsymbol{\pi}$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For $i\neq j$,
+$$
+\begin{align}
+\pi_j P_{ij}
+    =
+    \pi_j Q_{ij}
+    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right)
+    =
+    \min(\pi_j Q_{ij},\pi_i Q_{ji}).
+\end{align}
+$$
+The same calculation with $i$ and $j$ interchanged gives
+$$
+\begin{align}
+\pi_i P_{ji}
+    =
+    \min(\pi_i Q_{ji},\pi_j Q_{ij}).
+\end{align}
+$$
+Thus $\pi_jP_{ij}=\pi_iP_{ji}$.
+:::
+
+
 ## Exercises
 
 
@@ -167,5 +287,9 @@ is symmetric. Therefore reversible chains have real eigenvalues.
 1. Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.\ $\lambda_2$ using the result above.
     
 1. Find $\boldsymbol{\pi}$ for a random walk on $K_4$ (complete graph).
+    
+1. Give one reducible chain and one periodic irreducible chain. Explain which part of the result above fails.
+    
+1. Verify detailed balance for a three-state Metropolis-Hastings chain using the result above.
 
 :::

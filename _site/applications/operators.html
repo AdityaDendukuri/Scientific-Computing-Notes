@@ -700,7 +700,7 @@ window.Quarto = {
 </header>
 
 
-<p>Transitioning from finite matrices to infinite-dimensional operators.</p>
+<p>Differential equations become matrix problems after discretization. The finite matrix should preserve the main structure of the operator: sparsity, symmetry, definiteness, spectrum, and conditioning.</p>
 <section id="differential-operators-and-discretization" class="level2" data-number="31.1">
 <h2 data-number="31.1" class="anchored" data-anchor-id="differential-operators-and-discretization"><span class="header-section-number">31.1</span> Differential Operators and Discretization</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -726,6 +726,40 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Dirichlet Poisson Problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The one-dimensional Poisson problem with homogeneous Dirichlet boundary data is <span class="math display">\[
+\begin{align}
+-u''(x)=f(x),\qquad 0&lt;x&lt;1,\qquad u(0)=u(1)=0.
+\end{align}
+\]</span> The boundary conditions are part of the problem data.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Grid Function
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(n\)</span> interior grid points, let <span class="math inline">\(h=1/(n+1)\)</span> and <span class="math inline">\(x_i=ih\)</span>, <span class="math inline">\(i=1,...,n\)</span>. A grid function is the vector <span class="math display">\[
+\begin{align}
+\bu=(u_1,...,u_n)^T,\qquad u_i\approx u(x_i).
+\end{align}
+\]</span> The boundary values are fixed separately by the boundary conditions.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Definition: Finite Difference Stencil
 </div>
 </div>
@@ -735,6 +769,24 @@ window.Quarto = {
 u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 \end{align}
 \]</span> <strong>Accuracy:</strong> Second-order <span class="math inline">\(O(h^2)\)</span> via Taylor expansion.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Taylor expand <span class="math inline">\(u(x+h)\)</span> and <span class="math inline">\(u(x-h)\)</span> about <span class="math inline">\(x\)</span>.</p></li>
+<li><p>Add the two expansions.</p></li>
+<li><p>Solve for <span class="math inline">\(u''(x)\)</span>.</p></li>
+<li><p>Identify the leading error term and prove the <span class="math inline">\(O(h^2)\)</span> claim in the result above.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -754,6 +806,19 @@ u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 \]</span></p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Sparsity)</strong> Each row of <span class="math inline">\(\bT\)</span> uses only the grid point and its two neighbors. This locality is why finite difference matrices are sparse.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -767,8 +832,45 @@ u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 <p>Eigenvalues of <span class="math inline">\(\bT\)</span> are <span class="math inline">\(\lambda_k = \frac{4}{h^2} \sin^2(\frac{k\pi}{2(n+1)})\)</span>. As <span class="math inline">\(n \to \infty\)</span>, <span class="math inline">\(\lambda_k \to k^2 \pi^2\)</span> (eigenvalues of continuous <span class="math inline">\(-d^2/dx^2\)</span>).</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Let <span class="math inline">\((\bv_k)_j=\sin(jk\pi h)\)</span> with <span class="math inline">\(h=1/(n+1)\)</span>.</p></li>
+<li><p>Compute the <span class="math inline">\(j\)</span>-th entry of <span class="math inline">\(\bT\bv_k\)</span>.</p></li>
+<li><p>Use <span class="math inline">\(\sin(A-B)+\sin(A+B)=2\sin A\cos B\)</span>.</p></li>
+<li><p>Use <span class="math inline">\(1-\cos\theta=2\sin^2(\theta/2)\)</span>.</p></li>
+<li><p>Derive the eigenvalue formula in the result above.</p></li>
+<li><p>Let <span class="math inline">\(h\to 0\)</span> with fixed <span class="math inline">\(k\)</span> and recover <span class="math inline">\(k^2\pi^2\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Discrete Poisson Structure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The matrix <span class="math inline">\(\bT\)</span> in the result above is sparse, symmetric positive definite, and has condition number <span class="math display">\[
+\begin{align}
+\kappa_2(\bT)=O(h^{-2}).
+\end{align}
+\]</span></p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -777,28 +879,34 @@ u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>We verify <span class="math inline">\(\bT\bv_k = \lambda_k \bv_k\)</span> by component-wise substitution. The <span class="math inline">\(j\)</span>-th entry of <span class="math inline">\(\bT\bv_k\)</span> is: <span class="math display">\[
+<p>Sparsity and symmetry are immediate from the tridiagonal stencil. By the result above, all eigenvalues are positive because <span class="math inline">\(1\leq k\leq n\)</span> and <span class="math inline">\(0&lt;k\pi/(2(n+1))&lt;\pi/2\)</span>. Thus <span class="math inline">\(\bT\)</span> is SPD. Also <span class="math display">\[
 \begin{align}
-(\bT\bv_k)_j = \frac{1}{h^2} \left[ -\sin((j-1)kh\pi) + 2\sin(jkh\pi) - \sin((j+1)kh\pi) \right].
+\lambda_{\min}\sim \pi^2,
+    \qquad
+    \lambda_{\max}\sim \frac{4}{h^2},
 \end{align}
-\]</span> Applying the trigonometric identity <span class="math inline">\(\sin(A-B) + \sin(A+B) = 2\sin A \cos B\)</span> with <span class="math inline">\(A = jkh\pi\)</span> and <span class="math inline">\(B = kh\pi\)</span>: <span class="math display">\[
-\begin{align}
-(\bT\bv_k)_j &amp;= \frac{1}{h^2} \left[ 2\sin(jkh\pi) - 2\sin(jkh\pi) \cos(kh\pi) \right] \\
-    &amp;= \frac{2}{h^2} (1 - \cos(kh\pi)) \sin(jkh\pi).
-\end{align}
-\]</span> Using the half-angle identity <span class="math inline">\(1 - \cos\theta = 2\sin^2(\theta/2)\)</span>: <span class="math display">\[
-\begin{align}
-(\bT\bv_k)_j &amp;= \frac{4}{h^2} \sin^2\left(\frac{kh\pi}{2}\right) \sin(jkh\pi) \\
-    &amp;= \lambda_k (\bv_k)_j.
-\end{align}
-\]</span> As <span class="math inline">\(h = 1/(n+1) \to 0\)</span>, using the small-angle approximation <span class="math inline">\(\sin \theta \approx \theta\)</span>: <span class="math display">\[
-\begin{align}
-\lambda_k \approx \frac{4}{h^2} \left( \frac{k\pi h}{2} \right)^2 = k^2\pi^2.
-\end{align}
-\]</span></p>
+\]</span> so <span class="math inline">\(\kappa_2(\bT)=\lambda_{\max}/\lambda_{\min}=O(h^{-2})\)</span>.</p>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Use the stencil to count the number of nonzeros in <span class="math inline">\(\bT\)</span>.</p></li>
+<li><p>Use the quadratic form <span class="math inline">\(\bu^T\bT\bu\)</span> to show positive definiteness for nonzero interior grid functions.</p></li>
+<li><p>Use the result above to estimate <span class="math inline">\(\lambda_{\min}\)</span> and <span class="math inline">\(\lambda_{\max}\)</span>.</p></li>
+<li><p>Derive the condition number estimate in the result above.</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -838,6 +946,19 @@ u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 \]</span> Refining the grid <span class="math inline">\(2\times\)</span> quadruples the condition number.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Solver consequence)</strong> Dense Gaussian elimination ignores sparsity. For Poisson matrices, sparse Cholesky, CG with preconditioning, multigrid, or FFT-based solvers are the natural algorithms, depending on geometry and boundary conditions.</p>
+</div>
+</div>
 </section>
 <section id="exercises" class="level2" data-number="31.3">
 <h2 data-number="31.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">31.3</span> Exercises</h2>
@@ -852,8 +973,8 @@ u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Build <span class="math inline">\(\bT\)</span> for <span class="math inline">\(n=50\)</span> and plot its eigenvalues vs.&nbsp;<span class="math inline">\(k^2 \pi^2\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(\kappa(\bT) \to \infty\)</span> as <span class="math inline">\(n \to \infty\)</span>.</p></li>
+<li><p>Build <span class="math inline">\(\bT\)</span> for <span class="math inline">\(n=50\)</span> and plot its eigenvalues vs.&nbsp;<span class="math inline">\(k^2 \pi^2\)</span> using the result above.</p></li>
+<li><p>Show that <span class="math inline">\(\kappa(\bT) \to \infty\)</span> as <span class="math inline">\(n \to \infty\)</span> using the result above.</p></li>
 <li><p>Implement a 2-D Poisson solver on a unit square. Verify <span class="math inline">\(O(N^{3/2})\)</span> cost for direct sparse solve.</p></li>
 <li><p>Prove the differentiation operator is unbounded on <span class="math inline">\(L^2[0,1]\)</span> using <span class="math inline">\(u_k(x) = \sin(k\pi x)\)</span>.</p></li>
 </ol>

@@ -5,7 +5,9 @@
 \subsection{Linear Operators and the Poisson Equation}
 \label{sub:operators}
 
-Transitioning from finite matrices to infinite-dimensional operators.
+\textBox{%
+Differential equations become matrix problems after discretization. The finite matrix should preserve the main structure of the operator: sparsity, symmetry, definiteness, spectrum, and conditioning.
+}
 
 \subsubsection{Differential Operators and Discretization}
 
@@ -16,6 +18,25 @@ Map $\mathcal{A}: X \to Y$ between function spaces satisfying:
 \end{align*}
 Matrices are finite-dimensional operators; $\frac{d}{dx}$ and $\nabla^2$ are infinite-dimensional.
 }
+\label{def:linear-operator}
+
+\addDef{Dirichlet Poisson Problem}{%
+The one-dimensional Poisson problem with homogeneous Dirichlet boundary data is
+\begin{align*}
+    -u''(x)=f(x),\qquad 0<x<1,\qquad u(0)=u(1)=0.
+\end{align*}
+The boundary conditions are part of the problem data.
+}
+\label{def:dirichlet-poisson}
+
+\addDef{Grid Function}{%
+For $n$ interior grid points, let $h=1/(n+1)$ and $x_i=ih$, $i=1,\dots,n$. A grid function is the vector
+\begin{align*}
+    \bu=(u_1,\dots,u_n)^T,\qquad u_i\approx u(x_i).
+\end{align*}
+The boundary values are fixed separately by the boundary conditions.
+}
+\label{def:grid-function}
 
 \addDef{Finite Difference Stencil}{%
 Approximating $u''(x)$ on a grid with spacing $h$:
@@ -24,12 +45,28 @@ Approximating $u''(x)$ on a grid with spacing $h$:
 \end{align*}
 \textbf{Accuracy:}\enspace Second-order $O(h^2)$ via Taylor expansion.
 }
+\label{def:finite-difference-stencil}
+
+\addExcr{%
+\begin{enumerate}
+    \item Taylor expand $u(x+h)$ and $u(x-h)$ about $x$.
+    \item Add the two expansions.
+    \item Solve for $u''(x)$.
+    \item Identify the leading error term and prove the $O(h^2)$ claim in Def~\ref{def:finite-difference-stencil}.
+\end{enumerate}
+}
+\label{ex:finite-difference-stencil}
 
 \addDef{1-D Discrete Laplacian}{%
 Discretizing $-d^2/dx^2$ on $[0,1]$ with $u(0)=u(1)=0$ yields the tridiagonal system $\bT \mathbf{u} = \mathbf{f}$:
 \begin{align*}
     \bT = \frac{1}{h^2} \text{tridiag}(-1, 2, -1) \in \fR^{n \times n}.
 \end{align*}
+}
+\label{def:discrete-laplacian-1d}
+
+\addRemark{%
+\textbf{(Sparsity)}\enspace Each row of $\bT$ uses only the grid point and its two neighbors. This locality is why finite difference matrices are sparse.
 }
 
 \addThm{Spectrum Convergence}{%
@@ -38,27 +75,45 @@ As $n \to \infty$, $\lambda_k \to k^2 \pi^2$ (eigenvalues of continuous $-d^2/dx
 }
 \label{thm:laplacian-eigenvalues}
 
-\addPrf{%
-We verify $\bT\bv_k = \lambda_k \bv_k$ by component-wise substitution.
-The $j$-th entry of $\bT\bv_k$ is:
+\addExcr{%
+\begin{enumerate}
+    \item Let $(\bv_k)_j=\sin(jk\pi h)$ with $h=1/(n+1)$.
+    \item Compute the $j$-th entry of $\bT\bv_k$.
+    \item Use $\sin(A-B)+\sin(A+B)=2\sin A\cos B$.
+    \item Use $1-\cos\theta=2\sin^2(\theta/2)$.
+    \item Derive the eigenvalue formula in Thm~\ref{thm:laplacian-eigenvalues}.
+    \item Let $h\to 0$ with fixed $k$ and recover $k^2\pi^2$.
+\end{enumerate}
+}
+\label{ex:laplacian-eigenvalues}
+
+\addThm{Discrete Poisson Structure}{%
+The matrix $\bT$ in Def~\ref{def:discrete-laplacian-1d} is sparse, symmetric positive definite, and has condition number
 \begin{align*}
-    (\bT\bv_k)_j = \frac{1}{h^2} \left[ -\sin((j-1)kh\pi) + 2\sin(jkh\pi) - \sin((j+1)kh\pi) \right].
-\end{align*}
-Applying the trigonometric identity $\sin(A-B) + \sin(A+B) = 2\sin A \cos B$ with $A = jkh\pi$ and $B = kh\pi$:
-\begin{align*}
-    (\bT\bv_k)_j &= \frac{1}{h^2} \left[ 2\sin(jkh\pi) - 2\sin(jkh\pi) \cos(kh\pi) \right] \\
-    &= \frac{2}{h^2} (1 - \cos(kh\pi)) \sin(jkh\pi).
-\end{align*}
-Using the half-angle identity $1 - \cos\theta = 2\sin^2(\theta/2)$:
-\begin{align*}
-    (\bT\bv_k)_j &= \frac{4}{h^2} \sin^2\left(\frac{kh\pi}{2}\right) \sin(jkh\pi) \\
-    &= \lambda_k (\bv_k)_j.
-\end{align*}
-As $h = 1/(n+1) \to 0$, using the small-angle approximation $\sin \theta \approx \theta$:
-\begin{align*}
-    \lambda_k \approx \frac{4}{h^2} \left( \frac{k\pi h}{2} \right)^2 = k^2\pi^2.
+    \kappa_2(\bT)=O(h^{-2}).
 \end{align*}
 }
+\label{thm:poisson-structure}
+
+\addPrf{%
+Sparsity and symmetry are immediate from the tridiagonal stencil. By Thm~\ref{thm:laplacian-eigenvalues}, all eigenvalues are positive because $1\leq k\leq n$ and $0<k\pi/(2(n+1))<\pi/2$. Thus $\bT$ is SPD. Also
+\begin{align*}
+    \lambda_{\min}\sim \pi^2,
+    \qquad
+    \lambda_{\max}\sim \frac{4}{h^2},
+\end{align*}
+so $\kappa_2(\bT)=\lambda_{\max}/\lambda_{\min}=O(h^{-2})$.
+}
+
+\addExcr{%
+\begin{enumerate}
+    \item Use the stencil to count the number of nonzeros in $\bT$.
+    \item Use the quadratic form $\bu^T\bT\bu$ to show positive definiteness for nonzero interior grid functions.
+    \item Use Thm~\ref{thm:laplacian-eigenvalues} to estimate $\lambda_{\min}$ and $\lambda_{\max}$.
+    \item Derive the condition number estimate in Thm~\ref{thm:poisson-structure}.
+\end{enumerate}
+}
+\label{ex:poisson-structure}
 
 \subsubsection{Operator Norms and Conditioning}
 
@@ -78,12 +133,16 @@ An operator is \textbf{bounded} if $\|\mathcal{A}u\|_Y \leq C \|u\|_X$ for some 
 Refining the grid $2\times$ quadruples the condition number.
 }
 
+\addRemark{%
+\textbf{(Solver consequence)}\enspace Dense Gaussian elimination ignores sparsity. For Poisson matrices, sparse Cholesky, CG with preconditioning, multigrid, or FFT-based solvers are the natural algorithms, depending on geometry and boundary conditions.
+}
+
 \subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$.
-    \item Show that $\kappa(\bT) \to \infty$ as $n \to \infty$.
+    \item Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$ using Thm~\ref{thm:laplacian-eigenvalues}.
+    \item Show that $\kappa(\bT) \to \infty$ as $n \to \infty$ using Thm~\ref{thm:poisson-structure}.
     \item Implement a 2-D Poisson solver on a unit square. Verify $O(N^{3/2})$ cost for direct sparse solve.
     \item Prove the differentiation operator is unbounded on $L^2[0,1]$ using $u_k(x) = \sin(k\pi x)$.
 \end{enumerate}

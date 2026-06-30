@@ -68,6 +68,18 @@ Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS rout
 :::
 
 
+::: {.callout-tip icon=false}
+## Remark
+**(Computed equality)**  Use `np.allclose(x, y)` or `np.isclose(x, y)` for computed floating-point quantities. Exact equality is appropriate for integers, booleans, and deliberately exact structural checks.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Sparse matrices)**  Large discretized PDE and graph problems should usually use `scipy.sparse`, not dense NumPy arrays. Use `scipy.sparse.linalg` for sparse solves, eigenvalue computations, CG, and GMRES.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
@@ -87,7 +99,9 @@ Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS rout
   
 - **Broadcasting:** Automatic dimension expansion. `A * v` scales columns of $\bA$ by entries of $v$.
   
-- **Views vs.\ Copies:** `B = A` is a view (modifying `B` changes `A`). Use `B = A.copy()` for independent data. Slices are also views.
+- **Aliases, Views, Copies:** `B = A` makes a second name for the same array. Slices are usually views. Use `B = A.copy()` for independent data.
+  
+- **Sparse construction:** use `scipy.sparse.diags` for banded matrices and `scipy.sparse.csr\_matrix` for efficient arithmetic.
 
 
 ::: {.callout-warning icon=false}

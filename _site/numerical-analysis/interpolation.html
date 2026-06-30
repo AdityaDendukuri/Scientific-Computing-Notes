@@ -674,9 +674,10 @@ window.Quarto = {
   <li><a href="#existence-and-uniqueness" id="toc-existence-and-uniqueness" class="nav-link active" data-scroll-target="#existence-and-uniqueness"><span class="header-section-number">25.1</span> Existence and Uniqueness</a></li>
   <li><a href="#lagrange-form" id="toc-lagrange-form" class="nav-link" data-scroll-target="#lagrange-form"><span class="header-section-number">25.2</span> Lagrange Form</a></li>
   <li><a href="#barycentric-interpolation" id="toc-barycentric-interpolation" class="nav-link" data-scroll-target="#barycentric-interpolation"><span class="header-section-number">25.3</span> Barycentric Interpolation</a></li>
-  <li><a href="#runges-phenomenon" id="toc-runges-phenomenon" class="nav-link" data-scroll-target="#runges-phenomenon"><span class="header-section-number">25.4</span> Runge’s Phenomenon</a></li>
-  <li><a href="#cubic-splines" id="toc-cubic-splines" class="nav-link" data-scroll-target="#cubic-splines"><span class="header-section-number">25.5</span> Cubic Splines</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">25.6</span> Exercises</a></li>
+  <li><a href="#interpolation-error" id="toc-interpolation-error" class="nav-link" data-scroll-target="#interpolation-error"><span class="header-section-number">25.4</span> Interpolation Error</a></li>
+  <li><a href="#runges-phenomenon" id="toc-runges-phenomenon" class="nav-link" data-scroll-target="#runges-phenomenon"><span class="header-section-number">25.5</span> Runge’s Phenomenon</a></li>
+  <li><a href="#cubic-splines" id="toc-cubic-splines" class="nav-link" data-scroll-target="#cubic-splines"><span class="header-section-number">25.6</span> Cubic Splines</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">25.7</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/numerical-analysis/interpolation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -824,8 +825,50 @@ P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x -
 </div>
 </div>
 </section>
-<section id="runges-phenomenon" class="level2" data-number="25.4">
-<h2 data-number="25.4" class="anchored" data-anchor-id="runges-phenomenon"><span class="header-section-number">25.4</span> Runge’s Phenomenon</h2>
+<section id="interpolation-error" class="level2" data-number="25.4">
+<h2 data-number="25.4" class="anchored" data-anchor-id="interpolation-error"><span class="header-section-number">25.4</span> Interpolation Error</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Polynomial Interpolation Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(P_n\)</span> interpolate <span class="math inline">\(f\)</span> at distinct nodes <span class="math inline">\(x_0,...,x_n\)</span>. If <span class="math inline">\(f\)</span> has <span class="math inline">\(n+1\)</span> continuous derivatives, then for each <span class="math inline">\(x\)</span> there exists <span class="math inline">\(\xi_x\)</span> in the interval containing the nodes and <span class="math inline">\(x\)</span> such that <span class="math display">\[
+\begin{align}
+f(x)-P_n(x)
+    =
+    \frac{f^{(n+1)}(\xi_x)}{(n+1)!}
+    \prod_{j=0}^n (x-x_j).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Define <span class="math inline">\(\omega(x)=\prod_{j=0}^n(x-x_j)\)</span>.</p></li>
+<li><p>For a fixed <span class="math inline">\(x\)</span>, construct <span class="math inline">\(g(t)=f(t)-P_n(t)-c\omega(t)\)</span> so that <span class="math inline">\(g(x)=0\)</span>.</p></li>
+<li><p>Count the zeros of <span class="math inline">\(g\)</span>.</p></li>
+<li><p>Apply Rolle’s theorem <span class="math inline">\(n+1\)</span> times.</p></li>
+<li><p>Solve for <span class="math inline">\(c\)</span> and derive the result above.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="runges-phenomenon" class="level2" data-number="25.5">
+<h2 data-number="25.5" class="anchored" data-anchor-id="runges-phenomenon"><span class="header-section-number">25.5</span> Runge’s Phenomenon</h2>
 <p>Equally spaced points are often a poor choice for high-degree interpolation.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -876,8 +919,8 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 </div>
 </div>
 </section>
-<section id="cubic-splines" class="level2" data-number="25.5">
-<h2 data-number="25.5" class="anchored" data-anchor-id="cubic-splines"><span class="header-section-number">25.5</span> Cubic Splines</h2>
+<section id="cubic-splines" class="level2" data-number="25.6">
+<h2 data-number="25.6" class="anchored" data-anchor-id="cubic-splines"><span class="header-section-number">25.6</span> Cubic Splines</h2>
 <p>For large datasets, high-degree polynomial interpolation is avoided in favor of piecewise polynomials.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -906,8 +949,8 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 </div>
 </div>
 </section>
-<section id="exercises" class="level2" data-number="25.6">
-<h2 data-number="25.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">25.6</span> Exercises</h2>
+<section id="exercises" class="level2" data-number="25.7">
+<h2 data-number="25.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">25.7</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

@@ -151,6 +151,32 @@ If $\bA$ does not have full column rank, there may be infinitely many least squa
 
 
 ::: {.callout-note icon=false}
+## Theorem: Minimum-Norm Least Squares
+For any $\bA$, the vector
+$$
+\begin{align}
+\hat{\bx}=\bA^\dagger\bb
+\end{align}
+$$
+is the least squares minimizer with smallest Euclidean norm.
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. Write $\bA=\bU\bsigma\bV^T$.
+    
+1. Transform the least squares problem into SVD coordinates.
+    
+1. Identify which coordinates are determined by nonzero singular values.
+    
+1. Show that setting nullspace coordinates to zero gives the minimum-norm solution in the result above.
+
+:::
+
+
+::: {.callout-note icon=false}
 ## Definition: Ridge-Regularized Least Squares
 For $\lambda>0$, ridge regression solves
 $$
@@ -169,12 +195,51 @@ $$
 :::
 
 
+::: {.callout-note icon=false}
+## Definition: Weighted Least Squares
+Given positive weights $w_i$, weighted least squares solves
+$$
+\begin{align}
+\min_{\bx}\|\mathbf{W}^{1/2}(\bA\bx-\bb)\|_2^2,
+    \qquad
+    \mathbf{W}=\operatorname{diag}(w_1,...,w_m).
+\end{align}
+$$
+Large $w_i$ forces the fit to match observation $i$ more strongly.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Weighted Normal Equations
+The weighted least squares problem in the result above satisfies
+$$
+\begin{align}
+\bA^T\mathbf{W}\bA\hat{\bx}=\bA^T\mathbf{W}\bb.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Apply the ordinary normal equations from the result above to the transformed system
+$$
+\begin{align}
+\mathbf{W}^{1/2}\bA\bx\approx \mathbf{W}^{1/2}\bb.
+\end{align}
+$$
+This gives $(\mathbf{W}^{1/2}\bA)^T(\mathbf{W}^{1/2}\bA)\hat{\bx}=(\mathbf{W}^{1/2}\bA)^T\mathbf{W}^{1/2}\bb$, which simplifies to the stated equation.
+:::
+
+
 ::: {.callout-warning icon=false}
 ## Exercise
 
 1. Return to the result above. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.
     
 1. **Regularization:**  If $\bA$ is rank-deficient, $\|\hat{\bx}\|$ can explode. Add a penalty term $\lambda \|\bx\|_2^2$ (Ridge Regression). How do the normal equations change?
+    
+1. Derive the result above by differentiating the weighted objective directly.
 
 :::
 

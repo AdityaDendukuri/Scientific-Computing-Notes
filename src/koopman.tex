@@ -4,7 +4,9 @@
 \subsection{Koopman Theory, DMD, and SINDy}
 \label{sub:koopman}
 
-Data-driven discovery of linear models for nonlinear dynamics.
+\textBox{%
+Koopman analysis studies nonlinear dynamics through linear evolution of observables. DMD fits a finite-dimensional linear model from snapshots. SINDy fits sparse governing equations from a chosen function library.
+}
 
 \subsubsection{Koopman Operator Theory}
 
@@ -16,6 +18,39 @@ $\bx^{(k+1)} = \mathbf{F}(\bx^{(k)})$ on $\mathcal{M} \subseteq \fR^n$.
 \end{itemize}
 \textbf{Lifting:}\enspace $\mathcal{K}$ is linear even if $\mathbf{F}$ is nonlinear, at the cost of being infinite-dimensional.
 }
+\label{def:koopman-observables}
+
+\addProp{Koopman Linearity}{%
+The Koopman operator in Def~\ref{def:koopman-observables} is linear on observables:
+\begin{align*}
+    \mathcal{K}(\alpha g+\beta h)=\alpha\mathcal{K}g+\beta\mathcal{K}h.
+\end{align*}
+}
+\label{prop:koopman-linearity}
+
+\addPrf{%
+For every state $\bx$,
+\begin{align*}
+    [\mathcal{K}(\alpha g+\beta h)](\bx)
+    &=
+    (\alpha g+\beta h)(\mathbf{F}(\bx))\\
+    &=
+    \alpha g(\mathbf{F}(\bx))+\beta h(\mathbf{F}(\bx))\\
+    &=
+    [\alpha\mathcal{K}g+\beta\mathcal{K}h](\bx).
+\end{align*}
+Since this holds for every $\bx$, the two observables are equal.
+}
+
+\addExmpl{%
+\textbf{(Nonlinear map)}\enspace Let $x_{k+1}=x_k^2$. For observables $g_1(x)=x$ and $g_2(x)=x^2$,
+\begin{align*}
+    (\mathcal{K}g_1)(x)=x^2=g_2(x),
+    \qquad
+    (\mathcal{K}g_2)(x)=x^4.
+\end{align*}
+The state map is nonlinear, but the operator $g\mapsto g\circ F$ is linear on the space of observables.
+}
 
 \addDef{Koopman Eigenfunctions}{%
 Observable $\varphi$ satisfying $\mathcal{K}\varphi = \mu \varphi$.
@@ -24,6 +59,7 @@ Observable $\varphi$ satisfying $\mathcal{K}\varphi = \mu \varphi$.
     \item \textbf{Significance:}\enspace Provides a global linear coordinate system for nonlinear dynamics.
 \end{itemize}
 }
+\label{def:koopman-eigenfunctions}
 
 \subsubsection{Dynamic Mode Decomposition (DMD)}
 
@@ -38,6 +74,26 @@ Finds the best linear fit $\bY \approx \bA\bX$ for snapshot matrices:
     \item DMD eigenvalues $\{\lambda_i\}$ and modes $\{\boldsymbol{\phi}_i\}$ are recovered from $\tilde{\bA}$.
 \end{enumerate}
 }
+\label{def:dmd-algorithm}
+
+\addThm{DMD Least Squares Model}{%
+The best-fit linear map in Frobenius norm is
+\begin{align*}
+    \bA_*=\bY\bX^\dagger.
+\end{align*}
+The reduced operator in Def~\ref{def:dmd-algorithm} is the projection of this map onto the rank-$r$ left singular subspace of $\bX$.
+}
+\label{thm:dmd-least-squares}
+
+\addExcr{%
+\begin{enumerate}
+    \item Use the least squares normal equations to derive $\bA_*=\bY\bX^\dagger$.
+    \item Substitute the truncated SVD $\bX\approx\bU_r\bsigma_r\bV_r^T$.
+    \item Show that $\bU_r^T\bA_*\bU_r=\bU_r^T\bY\bV_r\bsigma_r^{-1}$.
+    \item Interpret this as the small operator $\tilde{\bA}$ in Def~\ref{def:dmd-algorithm}.
+\end{enumerate}
+}
+\label{ex:dmd-least-squares}
 
 \addRemark{%
 \textbf{Interpretation:}\enspace DMD decomposes data into spatiotemporal modes $\boldsymbol{\phi}_i$ with associated frequencies and growth rates. It is the data-driven approximation of the Koopman operator using the identity dictionary.
@@ -52,27 +108,26 @@ Identifies governing equations $\dot{\bx} = \mathbf{\Xi}^T \boldsymbol{\Theta}(\
     \item \textbf{Outcome:}\enspace Parsimonious, interpretable models (e.g., recovering Lorenz equations).
 \end{itemize}
 }
+\label{def:sindy}
+
+\addRemark{%
+\textbf{(DMD vs.\ SINDy)}\enspace DMD fits a linear time-advance map for snapshot data. SINDy fits a sparse differential equation in a chosen library. DMD returns modes and growth rates; SINDy returns equation coefficients.
+}
+
+\addRemark{%
+\textbf{(Noisy derivatives)}\enspace SINDy is sensitive to derivative estimates. Smoothing, weak-form regression, or integral formulations are often needed when data are noisy.
+}
 
 \subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Prove the linearity of the Koopman operator.
+    \item Prove Prop~\ref{prop:koopman-linearity} without looking at the proof.
     \item Implement DMD for a 2D damped oscillator. Verify the identified eigenvalues.
     \item Build a polynomial library $\boldsymbol{\Theta}$ for $\bx \in \fR^2$ up to degree 2.
     \item Use SINDy (via STLS) to identify the Lotka-Volterra predator-prey model from noisy data.
+    \item Compare DMD and SINDy on the same two-dimensional linear system. Which quantities should agree?
 \end{enumerate}
-}
-
-\addPrf{%
-For any state $\bx \in \mathcal{M}$, observables $g, h$, and scalars $\alpha, \beta$, consider the action of $\mathcal{K}$ on the linear combination:
-\begin{align*}
-    [\mathcal{K}(\alpha g + \beta h)](\bx) &= (\alpha g + \beta h)(\mathbf{F}(\bx)) \\
-    &= \alpha g(\mathbf{F}(\bx)) + \beta h(\mathbf{F}(\bx)) \\
-    &= \alpha (\mathcal{K}g)(\bx) + \beta (\mathcal{K}h)(\bx) \\
-    &= [\alpha \mathcal{K}g + \beta \mathcal{K}h](\bx).
-\end{align*}
-Since this holds for all $\bx$, $\mathcal{K}(\alpha g + \beta h) = \alpha \mathcal{K}g + \beta \mathcal{K}h$.
 }
 
 \end{document}

@@ -701,6 +701,19 @@ window.Quarto = {
 
 
 <p>Iterative method for finding extreme eigenpairs of large, symmetric matrices without explicit <span class="math inline">\(O(n^2)\)</span> formation.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Symmetric assumption)</strong> Lanczos applies to symmetric or Hermitian matrices. For nonsymmetric matrices, use Arnoldi or GMRES-type constructions.</p>
+</div>
+</div>
 <section id="krylov-subspaces" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="krylov-subspaces"><span class="header-section-number">19.1</span> Krylov Subspaces</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -714,6 +727,19 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p><span class="math inline">\(\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, ...,\, \bA^{k-1}\bv\}\)</span>. <span class="math inline">\(\bA^j\bv\)</span> amplifies components along dominant eigenvectors, concentrating information about the spectral edges.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Power iteration with memory)</strong> Power iteration keeps only the newest vector. Lanczos keeps an orthonormal basis for the whole Krylov subspace, so it can approximate several eigenvalues at once.</p>
 </div>
 </div>
 </section>
@@ -739,6 +765,45 @@ window.Quarto = {
 <li><p><strong><span class="math inline">\(\alpha_j = \bv_j^T \bA \bv_j\)</span>:</strong> Rayleigh quotients (diagonal).</p></li>
 <li><p> Orthogonalization coefficients (off-diagonal).</p></li>
 </ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Galerkin Projection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In exact arithmetic, <span class="math display">\[
+\begin{align}
+T_k=V_k^T\bA V_k.
+\end{align}
+\]</span> Thus Lanczos replaces the large symmetric matrix <span class="math inline">\(\bA\)</span> by a small symmetric tridiagonal projection.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Left multiply the Lanczos relation in the result above by <span class="math inline">\(V_k^T\)</span>: <span class="math display">\[
+\begin{align}
+V_k^T\bA V_k
+    =
+    V_k^T V_k T_k+\beta_k V_k^T\bv_{k+1}\be_k^T.
+\end{align}
+\]</span> Since the Lanczos vectors are orthonormal, <span class="math inline">\(V_k^T V_k=\bI\)</span> and <span class="math inline">\(V_k^T\bv_{k+1}=\bzero\)</span>. Hence <span class="math inline">\(V_k^T\bA V_k=T_k\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -792,7 +857,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -801,7 +866,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Starting from the Lanczos relation <span class="math inline">\(\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T\)</span>, multiply by the <span class="math inline">\(i\)</span>-th eigenvector <span class="math inline">\(\bs_i\)</span> of <span class="math inline">\(T_k\)</span> on the right: <span class="math display">\[
 \begin{align}
@@ -859,7 +924,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Carry out 2 steps of Lanczos for <span class="math inline">\(\bA = \text{diag}(5, 3, 1)\)</span> starting with <span class="math inline">\(\bv_1 = \frac{1}{\sqrt{3}}\mathbf{1}\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(T_k = V_k^T \bA V_k\)</span> (Galerkin Projection).</p></li>
+<li><p>Verify the result above numerically for a random symmetric matrix.</p></li>
 <li><p>Implement Lanczos on a <span class="math inline">\(50 \times 50\)</span> Hilbert matrix. Count spurious eigenvalues without reorthogonalization.</p></li>
 </ol>
 </div>

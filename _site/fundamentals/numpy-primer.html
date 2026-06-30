@@ -780,6 +780,32 @@ window.Quarto = {
 <p><strong>(Stability: solve vs inv)</strong> <code>np.linalg.solve(A, b)</code> is faster and more stable than <code>np.linalg.inv(A) @ b</code>. Explicit inversion is almost never desirable in scientific computation.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Computed equality)</strong> Use <code>np.allclose(x, y)</code> or <code>np.isclose(x, y)</code> for computed floating-point quantities. Exact equality is appropriate for integers, booleans, and deliberately exact structural checks.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Sparse matrices)</strong> Large discretized PDE and graph problems should usually use <code>scipy.sparse</code>, not dense NumPy arrays. Use <code>scipy.sparse.linalg</code> for sparse solves, eigenvalue computations, CG, and GMRES.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -803,7 +829,8 @@ window.Quarto = {
 <ul>
 <li><p><strong>Element-wise:</strong> <code>*</code> and <code>**</code> are entry-wise. Matrix powers use <code>np.linalg.matrix\_power</code>.</p></li>
 <li><p><strong>Broadcasting:</strong> Automatic dimension expansion. <code>A * v</code> scales columns of <span class="math inline">\(\bA\)</span> by entries of <span class="math inline">\(v\)</span>.</p></li>
-<li><p><strong>Views vs.&nbsp;Copies:</strong> <code>B = A</code> is a view (modifying <code>B</code> changes <code>A</code>). Use <code>B = A.copy()</code> for independent data. Slices are also views.</p></li>
+<li><p><strong>Aliases, Views, Copies:</strong> <code>B = A</code> makes a second name for the same array. Slices are usually views. Use <code>B = A.copy()</code> for independent data.</p></li>
+<li><p><strong>Sparse construction:</strong> use <code>scipy.sparse.diags</code> for banded matrices and <code>scipy.sparse.csr\_matrix</code> for efficient arithmetic.</p></li>
 </ul>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
