@@ -1,118 +1,448 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Introduction to Norms}
+\subsection{Inner Products, Geometry, and Norms}
 \label{sub:norms-intro}
 
-A \emph{norm} is a function that assigns a non-negative scalar ``size'' to a vector or
-matrix. Norms are the fundamental tool for measuring errors, bounding perturbations,
-and defining convergence throughout scientific computing. This chapter introduces the
-key vector norm definitions and the families most used in practice. We will study norms
-more rigorously in later chapters, where we develop matrix norms, operator
-inequalities, Cauchy-Schwarz, Hölder's inequality, and the condition number.
+\textBox{%
+To compare an approximation with an exact vector, we need to measure their difference. Euclidean length is one possible measurement. The largest coordinate error is another, and the two can rank approximations differently. We begin with the inner product, which defines lengths and perpendicular directions, and use it to find closest points on lines and subspaces. We then study norms that measure length without requiring an inner product.
+}
+
+\subsubsection{Inner Products and Euclidean Geometry}
+
+\addDef{Real Inner Product}{%
+An \textbf{inner product} on $\fR^n$ is a function $\langle\cdot,\cdot\rangle:\fR^n\times\fR^n\to\fR$ satisfying, for all vectors $\bx,\by,\bz$ and scalars $\alpha,\beta$,
+\begin{enumerate}
+  \item \textbf{Symmetry:} $\langle\bx,\by\rangle=\langle\by,\bx\rangle$.
+  \item \textbf{Linearity:} $\langle\alpha\bx+\beta\by,\bz\rangle=\alpha\langle\bx,\bz\rangle+\beta\langle\by,\bz\rangle$.
+  \item \textbf{Positive definiteness:} $\langle\bx,\bx\rangle\geq0$, with equality if and only if $\bx=\bzero$.
+\end{enumerate}
+The standard Euclidean inner product is
+\begin{align*}
+  \langle\bx,\by\rangle_2=\bx^T\by=\sum_{i=1}^n x_i y_i.
+\end{align*}
+}
+\label{def:inner-product}
+
+\addExcr{%
+For $\bx=(1,2)^T$ and $\by=(2,-1)^T$, compute $\langle\bx,\by\rangle_2$. Verify the three axioms for the Euclidean inner product. Next replace it by $\langle\bx,\by\rangle_W=4x_1y_1+x_2y_2$. Are these two vectors still orthogonal in the new inner product?
+}
+
+
+\textBox{%
+The Euclidean formula is a familiar example of these axioms. If $\bx=(x_1,x_2)^T$, then $\langle\bx,\bx\rangle=x_1^2+x_2^2$ is the square of its length. An inner product allows us to use the same arguments after changing the way directions are weighted. The inequalities below follow from the axioms, so they apply to every such choice.
+}
+
+\addDef{Norm Induced by an Inner Product}{%
+Every inner product defines a norm by
+\begin{align*}
+  \|\bx\|=\sqrt{\langle\bx,\bx\rangle}.
+\end{align*}
+For the Euclidean inner product this gives
+\begin{align*}
+  \|\bx\|_2=\sqrt{\bx^T\bx}.
+\end{align*}
+}
+\label{def:inner-product-norm}
+
+\textBox{%
+The square root is chosen so that scaling a vector by $\alpha$ scales its length by $|\alpha|$. The triangle inequality is less immediate and follows from the Cauchy--Schwarz inequality.
+}
+
+\addThm{Cauchy--Schwarz Inequality}{%
+For every real inner product and all vectors $\bx,\by$,
+\begin{align*}
+  |\langle\bx,\by\rangle|\leq\|\bx\|\,\|\by\|.
+\end{align*}
+Equality holds if and only if $\bx$ and $\by$ are linearly dependent.
+}
+\label{lem:cauchy-schwarz}
+
+\addPrf{%
+If $\by=\bzero$, both $|\langle\bx,\by\rangle|$ and $\|\bx\|\|\by\|$ are zero. Hence the claim holds in that case. Suppose now that $\by\neq\bzero$, so $\langle\by,\by\rangle>0$.
+\begin{enumerate}
+\item For every real scalar $t$, positive definiteness gives $\langle\bx-t\by,\bx-t\by\rangle\geq0$. Expand using linearity and symmetry:
+\begin{align*}
+ 0\leq\|\bx\|^2-2t\langle\bx,\by\rangle+t^2\|\by\|^2.
+\end{align*}
+\item Set $t=\langle\bx,\by\rangle/\|\by\|^2$. The denominator is positive. Substitution gives
+\begin{align*}
+ 0\leq\|\bx\|^2-\frac{\langle\bx,\by\rangle^2}{\|\by\|^2}.
+\end{align*}
+Multiply by $\|\by\|^2$ and take nonnegative square roots. This yields $|\langle\bx,\by\rangle|\leq\|\bx\|\|\by\|$.
+\item Equality holds precisely when $\|\bx-t\by\|^2=0$. Positive definiteness makes this equivalent to $\bx=t\by$. Thus equality occurs precisely for linearly dependent vectors, including the zero-vector cases.
+\end{enumerate}
+}
+
+\addCor{Triangle Inequality for an Inner-Product Norm}{%
+For all vectors $\bx$ and $\by$,
+\begin{align*}
+  \|\bx+\by\|\leq\|\bx\|+\|\by\|.
+\end{align*}
+}
+\label{cor:inner-product-triangle}
+
+\addExcr{%
+Expand $\|\bx+\by\|^2$, bound the cross term using Cauchy--Schwarz, and take square roots. When does equality hold? Treat the case in which one vector is zero separately.
+}
+
+\addDef{Angle and Orthogonality}{%
+For nonzero vectors $\bx$ and $\by$, their angle $\theta\in[0,\pi]$ is defined by
+\begin{align*}
+  \cos\theta=\frac{\langle\bx,\by\rangle}{\|\bx\|\,\|\by\|}.
+\end{align*}
+Cauchy--Schwarz guarantees that the right-hand side lies in $[-1,1]$. The vectors are \textbf{orthogonal}, written $\bx\perp\by$, when $\langle\bx,\by\rangle=0$.
+}
+\label{def:angle-orthogonality}
+
+\addThm{Pythagorean Theorem and Its Converse}{%
+For vectors $\bx$ and $\by$ in a real inner-product space,
+\begin{align*}
+  \bx\perp\by
+  \quad\Longleftrightarrow\quad
+  \|\bx+\by\|^2=\|\bx\|^2+\|\by\|^2.
+\end{align*}
+}
+\label{thm:pythagorean}
+
+\addExcr{%
+Expand $\langle\bx+\by,\bx+\by\rangle$ and prove both directions of the stated equivalence. Explain where the assumption of a real inner product is used.
+}
+
+\subsubsection{Orthogonal Projection}
+
+The coefficient used in the proof of Cauchy--Schwarz has a geometric meaning. It selects the point on the line through $\by$ that is closest to $\bx$.
+
+\addDef{Projection onto a Nonzero Vector}{%
+For $\by\neq\bzero$, the orthogonal projection of $\bx$ onto the line spanned by $\by$ is
+\begin{align*}
+  \operatorname{proj}_{\by}(\bx)
+  =\frac{\langle\bx,\by\rangle}{\langle\by,\by\rangle}\by.
+\end{align*}
+The residual $\bx-\operatorname{proj}_{\by}(\bx)$ is orthogonal to $\by$.
+}
+\label{def:vector-projection}
+
+\addThm{Closest Point on a Line}{%
+Let $\by\neq\bzero$ and let
+\begin{align*}
+  \alpha=\frac{\langle\bx,\by\rangle}{\langle\by,\by\rangle}.
+\end{align*}
+Then $\alpha\by$ is the unique closest point to $\bx$ among all scalar multiples of $\by$:
+\begin{align*}
+  \|\bx-\alpha\by\|\leq\|\bx-\beta\by\|
+  \qquad\text{for every }\beta\in\fR.
+\end{align*}
+}
+\label{thm:line-projection}
+
+\addPrf{%
+Let $\alpha=\langle\bx,\by\rangle/\langle\by,\by\rangle$ and set $\br=\bx-\alpha\by$. The assumption $\by\neq\bzero$ makes the denominator positive.
+\begin{enumerate}
+\item Compute
+\begin{align*}
+ \langle\br,\by\rangle
+ &=\langle\bx,\by\rangle-\alpha\langle\by,\by\rangle=0.
+\end{align*}
+Thus $\alpha\by$ has the required perpendicular residual.
+\item For any real $\beta$,
+\begin{align*}
+ \bx-\beta\by=\br+(\alpha-\beta)\by.
+\end{align*}
+Expand the squared norm. The cross term is zero by the preceding calculation:
+\begin{align*}
+ \|\bx-\beta\by\|^2
+ &=\|\br\|^2+2(\alpha-\beta)\langle\br,\by\rangle
+      +(\alpha-\beta)^2\|\by\|^2\\
+ &=\|\br\|^2+(\alpha-\beta)^2\|\by\|^2\geq\|\br\|^2.
+\end{align*}
+\item Since $\|\by\|^2>0$, equality holds only when $\beta=\alpha$. Therefore $\alpha\by$ is the unique closest point on the line.
+\end{enumerate}
+}
+
+\addDef{Orthogonal Complement}{%
+For a subspace $S\subseteq\fR^n$, its orthogonal complement is
+\begin{align*}
+  S^\perp=\{\bz\in\fR^n:\langle\bz,\bs\rangle=0\text{ for every }\bs\in S\}.
+\end{align*}
+}
+\label{def:orthogonal-complement}
+
+\addThm{Projection onto a Subspace with an Orthonormal Basis}{%
+Let the columns of $\bQ\in\fR^{n\times k}$ be an orthonormal basis for a subspace $S$. Then
+\begin{align*}
+  \bP=\bQ\bQ^T
+\end{align*}
+is the orthogonal projector onto $S$. Every vector has the unique decomposition
+\begin{align*}
+  \bx=\bP\bx+(\bI-\bP)\bx,
+  \qquad
+  \bP\bx\in S,
+  \qquad
+  (\bI-\bP)\bx\in S^\perp.
+\end{align*}
+Moreover, $\bP\bx$ is the unique point in $S$ closest to $\bx$.
+}
+\label{thm:subspace-projection}
+
+\addPrf{%
+Let $\bQ$ contain the orthonormal basis vectors of $S$, so $\bQ^T\bQ=\bI$, and let $\bP=\bQ\bQ^T$.
+\begin{enumerate}
+\item The vector $\bQ^T\bx$ is a list of coefficients. Therefore $\bP\bx=\bQ(\bQ^T\bx)$ is a linear combination of the columns of $\bQ$ and lies in $S$.
+\item First calculate
+\begin{align*}
+ \bQ^T(\bx-\bP\bx)
+ &=\bQ^T\bx-\bQ^T\bQ\bQ^T\bx=\bzero.
+\end{align*}
+Every $\bs\in S$ has the form $\bs=\bQ\bc$. Hence
+\begin{align*}
+ \bs^T(\bx-\bP\bx)=\bc^T\bQ^T(\bx-\bP\bx)=0.
+\end{align*}
+\item For any $\bs\in S$, write
+\begin{align*}
+ \bx-\bs=(\bx-\bP\bx)+(\bP\bx-\bs).
+\end{align*}
+The first term is perpendicular to $S$, and the second belongs to $S$. Pythagoras gives
+\begin{align*}
+ \|\bx-\bs\|_2^2=\|\bx-\bP\bx\|_2^2+\|\bP\bx-\bs\|_2^2.
+\end{align*}
+The second summand is nonnegative and vanishes only when $\bs=\bP\bx$. This proves both minimality and uniqueness.
+\end{enumerate}
+}
+
+\addExcr{%
+\textbf{Orthogonal versus oblique projection.}\enspace Let
+  \begin{align*}
+    \bP=\begin{pmatrix}1&-2\\0&0\end{pmatrix}.
+  \end{align*}
+  Verify that $\bP^2=\bP$ but $\bP^T\neq\bP$. Find its range and null space. Give a vector for which $\bP\bx$ is not the closest point in the range of $\bP$.
+}
+
+
+\addExcr{%
+\textbf{Projection and uniqueness.}\enspace Let $S$ have orthonormal basis matrix $\bQ$. Prove directly that $\bP=\bQ\bQ^T$ satisfies $\bP^T=\bP$ and $\bP^2=\bP$. Then prove that these two identities characterize orthogonal projectors.
+}
+
+
+
+\addRemark{%
+For an orthonormal basis, the projection coefficients are simply the inner products $\bQ^T\bx$. If the basis columns are stored in a general full-rank matrix $\bV$, the closest vector $\bV\bc$ instead satisfies
+\begin{align*}
+  \bV^T\bV\bc=\bV^T\bx.
+\end{align*}
+The matrix $\bV^T\bV$ records all pairwise inner products between the basis vectors. Orthogonality reduces this matrix to the identity. This is the first reason orthogonal bases simplify computation.
+}
+
+\subsubsection{Vector Norms}
+
+An inner product supplies both length and angle. A norm keeps only the notion of length. This weaker structure is enough for error bounds and convergence, even when no meaningful angle is available.
 
 \addDef{Vector Norm}{%
-A function $\|\cdot\| : \fR^n \to \fR$ is a \emph{vector norm} if for all
-$\bx, \by \in \fR^n$ and $c \in \fR$:
+A function $\|\cdot\|:\fR^n\to\fR$ is a \textbf{vector norm} if, for all vectors $\bx,\by$ and scalars $\alpha$,
 \begin{enumerate}
-  \item $\|\bx\| \geq 0$ and $\|\bx\| = 0 \Leftrightarrow \bx = \bzero$ \quad (positive definiteness)
-  \item $\|c\bx\| = |c|\|\bx\|$ \quad (absolute homogeneity)
-  \item $\|\bx + \by\| \leq \|\bx\| + \|\by\|$ \quad (triangle inequality)
+  \item $\|\bx\|\geq0$, with equality if and only if $\bx=\bzero$.
+  \item $\|\alpha\bx\|=|\alpha|\|\bx\|$.
+  \item $\|\bx+\by\|\leq\|\bx\|+\|\by\|$.
 \end{enumerate}
 }
 \label{def:vector-norm-intro}
 
-\addDef{$\ell^p$ Norms}{%
-For $\bx \in \fR^n$ and $p \geq 1$, the \emph{$\ell^p$ norm} is
+\addDef{The Standard $1$-, $2$-, and Infinity Norms}{%
+For $\bx\in\fR^n$,
 \begin{align*}
-  \|\bx\|_p = \left(\sum_{i=1}^n |x_i|^p\right)^{1/p}.
+  \|\bx\|_1&=\sum_{i=1}^n|x_i|,
+  &
+  \|\bx\|_2&=\left(\sum_{i=1}^n x_i^2\right)^{1/2},
+  &
+  \|\bx\|_\infty&=\max_{1\leq i\leq n}|x_i|.
 \end{align*}
-The three most common cases are:
-\begin{itemize}
-  \item $\|\bx\|_1 = \displaystyle\sum_{i=1}^n |x_i|$ \quad (\emph{Manhattan norm}, the sum of absolute values)
-  \item $\|\bx\|_2 = \sqrt{\displaystyle\sum_{i=1}^n x_i^2} = \sqrt{\bx^T\bx}$ \quad (\emph{Euclidean norm})
-  \item $\|\bx\|_\infty = \max_{1 \leq i \leq n} |x_i|$ \quad (\emph{max norm}, the limit as $p \to \infty$)
-\end{itemize}
+More generally, for $1\leq p<\infty$,
+\begin{align*}
+  \|\bx\|_p=\left(\sum_{i=1}^n|x_i|^p\right)^{1/p}.
+\end{align*}
 }
 \label{def:p-norms-intro}
 
-\addRemark{%
-\textbf{(Physical Intuition)}\enspace
-In scientific computing, the choice of norm depends on what you want to measure:
-\begin{itemize}
-    \item \textbf{$\ell_2$ (Energy):} The standard measure of magnitude; corresponds to physical energy or distance.
-    \item \textbf{$\ell_\infty$ (Worst-case):} Measures the single largest entry. Useful for ``tolerance'' checks (e.g., ``every entry must be below $10^{-6}$'').
-    \item \textbf{$\ell_1$ (Sparsity):} Encourages or measures sparsity; often used in optimization and compressed sensing.
-\end{itemize}
+\textBox{%
+For an exact vector $\bx$ and an approximation $\hat{\bx}$, the absolute error in a chosen norm is $\|\hat{\bx}-\bx\|$. If $\bx\neq\bzero$, its relative error is $\|\hat{\bx}-\bx\|/\|\bx\|$. The norm and scale must be stated together. An error of one unit may be small in one application and unacceptable in another.
 }
+
+
+Each norm answers a different question. The $1$-norm measures total magnitude across coordinates. The $2$-norm measures Euclidean energy. The infinity norm measures the largest coordinate error. A tolerance stated without a norm is therefore incomplete.
 
 \addExmpl{%
-For $\bx = (3, -4, 0)^T$:
+Let $\bx=(1,1,1,1)^T$ and $\by=(4,0,0,0)^T$. Both vectors satisfy $\|\bx\|_1=\|\by\|_1=4$, but
 \begin{align*}
-  \|\bx\|_1 = 3 + 4 + 0 = 7, \qquad
-  \|\bx\|_2 = \sqrt{9 + 16 + 0} = 5, \qquad
-  \|\bx\|_\infty = 4.
+  \|\bx\|_2=2,
+  \qquad
+  \|\by\|_2=4,
+  \qquad
+  \|\bx\|_\infty=1,
+  \qquad
+  \|\by\|_\infty=4.
 \end{align*}
-The unit balls $\{\bx : \|\bx\|_p \leq 1\}$ in $\fR^2$ are: a diamond ($p = 1$), a
-circle ($p = 2$), and a square ($p = \infty$). As $p$ increases, the unit ball grows
-toward the $\ell^\infty$ square.
+The vectors have the same total magnitude, but one distributes it evenly and the other concentrates it in one coordinate. No single norm measures every interpretation of size.
 }
 
-\addRemark{%
-Throughout these notes, $\|\cdot\|$ without a subscript denotes the Euclidean norm
-$\|\cdot\|_2$ unless stated otherwise. Errors and residuals are almost always measured
-in $\|\cdot\|_2$. In NumPy: \texttt{np.linalg.norm(x)} computes $\|\bx\|_2$;
-\texttt{np.linalg.norm(x, ord=p)} computes $\|\bx\|_p$.
-}
-
-\addRemark{%
-\textbf{(Numerical Zero)}\enspace
-In floating-point arithmetic, the condition $\|\bx\| = 0$ is rarely met exactly due to rounding. We instead use a \textbf{tolerance} $\varepsilon$: we say $\bx$ is ``numerically zero'' if $\|\bx\| \leq \varepsilon \cdot \|\bx_0\|$, where $\bx_0$ is some initial reference vector.
-}
-
-\addThm{All Norms are Equivalent on $\fR^n$}{%
-For any two norms $\|\cdot\|_\alpha$ and $\|\cdot\|_\beta$ on $\fR^n$, there exist
-constants $c_1, c_2 > 0$ such that
+\addThm{Sharp Comparisons of the Standard Norms}{%
+For every $\bx\in\fR^n$,
 \begin{align*}
-  c_1\|\bx\|_\beta \leq \|\bx\|_\alpha \leq c_2\|\bx\|_\beta \quad \text{for all } \bx \in \fR^n.
+  \|\bx\|_\infty
+  \leq\|\bx\|_2
+  \leq\|\bx\|_1
+  \leq\sqrt{n}\,\|\bx\|_2
+  \leq n\|\bx\|_\infty.
 \end{align*}
-In particular: $\|\bx\|_2 \leq \|\bx\|_1 \leq \sqrt{n}\,\|\bx\|_2$ and
-$\|\bx\|_\infty \leq \|\bx\|_2 \leq \sqrt{n}\,\|\bx\|_\infty$.
+The factors $\sqrt n$ and $n$ cannot be replaced by smaller constants that work for every vector.
+}
+\label{thm:standard-norm-comparison}
+
+\addPrf{%
+We prove all four comparisons and show that their constants are attained.
+\begin{enumerate}
+\item Choose $k$ with $|x_k|=\|\bx\|_\infty$. Then
+\begin{align*}
+ \|\bx\|_\infty^2=x_k^2\leq\sum_i x_i^2=\|\bx\|_2^2.
+\end{align*}
+Taking square roots gives $\|\bx\|_\infty\leq\|\bx\|_2$. Also $|x_i|\leq\|\bx\|_\infty$ for every $i$, so
+\begin{align*}
+ \|\bx\|_2^2=\sum_i|x_i|^2\leq n\|\bx\|_\infty^2.
+\end{align*}
+\item To compare the $1$- and $2$-norms, expand
+\begin{align*}
+ \|\bx\|_1^2
+ =\sum_i|x_i|^2+2\sum_{i<j}|x_i||x_j|
+ \geq\sum_i|x_i|^2=\|\bx\|_2^2.
+\end{align*}
+For the reverse estimate, apply Cauchy--Schwarz to $(|x_1|,\ldots,|x_n|)^T$ and the all-ones vector:
+\begin{align*}
+ \|\bx\|_1=\sum_i|x_i|\leq\sqrt{\sum_i|x_i|^2}\sqrt{\sum_i1^2}
+ =\sqrt n\|\bx\|_2.
+\end{align*}
+\item For a coordinate vector, all three norms equal one, so neither lower comparison can have a larger constant. For the all-ones vector, the three norms are $1$, $\sqrt n$, and $n$. Thus neither factor $\sqrt n$ in the upper comparisons can be reduced.
+\end{enumerate}
+}
+
+\addExcr{%
+Prove the remaining comparisons in Thm~\ref{thm:standard-norm-comparison}. For $\|\bx\|_2\leq\|\bx\|_1$, expand the square of the right side. For $\|\bx\|_\infty\leq\|\bx\|_2$, select an entry of largest magnitude. Use a coordinate vector and the all-ones vector to show that the constants cannot be improved. Find all equality cases in $\|\bx\|_1\leq\sqrt n\|\bx\|_2$.
+}
+
+
+
+\addThm{Equivalence of Norms in Fixed Finite Dimension}{%
+For any two norms $\|\cdot\|_\alpha$ and $\|\cdot\|_\beta$ on $\fR^n$, there are constants $c,C>0$ such that
+\begin{align*}
+  c\|\bx\|_\beta\leq\|\bx\|_\alpha\leq C\|\bx\|_\beta
+  \qquad\text{for every }\bx\in\fR^n.
+\end{align*}
+Consequently, the two norms define the same convergent sequences on a fixed $\fR^n$.
 }
 \label{thm:norm-equivalence-intro}
 
 \addPrf{%
-Since $\fR^n$ is finite-dimensional, the unit sphere $S_\beta = \{\bx : \|\bx\|_\beta = 1\}$ is compact. Any norm $\|\cdot\|_\alpha$ is a continuous function on $\fR^n$, and by the Extreme Value Theorem, it attains its minimum $c_1$ and maximum $c_2$ on $S_\beta$:
+We first compare one arbitrary norm with the Euclidean norm. Let $\be_1,\ldots,\be_n$ be the coordinate vectors and define the finite constant
 \begin{align*}
-    c_1 = \min_{\bx \in S_\beta} \|\bx\|_\alpha, \quad c_2 = \max_{\bx \in S_\beta} \|\bx\|_\alpha.
+ C_\alpha=\left(\sum_{i=1}^n\|\be_i\|_\alpha^2\right)^{1/2}.
 \end{align*}
-For any nonzero $\by \in \fR^n$, let $\bx = \by / \|\by\|_\beta \in S_\beta$. Then:
+Writing $\bx=\sum_i x_i\be_i$, and applying the triangle inequality followed by scalar Cauchy--Schwarz, gives
 \begin{align*}
-    c_1 \leq \left\| \frac{\by}{\|\by\|_\beta} \right\|_\alpha \leq c_2 \quad \Rightarrow \quad c_1 \|\by\|_\beta \leq \|\by\|_\alpha \leq c_2 \|\by\|_\beta.
+ \|\bx\|_\alpha
+ &\leq\sum_i\|x_i\be_i\|_\alpha
+ =\sum_i|x_i|\|\be_i\|_\alpha\\
+ &\leq\left(\sum_i|x_i|^2\right)^{1/2}
+       \left(\sum_i\|\be_i\|_\alpha^2\right)^{1/2}
+ =C_\alpha\|\bx\|_2.
 \end{align*}
-The explicit inequality $\|\bx\|_1 \leq \sqrt{n}\|\bx\|_2$ follows from Cauchy-Schwarz applied to $|\bx|$ and the all-ones vector $\mathbf{1}$:
+This provides an upper bound without assuming continuity of the arbitrary norm.
+
+The triangle inequality also gives $\|\bx\|_\alpha\leq\|\by\|_\alpha+\|\bx-\by\|_\alpha$. Interchange $\bx$ and $\by$ and combine the two inequalities:
 \begin{align*}
-    \|\bx\|_1 &= \sum_{i=1}^n |x_i| \cdot 1 \\
-    &\leq \left( \sum_{i=1}^n x_i^2 \right)^{1/2} \left( \sum_{i=1}^n 1^2 \right)^{1/2} \\
-    &= \sqrt{n} \|\bx\|_2.
+ |\|\bx\|_\alpha-\|\by\|_\alpha|
+ \leq\|\bx-\by\|_\alpha\leq C_\alpha\|\bx-\by\|_2.
 \end{align*}
+Thus Euclidean-close vectors have close $\alpha$-norms. This establishes continuity in the Euclidean coordinates.
+
+The Euclidean unit sphere is closed and bounded, hence compact in finite dimensions. A continuous real function on a compact set attains its minimum and maximum. Let those values of $\|\cdot\|_\alpha$ be $m_\alpha$ and $M_\alpha$. The attained minimum cannot be zero: a vector attaining it is on the unit sphere and is nonzero, while positive definiteness makes its $\alpha$-norm positive. Hence $m_\alpha>0$.
+
+For $\bx\neq\bzero$, the vector $\bx/\|\bx\|_2$ lies on that sphere. Homogeneity gives
+\begin{align*}
+ m_\alpha\leq\frac{\|\bx\|_\alpha}{\|\bx\|_2}\leq M_\alpha.
+\end{align*}
+Apply the same reasoning to the $\beta$-norm. The inequalities $\|\bx\|_\beta\leq M_\beta\|\bx\|_2$ and $m_\beta\|\bx\|_2\leq\|\bx\|_\beta$ then give
+\begin{align*}
+ \frac{m_\alpha}{M_\beta}\|\bx\|_\beta
+ \leq\|\bx\|_\alpha
+ \leq\frac{M_\alpha}{m_\beta}\|\bx\|_\beta.
+\end{align*}
+Both constants are positive and independent of $\bx$. The zero vector satisfies the same inequalities because every term is zero.
+}
+
+\addRemark{%
+\textbf{(Equivalent does not mean interchangeable)}\enspace
+Norm equivalence says that convergence in one norm implies convergence in another when the dimension is fixed. It does not say that the numerical values or bounds are equally useful. The comparison constants may grow with $n$. A bound containing $\sqrt n$ may be harmless for ten unknowns and useless for ten million.
+}
+
+The $2$-norm is induced by an inner product. The $1$- and infinity norms are not. The difference is visible in the geometry of their unit balls and in a simple algebraic identity.
+
+\addThm{Parallelogram Identity}{%
+Every norm induced by an inner product satisfies
+\begin{align*}
+  \|\bx+\by\|^2+\|\bx-\by\|^2
+  =2\|\bx\|^2+2\|\by\|^2.
+\end{align*}
+}
+\label{thm:parallelogram}
+
+\addExcr{%
+\textbf{A norm without angles.}\enspace Use the parallelogram identity to prove that neither $\|\cdot\|_1$ nor $\|\cdot\|_\infty$ on $\fR^2$ can be induced by an inner product. Explain which step of the projection argument fails when only a general norm is available.
+}
+
+
+\addExcr{%
+Expand the two squared norms and add. Which cross terms cancel? Use the identity to recover $\langle\bx,\by\rangle$ from the three lengths $\|\bx+\by\|$, $\|\bx\|$, and $\|\by\|$.
+}
+
+
+\addExmpl{%
+Take $\bx=(1,0)^T$ and $\by=(0,1)^T$. For the $1$-norm, the left side of the parallelogram identity equals $2^2+2^2=8$, while the right side equals $2+2=4$. Thus the $1$-norm cannot come from any inner product. The same test shows that the infinity norm is not induced by an inner product.
+}
+
+\addDef{Weighted Inner Product}{%
+Let $\bW\in\fR^{n\times n}$ be symmetric and satisfy $\bx^T\bW\bx>0$ for every nonzero $\bx$. Then
+\begin{align*}
+  \langle\bx,\by\rangle_{\bW}=\bx^T\bW\by,
+  \qquad
+  \|\bx\|_{\bW}=\sqrt{\bx^T\bW\bx}
+\end{align*}
+define an inner product and its induced norm.
+}
+\label{def:weighted-inner-product}
+
+\addExcr{%
+\textbf{Weighted geometry.}\enspace Let
+  \begin{align*}
+    \bW=\begin{pmatrix}4&0\\0&1\end{pmatrix}.
+  \end{align*}
+  Verify the inner-product axioms for $\langle\bx,\by\rangle_{\bW}$. Sketch the unit ball $\|\bx\|_{\bW}=1$, find the $\bW$-orthogonal complement of $(1,1)^T$, and compute the $\bW$-orthogonal projection of $(1,0)^T$ onto the line spanned by $(1,1)^T$.
+}
+
+
+
+
+
+A weighted inner product changes the geometry in which lengths and angles are measured. Directions with large quadratic weight are expensive, and directions with small weight are cheap. In a finite-element method the weight may represent physical energy. In statistics it may account for unequal uncertainty. In optimization it may encode local curvature. The chapter on positive definite matrices develops this geometry further.
+
+
+\subsubsection{Further Exercises}
+
+\addExcr{%
+\textbf{Cauchy--Schwarz as a one-variable minimization.}\enspace For fixed $\bx$ and nonzero $\by$, minimize $\|\bx-t\by\|_2^2$ over $t\in\fR$. Derive the minimizing coefficient, the projection formula, and Cauchy--Schwarz from the non-negativity of the minimum.
 }
 
 \addExcr{%
-Refer to Defs~\ref{def:vector-norm-intro}--\ref{def:p-norms-intro} and
-Thm~\ref{thm:norm-equivalence-intro}.
-\begin{enumerate}
-  \item For $\bx = (-1, 2, -3, 4)^T$, compute $\|\bx\|_1$, $\|\bx\|_2$, $\|\bx\|_\infty$
-  by hand. Verify all three norm-equivalence inequalities hold.
-  \item Verify the triangle inequality $\|\bx + \by\|_2 \leq \|\bx\|_2 + \|\by\|_2$
-  for $\bx = (1, 2)^T$, $\by = (-3, 1)^T$ by computing both sides.
-  \item Using NumPy, confirm your hand calculations with
-  \texttt{np.linalg.norm(x, 1)}, \texttt{np.linalg.norm(x)}, and
-  \texttt{np.linalg.norm(x, np.inf)}.
-  \item Show that $\|\bx\|_\infty = \lim_{p \to \infty}\|\bx\|_p$.
-  (\textit{Hint: let $M = \max_i|x_i|$; factor $M$ out of $\|\bx\|_p$ and take the limit.})
-\end{enumerate}
+\textbf{The norm is part of the question.}\enspace Two approximations have error vectors $\be_1=(10^{-3},\ldots,10^{-3})^T$ and $\be_2=(10^{-2},0,\ldots,0)^T$ in $\fR^{1000}$. Compare them in the $1$-, $2$-, and infinity norms. State which approximation is preferable under each measurement and explain why no ranking is meaningful until the application chooses a norm.
 }
+\label{ex:inner-product-norm-exercises}
 
 \end{document}

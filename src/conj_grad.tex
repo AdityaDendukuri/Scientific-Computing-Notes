@@ -1,156 +1,483 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Conjugate Gradient Method}
+\subsection{The Conjugate Gradient Method}
 \label{sub:cg}
 
 \textBox{%
-The Conjugate Gradient (CG) method is a standard iterative solver for large, sparse, symmetric positive definite (SPD) linear systems. It belongs to the class of \textbf{Krylov subspace methods}, which seek an approximate solution within a space spanned by powers of the matrix applied to the initial residual.
-}
-
-\addRemark{%
-\textbf{(Assumption)}\enspace CG requires $\bA$ to be symmetric positive definite. If $\bA$ is nonsymmetric, use GMRES or another nonsymmetric Krylov method. If $\bA$ is symmetric indefinite, use methods designed for indefinite systems, such as MINRES.
+Suppose $\bA$ is symmetric positive definite and we want to solve $\bA\bx=\bb$. A factorization is one way to find $\bx$. For a large sparse matrix, we would like to use the cheaper operation $\bv\mapsto\bA\bv$ instead. Starting with a guess, how should we choose a correction that brings us closer to the solution?
 }
 
 \textBox{%
-For SPD $\bA$, solving $\bA\bx=\bb$ is equivalent to minimizing a convex quadratic energy. CG chooses search directions that do not interfere with previous progress, so each step is optimal over a growing Krylov subspace.
+Conjugate gradients answers this question by associating a scalar function with the system. The solution is the point where this function is smallest. We first establish that correspondence, then learn how to minimize the function along one direction. The final ingredient is to choose successive directions so that a new correction preserves the progress made along earlier ones. The resulting method uses one matrix--vector product per step and stores only a few vectors.
 }
 
-\subsubsection{Krylov Subspaces}
+\subsubsection{Quadratic Energy}
 
-\addDef{Krylov Subspace}{%
-The $k$-th Krylov subspace $\mathcal{K}_k(\bA, \bb)$ is defined as the span of the first $k$ vectors in the sequence $\{\bb, \bA\bb, \bA^2\bb, \dots \}$:
+Consider first the scalar equation $ax=b$, with $a>0$. The function
 \begin{align*}
-    \mathcal{K}_k(\bA, \bb) = \text{span}\{ \bb, \bA\bb, \bA^2\bb, \dots, \bA^{k-1}\bb \}.
+    q(x)=\frac{a}{2}x^2-bx
 \end{align*}
-Krylov methods are efficient because they only require the ability to compute matrix-vector products $\bA\bv$, making them ideal for sparse matrices where $\bA$ is never explicitly stored.
-}
-\label{def:krylov-subspace-cg}
-
-\subsubsection{CG as a Projection Method}
-
-\textBox{%
-For SPD $\bA$, the quadratic
+has derivative $q'(x)=ax-b$. Thus the equation we want to solve appears when we set this derivative to zero. More is true: completing the square gives
 \begin{align*}
-    \phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx
+    q(x)=\frac{a}{2}\left(x-\frac ba\right)^2-\frac{b^2}{2a}.
 \end{align*}
-has gradient $\nabla\phi(\bx)=\bA\bx-\bb$. Therefore $\nabla\phi(\bx)=0$ exactly when $\bA\bx=\bb$. Solving the linear system is the same as finding the unique minimizer of $\phi$.
-}
-
-\addRemark{%
-\textbf{Error Minimization Properties:}\enspace
-For an SPD system $\bA\bx = \bb$, the CG method identifies the unique vector $\bx_k \in \mathcal{K}_k(\bA, \bb)$ that minimizes the \textbf{$\bA$-norm of the error}:
-\begin{align*}
-    \bx_k = \arg\min_{\by \in \mathcal{K}_k} \|\bx^* - \by\|_\bA,
-\end{align*}
-where $\bx^*$ is the exact solution and $\|\be\|_\bA = \sqrt{\be^T\bA\be}$. This is equivalent to minimizing the quadratic energy functional $\phi(\by) = \frac{1}{2} \by^T \bA \by - \by^T \bb$.
-}
-
-\subsubsection{Conjugate Directions and A-Orthogonality}
-
-\addRemark{%
-\textbf{The Basis of Directions:}\enspace
-To find this minimum efficiently, CG constructs a basis of search directions $\{\bp_0, \bp_1, \dots, \bp_{k-1}\}$ that are \textbf{$\bA$-orthogonal} (or conjugate), meaning $\bp_i^T \bA \bp_j = 0$ for $i \neq j$.
-\begin{itemize}
-    \item \textbf{Global Optimality:}\enspace Because directions are $\bA$-orthogonal, the $k$-th update $\bx_k = \bx_{k-1} + \alpha_{k-1}\bp_{k-1}$ is guaranteed to be the best possible update in the entire subspace $\mathcal{K}_k$. There is no need to revisit previous directions.
-    \item \textbf{Short Recurrence:}\enspace Due to the symmetry of $\bA$, the new conjugate direction $\bp_k$ can be computed using only the current residual and the \emph{single} previous direction. This leads to the $O(n)$ storage requirement.
-\end{itemize}
-}
-
-\addRemark{%
-\textbf{(Residuals vs.\ directions)}\enspace In exact arithmetic, CG residuals are mutually orthogonal in the Euclidean inner product, while search directions are mutually orthogonal in the $\bA$-inner product. These two orthogonality structures are what make the short recurrence possible.
-}
-
-\addRemark{%
-\textbf{Why not steepest descent?}\enspace Steepest descent always moves in the negative gradient direction, but successive gradients can undo previous progress by zig-zagging across narrow energy valleys. CG corrects this by choosing conjugate directions adapted to the geometry of $\bA$.
-}
-
-\subsubsection{The CG Algorithm}
-
-\addDef{Conjugate Gradient Algorithm}{%
-\textbf{Initialize:}\enspace $\bx^{(0)} = \bzero, \br^{(0)} = \bb, \bp^{(0)} = \br^{(0)}$.\\
-\textbf{Iteration:}\enspace
-\begin{enumerate}
-    \item \textbf{$\alpha_k = \frac{\br^{(k)T}\br^{(k)}}{\bp^{(k)T}\bA\bp^{(k)}}$} (Step length)
-    \item \textbf{$\bx^{(k+1)} = \bx^{(k)} + \alpha_k \bp^{(k)}$} (Update iterate)
-    \item \textbf{$\br^{(k+1)} = \br^{(k)} - \alpha_k \bA\bp^{(k)}$} (Update residual)
-    \item \textbf{$\beta_k = \frac{\br^{(k+1)T}\br^{(k+1)}}{\br^{(k)T}\br^{(k)}}$} (Gram-Schmidt weight)
-    \item \textbf{$\bp^{(k+1)} = \br^{(k+1)} + \beta_k \bp^{(k)}$} (Next direction)
-\end{enumerate}
-}
-\label{alg:cg}
-
-\addRemark{%
-\textbf{Efficiency:}\enspace
-\begin{itemize}
-    \item \textbf{Matvecs:}\enspace Only 1 matrix-vector product per iteration.
-    \item \textbf{Memory:}\enspace $O(n)$ storage (requires only a few vectors). No need to store the basis.
-\end{itemize}
-}
-
-\addRemark{%
-\textbf{(Practical stopping)}\enspace A common stopping rule is
-\begin{align*}
-    \frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq \texttt{tol}.
-\end{align*}
-For ill-conditioned systems, residual decrease may not translate directly into error decrease. The condition number controls that conversion.
-}
-
-\subsubsection{Convergence Rate}
-
-\addThm{Convergence Bound}{%
-\begin{align*}
-    \frac{\|\be^{(k)}\|_\bA}{\|\be^{(0)}\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1} \right)^k.
-\end{align*}
-}
-\label{thm:cg-convergence}
-
-\addRemark{%
-\textbf{The $\sqrt{\kappa}$ Advantage:}\enspace
-While stationary methods depend on $(\kappa-1)/(\kappa+1)$, CG depends on the \textbf{square root} of the condition number. For $\kappa=100$, CG reduces error $5\times$ faster per step.
-}
-
-\addRemark{%
-\textbf{Superlinear Convergence:}\enspace
-If eigenvalues are clustered, CG converges much faster than the worst-case bound suggests (e.g., $k \ll n$ for clustered spectra).
-}
-
-\addRemark{%
-\textbf{(Polynomial view)}\enspace CG chooses a degree-$k$ polynomial $p_k$ with $p_k(0)=1$ so that
-\begin{align*}
-    \be^{(k)} = p_k(\bA)\be^{(0)}
-\end{align*}
-is small in the $\bA$-norm. Good convergence occurs when a low-degree polynomial can be small on the eigenvalues of $\bA$.
-}
-\subsubsection{Preconditioning}
-
-The convergence of CG depends on the condition number $\kappa(\bA)$. \textbf{Preconditioning} transforms the system using a symmetric positive definite matrix $\bM$ that approximates $\bA$ but is much easier to invert.
-
-\addRemark{%
-\textbf{Spectral Transformation:}\enspace
-The goal of the preconditioner is to cluster the eigenvalues of $\bM^{-1}\bA$ near 1. A perfectly preconditioned system ($\bM = \bA$) has all eigenvalues equal to 1 and converges in a single step. In practice, a good preconditioner reduces the effective condition number, significantly accelerating convergence.
-}
-
-\addRemark{%
-\textbf{(Preconditioning is not optional in hard problems)}\enspace For large PDE systems, unpreconditioned CG can require too many iterations. The preconditioner is often the main algorithmic design choice.
-}
-
-\addDef{Common Preconditioners}{%
-\begin{enumerate}
-    \item \textbf{Jacobi:}\enspace $\bM = \text{diag}(\bA)$. (Cheap, moderate speedup).
-    \item \textbf{Incomplete Cholesky (IC):}\enspace $\bM \approx \bL\bL^T$ with sparse factors. (Robust).
-    \item \textbf{Multigrid:}\enspace Near $O(n)$ total complexity for PDE systems.
-\end{enumerate}
-}
-\label{def:preconditioners}
+Because $a>0$, the squared term is nonnegative and vanishes only at $x=b/a$. Solving the equation and minimizing $q$ therefore give the same answer.
 
 \addExcr{%
+What changes when $a<0$? When $a=0$, consider $b=0$ and $b\neq0$ separately. Explain why setting a derivative to zero, by itself, does not establish that a point is a minimum.
+}
+
+\textBox{%
+For a symmetric matrix, the analogous function is
+\begin{align*}
+    \phi(\bx)=\frac12\bx^T\bA\bx-\bb^T\bx.
+\end{align*}
+It takes a vector as input and returns one real number. The word \emph{quadratic} refers to the products $x_ix_j$ in the first term. We call $\phi$ an \emph{energy}. In some applications it is a physical potential energy. Here its role is to help us solve the equations. Its value need not be positive.
+}
+
+\addExmpl{%
+For the system
+\begin{align*}
+    2x_1+x_2=4,\qquad x_1+2x_2=5,
+\end{align*}
+we have
+\begin{align*}
+    \bA=\begin{pmatrix}2&1\\1&2\end{pmatrix},
+    \qquad \bb=\begin{pmatrix}4\\5\end{pmatrix},
+\end{align*}
+and
+\begin{align*}
+    \phi(x_1,x_2)=x_1^2+x_1x_2+x_2^2-4x_1-5x_2.
+\end{align*}
+The solution is $(1,2)^T$. With $e_1=x_1-1$ and $e_2=x_2-2$, completing the square in two variables gives
+\begin{align*}
+    \phi(x_1,x_2)+7
+    &=e_1^2+e_1e_2+e_2^2\\
+    &=\frac12\bigl((e_1+e_2)^2+e_1^2+e_2^2\bigr).
+\end{align*}
+Every square vanishes at the solution, and their sum is positive everywhere else. Thus the smallest energy is $-7$, attained only at $(1,2)^T$.
+}
+
+\addExcr{%
+Expand the two translated expressions to verify the identity above. Next differentiate $\phi(x_1,x_2)$ with respect to each variable, holding the other fixed. Show that setting the two partial derivatives to zero recovers the two original equations. Where does symmetry of $\bA$ enter the coefficient of $x_1x_2$?
+}
+
+\textBox{%
+The same completion-of-the-square argument works in any dimension. Recall that for an SPD matrix, $\|\be\|_{\bA}^2=\be^T\bA\be$ is positive for every nonzero $\be$.
+}
+
+\addThm{Energy and Solution Error}{%
+Let $\bA$ be SPD and let $\bx^*$ solve $\bA\bx^*=\bb$. For every $\bx$,
+\begin{align*}
+    \phi(\bx)-\phi(\bx^*)
+    =\frac12(\bx-\bx^*)^T\bA(\bx-\bx^*)
+    =\frac12\|\bx-\bx^*\|_{\bA}^2.
+\end{align*}
+Consequently, $\bx^*$ is the unique minimizer of $\phi$.
+}
+\label{thm:cg-variational}
+
+\addPrf{%
+Let $\be=\bx-\bx^*$, so $\bx=\bx^*+\be$. We compare the two energies by substituting this expression into the definition.
 \begin{enumerate}
-    \item \textbf{Convergence Check:}\enspace Solve a $100 \times 100$ Poisson system via CG. Compare your error plot to the theoretical bound.
-    \item \textbf{Spectral Clustering:}\enspace Construct $\bA$ with eigenvalues $\{1, \dots, 1, 100, 200\}$. Observe superlinear convergence in the first few steps.
-    \item \textbf{Preconditioning:}\enspace Compare iteration counts for a sparse system with and without an IC preconditioner.
+\item Distribute the matrix product before collecting terms:
+\begin{align*}
+ (\bx^*+\be)^T\bA(\bx^*+\be)
+ &=\bx^{*T}\bA\bx^*+\bx^{*T}\bA\be
+   +\be^T\bA\bx^*+\be^T\bA\be.
+\end{align*}
+Also $\bb^T(\bx^*+\be)=\bb^T\bx^*+\bb^T\be$. Therefore
+\begin{align*}
+ \phi(\bx^*+\be)-\phi(\bx^*)
+ =\tfrac12\bx^{*T}\bA\be+\tfrac12\be^T\bA\bx^*
+  +\tfrac12\be^T\bA\be-\bb^T\be.
+\end{align*}
+The terms containing only $\bx^*$ have cancelled because they make up $\phi(\bx^*)$.
+\item A scalar equals its transpose. Symmetry of $\bA$ consequently gives
+\begin{align*}
+ \bx^{*T}\bA\be
+ =(\bx^{*T}\bA\be)^T
+ =\be^T\bA^T\bx^*=\be^T\bA\bx^*.
+\end{align*}
+The two half-weighted cross terms sum to $\be^T\bA\bx^*$. Since $\bA\bx^*=\bb$, this is $\be^T\bb=\bb^T\be$, exactly the term that is subtracted. What remains is $\tfrac12\be^T\bA\be$.
+\item Positive definiteness says $\be^T\bA\be>0$ for every $\be\neq\bzero$, and the value is zero for $\be=\bzero$. Thus $\phi(\bx)>\phi(\bx^*)$ whenever $\bx\neq\bx^*$. This proves uniqueness as well as minimality.
 \end{enumerate}
 }
+
+\textBox{%
+This identity explains the choice of energy. Lowering $\phi$ lowers the squared solution error measured in the $\bA$-norm by exactly the same amount, apart from the factor $1/2$. We do not know $\bx^*$, so we cannot evaluate that error directly. We can evaluate $\phi(\bx)$ and, more usefully, its change under a proposed correction using only $\bA$, $\bb$, and the current guess.
+}
+
+\subsubsection{Line Search and Steepest Descent}
+
+Let $\bx$ be the current guess, and choose a nonzero direction $\bp$. Points on the line through $\bx$ in this direction have the form $\bx+\alpha\bp$, where the scalar $\alpha$ is the step length. Choosing the best point on this line is a one-variable problem, even when $\bx$ has millions of entries.
+
+Write $\br=\bb-\bA\bx$ for the current residual. Expanding as in the preceding proof gives
+\begin{align*}
+    \phi(\bx+\alpha\bp)
+    =\phi(\bx)-\alpha\bp^T\br
+      +\frac{\alpha^2}{2}\bp^T\bA\bp.
+\end{align*}
+The coefficient $\bp^T\bA\bp$ is positive. This is an upward-opening quadratic in $\alpha$, just like the scalar function with which we began. Differentiating with respect to $\alpha$ gives
+\begin{align*}
+    \frac{d}{d\alpha}\phi(\bx+\alpha\bp)
+    =-\bp^T\br+\alpha\bp^T\bA\bp.
+\end{align*}
+Hence the unique minimizing step is
+\begin{align*}
+    \alpha=\frac{\bp^T\br}{\bp^T\bA\bp}.
+\end{align*}
+This is called an \emph{exact line search}: exact refers to minimizing along the chosen line, not to solving the whole linear system in one step.
+
+\addExcr{%
+Substitute this step length into the quadratic to show that the energy decrease is
+\begin{align*}
+    \phi(\bx)-\phi(\bx+\alpha\bp)
+    =\frac{(\bp^T\br)^2}{2\bp^T\bA\bp}.
+\end{align*}
+When is there no improvement? Relate your answer to the slope at $\alpha=0$. Explain why replacing $\bp$ by a nonzero scalar multiple changes the step length but leaves the new point unchanged.
+}
+
+\textBox{%
+How should we choose $\bp$? The term linear in $\alpha$ is $-\alpha\bp^T\br$. Among directions of Euclidean length one, Cauchy--Schwarz shows that the largest initial decrease occurs at $\bp=\br/\|\br\|_2$, provided $\br\neq\bzero$. Thus the residual points in the locally steepest downhill direction. In the language of multivariable calculus, $\nabla\phi(\bx)=\bA\bx-\bb=-\br$ is the gradient, and the residual is its negative.
+}
+
+\textBox{%
+Since scaling the direction does not change the line, we can simply take $\bp=\br$. Repeating the line minimization in the current residual direction gives \emph{steepest descent}:
+\begin{align*}
+    \alpha_k&=\frac{\br^{(k)T}\br^{(k)}}
+                    {\br^{(k)T}\bA\br^{(k)}},\\
+    \bx^{(k+1)}&=\bx^{(k)}+\alpha_k\br^{(k)}.
+\end{align*}
+If the residual is zero, the system is already solved. Otherwise $\alpha_k>0$ and the energy strictly decreases.
+}
+
+\addExcr{%
+Derive $\br^{(k+1)}=\br^{(k)}-\alpha_k\bA\br^{(k)}$. Use the step-length formula to prove $\br^{(k+1)T}\br^{(k)}=0$. Interpret this as saying that the energy has zero slope along the line just minimized. Does it imply orthogonality to every earlier residual?
+}
+
+\textBox{%
+Steepest descent makes the best local choice of direction, but a good local slope need not give rapid progress over many steps. If the energy level sets are elongated ellipses, the residual can point across the narrow part of the ellipse instead of along its long direction toward the minimum. Successive line searches can then alternate across this narrow valley. The following calculation shows this behavior without relying on a picture.
+}
+
+\addExcr{%
+Let $\bA=\operatorname{diag}(1,9)$, $\bb=\bzero$, and $\bx^{(0)}=(9,1)^T$, so the solution is the origin.
+\begin{enumerate}
+    \item Compute $\br^{(0)}$ and show that $\alpha_0=1/5$. Find $\bx^{(1)}$ and $\br^{(1)}$.
+    \item Take a second steepest-descent step. Show that $\alpha_1=1/5$ and $\bx^{(2)}=(16/25)\bx^{(0)}$.
+    \item Compare the directions of the two steps. Why did two exact line searches fail to reach the solution of this two-variable system?
+\end{enumerate}
+}
+
+\subsubsection{Conjugate Directions}
+
+Suppose we have minimized along a direction $\bp$, arriving at $\by$ with residual $\br_{\by}$. The zero-slope condition is $\bp^T\br_{\by}=0$. Now take a step of length $\beta$ along another direction $\bq$. The new residual is $\br_{\by}-\beta\bA\bq$, so
+\begin{align*}
+    \bp^T(\br_{\by}-\beta\bA\bq)
+    =-\beta\bp^T\bA\bq.
+\end{align*}
+If $\bp^T\bA\bq=0$, the slope along $\bp$ remains zero after the new step. We have found the condition that lets us retain an earlier line minimization. It is orthogonality in the energy inner product.
+
+\addDef{A-Conjugate Vectors}{%
+Nonzero vectors $\bp_0,\ldots,\bp_{k-1}$ are \textbf{$\bA$-conjugate} if
+\begin{align*}
+    \bp_i^T\bA\bp_j=0\qquad(i\neq j).
+\end{align*}
+Equivalently, they are orthogonal in the inner product $\langle\bu,\bv\rangle_{\bA}=\bu^T\bA\bv$.
+}
+\label{def:conjugate-directions}
+
+\addExcr{%
+Return to $\bA=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ and $\bb=(4,5)^T$.
+\begin{enumerate}
+    \item Take $\bp_0=(1,0)^T$. Find $c$ so that $\bp_1=(c,1)^T$ is $\bA$-conjugate to $\bp_0$. Are the two directions Euclidean-orthogonal?
+    \item Starting at the origin, minimize first along $\bp_0$ and then along $\bp_1$. Verify that you arrive at $(1,2)^T$ and that the second step preserves the zero slope along $\bp_0$.
+    \item Prove that any collection of nonzero $\bA$-conjugate vectors is linearly independent. Take the $\bA$-inner product of a vanishing linear combination with each direction.
+\end{enumerate}
+}
+
+\addThm{Minimization along Conjugate Directions}{%
+Let $\bp_0,\ldots,\bp_{n-1}$ be an $\bA$-conjugate basis. Starting from $\bx^{(0)}$, minimize successively along these directions. With $\br^{(k)}=\bb-\bA\bx^{(k)}$, the steps are
+\begin{align*}
+    \alpha_k&=\frac{\bp_k^T\br^{(k)}}{\bp_k^T\bA\bp_k}
+             =\frac{\bp_k^T\br^{(0)}}{\bp_k^T\bA\bp_k},\\
+    \bx^{(k+1)}&=\bx^{(k)}+\alpha_k\bp_k.
+\end{align*}
+After $k$ steps, the iterate minimizes $\phi$, and hence the $\bA$-norm of the solution error, among all points
+\begin{align*}
+    \bx^{(0)}+c_0\bp_0+\cdots+c_{k-1}\bp_{k-1}.
+\end{align*}
+After $n$ steps it is the exact solution.
+}
+\label{thm:conjugate-direction-decoupling}
+
+\addPrf{%
+The essential point is that conjugacy separates a problem in several coefficients into independent scalar quadratics.
+\begin{enumerate}
+\item Put $\bd=\sum_{i=0}^{k-1}c_i\bp_i$ and $\br^{(0)}=\bb-\bA\bx^{(0)}$. The preceding energy expansion gives
+\begin{align*}
+ \phi(\bx^{(0)}+\bd)
+ =\phi(\bx^{(0)})-\bd^T\br^{(0)}+\tfrac12\bd^T\bA\bd.
+\end{align*}
+Substituting the sum for $\bd$ produces a double sum in the last term:
+\begin{align*}
+ \bd^T\bA\bd=\sum_{i,j=0}^{k-1}c_ic_j\bp_i^T\bA\bp_j
+ =\sum_{i=0}^{k-1}c_i^2\bp_i^T\bA\bp_i.
+\end{align*}
+The terms with $i\neq j$ vanish by conjugacy.
+\item Define $d_i=\bp_i^T\bA\bp_i>0$ and $g_i=\bp_i^T\br^{(0)}$. The terms depending on $c_i$ are
+\begin{align*}
+ \tfrac12d_ic_i^2-g_ic_i
+ =\tfrac12d_i(c_i-g_i/d_i)^2-\frac{g_i^2}{2d_i}.
+\end{align*}
+Their unique minimum occurs at $c_i=g_i/d_i$. No other coefficient occurs in this expression, so optimizing a later coefficient cannot change an earlier minimizing value.
+\item After the first $k$ updates,
+\begin{align*}
+ \br^{(k)}=\br^{(0)}-\sum_{i=0}^{k-1}\alpha_i\bA\bp_i.
+\end{align*}
+Multiply by $\bp_k^T$. Every term in the sum vanishes, giving $\bp_k^T\br^{(k)}=\bp_k^T\br^{(0)}$. Hence the line-search coefficient computed from the current residual is exactly $g_k/d_k$.
+\item After $k$ steps, every available coefficient has its unique minimizing value. After $n$ steps, the basis spans $\fR^n$, so the admissible points include the unique global minimizer $\bx^*$. Thus the final point is the exact solution.
+\end{enumerate}
+}
+
+\subsubsection{The Conjugate Gradient Algorithm}
+
+\textBox{%
+The theorem assumes that a conjugate basis is already available. Constructing and storing an entire basis before solving would be too expensive. CG instead builds one new direction per step from the current residual and the preceding direction. The proof below explains why this short recurrence makes the new direction conjugate to \emph{all} earlier ones.
+
+The first $k$ directions span $\mathcal K_k(\bA,\br^{(0)})$. Thus the points available after $k$ steps form $\bx^{(0)}+\mathcal K_k$, the initial guess plus a Krylov subspace. The preceding theorem explains what CG optimizes within that set: it minimizes the energy, or equivalently the error in the $\bA$-norm.
+}
+
+\addThm{The Conjugate Gradient Algorithm}{%
+Let $\bA \in \fR^{n \times n}$ be symmetric positive definite and let $\bb \in \fR^n$. Given an initial estimate $\bx^{(0)}$, compute $\br^{(0)} = \bb - \bA\bx^{(0)}$ and set $\bp^{(0)} = \br^{(0)}$. If the initial residual is zero, return immediately. Otherwise, for $k = 0, 1, 2, \dots$:
+\begin{enumerate}
+    \item Compute the matrix--vector product $\bw^{(k)} = \bA \bp^{(k)}$.
+    \item Compute the step length:
+    \begin{align*}
+        \alpha_k = \frac{\br^{(k)T}\br^{(k)}}{\bp^{(k)T}\bw^{(k)}}.
+    \end{align*}
+    \item Update the solution iterate:
+    \begin{align*}
+        \bx^{(k+1)} = \bx^{(k)} + \alpha_k \bp^{(k)}.
+    \end{align*}
+    \item Update the residual vector:
+    \begin{align*}
+        \br^{(k+1)} = \br^{(k)} - \alpha_k \bw^{(k)}.
+    \end{align*}
+    \item Check termination: if $\|\br^{(k+1)}\|_2\leq\max(\texttt{atol},\texttt{tol}\|\bb\|_2)$, terminate. Here $\texttt{tol}$ is a relative tolerance and $\texttt{atol}$ is an absolute tolerance, used also when $\bb=\bzero$.
+    \item Compute the orthogonalization coefficient:
+    \begin{align*}
+        \beta_k = \frac{\br^{(k+1)T}\br^{(k+1)}}{\br^{(k)T}\br^{(k)}}.
+    \end{align*}
+    \item Compute the next search direction:
+    \begin{align*}
+        \bp^{(k+1)} = \br^{(k+1)} + \beta_k \bp^{(k)}.
+    \end{align*}
+\end{enumerate}
+}
+\label{thm:cg-algorithm}
+
+\addThm{Orthogonality Properties of CG}{%
+In exact arithmetic, the sequences generated by the Conjugate Gradient algorithm satisfy the following orthogonality relations for all $i \neq j$:
+\begin{align*}
+    \br^{(i)T}\br^{(j)} = 0 \qquad \text{and} \qquad \bp^{(i)T}\bA\bp^{(j)} = 0.
+\end{align*}
+Moreover, the residual vectors and search directions span the Krylov subspace:
+\begin{align*}
+    \operatorname{span}\{\br^{(0)}, \br^{(1)}, \dots, \br^{(k)}\} = \operatorname{span}\{\bp^{(0)}, \bp^{(1)}, \dots, \bp^{(k)}\} = \mathcal{K}_{k+1}(\bA, \br^{(0)}).
+\end{align*}
+Consequently, the method is guaranteed to reach the exact solution in at most $n$ iterations in exact arithmetic.
+}
+\label{thm:cg-orthogonality}
+
+\addPrf{%
+We use induction to establish the structure that makes the short recurrence valid. Write $\mathcal K_k=\mathcal K_k(\bA,\br^{(0)})$ and set $\mathcal K_0=\{\bzero\}$. All calculations are in exact arithmetic and stop when a residual is zero.
+\begin{enumerate}
+\item At the beginning of step $k$, we claim that the previous directions $\bp^{(0)},\ldots,\bp^{(k-1)}$ are conjugate and span $\mathcal K_k$, while $\br^{(k)}\in\mathcal K_{k+1}$ and $\br^{(k)}\perp\mathcal K_k$. For $k=0$, there are no previous directions, and $\br^{(0)}\in\mathcal K_1$ by definition. Its orthogonality to $\mathcal K_0$ is automatic. Set $\bp^{(0)}=\br^{(0)}$.
+\item Suppose $k\geq1$ and the claims hold through the preceding step. Rearrange each previous residual update:
+\begin{align*}
+ \bA\bp^{(i)}=\frac{\br^{(i)}-\br^{(i+1)}}{\alpha_i}.
+\end{align*}
+For $i<k-1$, both residuals on the right belong to $\mathcal K_k$. Therefore
+\begin{align*}
+ \br^{(k)T}\bA\bp^{(i)}
+ =\frac{\br^{(k)T}\br^{(i)}-\br^{(k)T}\br^{(i+1)}}{\alpha_i}=0.
+\end{align*}
+Only the direction with index $k-1$ can require a correction.
+\item In $\bp^{(k)}=\br^{(k)}+\beta\bp^{(k-1)}$, require conjugacy with $\bp^{(k-1)}$. This gives
+\begin{align*}
+ \beta=-\frac{\br^{(k)T}\bA\bp^{(k-1)}}{\bp^{(k-1)T}\bA\bp^{(k-1)}}.
+\end{align*}
+The numerator is evaluated with the previous residual update. Since $\br^{(k)T}\br^{(k-1)}=0$,
+\begin{align*}
+ \br^{(k)T}\bA\bp^{(k-1)}
+ =-\frac{\|\br^{(k)}\|_2^2}{\alpha_{k-1}}.
+\end{align*}
+The previous step length gives $\alpha_{k-1}\bp^{(k-1)T}\bA\bp^{(k-1)}=\|\br^{(k-1)}\|_2^2$. Substitution yields exactly $\beta_{k-1}=\|\br^{(k)}\|_2^2/\|\br^{(k-1)}\|_2^2$. For every $i<k-1$, the new direction is conjugate to $\bp^{(i)}$ because both its residual term and its previous-direction term have zero $\bA$-inner product with that direction.
+\item A nonzero $\br^{(k)}$ is perpendicular to $\mathcal K_k$, so it cannot belong to that space. It supplies one independent direction in $\mathcal K_{k+1}$. Adding a multiple of $\bp^{(k-1)}\in\mathcal K_k$ does not change the expanded span. Therefore the first $k+1$ directions span $\mathcal K_{k+1}$. For $k=0$, the identity $\bp^{(0)T}\br^{(0)}=\|\br^{(0)}\|_2^2$ follows from $\bp^{(0)}=\br^{(0)}$. For $k\geq1$, orthogonality gives
+\begin{align*}
+ \bp^{(k)T}\br^{(k)}
+ =\|\br^{(k)}\|_2^2+\beta_{k-1}\bp^{(k-1)T}\br^{(k)}
+ =\|\br^{(k)}\|_2^2.
+\end{align*}
+Thus exact line minimization gives the algorithm's stated $\alpha_k$. Its denominator is positive because $\bA$ is SPD and $\bp^{(k)}\neq\bzero$.
+\item For $i<k$, multiply the new residual update by $\bp^{(i)T}$. The old residual is perpendicular to $\bp^{(i)}$, and conjugacy removes the update term. For $i=k$, the step-length formula gives zero directly. Hence $\br^{(k+1)}$ is perpendicular to every direction spanning $\mathcal K_{k+1}$. The update also puts it in $\mathcal K_{k+2}$. This proves the induction assertions at the next step. The preceding conjugate-direction theorem proves energy minimality.
+\item Earlier residuals lie in the previous Krylov spaces, so the orthogonality just proved makes all nonzero residuals mutually perpendicular. The direction recurrence gives equality of the residual and direction spans. There cannot be more than $n$ independent directions in $\fR^n$. If $n$ nonzero directions have been generated, they span the whole space, and the next residual, perpendicular to that space, is zero. Thus termination occurs in at most $n$ steps.
+\end{enumerate}
+The standard CG analysis is developed in \citet{saad2003}.
+}
+
+
+\addRemark{%
+\textbf{(Connection with Lanczos)}\enspace
+By Thm~\ref{thm:cg-orthogonality}, the residuals $\br^{(0)},\dots,\br^{(k-1)}$ are mutually orthogonal and the first $j$ of them span $\mathcal{K}_j(\bA,\br^{(0)})$. The Lanczos iteration of Def~\ref{def:lanczos-iteration}, started from $\bv_1=\br^{(0)}/\|\br^{(0)}\|_2$, produces an orthonormal basis with the same nested spans. Such a basis is unique up to the signs of its vectors, and the signs work out to
+\begin{align*}
+    \bv_{j+1}=(-1)^j\frac{\br^{(j)}}{\|\br^{(j)}\|_2},\qquad j=0,\dots,k-1.
+\end{align*}
+The CG coefficients also determine the Lanczos matrix $\bT_k$ of Cor~\ref{thm:lanczos-relation}. Its entries are
+\begin{align*}
+    (\bT_k)_{11}=\frac{1}{\alpha_0},\qquad
+    (\bT_k)_{j+1,j+1}=\frac{1}{\alpha_j}+\frac{\beta_{j-1}}{\alpha_{j-1}},\qquad
+    (\bT_k)_{j+1,j}=(\bT_k)_{j,j+1}=\frac{\sqrt{\beta_{j-1}}}{\alpha_{j-1}},
+\end{align*}
+where $\alpha_j$ and $\beta_j$ are the CG step length and direction coefficient. Conjugate gradients may therefore be read as the Lanczos algorithm applied to a linear system.
+
+The correspondence also describes the CG iterate directly. Write $\bx^{(k)}=\bx^{(0)}+\bV_k\by_k$. Since $\br^{(k)}$ is orthogonal to $\mathcal{K}_k$, and since $\bV_k^T\br^{(0)}=\|\br^{(0)}\|_2\be_1$ and $\bV_k^T\bA\bV_k=\bT_k$, we obtain
+\begin{align*}
+    \bzero=\bV_k^T\br^{(k)}=\bV_k^T(\br^{(0)}-\bA\bV_k\by_k)=\|\br^{(0)}\|_2\be_1-\bT_k\by_k.
+\end{align*}
+The CG iterate is thus obtained by solving the projected system $\bT_k\by_k=\|\br^{(0)}\|_2\be_1$. In addition, the extreme eigenvalues of $\bT_k$ approach $\lambda_{\min}$ and $\lambda_{\max}$ by Thm~\ref{thm:rayleigh-ritz-optimality}, so the CG coefficients give a running estimate of $\kappa_2(\bA)$ at no extra cost in products with $\bA$.
+}
+
+\addExmpl{%
+For $\bA=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\bb=(4,5)^T$, and $\bx^{(0)}=\bzero$, the initial direction is $\bp^{(0)}=\br^{(0)}=(4,5)^T$. Thus
+\begin{align*}
+ \bA\bp^{(0)}&=(13,14)^T,&
+ \alpha_0&=\frac{41}{122},\\
+ \bx^{(1)}&=\frac1{122}(164,205)^T,&
+ \br^{(1)}&=\frac1{122}(-45,36)^T.
+\end{align*}
+The new residual is perpendicular to the old residual because $-45\cdot4+36\cdot5=0$. Continuing along $\br^{(1)}$ alone would be steepest descent. CG instead adds a multiple of the old search direction to preserve the preceding minimization.
+}
+
+\addExcr{%
+Continue this calculation with exact fractions. Show that $\beta_0=81/14884$ and $\bp^{(1)}=(-5166,4797)^T/14884$. Verify conjugacy with $\bp^{(0)}$, then compute $\alpha_1$ and recover $\bx^{(2)}=(1,2)^T$. Compare the second CG direction with the second steepest-descent direction. Which earlier line-minimization condition does each preserve?
+}
+
+\subsubsection{Convergence Rate and Preconditioning}
+
+\textBox{%
+Although CG terminates in $n$ steps in exact arithmetic, its primary utility in scientific computing is as a rapid iterative solver for which $k \ll n$.
+}
+
+\addThm{Chebyshev Error Bound for Conjugate Gradient}{%
+Let $\bA$ be symmetric positive definite with 2-norm condition number $\kappa = \lambda_{\max}/\lambda_{\min}$. The error at step $k$ satisfies
+\begin{align*}
+    \frac{\|\bx^{(k)} - \bx^*\|_\bA}{\|\bx^{(0)} - \bx^*\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} \right)^k.
+\end{align*}
+}
+\label{thm:cg-convergence-bound}
+
+\addPrf{%
+Assume first that the initial error $\be^{(0)}=\bx^{(0)}-\bx^*$ is nonzero. A zero initial error needs no iteration.
+\begin{enumerate}
+\item A Krylov correction is $s(\bA)\br^{(0)}$, with $\deg s\leq k-1$. Since $\br^{(0)}=-\bA\be^{(0)}$, the corrected error is
+\begin{align*}
+ \be^{(0)}+s(\bA)\br^{(0)}
+ =[\bI-\bA s(\bA)]\be^{(0)}=p(\bA)\be^{(0)},
+\end{align*}
+where $p(t)=1-ts(t)$ has degree at most $k$ and $p(0)=1$. Conversely, every polynomial with these properties has this form because $1-p(t)$ is divisible by $t$.
+\item Expand $\be^{(0)}=\sum_i c_i\bq_i$ in an orthonormal eigenbasis. Then
+\begin{align*}
+ \|p(\bA)\be^{(0)}\|_{\bA}^2
+ &=\sum_i\lambda_i p(\lambda_i)^2c_i^2\\
+ &\leq\left(\max_i|p(\lambda_i)|^2\right)
+       \sum_i\lambda_i c_i^2.
+\end{align*}
+CG minimizes the energy-norm error over these corrections. Taking square roots therefore bounds its relative error by $\max_i|p(\lambda_i)|$ for every admissible $p$.
+\item Let $a=\lambda_{\min}$ and $b=\lambda_{\max}$. If $a<b$, the affine map $(b+a-2t)/(b-a)$ takes $[a,b]$ to $[-1,1]$. Choose
+\begin{align*}
+ p(t)=\frac{T_k((b+a-2t)/(b-a))}{T_k((b+a)/(b-a))}.
+\end{align*}
+At $t=0$ the numerator equals the denominator, so $p(0)=1$. On $[a,b]$, the numerator has magnitude at most one. Therefore the relative error is at most $1/T_k(c)$, where $c=(b+a)/(b-a)>1$.
+\item Put $\zeta=c+\sqrt{c^2-1}>1$. The Chebyshev recurrence, checked first at $k=0,1$, gives
+\begin{align*}
+ T_k(c)=\tfrac12(\zeta^k+\zeta^{-k})\geq\tfrac12\zeta^k.
+\end{align*}
+Writing $\kappa=b/a$ and simplifying gives
+\begin{align*}
+ \zeta
+ =\frac{b+a+2\sqrt{ab}}{b-a}
+ =\frac{\sqrt b+\sqrt a}{\sqrt b-\sqrt a}
+ =\frac{\sqrt\kappa+1}{\sqrt\kappa-1}.
+\end{align*}
+Hence $1/T_k(c)\leq2\zeta^{-k}$, which is the claimed bound.
+\item If $a=b$, the spectral theorem gives $\bA=a\bI$. The first CG correction has step length $1/a$ and gives the exact solution. Thus the stated conclusion also holds for every $k\geq1$ when $\kappa=1$.
+\end{enumerate}
+This is the classical Chebyshev bound for CG \citep{saad2003,greenbaum1997}.
+}
+\addExcr{%
+Derive the expression for $T_k(c)$ by checking its first two values and three-term recurrence. Then simplify $c+\sqrt{c^2-1}$ in terms of $b/a$. Explain why a polynomial that is small only at the eigenvalues can give a better CG estimate than one bounded on the whole interval.
+}
+
+
+\addCor{Termination with Distinct Eigenvalues}{%
+If $\bA$ has only $m$ distinct eigenvalues, CG reaches the exact solution in at most $m$ iterations in exact arithmetic.
+}
+\label{cor:cg-distinct-eigenvalues}
+
+\addPrf{%
+Let $\lambda_1,\ldots,\lambda_m$ be the distinct eigenvalues. Each is positive because $\bA$ is SPD.
+\begin{enumerate}
+\item Define
+\begin{align*}
+ p_m(t)=\prod_{j=1}^m(1-t/\lambda_j).
+\end{align*}
+It has degree $m$, value one at zero, and value zero at every eigenvalue. The divisions are legitimate because no eigenvalue is zero.
+\item In an orthonormal eigenbasis $\bA=\bQ\boldsymbol\Lambda\bQ^T$, powers of $\bA$ give $p_m(\bA)=\bQ p_m(\boldsymbol\Lambda)\bQ^T$. Every diagonal entry of $p_m(\boldsymbol\Lambda)$ is zero. Therefore $p_m(\bA)=\bzero$.
+\item As shown in the preceding proof, after $m$ steps the admissible errors include every $p(\bA)\be^{(0)}$ with $\deg p\leq m$ and $p(0)=1$. In particular they include $p_m(\bA)\be^{(0)}=\bzero$. CG selects the smallest energy norm among these errors. A norm is nonnegative, so a zero candidate forces the minimum to be zero. Thus the iterate is the exact solution, or the algorithm has already terminated earlier.
+\end{enumerate}
+}
+
+\addExcr{%
+For a diagonal SPD matrix with three distinct eigenvalues, construct the polynomial in Cor~\ref{cor:cg-distinct-eigenvalues} and verify that it annihilates the matrix.
+}
+
+
+
+
+
+\addRemark{%
+\textbf{(The square root condition number advantage)}\enspace
+The CG bound depends on $\sqrt{\kappa}$. For comparison, the worst-case energy contraction factor for steepest descent with exact line searches is $(\kappa-1)/(\kappa+1)$. General stationary iterations depend on their iteration matrices, not solely on $\kappa(\bA)$. For an ill-conditioned system with $\kappa = 10^4$, the reduction factor per iteration for steepest descent is approximately $(\kappa-1)/(\kappa+1) \approx 0.9998$, whereas for CG it is $(\sqrt{\kappa}-1)/(\sqrt{\kappa}+1) = 99/101 \approx 0.9802$, giving roughly one hundred times as large an asymptotic logarithmic reduction per step in these bounds. Actual rates also depend on the spectrum and initial error.
+}
+
+\addRemark{%
+\textbf{(Superlinear convergence)}\enspace
+The Chebyshev bound is a worst-case guarantee for an arbitrary spectrum. When the eigenvalues of $\bA$ are grouped into tight clusters with only a few isolated outliers, CG eliminates the outlying eigenmodes in the first few iterations and then converges at a rate governed by the clustered eigenvalues. This behavior is termed superlinear convergence.
+}
+
+\textBox{%
+The convergence bound suggests changing coordinates so that different directions have more comparable scales. An SPD matrix $\bM$ supplies such a change through its factorization $\bM=\bC\bC^T$. We analyze CG in the transformed coordinates, but implement it using solves with $\bM$. The construction below explains why those solves preserve the required symmetry.
+}
+
+\addDef{Preconditioned Conjugate Gradient (PCG)}{%
+Let $\bM$ be a symmetric positive definite preconditioner. Write $\bM=\bC\bC^T$. PCG is ordinary CG applied to the SPD system $\bC^{-1}\bA\bC^{-T}\by=\bC^{-1}\bb$, with $\bx=\bC^{-T}\by$. This is essential because $\bM^{-1}\bA$ need not be symmetric in the Euclidean inner product. Initialize $\bz^{(0)}$ by solving $\bM\bz^{(0)}=\br^{(0)}$ and set $\bp^{(0)}=\bz^{(0)}$. Use the usual solution and residual updates, then solve for the new $\bz$ and set $\bp^{(k+1)}=\bz^{(k+1)}+\beta_k\bp^{(k)}$. At each step, a linear system $\bM\bz^{(k)} = \br^{(k)}$ is solved, and the step lengths and direction updates become
+\begin{align*}
+    \alpha_k = \frac{\br^{(k)T}\bz^{(k)}}{\bp^{(k)T}\bA\bp^{(k)}}, \qquad \beta_k = \frac{\br^{(k+1)T}\bz^{(k+1)}}{\br^{(k)T}\bz^{(k)}}.
+\end{align*}
+The convergence bound applies to the SPD matrix $\bC^{-1}\bA\bC^{-T}$. A useful preconditioner improves its eigenvalue distribution while remaining inexpensive to solve with. The cost of constructing and applying the preconditioner must be included in the comparison.
+}
+\label{def:pcg}
+
+
+\subsubsection{Further Exercises}
+
+\addExcr{%
+Implement the Preconditioned Conjugate Gradient algorithm in Python using an incomplete Cholesky preconditioner, and test it on a 2D discrete Laplacian of size $100 \times 100$.
+}
+\label{ex:cg-exercises}
 
 \end{document}

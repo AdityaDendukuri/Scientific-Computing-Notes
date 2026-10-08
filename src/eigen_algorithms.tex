@@ -1,0 +1,383 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Vector Iterations and the QR Algorithm}
+\label{sub:eigen-algorithms}
+
+\textBox{%
+To compute an eigenpair approximately, we seek a unit vector $\bv$ and scalar $\theta$ for which $\bA\bv-\theta\bv$ is small. The residual bounds of the preceding section explain what such a calculation establishes for symmetric matrices.
+}
+
+\textBox{%
+We first multiply a vector repeatedly by the matrix, then replace multiplication by the solution of a shifted linear system to select other eigenvalues. These methods approximate one eigenpair at a time. The QR algorithm instead changes the whole matrix by orthogonal similarity transformations to expose all its eigenvalues.
+}
+
+\subsubsection{Power Iteration and Shifted Inverse Iteration}
+
+\addDef{Power Iteration}{%
+Let $\bA$ be real symmetric. Given a unit vector $\bv^{(0)}$, power iteration constructs
+\begin{align*}
+    \bw^{(k)} = \bA \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}, \qquad \lambda^{(k)} = (\bv^{(k)})^T \bA \bv^{(k)}.
+\end{align*}
+Order the eigenvalues by magnitude. If $|\lambda_1|>|\lambda_2|\geq\cdots\geq|\lambda_n|$ and $\bq_1^T\bv^{(0)}\neq0$, the direction of the iterate converges linearly:
+\begin{align*}
+    \|\bv^{(k)} - (\pm \bq_1)\|_2 = O\left( \left| \frac{\lambda_2}{\lambda_1} \right|^k \right).
+\end{align*}
+For a general nonnormal matrix, an eigenvector basis may be poorly conditioned or may not exist, and this simple orthogonal expansion no longer justifies the claim.
+}
+\label{def:power-iteration}
+
+\textBox{%
+The convergence claim comes from expanding the starting vector in an orthonormal eigenbasis. Write $\bv^{(0)}=\sum_i c_i\bq_i$ with $c_1\neq0$. Then
+\begin{align*}
+ \bA^k\bv^{(0)}
+ =\lambda_1^k\left(c_1\bq_1+\sum_{i=2}^nc_i(\lambda_i/\lambda_1)^k\bq_i\right).
+\end{align*}
+Each unwanted component decreases relative to the first at least as fast as $|\lambda_2/\lambda_1|^k$. Normalizing removes the common scale. A negative dominant eigenvalue can alternate the sign of the vector, so convergence is to a direction.
+}
+\addExcr{%
+For $\bA=\operatorname{diag}(4,2,1)$, write the normalized power iterate explicitly when $\bv^{(0)}=(1,1,1)^T/\sqrt3$. Bound the angle to $\be_1$. What changes if the starting vector is $(0,1,1)^T/\sqrt2$? What fails if the first diagonal entry is replaced by $-2$?
+}
+
+
+\addDef{Shifted Inverse Iteration}{%
+For a real symmetric matrix, an eigenvalue near a target $\sigma$ can be isolated by applying power iteration implicitly to $(\bA-\sigma\bI)^{-1}$:
+\begin{align*}
+    (\bA - \sigma \bI) \bw^{(k)} = \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}.
+\end{align*}
+The eigenvalues of $(\bA - \sigma \bI)^{-1}$ are $(\lambda_i - \sigma)^{-1}$. If exactly one eigenvalue is closest to $\sigma$, the shift is not an eigenvalue, and the starting vector has a component in its eigenspace, that eigenspace dominates the iteration. The matrix inverse is never formed. Each step solves a shifted linear system instead.
+}
+\label{def:inverse-iteration}
+
+\addDef{Rayleigh Quotient Iteration (RQI)}{%
+For symmetric matrices, updating the shift dynamically to the current Rayleigh estimate $\sigma_k = (\bv^{(k)})^T \bA \bv^{(k)}$ defines Rayleigh Quotient Iteration:
+\begin{align*}
+    (\bA - \sigma_k \bI) \bw^{(k+1)} = \bv^{(k)}, \qquad \bv^{(k+1)} = \frac{\bw^{(k+1)}}{\|\bw^{(k+1)}\|_2}, \qquad \sigma_{k+1} = (\bv^{(k+1)})^T \bA \bv^{(k+1)}.
+\end{align*}
+}
+\label{def:rqi}
+
+\textBox{%
+The vectors used in the shift formula must have unit norm. Before solving the next shifted system, test the eigenpair residual. At an exact eigenpair, the shift makes the matrix singular and the calculation should stop. A singular shift can also occur away from an eigenvector, so the formula alone is not a globally defined iteration. The local theorem below concerns steps for which the shifted solve exists, with exact convergence treated as termination.
+}
+
+
+\addThm{Local Cubic Convergence of Rayleigh Quotient Iteration}{%
+Let $\bA$ be real symmetric, and let $\lambda_*$ be a simple eigenvalue with unit eigenvector $\bq_*$. If a unit RQI iterate $\bv^{(k)}$ is sufficiently close to $\bq_*$, then
+\begin{align*}
+    \sin\angle(\bv^{(k+1)},\bq_*)
+    \leq C\sin^3\angle(\bv^{(k)},\bq_*).
+\end{align*}
+If $\lambda_*$ is an extremal eigenvalue, the Rayleigh shifts also satisfy
+\begin{align*}
+    |\sigma_{k+1}-\lambda_*|
+    \leq C'|\sigma_k-\lambda_*|^3
+\end{align*}
+for iterates sufficiently close to $\bq_*$.
+}
+\label{thm:rqi-cubic}
+
+\addPrf{%
+Write the current unit vector as
+\begin{align*}
+    \bv=\cos\theta\,\bq_*+\sin\theta\,\bz,
+    \qquad
+    \bz\perp\bq_*,
+    \qquad
+    \|\bz\|_2=1.
+\end{align*}
+Its Rayleigh quotient $\sigma=\bv^T\bA\bv$ obeys
+\begin{align*}
+    \sigma
+    &= (\cos\theta\,\bq_*+\sin\theta\,\bz)^T\bA(\cos\theta\,\bq_*+\sin\theta\,\bz) \\
+    &= \cos^2\theta\,\lambda_* + 2\cos\theta\sin\theta\,\bq_*^T\bA\bz + \sin^2\theta\,\bz^T\bA\bz.
+\end{align*}
+Because $\bA\bq_* = \lambda_*\bq_*$ and $\bq_*^T\bz = 0$, the cross-term vanishes: $\bq_*^T\bA\bz = \lambda_*\bq_*^T\bz = 0$. Substituting $\cos^2\theta = 1-\sin^2\theta$,
+\begin{align*}
+    \sigma-\lambda_*
+    = (1-\sin^2\theta)\lambda_* + \sin^2\theta\,\bz^T\bA\bz - \lambda_*
+    = \sin^2\theta\,(\bz^T\bA\bz-\lambda_*),
+\end{align*}
+so $|\sigma-\lambda_*|\leq C_0\sin^2\theta$.
+
+For example, the first constant can be taken as $C_0=\|\bA-\lambda_*\bI\|_2$, because $|\bz^T(\bA-\lambda_*\bI)\bz|\leq C_0$ for unit $\bz$. Thus it does not depend on the current angle.
+
+Let $\gamma=\min_{\lambda_j\neq\lambda_*}|\lambda_j-\lambda_*|>0$. Once $\theta$ is small enough, $|\lambda_j-\sigma|\geq\gamma/2$ for every other eigenvalue. Expanding the inverse-iteration vector $\bw=(\bA-\sigma\bI)^{-1}\bv$ in an orthonormal eigenbasis, its component along $\bq_*$ has magnitude
+\begin{align*}
+    \frac{|\cos\theta|}{|\lambda_*-\sigma|},
+\end{align*}
+whereas the norm of its orthogonal component is at most $2|\sin\theta|/\gamma$. More explicitly, expand $\bz=\sum_{j\neq *}a_j\bq_j$ with $\sum a_j^2=1$. The squared perpendicular-component norm is
+\begin{align*}
+ \sin^2\theta\sum_{j\neq *}\frac{a_j^2}{|\lambda_j-\sigma|^2}
+ \leq\frac{4\sin^2\theta}{\gamma^2}.
+\end{align*}
+Normalization does not change the ratio of perpendicular and parallel component lengths, which is the tangent of the acute angle. Therefore,
+\begin{align*}
+    \tan\angle(\bv^+,\bq_*)
+    \leq
+    \frac{2|\lambda_*-\sigma|}{\gamma|\cos\theta|}|\sin\theta|
+    \leq C_1|\sin\theta|^3.
+\end{align*}
+For small angles, $\sin\theta$ and $\tan\theta$ are comparable, which proves cubic convergence of the eigenvector direction.
+
+For angles at most $\pi/4$, $|\cos\theta|\geq1/\sqrt2$, so the denominator stays uniformly away from zero. The cubic bound therefore has a constant independent of sufficiently close iterates. We consider only nonsingular shifted solves, as stipulated before the theorem.
+
+If $\lambda_*$ is extremal, the spectral gap also gives two-sided local bounds $c\sin^2\theta\leq|\sigma-\lambda_*|\leq C\sin^2\theta$. Applying the Rayleigh-quotient identity to the next iterate and using the cubic angle bound yields
+\begin{align*}
+    |\sigma^+-\lambda_*|
+    \leq C_2\sin^2\angle(\bv^+,\bq_*)
+    \leq C_3\sin^6\theta
+    \leq C_4|\sigma-\lambda_*|^3.
+\end{align*}
+
+
+For an extremal simple eigenvalue, all differences $\lambda_j-\lambda_*$ have one sign and magnitudes at least $\gamma$. Hence their weighted average in the Rayleigh error cannot cancel, giving the lower bound $\gamma\sin^2\theta\leq|\sigma-\lambda_*|$. This is the additional fact used to convert the angle estimate to a cubic eigenvalue estimate.
+}
+
+\subsubsection{The Practical QR Algorithm}
+
+\addDef{Basic QR Iteration}{%
+Given $\bA_0 = \bA$, the unshifted QR iteration generates orthogonally similar matrices via
+\begin{align*}
+    \bA_k = \bQ_k \bR_k, \qquad \bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k.
+\end{align*}
+All iterates share the same eigenvalues. Under suitable separation conditions the subdiagonal entries tend to zero and the iterates reveal a Schur form. Shifts and deflation are essential for a reliable practical method.
+}
+\label{def:qr-iteration}
+
+\addLem{Invariance of Hessenberg Structure under QR Iteration}{%
+Let $\bH \in \fR^{n \times n}$ be an upper Hessenberg matrix ($H_{ij} = 0$ for all $i > j + 1$). If $\bH=\bQ\bR$ is computed by successive adjacent-row Givens rotations, then the reversed product $\bH_+ = \bR\bQ$ is also upper Hessenberg.
+}
+\label{lem:hessenberg-qr-invariance}
+
+\addPrf{%
+Use the QR factorization obtained by eliminating successive subdiagonal entries with rotations of adjacent rows. This is the structure-preserving QR factorization used by the practical algorithm.
+
+At column $j$, the current matrix has no entries below row $j+1$ in that column. A rotation of rows $j,j+1$ eliminates that one entry. Previously treated columns already have zeros in both of those rows, so this rotation does not spoil their zeros. Continuing gives an upper triangular matrix
+\begin{align*}
+ \bR=\bG_{n-1}\cdots\bG_1\bH,
+ \qquad \bQ=\bG_1^T\cdots\bG_{n-1}^T.
+\end{align*}
+A zero entry requires no rotation, so this construction also covers singular matrices.
+
+We check that $\bQ$ is upper Hessenberg. For column $j<n$, the rightmost factors $\bG_{n-1}^T,\ldots,\bG_{j+1}^T$ leave $\be_j$ unchanged. The next factor $\bG_j^T$ can introduce only coordinate $j+1$. Subsequent factors have smaller row indices and cannot introduce any coordinate beyond $j+1$. Thus $Q_{ij}=0$ for $i>j+1$.
+
+For an entry $(i,j)$ of $\bR\bQ$ below that subdiagonal, $i>j+1$, write
+\begin{align*}
+ (\bR\bQ)_{ij}=\sum_{l=1}^nR_{il}Q_{lj}.
+\end{align*}
+If $l<i$, triangularity makes $R_{il}=0$. If $l\geq i$, then $l>j+1$, and the Hessenberg property makes $Q_{lj}=0$. Every summand is therefore zero. This proves that the reversed product is upper Hessenberg without assuming an inverse of $\bR$.
+}
+
+\addThm{Practical Shifted QR Framework}{%
+A standard dense nonsymmetric eigenvalue computation has two phases:
+\begin{enumerate}
+    \item \textbf{Hessenberg reduction:}\enspace Compute $\bH_0=\bU_0^T\bA\bU_0$ with Householder reflectors. This one-time reduction costs $O(n^3)$ operations and preserves the eigenvalues.
+    \item \textbf{Implicit shifted QR steps:}\enspace Apply shifts while preserving Hessenberg form. A schematic single-shift step is
+    \begin{align*}
+        \bH_k - \mu_k \bI = \bQ_k \bR_k, \qquad \bH_{k+1} = \bR_k \bQ_k + \mu_k \bI.
+    \end{align*}
+    Lem.~\ref{lem:hessenberg-qr-invariance} explains why each step costs $O(n^2)$ rather than $O(n^3)$. Real nonsymmetric codes use implicit single or double shifts so that complex conjugate pairs can remain in real arithmetic. A small subdiagonal entry permits deflation and splits the problem into smaller blocks.
+\end{enumerate}
+For a real symmetric matrix, Hessenberg form reduces to tridiagonal form. Wilkinson shifts from the trailing two by two block and implicit bulge chasing then give a particularly efficient symmetric algorithm.
+}
+\label{thm:practical-qr-algorithm}
+
+\subsubsection{The Jacobi Eigenvalue Algorithm}
+
+\textBox{%
+For a symmetric matrix, an alternative to the QR algorithm drives the off-diagonal entries to zero directly. Each step applies an orthogonal similarity by a plane rotation chosen to annihilate one off-diagonal entry. The method, due to Jacobi in 1846, is slower than shifted QR for a general dense matrix. It remains useful because it can compute the small eigenvalues of graded positive definite matrices to high relative accuracy \citep{demmel1997}, and because rotations acting on disjoint pairs of indices can be applied in parallel.
+}
+
+\addDef{Givens Plane Rotation Matrix}{%
+The matrix $\bG(p, q, \theta) \in \fR^{n \times n}$ is an identity matrix except for the four entries at the intersections of rows and columns $p$ and $q$:
+\begin{align*}
+    g_{pp} = c, \qquad g_{pq} = s, \qquad g_{qp} = -s, \qquad g_{qq} = c,
+\end{align*}
+where $c = \cos\theta$ and $s = \sin\theta$. The transformation $\bA' = \bG^T \bA \bG$ modifies only rows and columns $p$ and $q$ of $\bA$.
+}
+\label{def:givens-rotation}
+
+\addThm{Derivation of the Optimal Rotation Angle}{%
+To zero the transformed off-diagonal entry $a'_{pq} = 0$, we consider the $2 \times 2$ orthogonal similarity transformation on the submatrix at indices $\{p, q\}$:
+\begin{align*}
+    \begin{pmatrix} a'_{pp} & a'_{pq} \\ a'_{pq} & a'_{qq} \end{pmatrix}
+    &=
+    \begin{pmatrix} c & -s \\ s & c \end{pmatrix}
+    \begin{pmatrix} a_{pp} & a_{pq} \\ a_{pq} & a_{qq} \end{pmatrix}
+    \begin{pmatrix} c & s \\ -s & c \end{pmatrix} \\
+    &=
+    \begin{pmatrix}
+        c^2 a_{pp} - 2cs a_{pq} + s^2 a_{qq} & (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) \\
+        (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) & s^2 a_{pp} + 2cs a_{pq} + c^2 a_{qq}
+    \end{pmatrix}.
+\end{align*}
+Setting $a'_{pq} = 0$ yields the trigonometric condition
+\begin{align*}
+    (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) = 0
+    \implies
+    \frac{\cos(2\theta)}{\sin(2\theta)} = \frac{a_{qq} - a_{pp}}{2a_{pq}}.
+\end{align*}
+Defining $\tau = \cot(2\theta) = \frac{a_{qq} - a_{pp}}{2a_{pq}}$ and using $\cot(2\theta) = \frac{1 - \tan^2\theta}{2\tan\theta}$, setting $t = \tan\theta$ produces
+\begin{align*}
+    t^2 + 2\tau t - 1 = 0.
+\end{align*}
+If $a_{pq}=0$, no rotation is needed. Otherwise, to choose a rotation of magnitude at most $\pi/4$ and avoid cancellation, select the root of smaller absolute value, with $\operatorname{sign}(0)=1$:
+\begin{align*}
+    t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \qquad c = \frac{1}{\sqrt{1 + t^2}}, \qquad s = ct.
+\end{align*}
+}
+\label{thm:jacobi-angle-derivation}
+
+\addPrf{%
+The scalar equation is $t^2+2\tau t-1=0$. Its roots are $-\tau\pm\sqrt{1+\tau^2}$, and their product is $-1$. Thus, unless both have magnitude one, one root has magnitude less than one and the other greater than one.
+
+If $\tau>0$, the smaller-magnitude root is $\sqrt{1+\tau^2}-\tau$. Rationalize it:
+\begin{align*}
+ \sqrt{1+\tau^2}-\tau
+ =\frac{(1+\tau^2)-\tau^2}{\sqrt{1+\tau^2}+\tau}
+ =\frac1{\sqrt{1+\tau^2}+\tau}.
+\end{align*}
+If $\tau<0$, put $a=-\tau>0$. The smaller root is $a-\sqrt{1+a^2}=-1/(a+\sqrt{1+a^2})$. Combining these cases gives
+\begin{align*}
+ t=\frac{\operatorname{sign}(\tau)}{|\tau|+\sqrt{1+\tau^2}}.
+\end{align*}
+For $\tau=0$, the roots are $1$ and $-1$. With the stated convention $\operatorname{sign}(0)=1$, the formula selects $1$.
+
+The denominator is at least one, so $|t|\leq1$. Set $\theta=\arctan t$, giving $|\theta|\leq\pi/4$, and define $c=1/\sqrt{1+t^2}$, $s=ct$. Then $c^2+s^2=1$ and $s/c=t$. Substitution into the off-diagonal formula gives zero because $t$ satisfies the quadratic. The rationalized expression avoids subtracting two nearly equal positive numbers.
+}
+
+\addExcr{%
+Perform one Jacobi rotation by hand to zero out the off-diagonal entry of
+    \begin{align*}
+        \bA = \begin{pmatrix} 3 & 2 \\ 2 & 6 \end{pmatrix}.
+    \end{align*}
+    Explicitly compute $\tau, t, c, s$, and the resulting diagonal matrix $\bA'$.
+}
+
+
+\textBox{%
+A rotation that annihilates $a_{pq}$ may make a previously annihilated entry nonzero again, so the method does not terminate after $n(n-1)/2$ steps. Convergence follows instead from a quantity that decreases at every step.
+}
+
+\addThm{Monotone Decrease of the Off-Diagonal Frobenius Norm}{%
+Let the off-diagonal squared norm be defined by
+\begin{align*}
+    \operatorname{off}(\bA)^2 = \sum_{i \neq j} a_{ij}^2 = \|\bA\|_F^2 - \sum_{i=1}^n a_{ii}^2.
+\end{align*}
+Applying the Jacobi rotation $\bA' = \bG(p, q, \theta)^T \bA \bG(p, q, \theta)$ with the optimal angle strictly reduces the off-diagonal norm:
+\begin{align*}
+    \operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2.
+\end{align*}
+}
+\label{thm:jacobi-convergence}
+
+\addPrf{%
+Orthogonal multiplication preserves the Frobenius norm because it preserves the Euclidean norm of each column on the left, or each row on the right. Applying this twice gives the invariance used below.
+
+Because $\bG$ is orthogonal, the total Frobenius norm is preserved: $\|\bA'\|_F^2 = \|\bA\|_F^2$. The rotation affects only entries in rows and columns $p$ and $q$. For the $2 \times 2$ submatrix, the sum of squares is invariant under orthogonal similarity:
+\begin{align*}
+    (a'_{pp})^2 + (a'_{qq})^2 + 2(a'_{pq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align*}
+Because the rotation enforces $a'_{pq} = 0$, the sum of squared diagonal entries increases:
+\begin{align*}
+    (a'_{pp})^2 + (a'_{qq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align*}
+Subtract the old squared diagonal sum from the new one in this block. The difference is exactly $2a_{pq}^2$. Thus diagonal energy has increased by that amount while total squared norm stays fixed.
+
+All other diagonal entries $a_{ii}$ ($i \neq p, q$) are untouched. Substituting this into $\operatorname{off}(\bA')^2 = \|\bA'\|_F^2 - \sum (a'_{ii})^2$ proves that $\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2$.
+
+
+In particular, a nonzero selected entry gives a strict decrease. If it was already zero and no rotation is performed, the formula gives equality. A single decreasing quantity does not by itself specify a global rate until the choice of pairs is considered.
+}
+
+\addExcr{%
+Prove that for an $n \times n$ matrix, if the largest off-diagonal entry is selected at each step (Classical Jacobi), then $\operatorname{off}(\bA^{(k+1)})^2 \leq \left( 1 - \frac{2}{n(n-1)} \right) \operatorname{off}(\bA^{(k)})^2$.
+}
+
+
+\addDef{Cyclic Jacobi Algorithm}{%
+Let $\bA^{(0)}=\bA$ and $\bV=\bI_n$. While $\operatorname{off}(\bA)>\texttt{tol}\,\|\bA^{(0)}\|_F$, sweep through the pairs $1\leq p<q\leq n$ in a fixed order. For each pair, compute $c$ and $s$ from Thm~\ref{thm:jacobi-angle-derivation}, replace $\bA$ by $\bG(p,q,\theta)^T\bA\bG(p,q,\theta)$, and replace $\bV$ by $\bV\bG(p,q,\theta)$. On termination, the diagonal of $\bA$ approximates the eigenvalues and the columns of $\bV$ the eigenvectors.
+}
+\label{def:cyclic-jacobi}
+
+\textBox{%
+Theorem~\ref{thm:jacobi-convergence} shows that $\operatorname{off}(\bA)^2$ decreases by $2a_{pq}^2$ at every rotation. Choosing the largest off-diagonal entry at each step gives linear convergence, as the exercises show. The cyclic order avoids that search, and once the off-diagonal entries are small compared with the gaps between the eigenvalues, cyclic Jacobi converges quadratically, measured sweep by sweep \citep{golubvanloan2013}. Each sweep costs $O(n^3)$ flops.
+}
+
+\subsubsection{Shifted Hessenberg Systems}
+
+\textBox{%
+Several calculations require the solution of $(s\bI-\bA)\bx=\bb$ for many complex shifts $s$ with the same $\bA$ and $\bb$. The vector $(s\bI-\bA)^{-1}\bb$ is the resolvent of $\bA$ applied to $\bb$. Resolvents appear in Laplace transforms of solutions of linear differential equations, in frequency responses, and in contour-integral formulas for matrix functions. Factoring $s\bI-\bA$ separately for each of $N$ shifts costs about $\tfrac23n^3$ flops per shift. The Hessenberg reduction of Thm~\ref{thm:practical-qr-algorithm} removes this repetition, because adding a multiple of the identity does not change Hessenberg structure.
+}
+
+\addThm{Shifted Solves with a Hessenberg Matrix}{%
+Let $\bA=\bQ\bH\bQ^T$ with $\bQ$ orthogonal and $\bH$ upper Hessenberg, and let $s$ not be an eigenvalue of $\bA$. Then $\bx=(s\bI-\bA)^{-1}\bb$ is given by
+\begin{align*}
+    (s\bI-\bH)\by=\bQ^T\bb,
+    \qquad
+    \bx=\bQ\by.
+\end{align*}
+Gaussian elimination with partial pivoting solves the Hessenberg system in $O(n^2)$ operations. At each step, the only possible row interchange is between the pivot row and the row directly below it.
+}
+\label{thm:hessenberg-shifted-solve}
+
+\addPrf{%
+Since $\bQ\bQ^T=\bI$, we have $s\bI-\bA=\bQ(s\bI-\bH)\bQ^T$, so $\bx=\bQ(s\bI-\bH)^{-1}\bQ^T\bb$. This reduction can also be obtained without forming an inverse. Set $\bx=\bQ\by$ in $(s\bI-\bA)\bx=\bb$, then multiply by $\bQ^T$. Orthogonality gives exactly $(s\bI-\bH)\by=\bQ^T\bb$. Nonsingularity follows because $s$ is not an eigenvalue.
+
+The matrix $s\bI-\bH$ differs from $-\bH$ only on the diagonal, so it is upper Hessenberg. Suppose that after $k-1$ elimination steps the active submatrix is upper Hessenberg. Its first column then has a single nonzero entry below the diagonal, in row $k+1$. Partial pivoting compares only rows $k$ and $k+1$, computes one multiplier, and updates one row of length at most $n-k+1$. Rows $k+2,\dots,n$ are untouched, so the next active submatrix is again upper Hessenberg. Summing the work over $k=1,\dots,n-1$ gives $O(n^2)$ operations, and the triangular solve that follows costs another $O(n^2)$.
+
+
+The total row-update length is bounded by a constant times $\sum_{k=1}^{n-1}(n-k+1)$. This sum is $(n-1)(n+2)/2=O(n^2)$. Pivot comparisons and swaps cost at most the same order. An upper triangular solve also has a quadratic count, so adding it leaves the overall order unchanged.
+}
+
+\textBox{%
+Reducing $\bA$ to Hessenberg form with Householder reflectors costs about $\tfrac{10}{3}n^3$ flops when $\bQ$ is kept as a product of reflectors, and this reduction is done once \citep{golubvanloan2013}. Applying $\bQ^T$ and $\bQ$ to a vector costs $O(n^2)$ flops. For $N$ shifts, the total cost is therefore about $\tfrac{10}{3}n^3+O(Nn^2)$ flops, compared with about $\tfrac23Nn^3$ for separate factorizations. The reduction pays for itself after five shifts, and with one hundred shifts it reduces the cost by a factor of about twenty.
+}
+
+\addRemark{%
+\textbf{(Contour integrals for the matrix exponential)}\enspace
+The Cauchy integral formula for matrix functions gives
+\begin{align*}
+    e^{t\bA}\bb=\frac{1}{2\pi\mathrm{i}}\int_\Gamma e^{ts}(s\bI-\bA)^{-1}\bb\,ds,
+\end{align*}
+where $\Gamma$ is a contour that encloses the spectrum of $\bA$ \citep{higham2008}. When the spectrum lies in the left half-plane, as for Markov generators and discretized diffusion operators, $\Gamma$ can be chosen to wrap around the negative real axis so that $e^{ts}$ decays along it. After a parametrization of $\Gamma$, the trapezoid rule with $N$ nodes approximates the integral by a sum of $N$ resolvent applications, each computed by Thm~\ref{thm:hessenberg-shifted-solve}. For suitable Talbot-type contours the error decreases geometrically in $N$, and a few tens of nodes commonly reach double-precision accuracy \citep{weidemantrefethen2007}. The geometric convergence is the same mechanism as the spectral accuracy of the trapezoid rule for periodic analytic integrands in Section~\ref{subsec:quadrature}. For large sparse matrices, the Krylov approximations of Section~\ref{sub:arnoldi} are usually preferable, because they avoid the dense Hessenberg reduction.
+}
+
+\subsubsection{Further Exercises}
+
+\addExcr{%
+\textbf{(Observed cubic convergence of RQI)}\enspace Apply RQI to a symmetric matrix with distinct eigenvalues, starting from several unit vectors close to the same eigenvector.
+    \begin{enumerate}
+        \item Record the angle errors $\theta_k=\angle(\bv^{(k)},\bq_*)$ and the ratios $\sin\theta_{k+1}/\sin^3\theta_k$.
+        \item Record the Rayleigh errors and verify the cubic relation in Thm~\ref{thm:rqi-cubic} before rounding error dominates.
+        \item Repeat with two nearly repeated eigenvalues and explain how the spectral gap enters the constants in the proof.
+    \end{enumerate}
+}
+
+\addExcr{%
+\textbf{(Failure of unshifted QR on an exchange matrix)}\enspace Let $\bP = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$.
+    \begin{enumerate}
+        \item Compute the QR factorization $\bP = \bQ_0 \bR_0$.
+        \item Compute $\bP_1 = \bR_0 \bQ_0$ and show that $\bP_1 = \bP$.
+        \item Repeat the step with a nonzero shift. Determine which shifts break the cycle, and explain how an eigenvalue shift from the trailing two by two block permits immediate deflation in this example.
+    \end{enumerate}
+}
+
+\addExcr{%
+\textbf{(Givens rotation Hessenberg QR)}\enspace Write a Python function that executes one step of shifted QR on an upper Hessenberg matrix $\bH \in \fR^{n \times n}$ using $n-1$ Givens rotations. Verify that your implementation requires $O(n^2)$ flops rather than $O(n^3)$.
+}
+
+
+\addExcr{%
+Verify that the eigenvalues computed on the diagonal of $\bA'$ match the exact roots of $\det(\bA - \lambda\bI) = 0$.
+}
+
+
+\addExcr{%
+\textbf{(Many shifted solves)}\enspace For a random $200\times200$ matrix, compare the time to solve $(s_k\bI-\bA)\bx_k=\bb$ for $k=1,\dots,N$ by separate LU factorizations and by one Hessenberg reduction followed by Thm~\ref{thm:hessenberg-shifted-solve}. Find the value of $N$ at which the two approaches cost the same, and compare it with the flop estimate in the text.
+}
+\label{ex:eigen-algorithm-exercises}
+
+\end{document}

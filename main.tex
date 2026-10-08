@@ -1,13 +1,13 @@
-\documentclass[12pt]{article} % config file 
-\input{config/import-packages} 
-\input{config/notes-api} 
-\input{config/printmatsq} 
-\input{config/symbols} 
-\input{config/ucsb-colors} 
-\makeindex 
+\documentclass[11pt]{article} % config file
+\input{config/import-packages}
+\input{config/notes-api}
+\input{config/printmatsq}
+\input{config/symbols}
+\input{config/ucsb-colors}
+\makeindex
 \title{Scientific Computing}
-\author{Aditya Dendukuri} 
-\date{\vskip 10pt UC Santa Barbara} 
+\author{Aditya Dendukuri}
+\date{\vskip 10pt UC Santa Barbara}
 \begin{document}
     % title and table of contents
     \maketitle
@@ -17,59 +17,96 @@
 
     % Chapter 1: Fundamentals
     \section{Fundamentals}
-    \subfile{src/math_notation.tex}
+    \textBox{%
+    We begin with coordinates and linear maps, then introduce lengths, projections, and norms. These measurements let us state how large an error is and how much a matrix can amplify it. Floating-point arithmetic and operation counts complete the basic tools needed to compare numerical algorithms.
+    }
     \subfile{src/vecs_and_mats.tex}
-    \subfile{src/arithmetic.tex}
     \subfile{src/norms_intro.tex}
-    \subfile{src/complexity.tex}
+    \subfile{src/norm.tex}
     \subfile{src/floating_point.tex}
-    \subfile{src/numpy_primer.tex}
+    \subfile{src/complexity.tex}
     \newpage
 
-    % Chapter 2: Direct solvers — exact solution of Ax=b
+    % Chapter 2: Direct solvers and the conditioning of Ax=b
     \section{Direct Methods for Linear Systems}
+    \textBox{%
+    A linear system may have one solution, many solutions, or none. We first determine which case occurs and how perturbations change a solution. Elimination then constructs triangular factors that can be reused for different right-hand sides. Symmetry, positive definiteness, and a small number of nonzero entries can reduce the work.
+    }
     \subfile{src/linear_systems.tex}
+    \subfile{src/stability.tex}
     \subfile{src/lu.tex}
     \subfile{src/spd.tex}
+    \subfile{src/structured_solvers.tex}
 
-    % Chapter 3: Orthogonal transforms, approximation, and the tools to measure error
+    % Chapter 3: Orthogonal transforms and approximation
     \section{Orthogonality and Least Squares}
+    \textBox{%
+    Orthogonal transformations preserve Euclidean lengths. We use them to construct bases and to solve systems whose equations cannot all be satisfied. The connection is projection: a least-squares fit is the point in a column space closest to the data.
+    }
     \subfile{src/orthogonal.tex}
-    \subfile{src/norm.tex}
-    \subfile{src/stability.tex}
     \subfile{src/least_squares.tex}
-    \subfile{src/chebyshev.tex}
 
-    % Chapter 4: Spectral structure — eigenvalues and singular values
+    % Chapter 4: Spectral structure, dense and sparse eigensolvers
     \section{Eigenvalues and the SVD}
+    \textBox{%
+    We study directions and subspaces on which a matrix acts simply. Eigenvectors describe invariant directions of a square matrix. Singular vectors describe stretching by a rectangular matrix. These decompositions explain sensitivity and approximation, and they suggest algorithms that compute either an entire decomposition or a few selected components.
+    }
     \subfile{src/eigen.tex}
+    \subfile{src/eigen_algorithms.tex}
     \subfile{src/svd.tex}
+    \subfile{src/arnoldi.tex}
     \subfile{src/lanczos.tex}
-    \subfile{src/jacobi_eig.tex}
 
-    % Chapter 5: Iterative solvers
-    \section{Iterative Methods for Linear Systems}
-    \subfile{src/iterative}
+    % Chapter 5: Approximation and integration
+    \section{Approximation and Integration}
+    \textBox{%
+    Function values are often available only at a finite set of points. We construct approximations from those values and ask how the choice of points affects the error. Integrating an interpolant produces a quadrature rule. Trigonometric approximation leads to Fourier transforms and fast calculations on periodic grids.
+    }
+    \subfile{src/interpolation.tex}
+    \subfile{src/chebyshev.tex}
+    \subfile{src/quadrature.tex}
+    \subfile{src/fourier.tex}
+
+    % Chapter 6: Sparse systems and iterative solvers
+    \section{Sparse Systems and Iterative Methods}
+    \textBox{%
+    A discretized differential equation can have millions of unknowns but only a few nonzero matrix entries per row. We construct such a system from the Poisson equation and solve it by successive corrections. The methods differ in how they choose a correction and in which parts of the error they reduce.
+    }
+    \subfile{src/operators.tex}
+    \subfile{src/iterative.tex}
     \subfile{src/jacobi.tex}
     \subfile{src/conj_grad.tex}
     \subfile{src/gmres.tex}
+    \subfile{src/multigrid.tex}
+    \subfile{src/randomized.tex}
 
-    % Chapter 6: Numerical Analysis
-    \section{Numerical Analysis}
-    \subfile{src/interpolation.tex}
-    \subfile{src/quadrature.tex}
-    \subfile{src/root_finding.tex}
-
-    % Chapter 7: Ordinary Differential Equations
+    % Chapter 7: Ordinary differential equations
     \section{Ordinary Differential Equations}
+    \textBox{%
+    A differential equation specifies a rate of change rather than a finite update. We replace it by steps in time, estimate how the errors accumulate, and determine which step sizes preserve decay. The final construction concerns Hamiltonian equations, where preserving the geometry of the motion is also useful.
+    }
     \subfile{src/ode_methods.tex}
 
-    % Chapter 8: Applications
+    % Chapter 8: Applications and research bridges
     \section{Applications}
+    \textBox{%
+    The decompositions and error estimates developed earlier now enter calculations with data, graphs, and evolving states. Each application introduces the meaning of its matrix before using its algebraic structure. The later sections on stochastic dynamics and observed evolution operators require the earlier material on spectra, least squares, and matrix exponentials.
+    }
     \subfile{src/pca.tex}
-    \subfile{src/graphs}
-    \subfile{src/operators.tex}
-    \subfile{src/fourier.tex}
+    \subfile{src/graphs.tex}
+    \subfile{src/matrix_exponential.tex}
     \subfile{src/markov.tex}
     \subfile{src/koopman.tex}
+
+    % Appendix: notation and software
+    \newpage
+    \section{Appendix: Notation and Software}
+    \textBox{%
+    These sections collect notation, proof conventions, and array operations used in the text. They can be consulted when a symbol or a NumPy expression is unfamiliar.
+    }
+    \subfile{src/math_notation.tex}
+    \subfile{src/numpy_primer.tex}
+
+    \newpage
+    \subfile{src/references.tex}
 \end{document}

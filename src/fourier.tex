@@ -1,179 +1,322 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Fourier Analysis as Change of Basis}
+\subsection{Fourier Analysis}
 \label{sub:fourier}
 
+
 \textBox{%
-Fourier analysis provides a framework for representing functions and data in terms of frequency components. In engineering, this transformation is critical for signal processing, image compression, and solving differential equations where the Laplacian operator is diagonalized by the Fourier basis.
+A periodic vector can be described by the amplitude of each oscillation it contains. The discrete Fourier transform is a change from its sampled values to these amplitudes. We construct the oscillating basis vectors, prove their orthogonality, and use the basis to simplify shifts and circular convolution.
 }
 
-\subsubsection{Discrete Fourier Transform (DFT)}
+\textBox{%
+The fast Fourier transform computes the same change of basis by dividing one transform into smaller transforms. Finally, differentiating each oscillation gives an algorithm for differentiating smooth periodic functions from their sampled values.
+}
+
+\subsubsection{The Discrete Fourier Transform}
+
+\textBox{%
+We consider discrete signals defined on a uniform periodic grid of $n$ points. The Discrete Fourier Transform (DFT) expands a vector in the orthonormal basis of discrete complex exponentials.
+}
 
 \addDef{Periodic Grid Signal}{%
-A discrete signal $\bx\in\fC^n$ is interpreted as one period of a periodic sequence:
-\begin{align*}
-    x_{j+n}=x_j.
-\end{align*}
-The DFT represents this signal in the basis of discrete complex exponentials.
+Let $t_j=2\pi j/n$ for $j=0,\ldots,n-1$ be grid points in one period. A vector $\bx\in\fC^n$ stores samples $x_j=f(t_j)$. Extend its entries periodically by $x_{j+n}=x_j$. The grid coordinates themselves satisfy $t_{j+n}=t_j+2\pi$, so it is the sampled values that repeat.
 }
 \label{def:periodic-grid-signal}
 
+\textBox{%
+For integer frequency $k$, the vector with entries $e^{2\pi i jk/n}$ samples one complex oscillation. Frequency zero is constant. Increasing $k$ increases the number of turns made by the complex phase over one period. Taking inner products with these vectors measures the corresponding amplitudes. The minus sign in the forward transform comes from conjugating the basis vectors.
+}
+
 \addDef{DFT Matrix}{%
-Unitary matrix $\mathbf{F} \in \fC^{n \times n}$ with entries:
+Let $\omega_n = e^{-2\pi i / n}$ denote the primitive $n$-th root of unity. The Discrete Fourier Transform matrix $\bF \in \fC^{n \times n}$ has entries
 \begin{align*}
-    F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk}, \quad \omega_n = e^{-2\pi i/n}.
+    F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk} = \frac{1}{\sqrt{n}} e^{-2\pi i j k / n}, \qquad 0 \leq j, k \leq n-1.
 \end{align*}
-\begin{itemize}
-    \item \textbf{Unitary Property:}\enspace $\mathbf{F}^* \mathbf{F} = \bI$. Orthonormal columns.
-    \item \textbf{Inverse DFT:}\enspace $\mathbf{F}^{-1} = \mathbf{F}^*$.
-\end{itemize}
+The forward transform maps a spatial signal $\bx \in \fC^n$ to its frequency representation $\hat{\bx} = \bF\bx$.
 }
 \label{def:dft-matrix}
 
-\addThm{Parseval's Theorem}{%
-The DFT is an isometry: $\|\mathbf{F}\bx\|_2 = \|\bx\|_2$. Total energy is preserved between time and frequency domains.
+\addLem{Unitarity of the DFT Matrix}{%
+The normalized DFT matrix $\bF$ is unitary:
+\begin{align*}
+    \bF^* \bF = \bF \bF^* = \bI_n.
+\end{align*}
+Consequently, the inverse transform is given by the conjugate transpose: $\bF^{-1} = \bF^*$.
+}
+\label{lem:dft-unitarity}
+
+\addPrf{%
+We evaluate the $(j, \ell)$ entry of the Gram matrix product $\bF^* \bF$. Because $(\bF^*)_{jk} = \overline{F_{kj}} = \frac{1}{\sqrt{n}} \omega_n^{-jk}$, we have
+\begin{align*}
+    (\bF^* \bF)_{j\ell} = \sum_{k=0}^{n-1} (\bF^*)_{jk} F_{k\ell} = \frac{1}{n} \sum_{k=0}^{n-1} \omega_n^{-jk} \omega_n^{k\ell} = \frac{1}{n} \sum_{k=0}^{n-1} \left( \omega_n^{\ell - j} \right)^k.
+\end{align*}
+The complex conjugate reverses the sign in the exponent, so the product depends only on the difference of column indices. This is why the geometric sum appears, rather than a general sum with unrelated terms.
+
+If $j = \ell$, each term in the summation equals $\omega_n^0 = 1$, yielding $\frac{1}{n} \sum_{k=0}^{n-1} 1 = 1$. If $j \neq \ell$, let $r = \omega_n^{\ell - j}$. Because $-(n-1) \leq \ell - j \leq n-1$ and $j \neq \ell$, the base $r \neq 1$, while $r^n = (\omega_n^n)^{\ell - j} = 1^{\ell - j} = 1$. The finite geometric series sums to
+\begin{align*}
+    \sum_{k=0}^{n-1} r^k = \frac{1 - r^n}{1 - r} = \frac{1 - 1}{1 - r} = 0.
+\end{align*}
+Therefore, $(\bF^* \bF)_{j\ell} = \delta_{j\ell}$, which establishes $\bF^* \bF = \bI_n$.
+
+
+The Gram matrix is therefore the identity. Since $\bF$ is square, $\bF^*\bF=\bI$ makes $\bF$ nonsingular and gives $\bF^{-1}=\bF^*$. Multiplication in the reverse order then gives $\bF\bF^*=\bI$ as well. This explains both asserted unitary identities.
+}
+
+\addExcr{%
+\textbf{Unitary coordinates and geometric sums.}\enspace Let $\bF \in \fC^{4 \times 4}$ be the 4-point DFT matrix. Write out its sixteen numerical entries explicitly using powers of $\omega_4 = -i$. Verify directly that columns 0 and 2 are orthogonal, and confirm that $\bF^* \bF = \bI_4$.
+}
+
+
+\addThm{Parseval's Identity and Isometry}{%
+The Discrete Fourier Transform is an isometry on $\fC^n$ with respect to the Euclidean norm:
+\begin{align*}
+    \|\bF\bx\|_2 = \|\bx\|_2 \qquad \text{for all } \bx \in \fC^n.
+\end{align*}
+The inner product is likewise preserved: $\langle \bF\bx, \bF\by \rangle = \langle \bx, \by \rangle$.
 }
 \label{thm:dft-parseval}
 
-\addPrf{%
-Since $\mathbf{F}$ is unitary, $\mathbf{F}^*\mathbf{F}=\bI$. Hence
-\begin{align*}
-    \|\mathbf{F}\bx\|_2^2
-    =
-    (\mathbf{F}\bx)^*(\mathbf{F}\bx)
-    =
-    \bx^*\mathbf{F}^*\mathbf{F}\bx
-    =
-    \bx^*\bx
-    =
-    \|\bx\|_2^2.
-\end{align*}
-Taking square roots gives the claim.
-}
-
 \addExcr{%
-\begin{enumerate}
-    \item Use Def~\ref{def:dft-matrix} to compute the $(j,\ell)$ entry of $\mathbf{F}^*\mathbf{F}$.
-    \item Evaluate the finite geometric sum that appears.
-    \item Conclude $\mathbf{F}^*\mathbf{F}=\bI$.
-    \item Explain why this is the finite Fourier analog of orthonormal coordinates.
-\end{enumerate}
+Use $\bF^*\bF=\bI$ to prove preservation of inner products, then set the two vectors equal to obtain Parseval's identity. What factor appears if the forward transform is left unnormalized?
 }
-\label{ex:dft-parseval}
 
-\addDef{Frequency Bins}{%
-For samples on $[0,2\pi)$, the integer frequency attached to index $k$ is usually ordered as
+\addDef{Frequency Bins and Nyquist Limit}{%
+For a signal sampled on $n$ points with uniform spacing $h = 2\pi / n$, integer frequency index $k$ corresponds to the continuous Fourier mode $e^{ikx}$. The distinct resolvable frequencies are ordered as
 \begin{align*}
-    0,1,2,\dots,\lfloor n/2\rfloor,-\lfloor(n-1)/2\rfloor,\dots,-1.
+    0, 1, 2, \dots, \lfloor n/2 \rfloor, -\lfloor (n-1)/2 \rfloor, \dots, -1.
 \end{align*}
-This is the ordering returned by \texttt{np.fft.fftfreq} after scaling by $n$.
+The maximum resolvable frequency is the Nyquist frequency $k_{\text{Nyq}} = \lfloor n/2 \rfloor$. Any continuous mode with frequency $|k| > k_{\text{Nyq}}$ aliases to a lower grid frequency satisfying $k' \equiv k \pmod n$.
 }
 \label{def:frequency-bins}
 
-\addRemark{%
-\textbf{(Normalization convention)}\enspace Some libraries put the factor $1/n$ in the inverse transform instead of using the unitary factor $1/\sqrt n$ in both directions. The formulas change by constants, but the frequency content is the same.
-}
-
-\addDef{Nyquist Frequency and Aliasing}{%
-On $n$ equally spaced samples of a $2\pi$-periodic signal, frequencies that differ by multiples of $n$ are indistinguishable:
-\begin{align*}
-    e^{i(k+n)x_j}=e^{ikx_j}.
-\end{align*}
-The largest resolvable unsigned frequency is the Nyquist frequency, approximately $n/2$ modes per period.
-}
-\label{def:nyquist-aliasing}
-
 \addExcr{%
-\begin{enumerate}
-    \item Let $x_j=2\pi j/n$. Prove $e^{i(k+n)x_j}=e^{ikx_j}$ for every grid point.
-    \item For $n=8$, list the frequency bin ordering from Def~\ref{def:frequency-bins}.
-    \item Sample $\sin(7x)$ on $n=8$ points and identify its aliased frequency.
-\end{enumerate}
+On a grid of four points, write the sampled vectors for frequencies $0$, $1$, $2$, and $5$. Show that frequencies $1$ and $5$ give identical vectors. More generally, prove that adding $n$ to an integer frequency leaves its samples unchanged. Why can samples alone not distinguish these frequencies?
 }
-\label{ex:nyquist-aliasing}
 
-\subsubsection{Convolution and Circulant Matrices}
+
+\addRemark{%
+\textbf{(Normalization convention)}\enspace
+Numerical libraries such as NumPy's \texttt{np.fft.fft} define the forward transform without the factor $1/\sqrt{n}$, so that $\hat{\bx}_{\text{numpy}} = \sum_{j=0}^{n-1} x_j \omega_n^{jk}$, and place the full factor $1/n$ in the inverse transform \texttt{np.fft.ifft}. This choice scales the entries by $\sqrt{n}$ relative to the unitary operator $\bF$ defined here.
+}
+
+\subsubsection{Circulant Matrices and the Convolution Theorem}
+
+\textBox{%
+A linear system or filtering operation that commutes with spatial translation is represented by a circulant matrix. The Discrete Fourier Transform diagonalizes every circulant matrix.
+}
 
 \addDef{Circulant Matrix}{%
-Matrix $\mathbf{C}$ where each row is a cyclic shift of the first column $\bc$.
-\begin{itemize}
-    \item \textbf{Diagonalization:}\enspace Every circulant matrix is diagonalized by the DFT: $\mathbf{C} = \mathbf{F}^* \text{diag}(\mathbf{F}\bc) \mathbf{F}$.
-    \item \textbf{Eigenvalues:}\enspace The eigenvalues of $\mathbf{C}$ are the DFT coefficients of its first column.
-\end{itemize}
+Let $\bc = (c_0, c_1, \dots, c_{n-1})^T \in \fC^n$. The circulant matrix $\mathbf{C} = \operatorname{circ}(\bc) \in \fC^{n \times n}$ has entries $C_{jk} = c_{(j - k) \pmod n}$:
+\begin{align*}
+    \mathbf{C} = \begin{pmatrix}
+        c_0 & c_{n-1} & c_{n-2} & \dots & c_1 \\
+        c_1 & c_0 & c_{n-1} & \dots & c_2 \\
+        c_2 & c_1 & c_0 & \dots & c_3 \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        c_{n-1} & c_{n-2} & c_{n-3} & \dots & c_0
+    \end{pmatrix}.
+\end{align*}
 }
 \label{def:circulant-matrix}
 
-\addThm{Convolution Theorem}{%
-Circular convolution $\bz = \bc * \bx$ is equivalent to pointwise multiplication in frequency:
+\addThm{Spectral Diagonalization of Circulant Matrices}{%
+Every circulant matrix $\mathbf{C} = \operatorname{circ}(\bc)$ is diagonalized by the unitary DFT matrix:
 \begin{align*}
-    \mathbf{F}(\bc * \bx) = (\mathbf{F}\bc) \odot (\mathbf{F}\bx).
+    \mathbf{C} = \bF^* \boldsymbol{\Lambda} \bF,
 \end{align*}
-\textbf{Complexity:}\enspace Reduced from $O(n^2)$ (direct) to $O(n \log n)$ (FFT).
-}
-\label{thm:convolution-theorem}
-
-\addExmpl{%
-\textbf{(Circular convolution for $n=3$)}\enspace If $\bc=(c_0,c_1,c_2)^T$, then
+where the diagonal eigenvalue matrix $\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_0, \dots, \lambda_{n-1})$ has entries equal to the unnormalized DFT coefficients of the first column:
 \begin{align*}
-    \bc * \bx =
-    \begin{pmatrix}
-        c_0&c_2&c_1\\
-        c_1&c_0&c_2\\
-        c_2&c_1&c_0
-    \end{pmatrix}
-    \begin{pmatrix}x_0\\x_1\\x_2\end{pmatrix}.
+    \lambda_k = \sqrt{n} (\bF\bc)_k = \sum_{j=0}^{n-1} c_j \omega_n^{jk}.
 \end{align*}
-The wraparound terms are a consequence of the periodic convention in Def~\ref{def:periodic-grid-signal}.
+}
+\label{thm:circulant-diagonalization}
+
+\addPrf{%
+Let $\mathbf{S}\in\fR^{n\times n}$ have first column $(0,1,0,\ldots,0)^T$ and be circulant (for $n\geq2$) be the cyclic permutation matrix that shifts coordinate indices forward by one: $\mathbf{S}\bx = (x_{n-1}, x_0, x_1, \dots, x_{n-2})^T$. Powers of $\mathbf{S}$ shift indices by $j$ positions, satisfying $\mathbf{S}^n = \bI$. Every circulant matrix is a polynomial in $\mathbf{S}$:
+\begin{align*}
+    \mathbf{C} = \sum_{j=0}^{n-1} c_j \mathbf{S}^j.
+\end{align*}
+The first column of $\mathbf S^j$ is the coordinate vector with its one in cyclic position $j$. Thus the first column of $\sum_jc_j\mathbf S^j$ is $\bc$. Both sides are circulant and a circulant is determined by its first column, proving the polynomial representation.
+
+Let $\bv_k$ denote the $k$-th column of $\bF^*$, with entries $(\bv_k)_j = \frac{1}{\sqrt{n}} \omega_n^{-jk}$. Multiplying by the shift matrix gives
+\begin{align*}
+    (\mathbf{S}\bv_k)_j = (\bv_k)_{(j-1) \pmod n} = \frac{1}{\sqrt{n}} \omega_n^{-(j-1)k} = \omega_n^k \left( \frac{1}{\sqrt{n}} \omega_n^{-jk} \right) = \omega_n^k (\bv_k)_j.
+\end{align*}
+Thus $\bv_k$ is an eigenvector of $\mathbf{S}$ with eigenvalue $\omega_n^k$. Applying the polynomial representation of $\mathbf{C}$ to $\bv_k$ yields
+\begin{align*}
+    \mathbf{C}\bv_k = \sum_{j=0}^{n-1} c_j \mathbf{S}^j \bv_k = \sum_{j=0}^{n-1} c_j (\omega_n^k)^j \bv_k = \left( \sum_{j=0}^{n-1} c_j \omega_n^{jk} \right) \bv_k = \lambda_k \bv_k.
+\end{align*}
+Collecting all $n$ eigenvector equations in matrix form gives $\mathbf{C}\bF^* = \bF^* \boldsymbol{\Lambda}$. Multiplying on the right by $\bF$ yields $\mathbf{C} = \bF^* \boldsymbol{\Lambda} \bF$.
+
+
+The case $n=1$ is the scalar identity and does not require a shift matrix. For larger $n$, the factor $\sqrt n$ in the eigenvalue formula appears because the chosen DFT is unitary, while the polynomial eigenvalue sum is unnormalized. It must not be dropped when using this normalization.
 }
 
-\subsubsection{The Fast Fourier Transform (FFT)}
+\addExcr{%
+\textbf{Circulant spectral inversion for the periodic Poisson problem.}\enspace Consider the discrete periodic Poisson equation $-\frac{u_{j-1} - 2u_j + u_{j+1}}{h^2} = f_j$ on $n$ points with periodic boundary conditions.
+    \begin{enumerate}
+        \item Express the coefficient matrix as a circulant matrix $\mathbf{C} = \operatorname{circ}(\bc)$ and identify the entries of $\bc$.
+        \item Compute the eigenvalues $\lambda_k$ of $\mathbf{C}$ using Thm~\ref{thm:circulant-diagonalization}. Show that $\lambda_0 = 0$ and $\lambda_k > 0$ for $k = 1, \dots, n-1$.
+        \item Explain why the system is solvable if and only if $\sum_{j=0}^{n-1} f_j = 0$, and formulate an $O(n \log n)$ solver using the FFT.
+    \end{enumerate}
+}
 
-\addThm{Cooley-Tukey Algorithm}{%
-Computes the DFT in \textbf{$O(n \log n)$} flops for $n = 2^p$.
-\begin{itemize}
-    \item \textbf{Mechanism:}\enspace Recursively splits $n$-point DFT into two $n/2$-point DFTs (even/odd indices).
-    \item \textbf{NumPy:}\enspace Use \texttt{np.fft.fft} and \texttt{np.fft.ifft}.
-\end{itemize}
+
+\addThm{Discrete Convolution Theorem}{%
+Let $\bc, \bx \in \fC^n$. The circular convolution $\bz = \bc * \bx$ has components
+\begin{align*}
+    z_j = \sum_{k=0}^{n-1} c_k x_{(j - k) \pmod n} = (\mathbf{C}\bx)_j, \qquad \mathbf{C} = \operatorname{circ}(\bc).
+\end{align*}
+Applying the Discrete Fourier Transform converts convolution to entrywise multiplication:
+\begin{align*}
+    \bF(\bc * \bx) = \sqrt{n} (\bF\bc) \odot (\bF\bx),
+\end{align*}
+where $\odot$ denotes the Hadamard (entrywise) vector product.
+}
+\label{thm:discrete-convolution}
+
+\addExcr{%
+Write the convolution as $\mathbf{C}\bx$ and substitute $\mathbf{C}=\bF^*\boldsymbol{\Lambda}\bF$. Apply $\bF$ and use the formula for $\lambda_k$. Account explicitly for the factor $\sqrt n$.
+}
+
+\subsubsection{The Fast Fourier Transform}
+
+\textBox{%
+Computing a matrix-vector product with a general dense $n \times n$ matrix requires $2n^2$ flops. The Cooley--Tukey Fast Fourier Transform (FFT) factors the DFT matrix into sparse structured factors, reducing the complexity to $O(n \log n)$ operations.
+}
+
+\addThm{Radix-2 Cooley--Tukey Decomposition}{%
+Let $n$ be an even integer, and let $\bx \in \fC^n$. Partition $\bx$ into even-indexed and odd-indexed subvectors $\bx_E, \bx_O \in \fC^{n/2}$ defined by $(\bx_E)_j = x_{2j}$ and $(\bx_O)_j = x_{2j+1}$ for $j = 0, \dots, n/2 - 1$.
+The $n$-point unnormalized DFT $\hat{x}_k = \sum_{j=0}^{n-1} x_j \omega_n^{jk}$ satisfies the butterfly identity
+\begin{align*}
+    \hat{x}_k &= (\hat{\bx}_E)_k + \omega_n^k (\hat{\bx}_O)_k, \\
+    \hat{x}_{k + n/2} &= (\hat{\bx}_E)_k - \omega_n^k (\hat{\bx}_O)_k,
+\end{align*}
+for each $k = 0, 1, \dots, n/2 - 1$, where $\hat{\bx}_E, \hat{\bx}_O$ are the $(n/2)$-point DFTs of $\bx_E$ and $\bx_O$.
+When $n = 2^p$, applying this reduction recursively requires $O(n \log n)$ floating-point operations.
 }
 \label{thm:cooley-tukey}
 
-\addExcr{%
-\begin{enumerate}
-    \item Split the DFT sum into even and odd input indices.
-    \item Show that each part is an $n/2$-point DFT multiplied by phase factors.
-    \item Write the recurrence $T(n)=2T(n/2)+O(n)$.
-    \item Solve the recurrence to obtain the cost in Thm~\ref{thm:cooley-tukey}.
-\end{enumerate}
-}
-\label{ex:cooley-tukey}
-
-\addRemark{%
-\textbf{Spectral Differentiation:}\enspace For smooth periodic signals, differentiate by multiplying frequency components $\hat{x}_k$ by $ik$. Provides exponential accuracy compared to polynomial accuracy of finite differences.
-}
-
-\addThm{Fourier Differentiation Rule}{%
-For a smooth $2\pi$-periodic function with Fourier series
+\addPrf{%
+Splitting the DFT sum into even and odd indices gives
 \begin{align*}
-    f(x)=\sum_k \hat f_k e^{ikx},
+    \hat{x}_k = \sum_{m=0}^{n/2 - 1} x_{2m} \omega_n^{2mk} + \sum_{m=0}^{n/2 - 1} x_{2m+1} \omega_n^{(2m+1)k}.
 \end{align*}
-the derivative has coefficients
+Because $\omega_n^2 = e^{-4\pi i / n} = e^{-2\pi i / (n/2)} = \omega_{n/2}$, the first sum is the $(n/2)$-point transform of $\bx_E$:
 \begin{align*}
-    \widehat{f'}_k=ik\hat f_k.
+    \sum_{m=0}^{n/2 - 1} x_{2m} \omega_{n/2}^{mk} = (\hat{\bx}_E)_k.
+\end{align*}
+Factoring $\omega_n^k$ out of the second sum gives $\omega_n^k \sum_{m=0}^{n/2 - 1} x_{2m+1} \omega_{n/2}^{mk} = \omega_n^k (\hat{\bx}_O)_k$. This establishes the first identity:
+\begin{align*}
+    \hat{x}_k = (\hat{\bx}_E)_k + \omega_n^k (\hat{\bx}_O)_k.
+\end{align*}
+For the second half of the spectrum $k + n/2$, the periodicity $\omega_{n/2}^{m(k + n/2)} = \omega_{n/2}^{mk} (\omega_{n/2}^{n/2})^m = \omega_{n/2}^{mk}$ and the half-period phase shift
+\begin{align*}
+    \omega_n^{k + n/2} = \omega_n^k \omega_n^{n/2} = \omega_n^k e^{-\pi i} = -\omega_n^k
+\end{align*}
+give the complementary butterfly equation:
+\begin{align*}
+    \hat{x}_{k + n/2} = (\hat{\bx}_E)_k - \omega_n^k (\hat{\bx}_O)_k.
+\end{align*}
+The second half of the output reuses the same two smaller transforms. Thus the reduction needs two transforms of length $n/2$, rather than four. The minus sign distinguishes the second half without requiring additional recursive calls.
+
+In matrix form, introducing the diagonal twiddle matrix $\boldsymbol{\Omega}_{n/2} = \operatorname{diag}(1, \omega_n, \dots, \omega_n^{n/2-1})$ and the even--odd permutation matrix $\bP_n$:
+\begin{align*}
+    \hat{\bx} = \begin{pmatrix} \bI_{n/2} & \boldsymbol{\Omega}_{n/2} \\ \bI_{n/2} & -\boldsymbol{\Omega}_{n/2} \end{pmatrix} \begin{pmatrix} \hat{\bx}_E \\ \hat{\bx}_O \end{pmatrix} = \begin{pmatrix} \bI_{n/2} & \boldsymbol{\Omega}_{n/2} \\ \bI_{n/2} & -\boldsymbol{\Omega}_{n/2} \end{pmatrix} \begin{pmatrix} \mathbf{W}_{n/2} & \bzero \\ \bzero & \mathbf{W}_{n/2} \end{pmatrix} \bP_n \bx.
+\end{align*}
+At each recursion stage, the butterfly recombination performs $n/2$ complex multiplications and $n$ additions. The arithmetic complexity satisfies the recurrence
+\begin{align*}
+    T(n) = 2 T(n/2) + c n.
+\end{align*}
+For $n = 2^p$, the depth of the recursion tree is $\log_2 n$, yielding total cost $T(n) = c n \log_2 n = O(n \log n)$.
+
+
+To solve the work recurrence explicitly, divide it by $n$ and put $n=2^p$. Then $T(2^p)/2^p=T(2^{p-1})/2^{p-1}+c$. Repeating this equality $p$ times gives $T(n)/n=T(1)+cp$. Since $p=\log_2n$, the work is $nT(1)+cn\log_2n$. This supplies the stated order including the base-case contribution.
+}
+
+\subsubsection{Spectral Differentiation}
+
+\textBox{%
+For smooth periodic functions, differentiation in the Fourier domain replaces finite-difference stencils with exact multiplication in frequency.
+}
+
+\addThm{Spectral Differentiation of Periodic Functions}{%
+Let $u: \fR \to \fC$ be a continuously differentiable, $2\pi$-periodic function. Representing $u$ by its Fourier series $u(x) = \sum_{k=-\infty}^\infty \hat{u}_k e^{ikx}$, the derivative has Fourier coefficients
+\begin{align*}
+    \widehat{(u')}_k = ik \hat{u}_k.
+\end{align*}
+If $u$ is analytic and bounded in a strip $\{z \in \fC : |\operatorname{Im}(z)| < d\}$, the truncation error of the discrete spectral derivative converges geometrically to zero:
+\begin{align*}
+    \max_{x_j} |u'(x_j) - (D_n \bu)_j| = O(n e^{-d n/2}).
 \end{align*}
 }
-\label{thm:fourier-differentiation}
+\label{thm:spectral-differentiation}
 
-\subsubsection{Exercises}
+\addPrf{%
+For the coefficient of the derivative, integrate by parts over one period:
+\begin{align*}
+ \widehat{(u')}_k
+ &=\frac1{2\pi}\int_0^{2\pi}u'(x)e^{-ikx}\,dx\\
+ &=\frac1{2\pi}[u(x)e^{-ikx}]_0^{2\pi}
+   +\frac{ik}{2\pi}\int_0^{2\pi}u(x)e^{-ikx}\,dx
+ =ik\hat u_k.
+\end{align*}
+The boundary term is zero because $u(2\pi)=u(0)$ and $e^{-2\pi ik}=1$ for integer $k$. This argument requires only the stated continuous differentiability, rather than an unjustified differentiation of a conditionally convergent series.
+
+For the error bound, assume the additional analyticity and boundedness in the strip, with bound $M$. For $k>0$, shift the coefficient integral to the line with imaginary part $-d'$, where $0<d'<d$. Periodicity cancels the two vertical sides of the contour. On the shifted line, $|e^{-ik(x-id')}|=e^{-kd'}$, so $|\hat u_k|\leq Me^{-kd'}$. For $k<0$, shift upwards instead. Letting $d'\uparrow d$ gives $|\hat u_k|\leq Me^{-d|k|}$.
+
+Differentiation multiplies coefficient magnitude by $|k|$. If $K$ is of order $n/2$, the differentiated tail is bounded by
+\begin{align*}
+ 2M\sum_{k=K}^\infty k e^{-dk}.
+\end{align*}
+Set $q=e^{-d}<1$ and $k=K+j$. The sum is
+\begin{align*}
+ \sum_{k=K}^\infty kq^k
+ =q^K\left(K\sum_{j=0}^\infty q^j+\sum_{j=0}^\infty jq^j\right)
+ =q^K\left(\frac K{1-q}+\frac q{(1-q)^2}\right).
+\end{align*}
+It is therefore $O(Ke^{-dK})$.
+
+Sampling replaces a high mode by its aliased grid frequency. The difference between the true derivative multiplier and the aliased multiplier is at most $|k|+K$, which is at most a constant times $|k|$ for an omitted mode. Summing their coefficient bounds therefore gives the same order for aliasing as for the tail. Taking $K$ of order $n/2$ yields $O(ne^{-dn/2})$.
+
+For even $n$ and real data, the Nyquist samples are those of a cosine whose derivative vanishes on the grid. Setting that first-derivative component to zero gives the derivative of the real trigonometric interpolant, as stipulated in the theorem.
+}
+
+\subsubsection{Further Exercises}
+
 
 \addExcr{%
-\begin{enumerate}
-    \item Write out the $4 \times 4$ DFT matrix explicitly. Verify it is unitary using Ex~\ref{ex:dft-parseval}.
-    \item Solve the periodic Poisson equation $-u'' = f$ via FFT. (\textit{Hint: Laplacian is circulant}).
-    \item Compare the speed of \texttt{np.fft.fft(x)} vs.\ \texttt{F @ x} for $n=4096$.
-    \item Implement spectral differentiation for $f(x) = \sin(x)$ using Thm~\ref{thm:fourier-differentiation} and check error vs.\ $n$.
-\end{enumerate}
+\textbf{Fast linear convolution via zero padding.}\enspace Let $\bx \in \fR^p$ and $\by \in \fR^q$ be two discrete sequences. Their linear convolution has length $m = p + q - 1$.
+    \begin{enumerate}
+        \item Explain how zero-padding $\bx$ and $\by$ to length $N \geq p + q - 1$ prevents periodic wraparound in circular convolution.
+        \item Compare the arithmetic operation count of direct linear convolution ($2pq$ flops) against FFT-based circular convolution ($O(N \log N)$ flops).
+        \item For $p = q = 10^5$, estimate the speedup obtained by the FFT algorithm.
+    \end{enumerate}
+}
+
+\addExcr{%
+\textbf{Cooley--Tukey butterfly and bit-reversal permutation.}\enspace Consider the radix-2 FFT algorithm with $n = 8$.
+    \begin{enumerate}
+        \item Write the indices $0, 1, \dots, 7$ in 3-bit binary notation ($b_2 b_1 b_0$).
+        \item Reverse the bits ($b_0 b_1 b_2$) to construct the bit-reversal permutation vector $\mathbf{p}$.
+        \item Show that sorting the input by $\mathbf{p}$ allows the recursive Cooley--Tukey butterflies to be evaluated in place without allocating auxiliary arrays.
+    \end{enumerate}
+}
+
+\addExcr{%
+\textbf{Spectral differentiation and the Runge phenomenon.}\enspace Implement the Fourier spectral differentiation matrix for $n = 16, 32, 64$ points on $[0, 2\pi)$.
+    \begin{enumerate}
+        \item Apply the spectral derivative to $u(x) = \sin(x)$ and measure the maximum pointwise error against $\cos(x)$. Confirm that error reaches machine precision for small $n$.
+        \item Apply the spectral derivative to $v(x) = \frac{1}{2 + \cos(x)}$. Estimate the decay constant $d$ from Thm~\ref{thm:spectral-differentiation} and confirm geometric convergence.
+        \item Apply the method to $w(x)=x$ on $[0,2\pi)$. Identify the jump in its periodic extension. Plot the derivative error away from and near that jump, and explain why the uniform geometric-convergence theorem no longer applies.
+    \end{enumerate}
+}
+\label{ex:fourier-exercises}
+
+\addReading{%
+The Cooley--Tukey paper is short and still worth reading as an example of how reorganizing a calculation changes its cost \citep{cooleytukey1965}. Trefethen's approximation text gives a gentle route from polynomial approximation to spectral accuracy \citep{trefethen2013}.
 }
 
 \end{document}

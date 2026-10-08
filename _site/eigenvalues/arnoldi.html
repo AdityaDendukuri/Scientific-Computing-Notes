@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>16&nbsp; Chebyshev Polynomials – Scientific Computing</title>
+<title>16&nbsp; Krylov Subspaces and the Arnoldi Process – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../eigenvalues/eigenvalues.html" rel="next">
-<link href="../orthogonality/least-squares.html" rel="prev">
+<link href="../eigenvalues/lanczos.html" rel="next">
+<link href="../eigenvalues/svd.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,9 +65,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-512512a359692b6a4a631bfed0d4ecc0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/chebyshev.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/arnoldi.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,44 +415,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span></a>
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
   </div>
 </li>
       </ul>
@@ -440,19 +457,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +498,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +521,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,7 +553,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -544,26 +561,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -571,7 +588,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -579,20 +596,44 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
   </div>
 </li>
       </ul>
@@ -609,7 +650,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +658,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">Applications and Research Bridges</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -626,41 +667,64 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,21 +735,20 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#failure-of-the-monomial-basis" id="toc-failure-of-the-monomial-basis" class="nav-link active" data-scroll-target="#failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</a></li>
-  <li><a href="#chebyshev-polynomials-t_k" id="toc-chebyshev-polynomials-t_k" class="nav-link" data-scroll-target="#chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</a></li>
-  <li><a href="#zeros-and-nodes" id="toc-zeros-and-nodes" class="nav-link" data-scroll-target="#zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</a></li>
-  <li><a href="#the-minimax-property" id="toc-the-minimax-property" class="nav-link" data-scroll-target="#the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</a></li>
-  <li><a href="#chebyshev-series" id="toc-chebyshev-series" class="nav-link" data-scroll-target="#chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</a></li>
+  <li><a href="#krylov-subspaces" id="toc-krylov-subspaces" class="nav-link active" data-scroll-target="#krylov-subspaces"><span class="header-section-number">16.1</span> Krylov Subspaces</a></li>
+  <li><a href="#the-arnoldi-process" id="toc-the-arnoldi-process" class="nav-link" data-scroll-target="#the-arnoldi-process"><span class="header-section-number">16.2</span> The Arnoldi Process</a></li>
+  <li><a href="#ritz-pairs-and-breakdown" id="toc-ritz-pairs-and-breakdown" class="nav-link" data-scroll-target="#ritz-pairs-and-breakdown"><span class="header-section-number">16.3</span> Ritz Pairs and Breakdown</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">16.4</span> Further Exercises</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/chebyshev.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/arnoldi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/chebyshev.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/arnoldi.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></h1>
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></h1>
 </div>
 
 
@@ -702,50 +765,25 @@ window.Quarto = {
 </header>
 
 
-<p>Chebyshev polynomials are the polynomial analogue of Fourier modes on <span class="math inline">\([-1,1]\)</span>. They oscillate evenly, stay bounded, and give node sets that control interpolation error. The central idea is minimax: among polynomials of a fixed degree, Chebyshev polynomials spread error as evenly as possible instead of allowing large boundary spikes.</p>
-<section id="failure-of-the-monomial-basis" class="level2" data-number="16.1">
-<h2 data-number="16.1" class="anchored" data-anchor-id="failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</h2>
-<p>Polynomial approximation has two separate failure modes. The first is numerical: the monomial basis <span class="math inline">\(1,x,x^2,...\)</span> leads to ill-conditioned Vandermonde matrices. The second is analytical: even exact interpolation at equally spaced nodes can oscillate badly near the interval endpoints.</p>
+<p>The QR algorithm of the referenced result computes every eigenvalue of a dense matrix in <span class="math inline">\(O(n^3)\)</span> operations. Many applications instead require a few eigenvalues of a large sparse matrix, and the matrix is often available only through the product <span class="math inline">\(\bv\mapsto\bA\bv\)</span>. Power iteration (the referenced result) uses only such products, but at step <span class="math inline">\(k\)</span> it retains only the last vector <span class="math inline">\(\bA^{k-1}\bv\)</span> and discards the earlier ones.</p>
+<p>The Arnoldi process retains the span of <span class="math inline">\(\bv,\bA\bv,...,\bA^{k-1}\bv\)</span> through an orthonormal basis. We first define the subspace spanned by this sequence and explain why its natural basis is unusable in floating-point arithmetic. We then construct an orthonormal basis one vector at a time and derive the Arnoldi relation. The same relation underlies the Lanczos algorithm in the next section, the GMRES method for linear systems, and the Krylov approximation of the matrix exponential.</p>
+<section id="krylov-subspaces" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="krylov-subspaces"><span class="header-section-number">16.1</span> Krylov Subspaces</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Interpolation Error Polynomial
+<span class="screen-reader-only">Note</span>Definition: Krylov Subspace
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Given distinct interpolation nodes <span class="math inline">\(x_1,...,x_n\)</span>, define <span class="math display">\[
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> and let <span class="math inline">\(\bv\in\fR^n\)</span> be nonzero. The <span class="math inline">\(k\)</span>th Krylov subspace generated by <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bv\)</span> is <span class="math display">\[
 \begin{align}
-\omega_n(x)=\prod_{j=1}^n (x-x_j).
+\mathcal{K}_k(\bA,\bv)=\operatorname{span}\{\bv,\bA\bv,...,\bA^{k-1}\bv\}.
 \end{align}
-\]</span> This polynomial is zero at every node. Its size between the nodes controls how much interpolation can amplify the derivative of the target function.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Interpolation Error Formula
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(p_{n-1}\)</span> interpolate a function <span class="math inline">\(f\)</span> at <span class="math inline">\(n\)</span> distinct nodes <span class="math inline">\(x_1,...,x_n\)</span>. If <span class="math inline">\(f\)</span> has <span class="math inline">\(n\)</span> continuous derivatives on <span class="math inline">\([-1,1]\)</span>, then for each <span class="math inline">\(x\in[-1,1]\)</span> there exists a point <span class="math inline">\(\xi_x\in[-1,1]\)</span> such that <span class="math display">\[
-\begin{align}
-f(x)-p_{n-1}(x)
-    =
-    \frac{f^{(n)}(\xi_x)}{n!}\omega_n(x).
-\end{align}
-\]</span> Therefore, <span class="math display">\[
-\begin{align}
-\|f-p_{n-1}\|_\infty
-    \leq
-    \frac{\|f^{(n)}\|_\infty}{n!}\|\omega_n\|_\infty.
-\end{align}
-\]</span></p>
+\]</span> Equivalently, <span class="math inline">\(\mathcal{K}_k(\bA,\bv)=\{p(\bA)\bv : p\in\mathcal{P}_{k-1}\}\)</span>, where <span class="math inline">\(\mathcal{P}_{k-1}\)</span> denotes the polynomials of degree at most <span class="math inline">\(k-1\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -758,65 +796,7 @@ f(x)-p_{n-1}(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For three nodes <span class="math inline">\(x_1,x_2,x_3\)</span>, write out <span class="math inline">\(\omega_3(x)\)</span> and verify that it vanishes at each node.</p></li>
-<li><p>Use the result above to explain why node choice matters even when <span class="math inline">\(f^{(n)}\)</span> is fixed.</p></li>
-<li><p>Build the degree-<span class="math inline">\(14\)</span> Vandermonde matrix on <span class="math inline">\(15\)</span> equally spaced nodes in <span class="math inline">\([-1,1]\)</span>. Compute <span class="math inline">\(\kappa_2(\bV)\)</span>.</p></li>
-<li><p>Plot Runge’s function <span class="math inline">\(f(x)=1/(1+25x^2)\)</span> and its degree-<span class="math inline">\(10\)</span> interpolant at equally spaced nodes. Compare the largest error in the middle of the interval with the largest error near the endpoints.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="chebyshev-polynomials-t_k" class="level2" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Polynomial
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(x\in[-1,1]\)</span>, the degree-<span class="math inline">\(k\)</span> Chebyshev polynomial is <span class="math display">\[
-\begin{align}
-T_k(x)=\cos(k\arccos x).
-\end{align}
-\]</span> Equivalently, if <span class="math inline">\(x=\cos\theta\)</span>, then <span class="math display">\[
-\begin{align}
-T_k(\cos\theta)=\cos(k\theta).
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Basic Chebyshev Identities
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The polynomials from the result above satisfy <span class="math display">\[
-\begin{align}
-T_0(x)=1,\qquad T_1(x)=x,\qquad
-    T_{k+1}(x)=2xT_k(x)-T_{k-1}(x).
-\end{align}
-\]</span> They are bounded by <span class="math inline">\(1\)</span> on <span class="math inline">\([-1,1]\)</span>: <span class="math display">\[
-\begin{align}
-|T_k(x)|\leq 1.
-\end{align}
-\]</span> They are orthogonal with respect to the weight <span class="math inline">\((1-x^2)^{-1/2}\)</span>: <span class="math display">\[
-\begin{align}
-\int_{-1}^1
-    T_j(x)T_k(x)\frac{dx}{\sqrt{1-x^2}}
-    =0,
-    \qquad j\neq k.
-\end{align}
-\]</span></p>
+<p>For <span class="math inline">\(\bA=\operatorname{diag}(1,2,3)\)</span> and <span class="math inline">\(\bv=(1,1,0)^T\)</span>, find the dimensions of <span class="math inline">\(\mathcal K_1\)</span>, <span class="math inline">\(\mathcal K_2\)</span>, and <span class="math inline">\(\mathcal K_3\)</span>. Find a polynomial of degree two for which <span class="math inline">\(p(\bA)\bv=\bzero\)</span>. Explain why no number of matrix products can recover the third coordinate direction from this starting vector.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -829,214 +809,46 @@ T_0(x)=1,\qquad T_1(x)=x,\qquad
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>(Shift invariance)</strong> Show that <span class="math inline">\(\mathcal{K}_k(\bA-\sigma\bI,\bv)=\mathcal{K}_k(\bA,\bv)\)</span> for every scalar <span class="math inline">\(\sigma\)</span>. Conclude that the Arnoldi iteration applied to <span class="math inline">\(\bA-\sigma\bI\)</span> produces the same basis <span class="math inline">\(\bV_k\)</span> and the Hessenberg matrix <span class="math inline">\(\bH_k-\sigma\bI\)</span>.</p>
+</div>
+</div>
+<p>The <span class="math inline">\(k\)</span>th power iterate is a multiple of <span class="math inline">\(\bA^{k-1}\bv\)</span>, so it lies in <span class="math inline">\(\mathcal{K}_k(\bA,\bv)\)</span>. Power iteration therefore selects one particular vector from the Krylov subspace, namely the one produced by the polynomial <span class="math inline">\(p(t)=t^{k-1}\)</span>. Any method that searches the whole subspace can do at least as well with the same number of matrix–vector products. the referenced section makes this comparison precise for symmetric matrices.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Krylov Subspaces Stop Growing at an Invariant Subspace
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\mathcal{K}_{k+1}(\bA,\bv)=\mathcal{K}_k(\bA,\bv)\)</span>, then <span class="math inline">\(\mathcal{K}_k(\bA,\bv)\)</span> is invariant under <span class="math inline">\(\bA\)</span> in the sense of the referenced result, and <span class="math inline">\(\mathcal{K}_j(\bA,\bv)=\mathcal{K}_k(\bA,\bv)\)</span> for every <span class="math inline">\(j\geq k\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Write <span class="math inline">\(\mathcal K_j=\mathcal K_j(\bA,\bv)\)</span>.</p>
 <ol type="1">
-<li><p>Use <span class="math inline">\(\cos((k+1)\theta)+\cos((k-1)\theta)=2\cos\theta\cos(k\theta)\)</span> to prove the three-term recurrence in the result above.</p></li>
-<li><p>Compute <span class="math inline">\(T_2\)</span>, <span class="math inline">\(T_3\)</span>, and <span class="math inline">\(T_4\)</span> from the recurrence.</p></li>
-<li><p>Prove <span class="math inline">\(|T_k(x)|\leq 1\)</span> on <span class="math inline">\([-1,1]\)</span> directly from the result above.</p></li>
-<li><p>Substitute <span class="math inline">\(x=\cos\theta\)</span> into the weighted integral and reduce the orthogonality statement to Fourier cosine orthogonality on <span class="math inline">\([0,\pi]\)</span>.</p></li>
-<li><p>Plot <span class="math inline">\(T_0,...,T_5\)</span>. Mark the points where each polynomial reaches <span class="math inline">\(\pm 1\)</span>.</p></li>
+<li><p>Every <span class="math inline">\(\bx\in\mathcal K_k\)</span> can be written as <span class="math inline">\(\bx=\sum_{i=0}^{k-1}c_i\bA^i\bv\)</span>. Multiplying gives <span class="math display">\[
+\begin{align}
+\bA\bx=\sum_{i=0}^{k-1}c_i\bA^{i+1}\bv\in\mathcal K_{k+1}.
+\end{align}
+\]</span> If <span class="math inline">\(\mathcal K_{k+1}=\mathcal K_k\)</span>, this image belongs to <span class="math inline">\(\mathcal K_k\)</span>. This is exactly the definition of invariance.</p></li>
+<li><p>The equality of the two spaces implies <span class="math inline">\(\bA^k\bv\in\mathcal K_k\)</span>. By invariance, applying <span class="math inline">\(\bA\)</span> again gives <span class="math inline">\(\bA^{k+1}\bv\in\mathcal K_k\)</span>. Repeating this reasoning gives <span class="math inline">\(\bA^j\bv\in\mathcal K_k\)</span> for every <span class="math inline">\(j\geq k\)</span>.</p></li>
+<li><p>For <span class="math inline">\(j\geq k\)</span>, all generators of <span class="math inline">\(\mathcal K_j\)</span> now lie in <span class="math inline">\(\mathcal K_k\)</span>, so <span class="math inline">\(\mathcal K_j\subseteq\mathcal K_k\)</span>. The reverse inclusion follows because the generators of <span class="math inline">\(\mathcal K_k\)</span> are among those of <span class="math inline">\(\mathcal K_j\)</span>. Therefore the spaces are equal.</p></li>
 </ol>
 </div>
-</div>
-</section>
-<section id="zeros-and-nodes" class="level2" data-number="16.3">
-<h2 data-number="16.3" class="anchored" data-anchor-id="zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Zeros and Extrema
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The zeros of <span class="math inline">\(T_n\)</span> are <span class="math display">\[
-\begin{align}
-x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,...,n.
-\end{align}
-\]</span> The extrema of <span class="math inline">\(T_n\)</span> occur at <span class="math display">\[
-\begin{align}
-y_j=\cos\left(\frac{j\pi}{n}\right),
-    \qquad j=0,...,n,
-\end{align}
-\]</span> and satisfy <span class="math inline">\(T_n(y_j)=(-1)^j\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Nodes
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The Chebyshev interpolation nodes are the zeros of <span class="math inline">\(T_n\)</span>: <span class="math display">\[
-\begin{align}
-x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,...,n.
-\end{align}
-\]</span> These nodes cluster near <span class="math inline">\(\pm 1\)</span>. The clustering is not cosmetic; it reduces the size of the interpolation error polynomial from the result above.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Error Polynomial
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(x_1,...,x_n\)</span> are the Chebyshev nodes from the result above, then <span class="math display">\[
-\begin{align}
-\omega_n(x)=\prod_{j=1}^n (x-x_j)
-    =
-    2^{1-n}T_n(x).
-\end{align}
-\]</span> Consequently, <span class="math display">\[
-\begin{align}
-\|\omega_n\|_\infty=2^{1-n}.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Starting from <span class="math inline">\(T_n(\cos\theta)=\cos(n\theta)\)</span>, solve <span class="math inline">\(\cos(n\theta)=0\)</span> and prove the zero formula in the result above.</p></li>
-<li><p>Solve <span class="math inline">\(\cos(n\theta)=\pm 1\)</span> and prove the extrema formula in the result above.</p></li>
-<li><p>Explain why the Chebyshev nodes cluster near <span class="math inline">\(\pm 1\)</span> by comparing the spacing of equally spaced <span class="math inline">\(\theta\)</span> values under <span class="math inline">\(x=\cos\theta\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(T_n\)</span> has leading coefficient <span class="math inline">\(2^{n-1}\)</span> for <span class="math inline">\(n\geq 1\)</span>.</p></li>
-<li><p>Use the previous step and the fact that <span class="math inline">\(T_n\)</span> has zeros <span class="math inline">\(x_1,...,x_n\)</span> to prove the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="the-minimax-property" class="level2" data-number="16.4">
-<h2 data-number="16.4" class="anchored" data-anchor-id="the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Minimax Polynomial
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Among all monic polynomials <span class="math inline">\(q\)</span> of degree <span class="math inline">\(n\)</span> on <span class="math inline">\([-1,1]\)</span>, <span class="math display">\[
-\begin{align}
-2^{1-n}T_n(x)
-\end{align}
-\]</span> has the smallest possible infinity norm: <span class="math display">\[
-\begin{align}
-\|2^{1-n}T_n\|_\infty
-    =
-    2^{1-n}
-    \leq
-    \|q\|_\infty.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Let <span class="math inline">\(m(x)=2^{1-n}T_n(x)\)</span>. Use the result above to show that <span class="math inline">\(m\)</span> is monic and <span class="math inline">\(\|m\|_\infty=2^{1-n}\)</span>.</p></li>
-<li><p>Suppose another monic polynomial <span class="math inline">\(q\)</span> satisfies <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span>. Define <span class="math inline">\(r=q-m\)</span>. What is the degree of <span class="math inline">\(r\)</span>?</p></li>
-<li><p>Evaluate the signs of <span class="math inline">\(m\)</span> at the <span class="math inline">\(n+1\)</span> extrema from the result above.</p></li>
-<li><p>Use the assumption <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span> to show that <span class="math inline">\(r\)</span> changes sign between each pair of adjacent extrema.</p></li>
-<li><p>Conclude that <span class="math inline">\(r\)</span> has at least <span class="math inline">\(n\)</span> roots, contradicting its degree. This proves the result above.</p></li>
-<li><p>Combine the result above and the result above to explain why Chebyshev nodes are the natural interpolation nodes.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="chebyshev-series" class="level2" data-number="16.5">
-<h2 data-number="16.5" class="anchored" data-anchor-id="chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Series
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A Chebyshev expansion writes a function on <span class="math inline">\([-1,1]\)</span> as <span class="math display">\[
-\begin{align}
-f(x)\sim \sum_{k=0}^{\infty} c_kT_k(x).
-\end{align}
-\]</span> Using <span class="math inline">\(x=\cos\theta\)</span>, this is exactly a cosine series for the even function <span class="math inline">\(f(\cos\theta)\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Coefficient Formula
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(k\geq 1\)</span>, <span class="math display">\[
-\begin{align}
-c_k=\frac{2}{\pi}\int_0^\pi f(\cos\theta)\cos(k\theta)\,d\theta,
-\end{align}
-\]</span> and <span class="math display">\[
-\begin{align}
-c_0=\frac{1}{\pi}\int_0^\pi f(\cos\theta)\,d\theta.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Spectral Accuracy
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(f\)</span> is analytic on and near <span class="math inline">\([-1,1]\)</span>, then its Chebyshev coefficients decay geometrically: <span class="math display">\[
-\begin{align}
-|c_k|\leq C\rho^{-k}
-    \qquad \text{for some } \rho&gt;1.
-\end{align}
-\]</span> The truncated series <span class="math display">\[
-\begin{align}
-p_n(x)=\sum_{k=0}^n c_kT_k(x)
-\end{align}
-\]</span> therefore satisfies <span class="math display">\[
-\begin{align}
-\|f-p_n\|_\infty=O(\rho^{-n}).
-\end{align}
-\]</span> This is called spectral accuracy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1049,7 +861,86 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Fourier connection)</strong> Chebyshev methods are Fourier cosine methods after the change of variables <span class="math inline">\(x=\cos\theta\)</span>. This is why fast cosine transforms can compute Chebyshev coefficients efficiently.</p>
+<p><strong>(Ill-conditioned monomial basis)</strong> The vectors <span class="math inline">\(\bv,\bA\bv,...,\bA^{k-1}\bv\)</span> form a basis of <span class="math inline">\(\mathcal{K}_k\)</span> whenever the subspace has dimension <span class="math inline">\(k\)</span>, but this basis can be severely ill-conditioned. When a unique dominant eigendirection is present in the starting vector, the power-iteration argument shows that the normalized vectors <span class="math inline">\(\bA^j\bv/\|\bA^j\bv\|_2\)</span> converge to the dominant eigenvector, so the later columns of the basis matrix become nearly parallel. The resulting near dependence makes the basis sensitive to rounding errors, which can destroy the information carried by the smaller components.</p>
+</div>
+</div>
+</section>
+<section id="the-arnoldi-process" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="the-arnoldi-process"><span class="header-section-number">16.2</span> The Arnoldi Process</h2>
+<p>The remedy is to orthonormalize the Krylov sequence as it is generated. If <span class="math inline">\(\bv_1,...,\bv_j\)</span> is an orthonormal basis of <span class="math inline">\(\mathcal{K}_j\)</span>, we obtain a new direction by multiplying the latest basis vector by <span class="math inline">\(\bA\)</span> instead of forming <span class="math inline">\(\bA^j\bv\)</span>. We then remove its components along the existing basis by Gram–Schmidt orthogonalization (the referenced result).</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The Arnoldi Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> and let <span class="math inline">\(\bv\in\fR^n\)</span> be nonzero. Set <span class="math inline">\(\bv_1=\bv/\|\bv\|_2\)</span>. For <span class="math inline">\(j=1,2,...,k\)</span>:</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(\bw=\bA\bv_j\)</span>.</p></li>
+<li><p>For <span class="math inline">\(i=1,...,j\)</span>, compute <span class="math inline">\(h_{ij}=\bv_i^T\bw\)</span> and update <span class="math inline">\(\bw\leftarrow\bw-h_{ij}\bv_i\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(h_{j+1,j}=\|\bw\|_2\)</span>.</p></li>
+<li><p>If <span class="math inline">\(h_{j+1,j}=0\)</span>, stop. Otherwise, set <span class="math inline">\(\bv_{j+1}=\bw/h_{j+1,j}\)</span>.</p></li>
+</ol>
+<p>Step 2 is modified Gram–Schmidt. The coefficients <span class="math inline">\(h_{ij}\)</span> are collected in the <span class="math inline">\(k\times k\)</span> upper Hessenberg matrix <span class="math inline">\(\bH_k\)</span> and in the <span class="math inline">\((k+1)\times k\)</span> matrix <span class="math inline">\(\bar{\bH}_k\)</span>, which is <span class="math inline">\(\bH_k\)</span> with the additional row <span class="math inline">\(h_{k+1,k}\be_k^T\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Arnoldi Relation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Suppose the Arnoldi iteration completes <span class="math inline">\(k\)</span> steps with <span class="math inline">\(h_{j+1,j}\neq0\)</span> for <span class="math inline">\(j=1,...,k\)</span>, and let <span class="math inline">\(\bV_k=(\bv_1\ \cdots\ \bv_k)\)</span>. Then:</p>
+<ol type="1">
+<li><p>The columns of <span class="math inline">\(\bV_k\)</span> are orthonormal and span <span class="math inline">\(\mathcal{K}_k(\bA,\bv)\)</span>.</p></li>
+<li><p>The matrices satisfy $$ <span class="math display">\[\begin{align}
+\bA\bV_k=\bV_k\bH_k+h_{k+1,k}\bv_{k+1}\be_k^T=\bV_{k+1}\bar{\bH}_k.
+
+\end{align}\]</span> $$</p></li>
+<li><p>The Hessenberg matrix is the projection of <span class="math inline">\(\bA\)</span> onto the Krylov subspace, <span class="math inline">\(\bH_k=\bV_k^T\bA\bV_k\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>All assertions concern exact arithmetic. We verify orthogonality, the matrix identity, the span, and the projected matrix in that order.</p>
+<ol type="1">
+<li><p>Assume <span class="math inline">\(\bv_1,...,\bv_j\)</span> are orthonormal. At inner-loop position <span class="math inline">\(i\)</span>, replace the current <span class="math inline">\(\bw\)</span> by <span class="math inline">\(\bw-h_{ij}\bv_i\)</span>, where <span class="math inline">\(h_{ij}=\bv_i^T\bw\)</span>. Its inner product with <span class="math inline">\(\bv_i\)</span> becomes <span class="math inline">\(h_{ij}-h_{ij}\bv_i^T\bv_i=0\)</span>. For an earlier vector <span class="math inline">\(\bv_l\)</span>, <span class="math inline">\(l&lt;i\)</span>, the inner product remains zero because <span class="math inline">\(\bv_l^T\bv_i=0\)</span>. Thus the final <span class="math inline">\(\bw\)</span> is perpendicular to every previous basis vector. Dividing by its nonzero norm gives a new unit vector. The starting vector is unit by construction, so induction establishes orthonormality at every step.</p></li>
+<li><p>The inner loop subtracts <span class="math inline">\(\sum_{i=1}^jh_{ij}\bv_i\)</span> from the original vector <span class="math inline">\(\bA\bv_j\)</span>. Its remaining vector is <span class="math inline">\(h_{j+1,j}\bv_{j+1}\)</span>. Consequently <span class="math display">\[
+\begin{align}
+\bA\bv_j=\sum_{i=1}^{j+1}h_{ij}\bv_i.
+\end{align}
+\]</span> Putting the first <span class="math inline">\(k\)</span> such equations side by side gives <span class="math inline">\(\bA\bV_k=\bV_{k+1}\bar{\bH}_k\)</span>. The coefficients in column <span class="math inline">\(j\)</span> have no indices beyond <span class="math inline">\(j+1\)</span>, which is why the matrix is upper Hessenberg. Separating its final row gives the other form of the Arnoldi relation.</p></li>
+<li><p>The first vector spans <span class="math inline">\(\mathcal K_1\)</span>. Suppose the first <span class="math inline">\(j\)</span> vectors span <span class="math inline">\(\mathcal K_j\)</span>. The column identity expresses <span class="math inline">\(\bv_{j+1}\)</span> as a combination of <span class="math inline">\(\bA\bv_j\)</span> and previous basis vectors. Each belongs to <span class="math inline">\(\mathcal K_{j+1}\)</span>, so <span class="math inline">\(\bv_{j+1}\)</span> does too. There are <span class="math inline">\(j+1\)</span> independent orthonormal vectors in this space, whose definition supplies at most <span class="math inline">\(j+1\)</span> generators. Its dimension is therefore exactly <span class="math inline">\(j+1\)</span>, and these vectors span it.</p></li>
+<li><p>Multiply the Arnoldi relation by <span class="math inline">\(\bV_k^T\)</span> on the left: <span class="math display">\[
+\begin{align}
+\bV_k^T\bA\bV_k
+  &amp;=\bV_k^T\bV_k\bH_k
+    +h_{k+1,k}\bV_k^T\bv_{k+1}\be_k^T\\
+  &amp;=\bI_k\bH_k+\bzero=\bH_k.
+\end{align}
+\]</span> The two simplifications follow from orthonormality proved in the first step.</p></li>
+</ol>
+<p>For the standard Arnoldi construction and its use in Krylov methods, see <span class="citation" data-cites="saad2003">Saad (<a href="../references.html#ref-saad2003" role="doc-biblioref">2003</a>)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1062,7 +953,43 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Interpolation vs.&nbsp;expansion)</strong> Chebyshev interpolation chooses values at Chebyshev nodes. Chebyshev series choose coefficients in the Chebyshev basis. Both work well for the same reason: the basis oscillates evenly and avoids the endpoint instability of monomials.</p>
+<p><strong>(Arnoldi cost)</strong> Step <span class="math inline">\(j\)</span> requires one product with <span class="math inline">\(\bA\)</span> and <span class="math inline">\(j\)</span> inner products and vector updates of length <span class="math inline">\(n\)</span>. After <span class="math inline">\(k\)</span> steps the iteration has used <span class="math inline">\(k\)</span> matrix–vector products and <span class="math inline">\(O(k^2n)\)</span> additional operations, and it stores <span class="math inline">\(k+1\)</span> vectors of length <span class="math inline">\(n\)</span>. The orthogonalization cost and storage both grow with <span class="math inline">\(k\)</span>. For a symmetric matrix, the referenced section shows that most of the coefficients <span class="math inline">\(h_{ij}\)</span> vanish and that the growth disappears.</p>
+</div>
+</div>
+</section>
+<section id="ritz-pairs-and-breakdown" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="ritz-pairs-and-breakdown"><span class="header-section-number">16.3</span> Ritz Pairs and Breakdown</h2>
+<p>The matrix <span class="math inline">\(\bH_k\)</span> is small, so its eigenvalues can be computed by the dense QR algorithm. Its eigenpairs, lifted back to <span class="math inline">\(\fR^n\)</span> through <span class="math inline">\(\bV_k\)</span>, serve as approximate eigenpairs of <span class="math inline">\(\bA\)</span>. The Arnoldi relation measures their quality without any further products with <span class="math inline">\(\bA\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Ritz Pairs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bH_k\bs=\theta\bs\)</span> with <span class="math inline">\(\|\bs\|_2=1\)</span>. The scalar <span class="math inline">\(\theta\)</span> is a <strong>Ritz value</strong> and the unit vector <span class="math inline">\(\tilde{\bu}=\bV_k\bs\in\mathcal{K}_k(\bA,\bv)\)</span> is the corresponding <strong>Ritz vector</strong> of <span class="math inline">\(\bA\)</span> with respect to <span class="math inline">\(\mathcal{K}_k(\bA,\bv)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Residual of a Ritz Pair
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\((\theta,\tilde{\bu})\)</span> be a Ritz pair with <span class="math inline">\(\tilde{\bu}=\bV_k\bs\)</span>, and let <span class="math inline">\(s_k\)</span> denote the last entry of <span class="math inline">\(\bs\)</span>. Then <span class="math display">\[
+\begin{align}
+\bA\tilde{\bu}-\theta\tilde{\bu}=h_{k+1,k}s_k\,\bv_{k+1},
+    \qquad
+    \|\bA\tilde{\bu}-\theta\tilde{\bu}\|_2=h_{k+1,k}|s_k|.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1075,17 +1002,100 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Multiply the Arnoldi relation by <span class="math inline">\(\bs\)</span> and use <span class="math inline">\(\bH_k\bs=\theta\bs\)</span>. Identify the single remaining term, and take its norm. Explain why this residual evaluation needs no new product with <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<p>The residual norm depends only on <span class="math inline">\(h_{k+1,k}\)</span> and the last entry of a <span class="math inline">\(k\)</span>-dimensional eigenvector. We can therefore monitor convergence of every Ritz pair at each step and form <span class="math inline">\(\tilde{\bu}=\bV_k\bs\)</span> only for the pairs that have converged. A small residual shows that <span class="math inline">\((\theta,\tilde{\bu})\)</span> is an exact eigenpair of a nearby matrix. For a symmetric matrix, the referenced result then places an eigenvalue within the residual norm of <span class="math inline">\(\theta\)</span>. For a nonnormal diagonalizable matrix, the referenced result multiplies this distance by the condition number of the eigenvector basis, which can be large.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Corollary: Breakdown Gives Exact Eigenvalues
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the Arnoldi iteration stops at step <span class="math inline">\(k\)</span> because <span class="math inline">\(h_{k+1,k}=0\)</span>, then <span class="math inline">\(\mathcal{K}_k(\bA,\bv)\)</span> is invariant under <span class="math inline">\(\bA\)</span>, and every Ritz pair is an exact eigenpair of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>At breakdown, the unnormalized vector remaining after orthogonalization is zero. A vector <span class="math inline">\(\bv_{k+1}\)</span> is therefore not defined, but it is also unnecessary: the column equations give the shortened identity <span class="math display">\[
+\begin{align}
+\bA\bV_k=\bV_k\bH_k.
+\end{align}
+\]</span></p>
 <ol type="1">
-<li><p>Use the result above to rewrite a Chebyshev expansion as a cosine series in <span class="math inline">\(\theta\)</span>.</p></li>
-<li><p>Derive the coefficient formula in the result above from Fourier cosine orthogonality.</p></li>
-<li><p>Compute degree-<span class="math inline">\(n\)</span> Chebyshev fits to <span class="math inline">\(e^x\)</span> using <code>np.polynomial.chebyshev.chebfit</code>. Plot <span class="math inline">\(\|f-p_n\|_\infty\)</span> versus <span class="math inline">\(n\)</span> on a semilog scale.</p></li>
-<li><p>Repeat the previous experiment for <span class="math inline">\(f(x)=|x|\)</span>. Compare the coefficient decay with the analytic case in the result above.</p></li>
-<li><p>Use <code>chebder</code> to differentiate a Chebyshev approximation to <span class="math inline">\(f(x)=\sin(\pi x)\)</span>. Compare the derivative error with a finite-difference approximation using the same number of sample points.</p></li>
+<li><p>An arbitrary vector in the Krylov space has the form <span class="math inline">\(\bx=\bV_k\by\)</span>. Applying <span class="math inline">\(\bA\)</span> gives <span class="math inline">\(\bA\bx=\bV_k\bH_k\by\)</span>, which is another linear combination of the columns of <span class="math inline">\(\bV_k\)</span>. Thus the space is invariant.</p></li>
+<li><p>Let <span class="math inline">\(\bH_k\bs=\theta\bs\)</span> with <span class="math inline">\(\bs\neq\bzero\)</span>. Multiply by <span class="math inline">\(\bV_k\)</span> and use the shortened identity: <span class="math display">\[
+\begin{align}
+\bA(\bV_k\bs)=\bV_k\bH_k\bs=\theta(\bV_k\bs).
+\end{align}
+\]</span> The lifted vector is nonzero because <span class="math inline">\(\|\bV_k\bs\|_2=\|\bs\|_2&gt;0\)</span>. It is therefore an eigenvector, not merely a zero vector satisfying the equation. Every Ritz pair is consequently exact.</p></li>
 </ol>
 </div>
 </div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Exact termination)</strong> Suppose <span class="math inline">\(\bv\)</span> is a combination of exactly <span class="math inline">\(m\)</span> eigenvectors of a diagonalizable matrix <span class="math inline">\(\bA\)</span>, with nonzero coefficients and distinct eigenvalues. Prove that <span class="math inline">\(\dim\mathcal{K}_k(\bA,\bv)=\min(k,m)\)</span>, and use the referenced result and the referenced result to conclude that the Arnoldi iteration stops at step <span class="math inline">\(m\)</span> with those <span class="math inline">\(m\)</span> eigenvalues as its Ritz values.</p>
+</div>
+</div>
+</section>
+<section id="further-exercises" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">16.4</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Monomial versus Arnoldi basis)</strong> Let <span class="math inline">\(\bA=\operatorname{diag}(1,2,...,100)\)</span> and <span class="math inline">\(\bv=(1,...,1)^T\)</span>. For <span class="math inline">\(k=5,10,15,20\)</span>, compute the condition number of the matrix with columns <span class="math inline">\(\bv,\bA\bv,...,\bA^{k-1}\bv\)</span>, and the quantity <span class="math inline">\(\|\bV_k^T\bV_k-\bI\|_2\)</span> for the Arnoldi basis. Explain the growth of the first quantity using power iteration.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Implementing Arnoldi)</strong> Implement the referenced result for a function that applies <span class="math inline">\(\bA\)</span> to a vector. Test it on a random <span class="math inline">\(200\times200\)</span> nonsymmetric matrix by checking <span class="math inline">\(\|\bA\bV_k-\bV_{k+1}\bar{\bH}_k\|_2\)</span> and by comparing the residuals of the referenced result with directly computed residuals <span class="math inline">\(\|\bA\tilde{\bu}-\theta\tilde{\bu}\|_2\)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-saad2003" class="csl-entry" role="listitem">
+Saad, Yousef. 2003. <em>Iterative Methods for Sparse Linear Systems</em>. 2nd ed. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898718003">https://doi.org/10.1137/1.9780898718003</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1504,18 +1514,18 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../orthogonality/least-squares.html" class="pagination-link" aria-label="Overdetermined Systems and Least Squares">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span>
+      <a href="../eigenvalues/svd.html" class="pagination-link" aria-label="The Singular Value Decomposition">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../eigenvalues/eigenvalues.html" class="pagination-link" aria-label="Eigenvalues and Eigenvectors">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../eigenvalues/lanczos.html" class="pagination-link" aria-label="The Lanczos Algorithm">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/chebyshev.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/arnoldi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
           background:rgba(255,255,255,0.85);border:1px solid #ccc;
           border-radius:50%;width:2.4rem;height:2.4rem;
           display:flex;align-items:center;justify-content:center;

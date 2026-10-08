@@ -1,4 +1,4 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
@@ -6,17 +6,17 @@
 \label{sub:operators}
 
 \textBox{%
-Differential equations become matrix problems after discretization. The finite matrix should preserve the main structure of the operator: sparsity, symmetry, definiteness, spectrum, and conditioning.
+To approximate a differential equation numerically, we replace its unknown function by values on a grid. A local difference formula then relates each value to its neighbors and produces a sparse linear system. We derive this system for $-u''=f$ with prescribed endpoint values, then relate its eigenvalues to those of the differential operator.
+}
+
+\textBox{%
+The boundary conditions affect both solvability and the spectrum. Keeping them in the derivation will explain why this matrix is positive definite and why its condition number grows when the grid is refined.
 }
 
 \subsubsection{Differential Operators and Discretization}
 
 \addDef{Linear Operator}{%
-Map $\mathcal{A}: X \to Y$ between function spaces satisfying:
-\begin{align*}
-    \mathcal{A}(\alpha u + v) = \alpha \mathcal{A}u + \mathcal{A}v.
-\end{align*}
-Matrices are finite-dimensional operators; $\frac{d}{dx}$ and $\nabla^2$ are infinite-dimensional.
+A map $\mathcal A:X\to Y$ between vector spaces is linear if $\mathcal A(\alpha u+\beta v)=\alpha\mathcal A u+\beta\mathcal A v$ for all $u,v\in X$ and scalars $\alpha,\beta$. Here the vectors may be functions. Differentiation is a linear map from continuously differentiable functions to continuous functions. A matrix is the corresponding construction for finite lists of coordinates.
 }
 \label{def:linear-operator}
 
@@ -43,7 +43,7 @@ Approximating $u''(x)$ on a grid with spacing $h$:
 \begin{align*}
     u''(x_k) \approx \frac{u(x_{k-1}) - 2u(x_k) + u(x_{k+1})}{h^2}.
 \end{align*}
-\textbf{Accuracy:}\enspace Second-order $O(h^2)$ via Taylor expansion.
+For $u\in C^4$, Taylor expansion gives a truncation error bounded by $h^2\|u^{(4)}\|_\infty/12$.
 }
 \label{def:finite-difference-stencil}
 
@@ -56,6 +56,13 @@ Approximating $u''(x)$ on a grid with spacing $h$:
 \end{enumerate}
 }
 \label{ex:finite-difference-stencil}
+
+\textBox{%
+At an interior node, the difference formula gives $-u_{i-1}+2u_i-u_{i+1}=h^2f(x_i)$. The endpoint values $u_0=u_{n+1}=0$ are known, so only $u_1,\ldots,u_n$ are unknowns. Writing one such equation per interior node gives the matrix below.
+}
+\addExcr{%
+Write the three equations when there are three interior nodes. Next prescribe $u(0)=\alpha$ and $u(1)=\beta$. Show that the coefficient matrix stays the same and determine the changes in the first and last entries of the right-hand side.
+}
 
 \addDef{1-D Discrete Laplacian}{%
 Discretizing $-d^2/dx^2$ on $[0,1]$ with $u(0)=u(1)=0$ yields the tridiagonal system $\bT \mathbf{u} = \mathbf{f}$:
@@ -96,22 +103,32 @@ The matrix $\bT$ in Def~\ref{def:discrete-laplacian-1d} is sparse, symmetric pos
 \label{thm:poisson-structure}
 
 \addPrf{%
-Sparsity and symmetry are immediate from the tridiagonal stencil. By Thm~\ref{thm:laplacian-eigenvalues}, all eigenvalues are positive because $1\leq k\leq n$ and $0<k\pi/(2(n+1))<\pi/2$. Thus $\bT$ is SPD. Also
+Sparsity and symmetry follow directly from the tridiagonal stencil $\bT = \frac{1}{h^2}\operatorname{tridiag}(-1, 2, -1)$. For any grid vector $\bu \in \fR^n$ with boundary conditions $u_0 = u_{n+1} = 0$, the quadratic form expands as a sum of squared forward differences:
 \begin{align*}
-    \lambda_{\min}\sim \pi^2,
-    \qquad
-    \lambda_{\max}\sim \frac{4}{h^2},
+    \bu^T \bT \bu
+    &= \frac{1}{h^2} \sum_{i=1}^n u_i (2u_i - u_{i-1} - u_{i+1}) \\
+    &= \frac{1}{h^2} \sum_{i=1}^n (u_i^2 - u_i u_{i-1} + u_i^2 - u_i u_{i+1}) \\
+    &= \frac{1}{h^2} \sum_{i=0}^n (u_{i+1} - u_i)^2.
 \end{align*}
-so $\kappa_2(\bT)=\lambda_{\max}/\lambda_{\min}=O(h^{-2})$.
+In the sum of squared differences, each interior $u_i^2$ occurs twice, and each neighbor product occurs with coefficient $-2$. The endpoint squares vanish because both boundary values are zero. This reproduces exactly the expanded quadratic form and justifies the rearrangement.
+
+Because $u_0 = 0$, if $\bu^T\bT\bu = 0$, then $u_{i+1} - u_i = 0$ for all $i$, forcing $u_1 = \dots = u_n = 0$. Hence $\bu^T\bT\bu > 0$ for all $\bu \neq \bzero$, proving that $\bT$ is SPD.
+
+By Thm~\ref{thm:laplacian-eigenvalues}, the extremal eigenvalues are
+\begin{align*}
+    \lambda_{\min} &= \lambda_1 = \frac{4}{h^2}\sin^2\left(\frac{\pi h}{2}\right) = \frac{4}{h^2}\left(\frac{\pi h}{2} + O(h^3)\right)^2 = \pi^2 + O(h^2), \\
+    \lambda_{\max} &= \lambda_n = \frac{4}{h^2}\sin^2\left(\frac{n\pi h}{2}\right) = \frac{4}{h^2}\cos^2\left(\frac{\pi h}{2}\right) = \frac{4}{h^2}(1 - O(h^2)).
+\end{align*}
+The largest-mode identity uses $n\pi h=\pi-\pi h$, so $\sin(n\pi h/2)=\cos(\pi h/2)$. The smallest mode instead has angle tending to zero, where $\sin z=z+O(z^3)$. These two different limits explain why one eigenvalue stays of constant size while the other grows like $h^{-2}$.
+
+The 2-norm condition number is therefore
+\begin{align*}
+    \kappa_2(\bT) = \frac{\lambda_{\max}}{\lambda_{\min}} = \frac{4/h^2 + O(1)}{\pi^2 + O(h^2)} = \frac{4}{\pi^2 h^2} + O(1) = O(h^{-2}).
+\end{align*}
 }
 
 \addExcr{%
-\begin{enumerate}
-    \item Use the stencil to count the number of nonzeros in $\bT$.
-    \item Use the quadratic form $\bu^T\bT\bu$ to show positive definiteness for nonzero interior grid functions.
-    \item Use Thm~\ref{thm:laplacian-eigenvalues} to estimate $\lambda_{\min}$ and $\lambda_{\max}$.
-    \item Derive the condition number estimate in Thm~\ref{thm:poisson-structure}.
-\end{enumerate}
+Count the nonzero entries of $\bT$. Then replace the Dirichlet boundary conditions by periodic conditions and form the analogous matrix for $n\geq3$. Find a nonzero vector in its null space. Which step in the positive-definiteness proof fails, and what compatibility condition must the right-hand side satisfy?
 }
 \label{ex:poisson-structure}
 
@@ -121,31 +138,40 @@ so $\kappa_2(\bT)=\lambda_{\max}/\lambda_{\min}=O(h^{-2})$.
 An operator is \textbf{bounded} if $\|\mathcal{A}u\|_Y \leq C \|u\|_X$ for some $C < \infty$.
 \begin{itemize}
     \item Matrices are always bounded.
-    \item Differential operators are \textbf{unbounded}.
+    \item Boundedness of a differential operator depends on the domain and the norms. For a function on $[0,1]$, the $L^2$ norm is $\|u\|_{L^2}=(\int_0^1|u(x)|^2\,dx)^{1/2}$. The functions $u_k(x)=\sin(2\pi kx)$ all have norm $1/\sqrt2$, whereas their derivatives have norm $2\pi k/\sqrt2$. Thus no fixed constant $C$ can bound $\|u_k'\|_{L^2}$ by $C\|u_k\|_{L^2}$ for every $k$.
+
+    If instead we measure the input by $\|u\|_{H^1}=(\|u\|_{L^2}^2+\|u'\|_{L^2}^2)^{1/2}$, then $\|u'\|_{L^2}\leq\|u\|_{H^1}$ directly. The space $H^1$ consists of square-integrable functions whose weak first derivative is also square-integrable. For the smooth functions considered here, that derivative is the ordinary derivative. Including it in the input norm makes differentiation bounded.
 \end{itemize}
 }
 
 \addRemark{%
-\textbf{Numerical Consequence:}\enspace Because the continuous Laplacian is unbounded, its discretization $\bT$ becomes increasingly ill-conditioned as $h \to 0$:
-\begin{align*}
-    \kappa(\bT) = \frac{\lambda_{\max}}{\lambda_{\min}} \approx \frac{4/h^2}{\pi^2} = O(h^{-2}).
-\end{align*}
-Refining the grid $2\times$ quadruples the condition number.
+The condition-number estimate uses two separate facts: the smallest eigenvalue approaches the positive constant $\pi^2$, whereas the largest grows like $4h^{-2}$. Thus halving $h$ approximately quadruples the condition number. This is consistent with the unboundedness of the differential operator in the $L^2$ norm, but unboundedness alone is not a proof of the estimate for a discretization.
 }
 
 \addRemark{%
 \textbf{(Solver consequence)}\enspace Dense Gaussian elimination ignores sparsity. For Poisson matrices, sparse Cholesky, CG with preconditioning, multigrid, or FFT-based solvers are the natural algorithms, depending on geometry and boundary conditions.
 }
 
-\subsubsection{Exercises}
+\subsubsection{Further Exercises}
 
 \addExcr{%
-\begin{enumerate}
-    \item Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$ using Thm~\ref{thm:laplacian-eigenvalues}.
-    \item Show that $\kappa(\bT) \to \infty$ as $n \to \infty$ using Thm~\ref{thm:poisson-structure}.
-    \item Implement a 2-D Poisson solver on a unit square. Verify $O(N^{3/2})$ cost for direct sparse solve.
-    \item Prove the differentiation operator is unbounded on $L^2[0,1]$ using $u_k(x) = \sin(k\pi x)$.
-\end{enumerate}
+Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$ using Thm~\ref{thm:laplacian-eigenvalues}.
+}
+
+\addExcr{%
+Show that $\kappa(\bT) \to \infty$ as $n \to \infty$ using Thm~\ref{thm:poisson-structure}.
+}
+
+\addExcr{%
+Assemble the two-dimensional Poisson matrix on an $m\times m$ interior grid, with $N=m^2$ unknowns. Compare sparse direct solves under natural and fill-reducing orderings. Relate the factorization times and factor nonzero counts to the estimates in the sparse Cholesky section; explain why timings alone cannot prove an asymptotic bound.
+}
+
+\addExcr{%
+Prove the differentiation operator is unbounded on $L^2[0,1]$ using $u_k(x) = \sin(k\pi x)$.
+}
+
+\addReading{%
+LeVeque develops finite differences with close attention to consistency, stability, and boundary conditions \citep{leveque2007}. Strang connects the same model problems to broader ideas in applied mathematics and computation \citep{strang2007}.
 }
 
 \end{document}

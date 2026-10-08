@@ -1,7 +1,8 @@
 # Mathematical Notation and Proof Techniques
 
 
-Standard vocabulary for proofs and algorithms.
+This section establishes the logical, set-theoretic, and matrix notation used throughout these notes, together with the standard proof structures.
+
 
 ## Logic and Set Notation
 
@@ -10,11 +11,17 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Logical Quantifiers
 
 - **Universal ($\forall$):**  ``For all.''
-  
+
 - **Existential ($\exists$):**  ``There exists.''
-  
+
 - **Example:**  ``$\forall \varepsilon > 0,\;\exists \delta > 0$'' reads as ``for every positive $\varepsilon$ there is a positive $\delta$.''
 
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+Compare ``for every real $x$ there exists a real $y$ with $y>x$'' with ``there exists a real $y$ such that $y>x$ for every real $x$.'' Which statement is true? Explain why reversing the quantifiers changes the assertion. In an error estimate, what changes if its constant is allowed to depend on the problem size?
 :::
 
 
@@ -22,11 +29,17 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Implication and Equivalence
 
 - **Implication ($P \Rightarrow Q$):**  $P$ implies $Q$.
-  
+
 - **Equivalence ($P \Leftrightarrow Q$):**  $P$ if and only if $Q$ (iff).
-  
+
 - **Contrapositive:**  $\neg Q \Rightarrow \neg P$. Logically equivalent to $P \Rightarrow Q$.
 
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+For a square matrix, compare the statements ``if $\bA$ is invertible, then $\bA\bx=\bb$ has a solution'' and ``if $\bA\bx=\bb$ has a solution, then $\bA$ is invertible.'' Give a counterexample to the second statement for one right-hand side. How must the solvability statement be strengthened to become equivalent to invertibility?
 :::
 
 
@@ -34,13 +47,13 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Set Notation
 
 - $x \in S$: $x$ is an element of $S$.
-  
+
 - $S \subseteq T$: $S$ is a subset of $T$.
-  
-- $S \cup T$: Union; $S \cap T$: Intersection; $S \setminus T$: Set difference.
-  
+
+- $S \cup T$ (union), $S \cap T$ (intersection), and $S \setminus T$ (set difference).
+
 - $\{x \in S : P(x)\}$: Set builder notation.
-  
+
 - **Number Sets:**  $\fZ$ (integers), $\fR$ (reals), $\fC$ (complex), $\fR^n$ (vectors), $\fR^{m \times n}$ (matrices).
 
 :::
@@ -50,9 +63,9 @@ Standard vocabulary for proofs and algorithms.
 ## Exercise
 
 1. Write ``every invertible matrix has a nonzero determinant'' using quantifiers and implication.
-  
+
 1. State the contrapositive of: ``if $\bA$ is invertible, then $\bA\bx = \bzero \Rightarrow \bx = \bzero$.''
-  
+
 1. Let $S = \{1, 2, 3, 4\}$ and $T = \{3, 4, 5, 6\}$. Compute $S \cup T, S \cap T, S \setminus T$.
 
 :::
@@ -78,7 +91,7 @@ Assume $\neg P$ and derive a logical contradiction ($R \wedge \neg R$). Proves $
 To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 1. **Base case:**  Verify $P(n_0)$ directly.
-  
+
 1. **Inductive step:**  Assume $P(k)$ and prove $P(k+1)$.
 
 :::
@@ -86,7 +99,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Numerical Proofs:**  Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
+**(Proof and numerical evidence)**  A proof establishes a claim for every input satisfying its hypotheses. A finite experiment can test an implementation or expose a counterexample, but agreement on a sample does not prove a universal claim. In an error bound, state the norm, the limiting parameter, and which quantities the constant may depend on.
 :::
 
 
@@ -94,9 +107,9 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 ## Exercise
 
 1. Prove: if $\bA$ and $\bB$ are symmetric, then $\bA + \bB$ is symmetric.
-  
+
 1. Prove by contradiction: if $\bA\bx = \bzero \Rightarrow \bx = \bzero$, then $\bA$ has no zero eigenvalue.
-  
+
 1. By induction, prove $\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$.
 
 :::
@@ -107,29 +120,29 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Scalars, Vectors, and Matrices)** 
+**(Scalars, Vectors, and Matrices)**
 
 - **Scalars:**  Lowercase italic ($a, b, x$).
-  
+
 - **Vectors:**  Lowercase bold ($\bx, \by, \ba$). Default is column vector.
-  
+
 - **Matrices:**  Uppercase bold ($\bA, \bB, \bQ$).
-  
-- **Indexing:**  1-based (unlike Python). $x_i$ is $i$-th entry; $a_{ij}$ is $(i,j)$ entry.
+
+- **Indexing:**  Usually begins at one, unlike Python. The Fourier sections explicitly begin at zero. Here $x_i$ denotes a vector entry and $a_{ij}$ a matrix entry.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Transpose and Inverse)** 
+**(Transpose and Inverse)**
 
-- $\bA^T$: Transpose.
-  
+- $\bA^T$: Transpose. The notation $\bA^*$ denotes the conjugate transpose, which agrees with $\bA^T$ for real entries.
+
 - $\bA^{-1}$: Matrix inverse (square, nonsingular matrices).
-  
+
 - $\bA^{-T}$: Transpose of the inverse $(\bA^{-1})^T$.
-  
+
 - $\bA^k$: $k$-th power. $\bA^0 = \bI$.
 
 :::
@@ -137,7 +150,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Sums and Products)** 
+**(Sums and Products)**
 $$
 \begin{align}
 \sum_{i=1}^{n} a_i = a_1 + ... + a_n, \qquad
@@ -149,10 +162,10 @@ $$
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Functions)** 
+**(Functions)**
 
 - $f : \fR^n \to \fR^m$: Maps $n$-vectors to $m$-vectors.
-  
+
 - $f \circ g$: Function composition $(f \circ g)(\bx) = f(g(\bx))$.
 
 :::
@@ -160,6 +173,6 @@ $$
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Asymptotic Notation)** 
+**(Asymptotic Notation)**
 Scaling of algorithms is described using Big-O notation ($O(n^2), O(n^3)$). Details in the Computational Complexity section.
 :::

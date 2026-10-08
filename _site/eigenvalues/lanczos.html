@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>19&nbsp; Lanczos Algorithm – Scientific Computing</title>
+<title>17&nbsp; The Lanczos Algorithm – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../eigenvalues/jacobi-eig.html" rel="next">
-<link href="../eigenvalues/svd.html" rel="prev">
+<link href="../numerical-analysis/interpolation.html" rel="next">
+<link href="../eigenvalues/arnoldi.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,9 +65,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-512512a359692b6a4a631bfed0d4ecc0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/lanczos.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/lanczos.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,44 +415,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span></a>
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
   </div>
 </li>
       </ul>
@@ -440,19 +457,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +498,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +521,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,7 +553,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -544,26 +561,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -571,7 +588,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -579,20 +596,44 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
   </div>
 </li>
       </ul>
@@ -609,7 +650,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +658,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">Applications and Research Bridges</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -626,41 +667,64 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +735,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#krylov-subspaces" id="toc-krylov-subspaces" class="nav-link active" data-scroll-target="#krylov-subspaces"><span class="header-section-number">19.1</span> Krylov Subspaces</a></li>
-  <li><a href="#the-lanczos-recurrence" id="toc-the-lanczos-recurrence" class="nav-link" data-scroll-target="#the-lanczos-recurrence"><span class="header-section-number">19.2</span> The Lanczos Recurrence</a></li>
-  <li><a href="#ritz-values-and-vectors" id="toc-ritz-values-and-vectors" class="nav-link" data-scroll-target="#ritz-values-and-vectors"><span class="header-section-number">19.3</span> Ritz Values and Vectors</a></li>
+  <li><a href="#the-three-term-recurrence" id="toc-the-three-term-recurrence" class="nav-link active" data-scroll-target="#the-three-term-recurrence"><span class="header-section-number">17.1</span> The Three-Term Recurrence</a></li>
+  <li><a href="#rayleighritz-approximation" id="toc-rayleighritz-approximation" class="nav-link" data-scroll-target="#rayleighritz-approximation"><span class="header-section-number">17.2</span> Rayleigh–Ritz Approximation</a></li>
+  <li><a href="#loss-of-orthogonality-and-ghost-eigenvalues" id="toc-loss-of-orthogonality-and-ghost-eigenvalues" class="nav-link" data-scroll-target="#loss-of-orthogonality-and-ghost-eigenvalues"><span class="header-section-number">17.3</span> Loss of Orthogonality and Ghost Eigenvalues</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">17.4</span> Further Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/lanczos.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +746,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/lanczos.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/lanczos.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></h1>
 </div>
 
 
@@ -700,88 +765,109 @@ window.Quarto = {
 </header>
 
 
-<p>Iterative method for finding extreme eigenpairs of large, symmetric matrices without explicit <span class="math inline">\(O(n^2)\)</span> formation.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Symmetric assumption)</strong> Lanczos applies to symmetric or Hermitian matrices. For nonsymmetric matrices, use Arnoldi or GMRES-type constructions.</p>
-</div>
-</div>
-<section id="krylov-subspaces" class="level2" data-number="19.1">
-<h2 data-number="19.1" class="anchored" data-anchor-id="krylov-subspaces"><span class="header-section-number">19.1</span> Krylov Subspaces</h2>
+<p>When <span class="math inline">\(\bA\)</span> is real symmetric, the Arnoldi process of the referenced section simplifies in two ways. First, the projected matrix <span class="math inline">\(\bH_k=\bV_k^T\bA\bV_k\)</span> is symmetric as well as Hessenberg, so it is tridiagonal. Each new basis vector then needs to be orthogonalized only against the two preceding ones, and the cost per step no longer grows with <span class="math inline">\(k\)</span>. Second, the Rayleigh quotient characterization of the referenced result applies to the projected matrix. The characterization shows that the extreme Ritz values are the best estimates of the extreme eigenvalues available from the Krylov subspace.</p>
+<p>We first derive the three-term recurrence that defines the Lanczos algorithm <span class="citation" data-cites="lanczos1950">(<a href="../references.html#ref-lanczos1950" role="doc-biblioref">Lanczos 1950</a>)</span>. We then show that the extreme Ritz values move monotonically toward the extreme eigenvalues and that they are never worse than the power-iteration estimate obtained with the same number of products. A numerical example compares the two methods. The section ends with the loss of orthogonality that occurs in floating-point arithmetic.</p>
+<section id="the-three-term-recurrence" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="the-three-term-recurrence"><span class="header-section-number">17.1</span> The Three-Term Recurrence</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Krylov Subspace
+<span class="screen-reader-only">Note</span>Theorem: Tridiagonal Projection
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, ...,\, \bA^{k-1}\bv\}\)</span>. <span class="math inline">\(\bA^j\bv\)</span> amplifies components along dominant eigenvectors, concentrating information about the spectral edges.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Power iteration with memory)</strong> Power iteration keeps only the newest vector. Lanczos keeps an orthonormal basis for the whole Krylov subspace, so it can approximate several eigenvalues at once.</p>
-</div>
-</div>
-</section>
-<section id="the-lanczos-recurrence" class="level2" data-number="19.2">
-<h2 data-number="19.2" class="anchored" data-anchor-id="the-lanczos-recurrence"><span class="header-section-number">19.2</span> The Lanczos Recurrence</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Lanczos Relation
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The process builds an orthonormal basis <span class="math inline">\(V_k = [\bv_1, ..., \bv_k]\)</span> for <span class="math inline">\(\mathcal{K}_k\)</span> satisfying: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> be symmetric, and suppose the Arnoldi iteration (the referenced result) completes <span class="math inline">\(k\)</span> steps. Then <span class="math inline">\(\bH_k\)</span> is symmetric tridiagonal. Writing <span class="math inline">\(\alpha_j=h_{jj}\)</span> and <span class="math inline">\(\beta_j=h_{j+1,j}\)</span>, we have <span class="math display">\[
 \begin{align}
-\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T.
+\bH_k=\bT_k=\begin{pmatrix}
+        \alpha_1 &amp; \beta_1 &amp; &amp; \\
+        \beta_1 &amp; \alpha_2 &amp; \ddots &amp; \\
+        &amp; \ddots &amp; \ddots &amp; \beta_{k-1} \\
+        &amp; &amp; \beta_{k-1} &amp; \alpha_k
+    \end{pmatrix},
+\end{align}
+\]</span> and the Arnoldi coefficients satisfy <span class="math inline">\(h_{ij}=0\)</span> for <span class="math inline">\(i&lt;j-1\)</span> and <span class="math inline">\(h_{j-1,j}=\beta_{j-1}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The Arnoldi matrix has two structural properties.</p>
+<ol type="1">
+<li><p>Since <span class="math inline">\(\bH_k=\bV_k^T\bA\bV_k\)</span> and <span class="math inline">\(\bA^T=\bA\)</span>, <span class="math display">\[
+\begin{align}
+\bH_k^T=(\bV_k^T\bA\bV_k)^T
+  =\bV_k^T\bA^T\bV_k=\bH_k.
+\end{align}
+\]</span> Thus <span class="math inline">\(h_{ij}=h_{ji}\)</span> for every pair of indices.</p></li>
+<li><p>Arnoldi constructs an upper Hessenberg matrix, so <span class="math inline">\(h_{ij}=0\)</span> whenever <span class="math inline">\(i&gt;j+1\)</span>.</p></li>
+<li><p>If <span class="math inline">\(i&lt;j-1\)</span>, then <span class="math inline">\(j&gt;i+1\)</span>. The Hessenberg property applied to entry <span class="math inline">\((j,i)\)</span> gives <span class="math inline">\(h_{ji}=0\)</span>. Symmetry gives <span class="math inline">\(h_{ij}=h_{ji}=0\)</span>. Hence only the main diagonal and its two immediate neighbors can be nonzero.</p></li>
+<li><p>The diagonal is <span class="math inline">\(\alpha_j=h_{jj}\)</span>. Arnoldi defines <span class="math inline">\(h_{j+1,j}=\beta_j\)</span>. Symmetry makes <span class="math inline">\(h_{j,j+1}=\beta_j\)</span> as well. These are exactly the displayed tridiagonal entries, and <span class="math inline">\(h_{j-1,j}=\beta_{j-1}\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use symmetry directly to explain why <span class="math inline">\(\bv_i^T\bA\bv_j=0\)</span> for <span class="math inline">\(i&lt;j-1\)</span>: move <span class="math inline">\(\bA\)</span> to <span class="math inline">\(\bv_i\)</span> and locate <span class="math inline">\(\bA\bv_i\)</span> in the earlier Krylov subspace. This gives a second explanation of why the recurrence needs only two previous directions in exact arithmetic.</p>
+</div>
+</div>
+<p>In the Arnoldi iteration, the coefficient <span class="math inline">\(h_{ij}\)</span> is the component of <span class="math inline">\(\bA\bv_j\)</span> along <span class="math inline">\(\bv_i\)</span>. the referenced result shows that these components vanish for <span class="math inline">\(i&lt;j-1\)</span> in exact arithmetic, so the inner loop of Step 2 reduces to two subtractions. The coefficient for <span class="math inline">\(i=j-1\)</span> is already known from the previous step. Substituting these facts into the referenced result gives the Lanczos iteration.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The Lanczos Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> be symmetric and let <span class="math inline">\(\bv_1\)</span> be a unit vector. Set <span class="math inline">\(\bv_0=\bzero\)</span> and <span class="math inline">\(\beta_0=0\)</span>. For <span class="math inline">\(j=1,2,...,k\)</span>:</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(\bw=\bA\bv_j-\beta_{j-1}\bv_{j-1}\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(\alpha_j=\bv_j^T\bw\)</span> and update <span class="math inline">\(\bw\leftarrow\bw-\alpha_j\bv_j\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(\beta_j=\|\bw\|_2\)</span>.</p></li>
+<li><p>If <span class="math inline">\(\beta_j=0\)</span>, stop. Otherwise, set <span class="math inline">\(\bv_{j+1}=\bw/\beta_j\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Corollary: The Lanczos Relation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After <span class="math inline">\(k\)</span> steps of the Lanczos iteration without breakdown, the matrix <span class="math inline">\(\bV_k=(\bv_1\ \cdots\ \bv_k)\)</span> has orthonormal columns spanning <span class="math inline">\(\mathcal{K}_k(\bA,\bv_1)\)</span>, and <span class="math display">\[
+\begin{align}
+\bA\bV_k=\bV_k\bT_k+\beta_k\bv_{k+1}\be_k^T,
+    \qquad
+    \bT_k=\bV_k^T\bA\bV_k.
 \end{align}
 \]</span></p>
-<ul>
-<li><p><strong><span class="math inline">\(T_k\)</span>:</strong> Symmetric <strong>tridiagonal</strong> matrix.</p></li>
-<li><p><strong><span class="math inline">\(\alpha_j = \bv_j^T \bA \bv_j\)</span>:</strong> Rayleigh quotients (diagonal).</p></li>
-<li><p> Orthogonalization coefficients (off-diagonal).</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Proposition: Galerkin Projection
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In exact arithmetic, <span class="math display">\[
-\begin{align}
-T_k=V_k^T\bA V_k.
-\end{align}
-\]</span> Thus Lanczos replaces the large symmetric matrix <span class="math inline">\(\bA\)</span> by a small symmetric tridiagonal projection.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -796,14 +882,30 @@ T_k=V_k^T\bA V_k.
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Left multiply the Lanczos relation in the result above by <span class="math inline">\(V_k^T\)</span>: <span class="math display">\[
+<p>Compare one Lanczos step with the corresponding Arnoldi column equation. For a symmetric matrix, the preceding theorem makes that equation <span class="math display">\[
 \begin{align}
-V_k^T\bA V_k
-    =
-    V_k^T V_k T_k+\beta_k V_k^T\bv_{k+1}\be_k^T.
+\bA\bv_j=\beta_{j-1}\bv_{j-1}+\alpha_j\bv_j+\beta_j\bv_{j+1}.
 \end{align}
-\]</span> Since the Lanczos vectors are orthonormal, <span class="math inline">\(V_k^T V_k=\bI\)</span> and <span class="math inline">\(V_k^T\bv_{k+1}=\bzero\)</span>. Hence <span class="math inline">\(V_k^T\bA V_k=T_k\)</span>.</p>
+\]</span> Every earlier coefficient is zero in exact arithmetic. Subtracting the first two terms from <span class="math inline">\(\bA\bv_j\)</span>, then normalizing the remainder, is exactly the Lanczos recurrence. Thus, from the same starting vector and positive normalization by a norm, the two processes generate the same basis vectors until termination.</p>
+<p>The Arnoldi theorem consequently supplies orthonormality and the Krylov span. To see the matrix identity directly, place the first <span class="math inline">\(k\)</span> three-term equations side by side. The first <span class="math inline">\(k\)</span> components form <span class="math inline">\(\bV_k\bT_k\)</span>. The only term outside these columns comes from the last equation, giving <span class="math display">\[
+\begin{align}
+\bA\bV_k=\bV_k\bT_k+\beta_k\bv_{k+1}\be_k^T.
+\end{align}
+\]</span> Multiplication by <span class="math inline">\(\bV_k^T\)</span> makes the last term vanish and gives <span class="math inline">\(\bV_k^T\bA\bV_k=\bT_k\)</span>. The use of exact arithmetic matters: omitted coefficients may become nonzero under rounding.</p>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Carry out two steps of the Lanczos iteration by hand for <span class="math inline">\(\bA=\operatorname{diag}(4,2,1)\)</span> and <span class="math inline">\(\bv_1=(1,1,1)^T/\sqrt{3}\)</span>. Write down <span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\beta_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\bT_2\)</span>, and compute <span class="math inline">\(\beta_2\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -816,44 +918,30 @@ V_k^T\bA V_k
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance Advantage:</strong> Unlike Gram-Schmidt, which orthogonalizes against all previous vectors, Lanczos only requires the <strong>two previous vectors</strong> (three-term recurrence). This makes it <span class="math inline">\(O(k \cdot \text{nnz})\)</span> for sparse matrices.</p>
+<p><strong>(Lanczos cost)</strong> In exact arithmetic, each step requires one product with <span class="math inline">\(\bA\)</span> and <span class="math inline">\(O(n)\)</span> further operations, independent of <span class="math inline">\(k\)</span>. Reorthogonalization in floating-point arithmetic adds work and may require storing the earlier vectors. If only eigenvalues are wanted, the iteration needs to keep just <span class="math inline">\(\bv_{j-1}\)</span>, <span class="math inline">\(\bv_j\)</span>, and the scalars <span class="math inline">\(\alpha_j,\beta_j\)</span>. If Ritz vectors are also wanted, we either store <span class="math inline">\(\bV_k\)</span> or run the recurrence a second time to form <span class="math inline">\(\bV_k\bs\)</span>.</p>
 </div>
 </div>
 </section>
-<section id="ritz-values-and-vectors" class="level2" data-number="19.3">
-<h2 data-number="19.3" class="anchored" data-anchor-id="ritz-values-and-vectors"><span class="header-section-number">19.3</span> Ritz Values and Vectors</h2>
-<p>Approximations to the true eigenpairs from the Krylov subspace.</p>
+<section id="rayleighritz-approximation" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="rayleighritz-approximation"><span class="header-section-number">17.2</span> Rayleigh–Ritz Approximation</h2>
+<p>The Ritz pairs of the referenced result are now the eigenpairs of the symmetric tridiagonal matrix <span class="math inline">\(\bT_k\)</span>, so the Ritz values are real. the referenced result gives their residuals as <span class="math inline">\(\beta_k|s_k|\)</span>. Symmetry also lets us say how good the Ritz values are. Throughout, let <span class="math inline">\(\lambda_1\leq\cdots\leq\lambda_n\)</span> be the eigenvalues of <span class="math inline">\(\bA\)</span> and let <span class="math inline">\(\theta_1^{(k)}\leq\cdots\leq\theta_k^{(k)}\)</span> be the eigenvalues of <span class="math inline">\(\bT_k\)</span>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Ritz Pair
+<span class="screen-reader-only">Note</span>Theorem: Rayleigh–Ritz Optimality
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><p><strong>Ritz Value (<span class="math inline">\(\theta_i\)</span>):</strong> Eigenvalue of <span class="math inline">\(T_k\)</span>.</p></li>
-<li><p> <span class="math inline">\(V_k \bs_i\)</span>, where <span class="math inline">\(\bs_i\)</span> is an eigenvector of <span class="math inline">\(T_k\)</span>.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Residual Estimate
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The residual of the <span class="math inline">\(i\)</span>-th Ritz pair <span class="math inline">\((\theta_i, \tilde{\bu}_i)\)</span> satisfies: <span class="math display">\[
+<p>Let <span class="math inline">\(R(\bx)=\bx^T\bA\bx/\bx^T\bx\)</span>. The extreme Ritz values are the extreme values of the Rayleigh quotient over the Krylov subspace, <span class="math display">\[
 \begin{align}
-\|\bA\tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 = \beta_k |s_i(k)|.
+\theta_k^{(k)}=\max_{\bx\in\mathcal{K}_k,\,\bx\neq\bzero}R(\bx),
+    \qquad
+    \theta_1^{(k)}=\min_{\bx\in\mathcal{K}_k,\,\bx\neq\bzero}R(\bx).
 \end{align}
-\]</span> <strong>Significance:</strong> Convergence of a Ritz pair can be monitored for <span class="math inline">\(O(k)\)</span> cost without forming the full <span class="math inline">\(n\)</span>-vector <span class="math inline">\(\tilde{\bu}_i\)</span>.</p>
+\]</span> Consequently, <span class="math inline">\(\lambda_1\leq\theta_1^{(k)}\)</span> and <span class="math inline">\(\theta_k^{(k)}\leq\lambda_n\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -868,48 +956,37 @@ V_k^T\bA V_k
 </div>
 <div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Starting from the Lanczos relation <span class="math inline">\(\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T\)</span>, multiply by the <span class="math inline">\(i\)</span>-th eigenvector <span class="math inline">\(\bs_i\)</span> of <span class="math inline">\(T_k\)</span> on the right: <span class="math display">\[
+<p>We compare two Rayleigh quotients by writing the same vector in two coordinate systems.</p>
+<ol type="1">
+<li><p>Since the columns of <span class="math inline">\(\bV_k\)</span> are an orthonormal basis of <span class="math inline">\(\mathcal K_k\)</span>, each <span class="math inline">\(\bx\in\mathcal K_k\)</span> has a unique representation <span class="math inline">\(\bx=\bV_k\by\)</span>. It is nonzero precisely when <span class="math inline">\(\by\neq\bzero\)</span>, because <span class="math inline">\(\|\bV_k\by\|_2=\|\by\|_2\)</span>.</p></li>
+<li><p>Direct substitution gives <span class="math display">\[
 \begin{align}
-\bA V_k \bs_i &amp;= V_k T_k \bs_i + \beta_k \bv_{k+1} \be_k^T \bs_i \\
-    \bA \tilde{\bu}_i &amp;= V_k (\theta_i \bs_i) + \beta_k \bv_{k+1} s_i(k).
+\bx^T\bx&amp;=\by^T\bV_k^T\bV_k\by=\by^T\by,\\
+  \bx^T\bA\bx&amp;=\by^T(\bV_k^T\bA\bV_k)\by=\by^T\bT_k\by.
 \end{align}
-\]</span> where <span class="math inline">\(s_i(k)\)</span> is the <span class="math inline">\(k\)</span>-th entry of <span class="math inline">\(\bs_i\)</span>. Rearranging: <span class="math display">\[
-\begin{align}
-\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i = \beta_k \bv_{k+1} s_i(k).
-\end{align}
-\]</span> Taking the <span class="math inline">\(L_2\)</span> norm and using the fact that <span class="math inline">\(\|\bv_{k+1}\|_2 = 1\)</span>: <span class="math display">\[
-\begin{align}
-\|\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 &amp;= |\beta_k s_i(k)| \|\bv_{k+1}\|_2 \\
-    &amp;= \beta_k |s_i(k)|.
-\end{align}
-\]</span></p>
+\]</span> Hence <span class="math inline">\(R(\bx)=\by^T\bT_k\by/(\by^T\by)\)</span>.</p></li>
+<li><p>Expand <span class="math inline">\(\by\)</span> in an orthonormal eigenbasis of the symmetric matrix <span class="math inline">\(\bT_k\)</span>. Its quotient is a weighted average of the Ritz values. Its minimum is <span class="math inline">\(\theta_1^{(k)}\)</span> and maximum is <span class="math inline">\(\theta_k^{(k)}\)</span>, attained at the corresponding eigenvectors. The parametrization in the first step ranges over the whole Krylov space, so these are exactly the extrema claimed there.</p></li>
+<li><p>The Rayleigh quotient of <span class="math inline">\(\bA\)</span> is between <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_n\)</span> on every nonzero vector. Restricting the vectors to a subspace cannot move the minimum below <span class="math inline">\(\lambda_1\)</span> or the maximum above <span class="math inline">\(\lambda_n\)</span>. Thus <span class="math inline">\(\lambda_1\leq\theta_1^{(k)}\)</span> and <span class="math inline">\(\theta_k^{(k)}\leq\lambda_n\)</span>.</p></li>
+</ol>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Corollary: Monotone Convergence of the Extreme Ritz Values
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Ghost Eigenvalues:</strong> In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost’’ (spurious) copies of eigenvalues. <strong>(Reorthogonalization)</strong> Use full or selective reorthogonalization to maintain basis integrity.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Connection to Conjugate Gradient:</strong> The Lanczos algorithm applied to a symmetric system <span class="math inline">\(\bA\bx=\bb\)</span> is mathematically equivalent to the Conjugate Gradient method. Both algorithms build the same Krylov subspace and produce identical iterates in exact arithmetic.</p>
+<p>The Ritz values at consecutive steps interlace, <span class="math display">\[
+\begin{align}
+\theta_i^{(k+1)}\leq\theta_i^{(k)}\leq\theta_{i+1}^{(k+1)},
+    \qquad i=1,...,k.
+\end{align}
+\]</span> In particular, <span class="math inline">\(\theta_k^{(k)}\)</span> is nondecreasing and bounded above by <span class="math inline">\(\lambda_n\)</span>, and <span class="math inline">\(\theta_1^{(k)}\)</span> is nonincreasing and bounded below by <span class="math inline">\(\lambda_1\)</span>. They reach the extreme eigenvalues represented in the starting vector when the corresponding invariant Krylov subspace is exhausted. Reaching <span class="math inline">\(\lambda_n\)</span> or <span class="math inline">\(\lambda_1\)</span> requires a nonzero starting component in its eigenspace.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -922,15 +999,241 @@ V_k^T\bA V_k
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Apply Cauchy interlacing to <span class="math inline">\(\bT_k\)</span> as a principal submatrix of <span class="math inline">\(\bT_{k+1}\)</span>. Deduce monotonicity of the two extreme Ritz values. Does monotonicity alone show that their limits are the extreme eigenvalues of <span class="math inline">\(\bA\)</span>? Examine a starting vector orthogonal to an extreme eigenspace.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bT_2\)</span> from the previous exercise, compute both Ritz values and their residuals using the referenced result. Verify the interlacing inequalities of the referenced result between the Ritz value <span class="math inline">\(\theta_1^{(1)}=\alpha_1\)</span>, the two eigenvalues of <span class="math inline">\(\bT_2\)</span>, and the eigenvalues of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Corollary: Lanczos Improves on Power Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be symmetric positive definite, and let <span class="math inline">\(\lambda^{(k-1)}\)</span> be the Rayleigh quotient estimate of the referenced result after <span class="math inline">\(k-1\)</span> power steps from <span class="math inline">\(\bv^{(0)}=\bv_1\)</span>. Both <span class="math inline">\(\lambda^{(k-1)}\)</span> and <span class="math inline">\(\theta_k^{(k)}\)</span> require <span class="math inline">\(k\)</span> products with <span class="math inline">\(\bA\)</span>, and <span class="math display">\[
+\begin{align}
+\lambda^{(k-1)}\leq\theta_k^{(k)}\leq\lambda_n.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>After <span class="math inline">\(k-1\)</span> normalized power steps, the vector <span class="math inline">\(\bv^{(k-1)}\)</span> is a nonzero scalar multiple of <span class="math inline">\(\bA^{k-1}\bv_1\)</span>. This follows by induction, since normalizing after each multiplication changes only a scalar factor. Therefore it belongs to <span class="math inline">\(\mathcal K_k\)</span>.</p>
+<p>The Rayleigh–Ritz theorem maximizes the Rayleigh quotient over every nonzero vector in this space. The power iterate is one candidate, so <span class="math display">\[
+\begin{align}
+\lambda^{(k-1)}=R(\bv^{(k-1)})
+\leq\max_{\bx\in\mathcal K_k\setminus\{\bzero\}}R(\bx)
+=\theta_k^{(k)}\leq\lambda_n.
+\end{align}
+\]</span> Each comparison concerns the same initial vector and the same matrix.</p>
+<p>For the product count, <span class="math inline">\(k-1\)</span> multiplications form the power iterate. Computing its Rayleigh quotient requires one more product with <span class="math inline">\(\bA\)</span>. Thus the quoted power estimate uses <span class="math inline">\(k\)</span> products. Lanczos uses one product in each of <span class="math inline">\(k\)</span> steps and obtains <span class="math inline">\(\bT_k\)</span> from those products. Its largest eigenvalue needs no further product with <span class="math inline">\(\bA\)</span>.</p>
+<p>Positive definiteness ensures all eigenvalues are positive. Hence the eigenvalue of largest magnitude targeted by power iteration is the largest algebraic eigenvalue <span class="math inline">\(\lambda_n\)</span>, the same endpoint being estimated by the largest Ritz value.</p>
+</div>
+</div>
+</div>
+<p>The polynomial form of the referenced result explains the size of the improvement. Every vector in <span class="math inline">\(\mathcal{K}_k\)</span> is <span class="math inline">\(p(\bA)\bv_1\)</span> for some <span class="math inline">\(p\in\mathcal{P}_{k-1}\)</span>. Expanding <span class="math inline">\(\bv_1=\sum_i c_i\bq_i\)</span> in the eigenvectors of <span class="math inline">\(\bA\)</span> gives <span class="math display">\[
+\begin{align}
+\theta_k^{(k)}=\max_{p\in\mathcal{P}_{k-1}}R(p(\bA)\bv_1)
+    =\max_{p\in\mathcal{P}_{k-1}}\frac{\sum_{i=1}^n\lambda_i\,p(\lambda_i)^2c_i^2}{\sum_{i=1}^n p(\lambda_i)^2c_i^2}.
+\end{align}
+\]</span> The quotient is close to <span class="math inline">\(\lambda_n\)</span> when <span class="math inline">\(p\)</span> is large at <span class="math inline">\(\lambda_n\)</span> and small on the rest of the spectrum. Power iteration is restricted to <span class="math inline">\(p(t)=t^{k-1}\)</span>, which separates <span class="math inline">\(\lambda_n\)</span> from <span class="math inline">\(\lambda_{n-1}\)</span> only by the factor <span class="math inline">\((\lambda_{n-1}/\lambda_n)^{k-1}\)</span>. Lanczos implicitly selects the best polynomial. A shifted Chebyshev polynomial, which is bounded by one on <span class="math inline">\([\lambda_1,\lambda_{n-1}]\)</span> and grows rapidly outside it, gives the following bound.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Kaniel–Paige bound)</strong> Assume <span class="math inline">\(\lambda_n&gt;\lambda_{n-1}&gt;\lambda_1\)</span> and <span class="math inline">\(\bv_1^T\bq_n\neq0\)</span>. Let <span class="math inline">\(\phi\in[0,\pi/2)\)</span> be the acute angle between <span class="math inline">\(\bv_1\)</span> and the eigenvector <span class="math inline">\(\bq_n\)</span>, let <span class="math inline">\(\gamma=(\lambda_n-\lambda_{n-1})/(\lambda_{n-1}-\lambda_1)\)</span>, and let <span class="math inline">\(T_m(x)=\cosh(m\operatorname{arccosh}x)\)</span> for <span class="math inline">\(x\geq1\)</span>. Then <span class="math display">\[
+\begin{align}
+0\leq\lambda_n-\theta_k^{(k)}\leq(\lambda_n-\lambda_1)\left(\frac{\tan\phi}{T_{k-1}(1+2\gamma)}\right)^2.
+\end{align}
+\]</span> A proof is given by Golub and Van Loan <span class="citation" data-cites="golubvanloan2013">(<a href="../references.html#ref-golubvanloan2013" role="doc-biblioref">Golub and Van Loan 2013</a>)</span>. Since <span class="math inline">\(T_m(1+2\gamma)\)</span> grows roughly like <span class="math inline">\((1+2\sqrt{\gamma})^m\)</span> when <span class="math inline">\(\gamma\)</span> is small, the error decreases geometrically at a rate set by the square root of the relative gap. A square root of the same kind appears in the conjugate gradient bound of the referenced result. The analogous bound for <span class="math inline">\(\theta_1^{(k)}\)</span> follows by applying the result to <span class="math inline">\(-\bA\)</span>. Interior eigenvalues admit weaker bounds and converge more slowly, because no low-degree polynomial can be large at an interior point and small on both sides of it.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Lanczos and power iteration on a model spectrum)</strong> Let <span class="math inline">\(\bA=\operatorname{diag}(1,2,...,100)\)</span> and <span class="math inline">\(\bv_1=(1,...,1)^T/10\)</span>. We run Lanczos with full reorthogonalization, so that the computed Ritz values agree with exact arithmetic to rounding level, and compare the error in the largest Ritz value with the error in the power-iteration estimate after the same number of products.</p>
+<p>The relative gap is <span class="math inline">\(\gamma=1/98\)</span>, and the power-iteration ratio is <span class="math inline">\(\lambda_{99}/\lambda_{100}=0.99\)</span>. After 40 products the power-iteration estimate still has an absolute error of about <span class="math inline">\(0.82\)</span>, whereas the largest Ritz value is correct to about eight significant digits. The bound is valid but conservative at every step. By the symmetry of this spectrum about <span class="math inline">\(50.5\)</span> and of the starting vector, the error in <span class="math inline">\(\theta_1^{(k)}\)</span> is the same as the error in <span class="math inline">\(\theta_k^{(k)}\)</span>.</p>
+<p>At <span class="math inline">\(k=40\)</span> the residual of the referenced result for the largest Ritz pair is <span class="math inline">\(3.7\times10^{-3}\)</span>, about four orders of magnitude larger than the eigenvalue error. the referenced result explains the difference. The corollary bounds the distance from the Ritz value to the nearest eigenvalue by the squared residual divided by the distance <span class="math inline">\(\delta\)</span> from the Ritz value to the other eigenvalues. Here <span class="math inline">\(\delta\)</span> is about one, and the bound <span class="math inline">\(1.4\times10^{-5}\)</span> is consistent with the observed error.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Lanczos and conjugate gradients)</strong> The conjugate gradient method of the referenced section builds the same Krylov subspace <span class="math inline">\(\mathcal{K}_k(\bA,\br^{(0)})\)</span> for a symmetric positive definite system. Its residuals are multiples of the Lanczos vectors started from <span class="math inline">\(\bv_1=\br^{(0)}/\|\br^{(0)}\|_2\)</span>, and its coefficients determine the entries of <span class="math inline">\(\bT_k\)</span>. the referenced section derives this correspondence and uses it to estimate the extreme eigenvalues during a CG solve.</p>
+</div>
+</div>
+</section>
+<section id="loss-of-orthogonality-and-ghost-eigenvalues" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="loss-of-orthogonality-and-ghost-eigenvalues"><span class="header-section-number">17.3</span> Loss of Orthogonality and Ghost Eigenvalues</h2>
+<p>the referenced result relies on the exact orthogonality of <span class="math inline">\(\bv_{j+1}\)</span> to <span class="math inline">\(\bv_1,...,\bv_{j-2}\)</span>. The Lanczos iteration never enforces this orthogonality explicitly, so rounding errors are free to destroy it.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Paige’s analysis)</strong> In floating-point arithmetic, the computed Lanczos vectors gradually lose mutual orthogonality. Paige showed that the loss is not random <span class="citation" data-cites="paige1976">(<a href="../references.html#ref-paige1976" role="doc-biblioref">Paige 1976</a>)</span>. Let <span class="math inline">\((\theta_i,\tilde{\bu}_i)\)</span> be a Ritz pair computed from <span class="math inline">\(\bT_k\)</span>, and let <span class="math inline">\(u\)</span> denote the unit roundoff. Paige’s analysis gives <span class="math display">\[
+\begin{align}
+\beta_k|s_{k,i}|\,|\tilde{\bu}_i^T\bv_{k+1}|\ \text{has a rounding-error scale of order }u\|\bA\|_2.
+\end{align}
+\]</span> The denominator is the residual of the referenced result. This relation describes a rounding-level scale rather than an equality or a universal estimate for each run. The new Lanczos vector can therefore acquire a component along <span class="math inline">\(\tilde{\bu}_i\)</span> precisely as that Ritz pair converges, and orthogonality is lost in the directions of converged Ritz vectors. Once orthogonality to a converged Ritz vector is lost, the iteration begins to approximate the same eigenvalue again and produces repeated copies of it, known as <strong>ghost eigenvalues</strong>. The number of such copies and the steps at which they appear depend on rounding and implementation. The experiment below asks you to observe their appearance rather than predict a fixed count.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Remedies for ghost eigenvalues)</strong> Practical implementations use one of three strategies.</p>
 <ol type="1">
-<li><p>Carry out 2 steps of Lanczos for <span class="math inline">\(\bA = \text{diag}(5, 3, 1)\)</span> starting with <span class="math inline">\(\bv_1 = \frac{1}{\sqrt{3}}\mathbf{1}\)</span>.</p></li>
-<li><p>Verify the result above numerically for a random symmetric matrix.</p></li>
-<li><p>Implement Lanczos on a <span class="math inline">\(50 \times 50\)</span> Hilbert matrix. Count spurious eigenvalues without reorthogonalization.</p></li>
+<li><p><strong>Full reorthogonalization.</strong> We orthogonalize each new vector against all previous Lanczos vectors. This restores the behavior of exact arithmetic at the Arnoldi cost of <span class="math inline">\(O(k^2n)\)</span> operations and <span class="math inline">\(O(kn)\)</span> storage.</p></li>
+<li><p><strong>Selective reorthogonalization.</strong> We orthogonalize only against converged Ritz vectors, and only when Paige’s analysis indicates that orthogonality to them has been lost. The cost is proportional to the number of converged Ritz vectors.</p></li>
+<li><p><strong>Cullum–Willoughby identification.</strong> We run the iteration without reorthogonalization and discard spurious Ritz values afterward by comparing the eigenvalues of <span class="math inline">\(\bT_k\)</span> with those of the matrix obtained by deleting its first row and column.</p></li>
 </ol>
 </div>
 </div>
+</section>
+<section id="further-exercises" class="level2" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">17.4</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the referenced result, show that <span class="math inline">\(\theta_{k-1}^{(k)}=\max_{S}\min_{\bx\in S,\,\bx\neq\bzero}R(\bx)\)</span>, where <span class="math inline">\(S\)</span> ranges over two-dimensional subspaces of <span class="math inline">\(\mathcal{K}_k\)</span>. Conclude that <span class="math inline">\(\theta_{k-1}^{(k)}\leq\lambda_{n-1}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be symmetric positive definite. Show that the power-iteration estimate satisfies <span class="math inline">\(\lambda_n-\lambda^{(k-1)}\leq(\lambda_n-\lambda_1)\tan^2\phi\,(\lambda_{n-1}/\lambda_n)^{2(k-1)}\)</span>, where <span class="math inline">\(\phi\)</span> is the angle between <span class="math inline">\(\bv_1\)</span> and <span class="math inline">\(\bq_n\)</span>. Compare the rate with the Kaniel–Paige bound when <span class="math inline">\(\gamma\)</span> is small.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Implement the referenced result with an option for full reorthogonalization. Reproduce the table in the example above, and plot all Ritz values against <span class="math inline">\(k\)</span> for <span class="math inline">\(k\leq200\)</span> with and without reorthogonalization. Identify the steps at which ghost copies of <span class="math inline">\(\lambda_{100}\)</span> appear, and relate them to the step at which the largest Ritz value converged.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Repeat the previous computation with <span class="math inline">\(\bA=\operatorname{diag}(1,2,...,99,110)\)</span>. Explain, using the polynomial characterization, why the largest Ritz value now converges much faster while the convergence of <span class="math inline">\(\theta_1^{(k)}\)</span> is essentially unchanged.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Horn and Johnson are a reference for the matrix structure behind the spectral results <span class="citation" data-cites="hornjohnson2012">(<a href="../references.html#ref-hornjohnson2012" role="doc-biblioref">Horn and Johnson 2012</a>)</span>. The computational treatment in Golub and Van Loan includes symmetric eigensolvers and the SVD <span class="citation" data-cites="golubvanloan2013">(<a href="../references.html#ref-golubvanloan2013" role="doc-biblioref">Golub and Van Loan 2013</a>)</span>. The original Lanczos and Golub–Kahan papers show how two algorithms in these chapters first appeared <span class="citation" data-cites="lanczos1950 golubkahan1965">(<a href="../references.html#ref-lanczos1950" role="doc-biblioref">Lanczos 1950</a>; <a href="../references.html#ref-golubkahan1965" role="doc-biblioref">Golub and Kahan 1965</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-golubkahan1965" class="csl-entry" role="listitem">
+Golub, Gene H., and William Kahan. 1965. <span>“Calculating the Singular Values and Pseudo-Inverse of a Matrix.”</span> <em>Journal of the Society for Industrial and Applied Mathematics, Series B: Numerical Analysis</em> 2 (2): 205–24. <a href="https://doi.org/10.1137/0702016">https://doi.org/10.1137/0702016</a>.
+</div>
+<div id="ref-golubvanloan2013" class="csl-entry" role="listitem">
+Golub, Gene H., and Charles F. Van Loan. 2013. <em>Matrix Computations</em>. 4th ed. Johns Hopkins University Press.
+</div>
+<div id="ref-hornjohnson2012" class="csl-entry" role="listitem">
+Horn, Roger A., and Charles R. Johnson. 2012. <em>Matrix Analysis</em>. 2nd ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139020411">https://doi.org/10.1017/CBO9781139020411</a>.
+</div>
+<div id="ref-lanczos1950" class="csl-entry" role="listitem">
+Lanczos, Cornelius. 1950. <span>“An Iteration Method for the Solution of the Eigenvalue Problem of Linear Differential and Integral Operators.”</span> <em>Journal of Research of the National Bureau of Standards</em> 45 (4): 255–82. <a href="https://doi.org/10.6028/jres.045.026">https://doi.org/10.6028/jres.045.026</a>.
+</div>
+<div id="ref-paige1976" class="csl-entry" role="listitem">
+Paige, Christopher C. 1976. <span>“Error Analysis of the <span>Lanczos</span> Algorithm for Tridiagonalizing a Symmetric Matrix.”</span> <em>IMA Journal of Applied Mathematics</em> 18 (3): 341–49. <a href="https://doi.org/10.1093/imamat/18.3.341">https://doi.org/10.1093/imamat/18.3.341</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1349,13 +1652,13 @@ V_k^T\bA V_k
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../eigenvalues/svd.html" class="pagination-link" aria-label="Singular Value Decomposition">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span>
+      <a href="../eigenvalues/arnoldi.html" class="pagination-link" aria-label="Krylov Subspaces and the Arnoldi Process">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../eigenvalues/jacobi-eig.html" class="pagination-link" aria-label="Jacobi Eigenvalue Algorithm">
-        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../numerical-analysis/interpolation.html" class="pagination-link" aria-label="Polynomial and Spline Interpolation">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

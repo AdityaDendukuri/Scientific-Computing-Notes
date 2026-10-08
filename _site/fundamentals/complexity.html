@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Computational Complexity – Scientific Computing</title>
+<title>5&nbsp; Cost Models and Sparse Storage – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../fundamentals/floating-point.html" rel="next">
-<link href="../fundamentals/norms.html" rel="prev">
+<link href="../direct-methods/linear-systems.html" rel="next">
+<link href="../fundamentals/floating-point.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,9 +46,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-512512a359692b6a4a631bfed0d4ecc0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/complexity.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/complexity.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,44 +396,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span></a>
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
   </div>
 </li>
       </ul>
@@ -440,19 +438,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +479,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +502,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,7 +534,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -544,26 +542,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -571,7 +569,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -579,20 +577,44 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
   </div>
 </li>
       </ul>
@@ -609,7 +631,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +639,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">Applications and Research Bridges</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -626,41 +648,64 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,8 +716,9 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#big-o-notation" id="toc-big-o-notation" class="nav-link active" data-scroll-target="#big-o-notation"><span class="header-section-number">6.1</span> Big-O Notation</a></li>
-  <li><a href="#flop-counting" id="toc-flop-counting" class="nav-link" data-scroll-target="#flop-counting"><span class="header-section-number">6.2</span> Flop Counting</a></li>
+  <li><a href="#asymptotic-notation-and-operation-counts" id="toc-asymptotic-notation-and-operation-counts" class="nav-link active" data-scroll-target="#asymptotic-notation-and-operation-counts"><span class="header-section-number">5.1</span> Asymptotic Notation and Operation Counts</a></li>
+  <li><a href="#sparse-matrix-storage" id="toc-sparse-matrix-storage" class="nav-link" data-scroll-target="#sparse-matrix-storage"><span class="header-section-number">5.2</span> Sparse Matrix Storage</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">5.3</span> Further Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/complexity.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -680,9 +726,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/complexity.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/complexity.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></h1>
 </div>
 
 
@@ -699,51 +745,21 @@ window.Quarto = {
 </header>
 
 
-<p>Algorithmic cost measured in arithmetic operations (flops). Determines scalability and feasibility.</p>
-<section id="big-o-notation" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="big-o-notation"><span class="header-section-number">6.1</span> Big-O Notation</h2>
+<p>To choose between algorithms, we compare both arithmetic and storage. A matrix may be small enough to store but too expensive to factor. A sparse matrix has sufficiently few nonzero entries that storing only those entries changes the cost of its basic operations.</p>
+<p>We count additions and multiplications for dense products, then describe storage by coordinates and by rows. These formats also show how to assemble a sparse matrix from local contributions without first allocating a dense array.</p>
+<section id="asymptotic-notation-and-operation-counts" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="asymptotic-notation-and-operation-counts"><span class="header-section-number">5.1</span> Asymptotic Notation and Operation Counts</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Big-O Notation
+<span class="screen-reader-only">Note</span>Definition: Asymptotic Notation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(f(n) = O(g(n))\)</span> if <span class="math inline">\(\exists C, n_0 &gt; 0\)</span> s.t. <span class="math inline">\(|f(n)| \leq C|g(n)|\)</span> for <span class="math inline">\(n \geq n_0\)</span>.</p>
-<ul>
-<li><p><span class="math inline">\(\Omega(g)\)</span>: Grows at least as fast.</p></li>
-<li><p><span class="math inline">\(\Theta(g)\)</span>: Grows at the same rate.</p></li>
-<li><p><span class="math inline">\(o(g)\)</span>: Grows strictly slower.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Typical Rates)</strong> <span class="math inline">\(O(1) \ll O(\log n) \ll O(n) \ll O(n \log n) \ll O(n^2) \ll O(n^3) \ll O(2^n)\)</span>. For <span class="math inline">\(n=1000\)</span>: <span class="math inline">\(O(n^2)\)</span> is <span class="math inline">\(\sim 10^6\)</span> ops (ms); <span class="math inline">\(O(n^3)\)</span> is <span class="math inline">\(\sim 10^9\)</span> ops (s).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Properties)</strong> 1. <strong>Transitivity:</strong> <span class="math inline">\(f=O(g), g=O(h) \Rightarrow f=O(h)\)</span>. 2. <strong>Sum Rule:</strong> <span class="math inline">\(O(f) + O(g) = O(\max(f, g))\)</span>. 3. <strong>Product Rule:</strong> <span class="math inline">\(O(f) \cdot O(g) = O(fg)\)</span>. 4. <strong>Constant Factors:</strong> <span class="math inline">\(O(cf) = O(f)\)</span>.</p>
+<p>Let <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> be positive functions of an integer <span class="math inline">\(n\)</span>. We write <span class="math inline">\(f(n)=O(g(n))\)</span> if there are constants <span class="math inline">\(C&gt;0\)</span> and <span class="math inline">\(n_0\)</span> such that <span class="math inline">\(f(n)\leq Cg(n)\)</span> for every <span class="math inline">\(n\geq n_0\)</span>. We write <span class="math inline">\(f(n)=\Theta(g(n))\)</span> if both <span class="math inline">\(f(n)=O(g(n))\)</span> and <span class="math inline">\(g(n)=O(f(n))\)</span> hold.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -756,18 +772,9 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Show <span class="math inline">\(3n^2 + 100n + 5 = O(n^2)\)</span>.</p></li>
-<li><p>Compare growth: <span class="math inline">\(n \log n\)</span> vs <span class="math inline">\(n^2\)</span>.</p></li>
-<li><p>Rank by cost: <span class="math inline">\(5n^3+n, 100n^2, n^2 \log n, 2^{10}n^2\)</span>.</p></li>
-<li><p>Use Master Theorem: <span class="math inline">\(T(n) = 2T(n/2) + n\)</span>.</p></li>
-</ol>
+<p>Show that <span class="math inline">\(3n^2+100n+5=\Theta(n^2)\)</span>, and arrange <span class="math inline">\(5n^3+n\)</span>, <span class="math inline">\(100n^2\)</span>, <span class="math inline">\(n^2\log n\)</span>, and <span class="math inline">\(2^{10}n^2\)</span> in order of growth.</p>
 </div>
 </div>
-</section>
-<section id="flop-counting" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="flop-counting"><span class="header-section-number">6.2</span> Flop Counting</h2>
-<p>Hardware-independent measure of work.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -778,7 +785,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A single floating-point operation (<span class="math inline">\(+, -, \times, \div\)</span>).</p>
+<p>A <strong>flop</strong> is one floating-point addition, subtraction, multiplication, division, or square root.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -787,17 +794,59 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Basic Costs
+<span class="screen-reader-only">Note</span>Theorem: Costs of the Basic Dense Kernels
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bx, \by \in \fR^n\)</span> and <span class="math inline">\(\bA \in \fR^{m \times n}, \bB \in \fR^{n \times p}\)</span>:</p>
-<ul>
-<li><p><strong>Dot product:</strong> <span class="math inline">\(2n\)</span> flops.</p></li>
-<li><p><strong>Matrix-vector product:</strong> <span class="math inline">\(2mn\)</span> flops.</p></li>
-<li><p><strong>Matrix-matrix product:</strong> <span class="math inline">\(2mnp\)</span> flops (<span class="math inline">\(2n^3\)</span> for square).</p></li>
-<li><p><strong>Triangular solve:</strong> <span class="math inline">\(n^2\)</span> flops.</p></li>
-</ul>
+<p>Let <span class="math inline">\(\bx,\by\in\fR^n\)</span>, <span class="math inline">\(\bA\in\fR^{m\times n}\)</span>, <span class="math inline">\(\bB\in\fR^{n\times p}\)</span>, and let <span class="math inline">\(\bL\in\fR^{n\times n}\)</span> be nonsingular and lower triangular. The standard algorithms require</p>
+<ol type="1">
+<li><p><span class="math inline">\(2n-1\)</span> flops for the inner product <span class="math inline">\(\bx^T\by\)</span>,</p></li>
+<li><p><span class="math inline">\(m(2n-1)\)</span> flops for the product <span class="math inline">\(\bA\bx\)</span>,</p></li>
+<li><p><span class="math inline">\(mp(2n-1)\)</span> flops for the product <span class="math inline">\(\bA\bB\)</span>,</p></li>
+<li><p><span class="math inline">\(n^2\)</span> flops for the solution of <span class="math inline">\(\bL\bz=\by\)</span> by forward substitution.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We count scalar arithmetic operations and exclude assignments and index calculations.</p>
+<ol type="1">
+<li><p>To form <span class="math inline">\(\sum_{j=1}^nx_jy_j\)</span>, first compute its <span class="math inline">\(n\)</span> products. Adding <span class="math inline">\(n\)</span> numbers requires <span class="math inline">\(n-1\)</span> additions. The total is <span class="math inline">\(n+(n-1)=2n-1\)</span> operations.</p></li>
+<li><p>Each output entry is an inner product between one row of length <span class="math inline">\(n\)</span> and the input vector. There are <span class="math inline">\(m\)</span> output entries. The count is therefore <span class="math inline">\(m(2n-1)\)</span>, whose leading term is <span class="math inline">\(2mn\)</span>.</p></li>
+<li><p>If <span class="math inline">\(\bA\in\fR^{m\times n}\)</span> and <span class="math inline">\(\bB\in\fR^{n\times p}\)</span>, there are <span class="math inline">\(mp\)</span> output entries. Each entry uses an inner product of length <span class="math inline">\(n\)</span>. Hence the count is <span class="math inline">\(mp(2n-1)\)</span>, with leading term <span class="math inline">\(2mnp\)</span>.</p></li>
+<li><p>In forward substitution, row <span class="math inline">\(i\)</span> forms <span class="math inline">\(i-1\)</span> products, subtracts those <span class="math inline">\(i-1\)</span> terms from the right-hand side, and divides by the diagonal entry. The diagonal is nonzero by triangular nonsingularity. The count per row is <span class="math inline">\(2(i-1)+1\)</span>. Therefore <span class="math display">\[
+\begin{align}
+\sum_{i=1}^n[2(i-1)+1]
+  =2\frac{n(n-1)}2+n=n^2.
+\end{align}
+\]</span></p></li>
+</ol>
+<p>For square matrices, put <span class="math inline">\(m=n=p\)</span> to obtain the familiar leading count <span class="math inline">\(2n^3\)</span>. These counts describe the straightforward algorithms under the stated convention.</p>
+</div>
+</div>
+</div>
+<p>The order of evaluation matters even when the result does not change. For <span class="math inline">\(\bA,\bB\in\fR^{n\times n}\)</span> and <span class="math inline">\(\bx\in\fR^n\)</span>, forming <span class="math inline">\((\bA\bB)\bx\)</span> costs about <span class="math inline">\(2n^3\)</span> flops, whereas <span class="math inline">\(\bA(\bB\bx)\)</span> costs about <span class="math inline">\(4n^2\)</span> flops. The factorizations of later sections have costs of the same kind. Dense LU factorization requires about <span class="math inline">\(\tfrac23n^3\)</span> flops (the referenced result), Cholesky about <span class="math inline">\(\tfrac13n^3\)</span>, and Householder QR of an <span class="math inline">\(m\times n\)</span> matrix about <span class="math inline">\(2mn^2-\tfrac23n^3\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The dense barrier)</strong> At a sustained rate of <span class="math inline">\(10^{10}\)</span> flops per second, a dense LU factorization with <span class="math inline">\(n=10^4\)</span> requires about <span class="math inline">\(\tfrac23\cdot10^{12}\)</span> flops, or roughly one minute. With <span class="math inline">\(n=10^5\)</span> it requires about <span class="math inline">\(\tfrac23\cdot10^{15}\)</span> flops, or roughly nineteen hours, and storing the matrix in double precision requires <span class="math inline">\(8\cdot10^{10}\)</span> bytes. A finite-difference discretization on a <span class="math inline">\(300\times300\times300\)</span> grid already has <span class="math inline">\(n\approx2.7\times10^7\)</span> unknowns. Dense methods are therefore out of reach for such problems, and the matrix must be stored and used in a form that exploits its zero entries.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -810,7 +859,151 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Data Locality and Performance:</strong> On modern architectures, computational throughput often significantly exceeds memory bandwidth. Consequently, algorithms with high cache locality, such as blocked matrix multiplication (GEMM), may achieve superior performance compared to algorithms with lower theoretical operation counts but poorer data reuse.</p>
+<p><strong>(Memory traffic)</strong> Flop counts ignore the cost of moving data between memory and the processor. A dense matrix–matrix product reuses each loaded entry <span class="math inline">\(O(n)\)</span> times, and blocked implementations run close to the peak arithmetic rate. A sparse matrix–vector product performs two flops for each stored nonzero but reads at least one value and one index for it. Its running time is therefore set by memory bandwidth rather than by the flop count, and reducing the number of stored entries reduces the running time directly.</p>
+</div>
+</div>
+</section>
+<section id="sparse-matrix-storage" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sparse-matrix-storage"><span class="header-section-number">5.2</span> Sparse Matrix Storage</h2>
+<p>A matrix is <strong>sparse</strong> when the number of its nonzero entries, written <span class="math inline">\(\operatorname{nnz}(\bA)\)</span>, is much smaller than <span class="math inline">\(n^2\)</span>. The finite-difference Poisson matrix on an <span class="math inline">\(N\times N\)</span> grid has <span class="math inline">\(n=N^2\)</span> unknowns and fewer than <span class="math inline">\(5n\)</span> nonzero entries. Stored densely, it would occupy <span class="math inline">\(n^2\)</span> words, and a matrix–vector product would cost <span class="math inline">\(2n^2\)</span> flops. A sparse format stores only the nonzero entries and their positions.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Coordinate and Compressed Sparse Row Formats
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> have <span class="math inline">\(\operatorname{nnz}(\bA)\)</span> nonzero entries.</p>
+<ol type="1">
+<li><p>The <strong>coordinate</strong> (COO) format stores three arrays of length <span class="math inline">\(\operatorname{nnz}(\bA)\)</span> that list each nonzero entry as a triplet <span class="math inline">\((i,j,a_{ij})\)</span>. The triplets may appear in any order, and repeated positions are understood to be summed.</p></li>
+<li><p>The <strong>compressed sparse row</strong> (CSR) format stores the nonzero values row by row in an array <span class="math inline">\(`val`\)</span>, their column indices in an array <span class="math inline">\(`col`\)</span> of the same length, and an array <span class="math inline">\(`ptr`\)</span> of length <span class="math inline">\(n+1\)</span>. The entries of row <span class="math inline">\(i\)</span> occupy positions <span class="math inline">\(`ptr`_i,...,`ptr`_{i+1}-1\)</span> of <span class="math inline">\(`val`\)</span> and <span class="math inline">\(`col`\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<p>The arrays below use mathematical indexing, beginning at one. In a Python implementation, column indices and positions begin at zero, and the first row pointer is zero. The difference <span class="math inline">\(`ptr`_{i+1}-`ptr`_i\)</span> counts stored entries in row <span class="math inline">\(i\)</span> under either convention. An empty row has equal consecutive pointers.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write the COO triplets and the CSR arrays of the <span class="math inline">\(5\times5\)</span> matrix <span class="math inline">\(\operatorname{tridiag}(-1,2,-1)\)</span>. Then compute <span class="math inline">\(\bA\bx\)</span> for <span class="math inline">\(\bx=(1,2,3,4,5)^T\)</span> directly from the CSR arrays.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The matrix <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;0&amp;-1&amp;0\\0&amp;3&amp;0&amp;0\\-1&amp;0&amp;5&amp;2\\0&amp;0&amp;2&amp;6\end{pmatrix}
+\end{align}
+\]</span> has eight nonzero entries. Its CSR arrays are <span class="math display">\[
+\begin{align}
+`val`&amp;=(4,-1,\;3,\;-1,5,2,\;2,6), &amp;
+    `col`&amp;=(1,3,\;2,\;1,3,4,\;3,4), &amp;
+    `ptr`&amp;=(1,3,4,7,9).
+\end{align}
+\]</span> Row <span class="math inline">\(3\)</span> occupies positions <span class="math inline">\(`ptr`_3=4\)</span> through <span class="math inline">\(`ptr`_4-1=6\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Cost of a CSR Matrix–Vector Product
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bA\)</span> stored in CSR format, the product <span class="math inline">\(\by=\bA\bx\)</span> computed by <span class="math display">\[
+\begin{align}
+y_i=\sum_{k=`ptr`_i}^{`ptr`_{i+1}-1}`val`_k\,x_{`col`_k},
+    \qquad i=1,...,n,
+\end{align}
+\]</span> requires at most <span class="math inline">\(2\operatorname{nnz}(\bA)\)</span> flops. The format stores <span class="math inline">\(2\operatorname{nnz}(\bA)+n+1\)</span> numbers.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Consider the computation row by row. For each stored entry <span class="math inline">\(a_{ij}\)</span>, compute the product <span class="math inline">\(a_{ij}x_j\)</span> and add it to the accumulator for output entry <span class="math inline">\(i\)</span>. This uses one multiplication and at most one addition per stored entry. Thus at most <span class="math inline">\(2\operatorname{nnz}(\bA)\)</span> arithmetic operations are needed for the contributions.</p>
+<p>There are also <span class="math inline">\(n\)</span> row accumulators to initialize or write. Traversing the row pointers takes <span class="math inline">\(O(n)\)</span> work. Consequently the complete count is <span class="math inline">\(O(\operatorname{nnz}(\bA)+n)\)</span>. In the common case of at least one stored entry in every row, <span class="math inline">\(n\leq\operatorname{nnz}(\bA)\)</span> and the count simplifies to <span class="math inline">\(O(\operatorname{nnz}(\bA))\)</span>.</p>
+<p>Storage consists of one value and one column index per stored entry, together with <span class="math inline">\(n+1\)</span> row pointers. Its size is also <span class="math inline">\(O(\operatorname{nnz}(\bA)+n)\)</span>. Empty rows explain why the row-pointer term cannot be discarded without an assumption.</p>
+</div>
+</div>
+</div>
+<p>The CSR format is efficient for computing <span class="math inline">\(\bA\bx\)</span> but inconvenient for constructing a matrix, because the position of an entry in <span class="math inline">\(`val`\)</span> depends on how many entries precede it. Matrices are therefore usually assembled in COO format, where a new entry is simply appended, and converted to CSR once assembly is complete.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Conversion from COO to CSR
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A matrix given by <span class="math inline">\(t\)</span> triplets can be converted to CSR format in <span class="math inline">\(O(t+n)\)</span> operations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We describe an explicit algorithm. The matrix has <span class="math inline">\(n\)</span> rows and columns, and <span class="math inline">\(t\)</span> is the number of input triplets, including duplicates.</p>
+<ol type="1">
+<li><p>Initialize <span class="math inline">\(n\)</span> counters to zero. For each triplet <span class="math inline">\((i,j,a)\)</span>, increment the counter for row <span class="math inline">\(i\)</span>. Initialization costs <span class="math inline">\(O(n)\)</span> and the pass costs <span class="math inline">\(O(t)\)</span>.</p></li>
+<li><p>Starting with <span class="math inline">\(`ptr`_1=1\)</span>, add the row counts successively. This prefix sum costs <span class="math inline">\(O(n)\)</span> and gives the start and end positions of every row in an intermediate array of length <span class="math inline">\(t\)</span>.</p></li>
+<li><p>Keep a next-free-position counter for each row. Pass over the input again and place the column and value of each triplet in its row’s next free slot. Each placement and increment takes constant time. This pass costs <span class="math inline">\(O(t+n)\)</span> including counter initialization.</p></li>
+<li><p>Use arrays of length <span class="math inline">\(n\)</span> called <span class="math inline">\(`stamp`\)</span> and <span class="math inline">\(`pos`\)</span>. When processing row <span class="math inline">\(i\)</span>, a column <span class="math inline">\(j\)</span> has already appeared in that row exactly when <span class="math inline">\(`stamp`_j=i\)</span>. If it has appeared, add the value to output slot <span class="math inline">\(`pos`_j\)</span>. Otherwise append a new output entry and set <span class="math inline">\(`stamp`_j=i\)</span> and <span class="math inline">\(`pos`_j\)</span> to its slot. The row stamp avoids clearing a length-<span class="math inline">\(n\)</span> array for each row. Each intermediate entry is examined once.</p></li>
+<li><p>There are a fixed number of passes of length <span class="math inline">\(t\)</span>, and a fixed number of arrays initialized or scanned in <span class="math inline">\(O(n)\)</span> time. The total is <span class="math inline">\(O(t+n)\)</span>. The resulting CSR columns need not be sorted within a row. Requiring sorted column indices is an additional operation and is not included in this bound.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Assembling the Poisson matrix)</strong> For the one-dimensional Poisson matrix, we append for each <span class="math inline">\(i=1,...,n\)</span> the triplet <span class="math inline">\((i,i,2h^{-2})\)</span>, together with <span class="math inline">\((i,i-1,-h^{-2})\)</span> when <span class="math inline">\(i&gt;1\)</span> and <span class="math inline">\((i,i+1,-h^{-2})\)</span> when <span class="math inline">\(i&lt;n\)</span>. The result has <span class="math inline">\(3n-2\)</span> triplets and converts to CSR in <span class="math inline">\(O(n)\)</span> operations. Finite-element matrices are assembled in the same way by looping over elements, and each element contributes a small block of triplets that overlaps the contributions of its neighbors. The overlapping triplets are summed during the conversion.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -823,12 +1016,23 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Benchmarks)</strong></p>
-<ul>
-<li><p><strong>LU Factorization:</strong> <span class="math inline">\(\frac{2}{3}n^3\)</span>.</p></li>
-<li><p><strong>Cholesky:</strong> <span class="math inline">\(\frac{1}{3}n^3\)</span>.</p></li>
-<li><p><strong>QR (Householder):</strong> <span class="math inline">\(\frac{4}{3}n^3\)</span>.</p></li>
-</ul>
+<p><strong>(Column storage and transposes)</strong> The compressed sparse column (CSC) format stores <span class="math inline">\(\bA\)</span> column by column and is the CSR format of <span class="math inline">\(\bA^T\)</span>. Column-oriented algorithms, such as sparse Cholesky factorization and column-oriented triangular solves, use CSC. A product <span class="math inline">\(\bA^T\bx\)</span> with a CSR matrix is computed by scattering <span class="math inline">\(x_i\,`val`_k\)</span> into position <span class="math inline">\(`col`_k\)</span> of the result. The scatter has the same flop count as the CSR product, but parallel threads that process different rows may then write to the same output entry.</p>
+</div>
+</div>
+</section>
+<section id="further-exercises" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">5.3</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Count the flops and the memory reads of the CSR product in the referenced result, assuming 8-byte values and 4-byte indices. Compute the ratio of flops to bytes read, and explain why this ratio makes the product limited by memory bandwidth.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -841,12 +1045,20 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Verify <span class="math inline">\(2mn\)</span> flops for <span class="math inline">\(\bA\bx\)</span> by counting multiply-adds.</p></li>
-<li><p>Estimate wall-clock time for <span class="math inline">\(10^9\)</span> flops on a <span class="math inline">\(10^9\)</span> flop/s CPU.</p></li>
-<li><p>Python: Plot <code>np.dot(A, B)</code> time vs <span class="math inline">\(n\)</span> (log-log). Verify exponent <span class="math inline">\(\approx 3\)</span>.</p></li>
-<li><p>Why might the empirical exponent be less than 3? (Cache hierarchy, vectorization).</p></li>
-</ol>
+<p>Write the scatter algorithm for <span class="math inline">\(\bA^T\bx\)</span> from CSR arrays, and prove that it costs at most <span class="math inline">\(2\operatorname{nnz}(\bA)\)</span> flops.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assemble the five-point Poisson matrix on an <span class="math inline">\(N\times N\)</span> grid in COO format, convert it to CSR, and compare the time of a sparse and a dense matrix–vector product for <span class="math inline">\(N=50,100,200\)</span>. Report <span class="math inline">\(\operatorname{nnz}\)</span>, the storage of both formats, and the two times.</p>
 </div>
 </div>
 
@@ -1269,13 +1481,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../fundamentals/norms.html" class="pagination-link" aria-label="Introduction to Norms">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span>
+      <a href="../fundamentals/floating-point.html" class="pagination-link" aria-label="Floating Point Arithmetic">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../fundamentals/floating-point.html" class="pagination-link" aria-label="Floating Point Arithmetic">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../direct-methods/linear-systems.html" class="pagination-link" aria-label="Linearity and Fundamental Subspaces">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

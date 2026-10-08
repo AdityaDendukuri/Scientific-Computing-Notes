@@ -1,219 +1,552 @@
-# Singular Value Decomposition
+# The Singular Value Decomposition
 
 
-The Singular Value Decomposition (SVD) is a general matrix factorization that decomposes any $m \times n$ matrix into a product of orthogonal transformations and a diagonal scaling matrix.
+An eigenvector compares input and output in the same space. A rectangular matrix may have different input and output dimensions, so we instead seek orthonormal input directions whose images are mutually orthogonal. In those coordinates, the map merely scales each direction and may send some directions to zero.
 
 
-The SVD is the most complete description of what a matrix does geometrically. It finds orthonormal input directions, tells how much each direction is stretched, and gives the corresponding orthonormal output directions.
+The singular value decomposition makes this construction precise. It will evaluate the matrix norm, expose directions that are poorly determined by a least-squares problem, and identify which components can be discarded in an approximation of smaller rank.
 
 
-## The SVD Theorem
+## The SVD Theorem and Subspace Characterization
+
+
+Suppose unit input vectors $\bv_i$ have images $\bA\bv_i=\sigma_i\bu_i$ with orthonormal $\bu_i$ and nonnegative $\sigma_i$. Applying $\bA$ then consists of expanding an input in the $\bv_i$ basis, multiplying its coefficients by $\sigma_i$, and expressing the output in the $\bu_i$ basis. To find such input vectors, observe that
+$$
+\begin{align}
+(\bA\bv_i)^T(\bA\bv_j)=\bv_i^T(\bA^T\bA)\bv_j.
+\end{align}
+$$
+An orthonormal eigenbasis of the symmetric matrix $\bA^T\bA$ therefore makes the images orthogonal. This observation supplies the proof.
 
 
 ::: {.callout-note icon=false}
-## Theorem: Singular Value Decomposition (SVD)
-For $\bA \in \fR^{m \times n}$, there exist orthogonal matrices $\bU \in \fR^{m \times m}, \bV \in \fR^{n \times n}$ and diagonal $\bsigma \in \fR^{m \times n}$ such that:
+## Theorem: The Singular Value Decomposition Theorem
+Let $\bA \in \fR^{m \times n}$ with $m \geq n$. There exist orthogonal matrices $\bU \in \fR^{m \times m}$ and $\bV \in \fR^{n \times n}$, and a rectangular diagonal matrix $\bsigma \in \fR^{m \times n}$, such that
 $$
 \begin{align}
-\bA = \bU \bsigma \bV^T.
+\bA = \bU \bsigma \bV^T,
 \end{align}
 $$
-
-- **Singular Values ($\sigma_i$):**  Non-negative, ordered $\sigma_1 \geq \sigma_2 \geq ... \geq 0$.
-    
-- **Modes:**  $\bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T$ (Outer product expansion).
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Geometric Interpretation:** 
-$\bA$ rotates the input space ($\bV^T$), scales along the axes ($\bsigma$), and rotates the result to the output space ($\bU$).
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: SVD Coordinates
-Let $\bA=\bU\bsigma\bV^T$ be the SVD from the result above. If $\bx=\bV\by$ and $\bc=\bU^T\bb$, then the equation $\bA\bx=\bb$ becomes
+where the diagonal entries of $\bsigma = \operatorname{diag}(\sigma_1, \sigma_2, ..., \sigma_n)$ are real, non-negative, and sorted in non-increasing order:
 $$
 \begin{align}
-\bsigma \by = \bc.
+\sigma_1\geq\cdots\geq\sigma_n\geq0,\qquad
+    \sigma_i>0\ (1\leq i\leq r),\qquad
+    \sigma_i=0\ (r<i\leq n).
 \end{align}
 $$
-Thus the action of $\bA$ is a set of independent scalar equations $\sigma_i y_i=c_i$ in orthonormal coordinates. Small singular values correspond to directions where solving requires division by small numbers.
+The number of strictly positive singular values $r = \operatorname{rank}(\bA)$ equals the rank of $\bA$. In dyadic outer-product form,
+$$
+\begin{align}
+\bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T.
+\end{align}
+$$
 :::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Consider the Gram matrix $\bA^T\bA \in \fR^{n \times n}$. Because $(\bA^T\bA)^T = \bA^T\bA$, it is symmetric, and for every $\bx \in \fR^n$, $\bx^T(\bA^T\bA)\bx = \|\bA\bx\|_2^2 \geq 0$, so $\bA^T\bA$ is positive semidefinite.
+
+By the Spectral Theorem (the referenced result), $\bA^T\bA$ has an orthonormal basis of eigenvectors $\bv_1, ..., \bv_n \in \fR^{n}$ with corresponding real eigenvalues $\lambda_1 \geq \lambda_2 \geq ... \geq \lambda_n \geq 0$. Define the singular values $\sigma_i = \sqrt{\lambda_i} \geq 0$ for $i = 1, ..., n$, and let $r$ denote the number of strictly positive singular values, with positivity for $1\leq i\leq r$ and zeros for $r<i\leq n$. Either index range may be empty.
+
+For each index $i \in \{1, ..., r\}$, define the normalized vectors in $\fR^m$:
+$$
+\begin{align}
+\bu_i = \frac{1}{\sigma_i} \bA \bv_i.
+\end{align}
+$$
+We verify that $\{\bu_1, ..., \bu_r\}$ form an orthonormal set in $\fR^m$:
+$$
+\begin{align}
+\bu_i^T \bu_j
+    =
+    \frac{1}{\sigma_i \sigma_j} (\bA\bv_i)^T (\bA\bv_j)
+    =
+    \frac{1}{\sigma_i \sigma_j} \bv_i^T (\bA^T\bA\bv_j)
+    =
+    \frac{\lambda_j}{\sigma_i \sigma_j} \bv_i^T \bv_j
+    =
+    \frac{\sigma_j^2}{\sigma_i \sigma_j} \delta_{ij}
+    =
+    \delta_{ij}.
+\end{align}
+$$
+When $i=j$, the displayed inner product is $\sigma_i^2/\sigma_i^2=1$. When $i\neq j$, it is zero because $\bv_i^T\bv_j=0$. All divisions used only positive singular values, so no zero singular value was divided by.
+
+Using Gram--Schmidt orthonormalization, extend $\{\bu_1, ..., \bu_r\}$ to a complete orthonormal basis $\{\bu_1, ..., \bu_m\}$ for $\fR^m$. Assemble the orthogonal matrices $\bU = [\bu_1, ..., \bu_m] \in \fR^{m \times m}$ and $\bV = [\bv_1, ..., \bv_n] \in \fR^{n \times n}$.
+
+Evaluating the $(i, j)$ entry of $\bU^T\bA\bV$:
+$$
+\begin{align}
+(\bU^T\bA\bV)_{ij} = \bu_i^T \bA \bv_j.
+\end{align}
+$$
+For $j \leq r$, $\bA\bv_j = \sigma_j \bu_j$, so $\bu_i^T \bA\bv_j = \sigma_j \bu_i^T\bu_j = \sigma_j \delta_{ij}$. For $j > r$, $\lambda_j = 0$, so $\|\bA\bv_j\|_2^2 = \bv_j^T\bA^T\bA\bv_j = 0$, which implies $\bA\bv_j = \bzero$ and $\bu_i^T\bA\bv_j = 0$. Thus $\bU^T\bA\bV = \bsigma$, which gives $\bA = \bU\bsigma\bV^T$.
+
+
+The images of the first $r$ right singular vectors are nonzero multiples of the independent vectors $\bu_1,...,\bu_r$. The remaining right singular vectors map to zero. Since these vectors form a basis of the domain, the range has dimension exactly $r$. This proves the rank assertion in addition to the factorization.
+:::
+
+
+If $m<n$, apply the theorem to $\bA^T$ and transpose the factorization. The left and right factors exchange roles, and the rectangular diagonal factor is transposed. Thus the decomposition exists for every rectangular matrix. When $r=0$, the outer-product sum is empty and $\bA=\bzero$.
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
+Construct an SVD of $\begin{pmatrix}3&0\\0&1\\0&0\end{pmatrix}$. Describe the image of the unit circle, then identify the range and the null space of the transpose. Repeat after replacing the entry $1$ by zero. Which input direction has become invisible?
+:::
 
-1. Substitute $\bx=\bV\by$ into $\bA\bx=\bb$ and use the result above to obtain $\bU\bsigma\by=\bb$.
-    
-1. Multiply by $\bU^T$ and use orthogonality of $\bU$ to prove the result above.
-    
-1. For a square full-rank matrix, use the scalar equations $\sigma_i y_i=c_i$ to derive $\kappa_2(\bA)=\sigma_{\max}/\sigma_{\min}$.
-    
-1. Explain why a tiny nonzero $\sigma_i$ makes the system numerically close to rank deficient.
-    
-1. Use the same coordinate picture to explain the pseudoinverse in the result above.
+
+::: {.callout-note icon=false}
+## Theorem: Thin SVD and the Four Fundamental Subspaces
+Let $\bA \in \fR^{m \times n}$ have rank $r \leq n \leq m$. The thin SVD is
+$$
+\begin{align}
+\bA = \bU_1 \bsigma_1 \bV_1^T,
+\end{align}
+$$
+where $\bU_1 \in \fR^{m \times r}$ and $\bV_1 \in \fR^{n \times r}$ have orthonormal columns, and $\bsigma_1 = \operatorname{diag}(\sigma_1, ..., \sigma_r) \in \fR^{r \times r}$ has strictly positive entries.
+The complete singular vectors partition the domain and codomain into the four fundamental subspaces:
+
+1. **Column space (range):**  $\mathcal{R}(\bA) = \operatorname{span}\{\bu_1, ..., \bu_r\} \subset \fR^m$.
+
+1. **Left null space:**  $\mathcal{N}(\bA^T) = \operatorname{span}\{\bu_{r+1}, ..., \bu_m\} \subset \fR^m$.
+
+1. **Row space:**  $\mathcal{R}(\bA^T) = \operatorname{span}\{\bv_1, ..., \bv_r\} \subset \fR^n$.
+
+1. **Null space (kernel):**  $\mathcal{N}(\bA) = \operatorname{span}\{\bv_{r+1}, ..., \bv_n\} \subset \fR^n$.
 
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Full vs.\ thin SVD)**  If $m\geq n$, the full SVD has $\bU\in\fR^{m\times m}$ and $\bsigma\in\fR^{m\times n}$. The thin SVD keeps only the first $n$ left singular vectors:
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Expand $\bx$ in the complete orthonormal right singular basis: $\bx=\sum_{i=1}^n c_i\bv_i$, where $c_i=\bv_i^T\bx$. The SVD gives
 $$
 \begin{align}
-\bA=\bU_1\bsigma_1\bV^T,
+\bA\bx=\sum_{i=1}^r\sigma_i c_i\bu_i.
+\end{align}
+$$
+Thus every output lies in $\operatorname{span}\{\bu_1,...,\bu_r\}$. Conversely, for $i\leq r$, $\bu_i=\bA(\bv_i/\sigma_i)$ is an output. Hence that span is exactly the range, not merely a space containing it.
+
+For the null space, take the squared Euclidean norm of the output. Orthonormality of the left singular vectors gives
+$$
+\begin{align}
+\|\bA\bx\|_2^2=\sum_{i=1}^r\sigma_i^2c_i^2.
+\end{align}
+$$
+Every $\sigma_i$ in this sum is positive. The sum vanishes if and only if $c_i=0$ for every $i\leq r$. The remaining coefficients are arbitrary, so the null space is exactly $\operatorname{span}\{\bv_{r+1},...,\bv_n\}$.
+
+For the transpose, expand $\by=\sum_{i=1}^m d_i\bu_i$. Transposing the SVD gives
+$$
+\begin{align}
+\bA^T\by=\sum_{i=1}^r\sigma_i d_i\bv_i.
+\end{align}
+$$
+Every output is in the first $r$ right singular directions, and each $\bv_i=\bA^T(\bu_i/\sigma_i)$ is an output. This proves the row-space claim. Likewise $\|\bA^T\by\|_2^2=\sum_{i=1}^r\sigma_i^2d_i^2$, which vanishes precisely when the first $r$ coefficients are zero. The left null space is therefore the span of the remaining $\bu_i$.
+:::
+
+
+## Norms and Condition Numbers
+
+
+The induced Euclidean norm of the referenced result is the largest amplification of a unit vector, and the condition number of the referenced result compares the largest and the smallest amplification. Both were defined as optimization problems over the unit sphere. Because orthogonal matrices preserve Euclidean length, the SVD reduces these problems to a diagonal matrix, where they can be solved by inspection.
+
+
+::: {.callout-note icon=false}
+## Theorem: Norms and Condition Numbers from the SVD
+Let $\bA\in\fR^{m\times n}$ with $m\geq n$ have singular values $\sigma_1\geq\cdots\geq\sigma_n\geq0$. Then
+$$
+\begin{align}
+\|\bA\|_2=\sigma_1,
     \qquad
-    \bU_1\in\fR^{m\times n},\quad
-    \bsigma_1\in\fR^{n\times n}.
+    \min_{\|\bx\|_2=1}\|\bA\bx\|_2=\sigma_n,
+    \qquad
+    \|\bA\|_F=\Big(\sum_{i=1}^n\sigma_i^2\Big)^{1/2}.
 \end{align}
 $$
-For most computations, the thin SVD contains all nonzero singular information and avoids storing unnecessary columns.
-:::
-
-
-::: {.callout-note icon=false}
-## Definition: Numerical Rank
-The numerical rank of $\bA$ is the number of singular values considered meaningfully nonzero relative to a tolerance:
+If $\bA$ has full column rank, we define $\kappa_2(\bA)=\sigma_1/\sigma_n$. The condition number satisfies
 $$
 \begin{align}
-\sigma_i > \tau.
+\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2.
 \end{align}
 $$
-A common scale-aware choice is $\tau = \varepsilon_{\text{mach}}\max(m,n)\sigma_1$.
+If $\bA$ is square and nonsingular, then $\|\bA^{-1}\|_2=1/\sigma_n$, so $\kappa_2(\bA)=\|\bA\|_2\|\bA^{-1}\|_2$ agrees with the referenced result.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Conditioning through singular values)**  As shown in the result above, for a full-rank square matrix,
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $\bx$ be a unit vector and let $\by=\bV^T\bx$, which is also a unit vector. Since $\bU$ preserves Euclidean length,
 $$
 \begin{align}
-\kappa_2(\bA)=\frac{\sigma_{\max}}{\sigma_{\min}}.
+\|\bA\bx\|_2^2=\|\bU\bsigma\bV^T\bx\|_2^2=\|\bsigma\by\|_2^2=\sum_{i=1}^n\sigma_i^2y_i^2.
 \end{align}
 $$
-Small singular values mark directions where $\bA$ nearly collapses information. Solving a system must divide by these small values, amplifying noise and rounding error.
+The sum is a weighted average of the $\sigma_i^2$, so it lies between $\sigma_n^2$ and $\sigma_1^2$. The upper value is attained at $\by=\be_1$, that is, at $\bx=\bv_1$, and the lower value is attained at $\bx=\bv_n$. These two cases prove the first two identities.
+
+For any unit vector, $\sum_i y_i^2=1$. Therefore $\sum_i\sigma_i^2y_i^2\leq\sigma_1^2\sum_i y_i^2=\sigma_1^2$, and the analogous lower inequality uses $\sigma_n^2$. These inequalities become equalities for the indicated coordinate vectors. Thus they give extrema, not just bounds.
+
+For the Frobenius norm, $\|\bA\|_F^2=\operatorname{trace}(\bA^T\bA)$ and $\bA^T\bA=\bV\bsigma^T\bsigma\bV^T$. The identity $\operatorname{tr}(\bB\bC)=\operatorname{tr}(\bC\bB)$ follows by interchanging the two finite sums over entries. Applying it to this product gives
+$$
+\begin{align}
+\operatorname{tr}(\bV\bsigma^T\bsigma\bV^T)
+ =\operatorname{tr}(\bsigma^T\bsigma\bV^T\bV)
+ =\operatorname{tr}(\bsigma^T\bsigma).
+\end{align}
+$$
+Thus the trace is invariant under the similarity by $\bV$,  so $\|\bA\|_F^2=\operatorname{trace}(\bsigma^T\bsigma)=\sum_i\sigma_i^2$.
+
+The factorization $\bA^T\bA=\bV(\bsigma^T\bsigma)\bV^T$ is itself an SVD of $\bA^T\bA$ with singular values $\sigma_1^2\geq\cdots\geq\sigma_n^2$. When $\bA$ has full column rank these are positive, and $\kappa_2(\bA^T\bA)=\sigma_1^2/\sigma_n^2=\kappa_2(\bA)^2$. Finally, if $\bA$ is square and nonsingular, then $\bA^{-1}=\bV\bsigma^{-1}\bU^T$ is an SVD whose largest singular value is $1/\sigma_n$.
 :::
-
-
-## The Four Fundamental Subspaces
-
-The SVD provides optimal orthonormal bases for the spaces defined by $\bA$ (rank $r$):
-
-1. \textbf{Column Space ($\mathcal{R}(\bA)$):}  First $r$ columns of $\bU$.
-    
-1. \textbf{Null Space ($\mathcal{N}(\bA)$):}  Last $n-r$ columns of $\bV$.
-    
-1. \textbf{Row Space ($\mathcal{R}(\bA^T)$):}  First $r$ columns of $\bV$.
-    
-1. \textbf{Left Null Space ($\mathcal{N}(\bA^T)$):}  Last $m-r$ columns of $\bU$.
 
 
 ::: {.callout-note icon=false}
-## Theorem: Relationship to Eigendecomposition
-
-- Right singular vectors ($\bv_i$) are eigenvectors of $\bA^T\bA$.
-    
-- Left singular vectors ($\bu_i$) are eigenvectors of $\bA\bA^T$.
-    
-- Singular values $\sigma_i = \sqrt{\lambda_i(\bA^T\bA)}$.
-
+## Corollary: Symmetric Positive Definite Matrices
+If $\bA$ is symmetric positive definite, its singular values are its eigenvalues, and $\kappa_2(\bA)=\lambda_{\max}(\bA)/\lambda_{\min}(\bA)$. If $\bA=\bL\bL^T$ is the Cholesky factorization of the referenced result, then $\kappa_2(\bL)=\sqrt{\kappa_2(\bA)}$.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(SVD via normal equations)**  The relation to eigenvalues explains why the SVD exists, but forming $\bA^T\bA$ squares the condition number. Numerical SVD algorithms avoid this loss of accuracy.
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For an SPD matrix, the spectral theorem gives $\bA=\bQ\boldsymbol\Lambda\bQ^T$ with positive eigenvalues. Order them in decreasing order. Both outer factors are orthogonal, and the middle factor is diagonal with nonnegative decreasing entries. It therefore satisfies every condition of an SVD. Its singular values are the positive eigenvalues themselves.
+
+Now suppose $\bA=\bL\bL^T$ is the Cholesky factorization. To find singular values of $\bL^T$, form its Gram matrix:
+$$
+\begin{align}
+(\bL^T)^T\bL^T=\bL\bL^T=\bA.
+\end{align}
+$$
+The SVD construction shows that squared singular values of a matrix are the eigenvalues of its Gram matrix. Thus $\sigma_i(\bL^T)=\sqrt{\lambda_i(\bA)}$. Transposing an SVD exchanges its two orthogonal factors and transposes its diagonal factor, preserving the singular values. Hence the same formula holds for $\bL$.
+
+The smallest eigenvalue is positive, so both extreme singular values are nonzero. Consequently
+$$
+\begin{align}
+\kappa_2(\bL)
+ =\frac{\sigma_{\max}(\bL)}{\sigma_{\min}(\bL)}
+ =\frac{\sqrt{\lambda_{\max}(\bA)}}{\sqrt{\lambda_{\min}(\bA)}}
+ =\sqrt{\kappa_2(\bA)}.
+\end{align}
+$$
 :::
 
 
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the result above to show that $\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2$ for full-rank $\bA$.
-    
-1. Compare this result with the result above.
-    
-1. Explain why this makes $\bA^T\bA$ useful for theory but dangerous as a default computational route.
-
-:::
+The identity $\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2$ explains the preference for QR in the referenced section. When the normal equations are formed and solved by a backward stable method, the forward error can be as large as a modest multiple of $\kappa_2(\bA)^2u$, where $u$ is the unit roundoff. Householder QR works with $\bA$ directly, and when the least-squares residual is small its forward error is a modest multiple of $\kappa_2(\bA)u$ [@higham2002]. For $\kappa_2(\bA)=10^6$ in double precision, these two estimates are of order $10^{-4}$ and $10^{-10}$.
 
 
-## Low-Rank Approximation
+## Low-Rank Matrix Approximation
 
 
 ::: {.callout-note icon=false}
-## Theorem: Eckart-Young-Mirsky Theorem
-The best rank-$k$ approximation ($k < r$) of $\bA$ in spectral and Frobenius norms is the truncated SVD:
+## Theorem: Eckart--Young--Mirsky Low-Rank Approximation Theorem
+Let $\bA \in \fR^{m \times n}$ have singular value decomposition $\bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T$. For any $k < r$, let the rank-$k$ truncated SVD be
 $$
 \begin{align}
 \bA_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T.
 \end{align}
 $$
-
-- **Error:**  $\|\bA - \bA_k\|_2 = \sigma_{k+1}$.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Applications:** 
-Truncated SVD provides the computational basis for Principal Component Analysis (PCA), image compression, and latent semantic analysis.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Singular value decay)**  If the singular values decay rapidly, the matrix is well approximated by a low-rank matrix. If they decay slowly, no low-dimensional linear summary captures the matrix accurately.
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(Image compression)**  A grayscale image can be treated as a matrix of pixel intensities. Keeping only the largest $k$ singular values stores
+Then $\bA_k$ is the best rank-$k$ approximation to $\bA$ in the spectral norm:
 $$
 \begin{align}
-k(m+n+1)
+\min_{\operatorname{rank}(\bB) \leq k} \|\bA - \bB\|_2 = \|\bA - \bA_k\|_2 = \sigma_{k+1},
 \end{align}
 $$
-numbers instead of $mn$. The approximation error in spectral norm is exactly the next omitted singular value $\sigma_{k+1}$.
-:::
-## The Pseudoinverse
-
-
-::: {.callout-note icon=false}
-## Definition: Moore-Penrose Pseudoinverse
-$\bA^+ = \bV \bsigma^+ \bU^T$, where $(\bsigma^+)_{ii} = 1/\sigma_i$ if $\sigma_i > 0$, else $0$.
-
-- **Minimum-Norm Solution:**  For any system $\bA\bx = \bb$, the vector $\hat{\bx} = \bA^+\bb$ is the shortest vector minimizing $\|\bA\bx - \bb\|_2$.
-
+and in the Frobenius norm:
+$$
+\begin{align}
+\min_{\operatorname{rank}(\bB) \leq k} \|\bA - \bB\|_F = \|\bA - \bA_k\|_F = \sqrt{\sum_{j=k+1}^r \sigma_j^2}.
+\end{align}
+$$
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Why the pseudoinverse is the fallback)**  In SVD coordinates, solving $\bA\bx=\bb$ means dividing by singular values. The pseudoinverse divides only by nonzero singular values and ignores null-space directions. This gives the minimum-norm least squares solution even when $\bA$ is rectangular or rank deficient.
-:::
+::: {.callout-tip icon=false collapse=true}
+## Proof
+First, evaluating the spectral norm of $\bA - \bA_k$:
+$$
+\begin{align}
+\bA - \bA_k = \sum_{i=k+1}^r \sigma_i \bu_i \bv_i^T = \bU \operatorname{diag}(0, ..., 0, \sigma_{k+1}, ..., \sigma_r, 0, ..., 0) \bV^T.
+\end{align}
+$$
+Because the 2-norm is unitarily invariant, $\|\bA - \bA_k\|_2 = \sigma_{k+1}$.
+
+Now let $\bB \in \fR^{m \times n}$ be any arbitrary matrix with $\operatorname{rank}(\bB) \leq k$. By the Rank-Nullity Theorem, $\dim \mathcal{N}(\bB) = n - \operatorname{rank}(\bB) \geq n - k$. Define the $(k+1)$-dimensional subspace $W_{k+1} = \operatorname{span}\{\bv_1, ..., \bv_{k+1}\} \subset \fR^n$. By the dimension formula,
+$$
+\begin{align}
+\dim(\mathcal{N}(\bB)\cap W_{k+1})
+    &=\dim\mathcal N(\bB)+\dim W_{k+1}\\
+    &\quad-\dim(\mathcal N(\bB)+W_{k+1})\\
+    &\geq(n-k)+(k+1)-n=1.
+\end{align}
+$$
+Therefore, there exists a nonzero vector $\bw \in \mathcal{N}(\bB) \cap W_{k+1}$, normalized so that $\|\bw\|_2 = 1$.
+
+Because $\bw \in \mathcal{N}(\bB)$, $\bB\bw = \bzero$. Expanding $\bw = \sum_{j=1}^{k+1} c_j \bv_j$ with $\sum_{j=1}^{k+1} c_j^2 = 1$,
+$$
+\begin{align}
+\|(\bA - \bB)\bw\|_2^2
+    &= \|\bA\bw - \bB\bw\|_2^2
+    = \|\bA\bw\|_2^2 \\
+    &= \left\| \bA \sum_{j=1}^{k+1} c_j \bv_j \right\|_2^2
+    = \left\| \sum_{j=1}^{k+1} c_j \sigma_j \bu_j \right\|_2^2 \\
+    &= \sum_{j=1}^{k+1} c_j^2 \sigma_j^2
+    \geq \sigma_{k+1}^2 \sum_{j=1}^{k+1} c_j^2
+    = \sigma_{k+1}^2.
+\end{align}
+$$
+Consequently, the operator norm satisfies
+$$
+\begin{align}
+\|\bA - \bB\|_2 = \max_{\|\bx\|_2 = 1} \|(\bA - \bB)\bx\|_2 \geq \|(\bA - \bB)\bw\|_2 \geq \sigma_{k+1}.
+\end{align}
+$$
+This proves that $\|\bA - \bB\|_2 \geq \sigma_{k+1}$ for every matrix $\bB$ of rank at most $k$.
+
+For the Frobenius norm, let $\bP$ be the orthogonal projector onto $\mathcal{N}(\bB)$. Since $\operatorname{rank}(\bB)\leq k$, this null space has dimension at least $n-k$. Hence
+$$
+\begin{align}
+\|\bA-\bB\|_F^2
+    \geq \|(\bA-\bB)\bP\|_F^2
+    =\|\bA\bP\|_F^2.
+\end{align}
+$$
+Choose an $(n-k)$-dimensional subspace of $\mathcal{N}(\bB)$ if the null space is larger, and let $\bP$ project onto that subspace. Expanding in the right singular-vector basis gives
+$$
+\begin{align}
+\|\bA\bP\|_F^2
+    &= \operatorname{tr}(\bP^T\bA^T\bA\bP)
+    = \operatorname{tr}\left( \bP \left(\sum_{i=1}^n \sigma_i^2 \bv_i\bv_i^T\right) \bP \right) \\
+    &= \sum_{i=1}^n \sigma_i^2 \operatorname{tr}(\bP\bv_i\bv_i^T\bP)
+    = \sum_{i=1}^n \sigma_i^2 \|\bP\bv_i\|_2^2.
+\end{align}
+$$
+The weights $d_i=\|\bP\bv_i\|_2^2$ satisfy $0\leq d_i\leq1$ and $\sum_i d_i=\operatorname{tr}(\bP)=n-k$. To justify the minimum of this weighted sum, put $s_i=\sigma_i^2$ in decreasing order. From $\sum_i d_i=n-k$ we have
+$$
+\begin{align}
+\sum_{i\leq k}d_i=\sum_{i>k}(1-d_i)=t\geq0.
+\end{align}
+$$
+Now subtract the desired tail sum:
+$$
+\begin{align}
+\sum_i s_i d_i-\sum_{i>k}s_i
+ &=\sum_{i\leq k}s_i d_i-\sum_{i>k}s_i(1-d_i)\\
+ &\geq s_{k+1}t-s_{k+1}t=0.
+\end{align}
+$$
+The inequality uses $s_i\geq s_{k+1}$ in the first sum and $s_i\leq s_{k+1}$ in the second. This proves the weighted minimum explicitly. Therefore
+$$
+\begin{align}
+\|\bA-\bB\|_F^2\geq\sum_{i=k+1}^r\sigma_i^2.
+\end{align}
+$$
+The truncated SVD attains this bound, completing the proof.
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Regularization by truncation)**  If small singular values are dominated by noise, dividing by them can make the solution explode. Truncated SVD sets small singular values to zero before applying the pseudoinverse. This trades bias for stability.
+For the proposed truncation, its error has precisely the discarded singular values, so its squared Frobenius norm is their squared sum. For $k\geq r$, the full matrix itself is admissible and both minimum errors are zero. The approximation theorem in these two norms is discussed in @golubvanloan2013.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**(Low-rank error accounting)**  For a diagonal matrix $\bA=\operatorname{diag}(9,4,1)$, compute the best rank-one and rank-two approximations. Verify both the spectral- and Frobenius-norm errors predicted by the referenced result.
+:::
 
-1. Compute the SVD of $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$ by hand and verify the coordinate equation in the result above.
-    
-1. **Compression:**  Load a $512 \times 512$ image. Plot the relative error $\|\bA - \bA_k\|_F / \|\bA\|_F$ vs.\ $k$. At what $k$ is the image recognizable?
-    
-1. Use the pseudoinverse to find the least squares solution to a rank-deficient $3 \times 3$ system. Explain each zero singular value using the result above.
+
+::: {.callout-tip icon=false}
+## Remark
+**(Numerical rank and noise filtering)**
+In measured or discretized data, singular values rarely vanish exactly. Given a tolerance $\tau>0$, define the numerical rank by
+$$
+\begin{align}
+r_\tau = \#\{i:\sigma_i>\tau\}.
+\end{align}
+$$
+A common floating-point default is $\tau=\varepsilon_{\text{mach}}\max(m,n)\sigma_1$, but a scientifically meaningful threshold should reflect the noise and discretization scales. Truncation removes components below the chosen threshold. Calling those components noise requires a model of the data.
+:::
+
+
+## Least Squares and Regularization
+
+
+The least-squares theory of the referenced section characterized every minimizer and the minimum-norm minimizer, but it computed a solution only when $\bA$ has full column rank. The SVD computes all minimizers in every case. It also shows which components of the solution are sensitive to errors in $\bb$, and how truncation and Tikhonov regularization modify those components.
+
+
+::: {.callout-note icon=false}
+## Definition: Moore--Penrose Pseudoinverse
+Let $\bA \in \fR^{m \times n}$ have rank $r$ and thin SVD $\bA = \bU_1 \bsigma_1 \bV_1^T$. The Moore--Penrose pseudoinverse of $\bA$ is
+$$
+\begin{align}
+\bA^\dagger = \bV_1 \bsigma_1^{-1} \bU_1^T = \sum_{i=1}^r \frac{1}{\sigma_i} \bv_i \bu_i^T \in \fR^{n \times m}.
+\end{align}
+$$
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**(Verification of the four Moore--Penrose conditions)**  Using the thin SVD $\bA = \bU_1 \bsigma_1 \bV_1^T$ and $\bA^\dagger = \bV_1 \bsigma_1^{-1} \bU_1^T$, prove algebraically:
+
+1. $\bA\bA^\dagger\bA = \bA$.
+
+1. $\bA^\dagger\bA\bA^\dagger = \bA^\dagger$.
+
+1. $(\bA\bA^\dagger)^T = \bA\bA^\dagger$ (orthogonal projector onto $\mathcal{R}(\bA)$).
+
+1. $(\bA^\dagger\bA)^T = \bA^\dagger\bA$ (orthogonal projector onto $\mathcal{R}(\bA^T)$).
+
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Least Squares by the SVD
+Let $\bA=\bU\bsigma\bV^T$ have rank $r$. A vector $\bx$ minimizes $\|\bA\bx-\bb\|_2$ if and only if
+$$
+\begin{align}
+\bv_i^T\bx=\frac{\bu_i^T\bb}{\sigma_i},\qquad i=1,...,r.
+\end{align}
+$$
+The minimum residual norm is $\big(\sum_{i=r+1}^m(\bu_i^T\bb)^2\big)^{1/2}$, and the unique minimizer of smallest Euclidean norm is
+$$
+\begin{align}
+\bA^\dagger\bb=\sum_{i=1}^r\frac{\bu_i^T\bb}{\sigma_i}\,\bv_i.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Introduce orthogonal coordinates $\by=\bV^T\bx$ and $\bc=\bU^T\bb$. These changes of coordinates are bijective and preserve Euclidean lengths. In particular, minimizing over $\bx$ is equivalent to minimizing over every $\by\in\fR^n$.
+
+Multiply the residual by $\bU^T$ and insert the SVD:
+$$
+\begin{align}
+\|\bA\bx-\bb\|_2^2
+ &=\|\bU^T(\bU\bsigma\bV^T\bx-\bb)\|_2^2\\
+ &=\|\bsigma\by-\bc\|_2^2\\
+ &=\sum_{i=1}^r(\sigma_iy_i-c_i)^2+\sum_{i=r+1}^m c_i^2.
+\end{align}
+$$
+The final sum is fixed by the data and cannot be changed by the solution. Each term in the first sum is nonnegative. Since $\sigma_i>0$ for $i\leq r$, choose $y_i=c_i/\sigma_i$ to make every such term zero. This proves the minimum residual value and identifies all necessary constrained coordinates.
+
+The coordinates $y_{r+1},...,y_n$ never appear in the residual because the corresponding columns of $\bsigma$ vanish. They can therefore be arbitrary in a least-squares minimizer. To choose the minimizer of smallest norm, write
+$$
+\begin{align}
+\|\bx\|_2^2=\|\by\|_2^2
+ =\sum_{i=1}^r\frac{c_i^2}{\sigma_i^2}+\sum_{i=r+1}^n y_i^2.
+\end{align}
+$$
+The first sum is already fixed. The second is minimized uniquely by setting every free coordinate to zero. Transforming back gives
+$$
+\begin{align}
+\bx_{\min}=\sum_{i=1}^r\frac{\bu_i^T\bb}{\sigma_i}\bv_i
+ =\bA^\dagger\bb.
+\end{align}
+$$
+Empty index ranges, including rank zero, are interpreted as empty sums.
+:::
+
+
+The coefficient $\bu_i^T\bb/\sigma_i$ shows how errors in the data enter the solution. If $\bb$ is replaced by $\bb+\be$, the component of the minimum-norm solution along $\bv_i$ changes by $\bu_i^T\be/\sigma_i$. Directions with small singular values amplify the noise by $1/\sigma_i$, which is the mechanism behind the ill-conditioning measured by $\kappa_2(\bA)$. Regularization reduces this amplification by modifying the coefficients for small $\sigma_i$.
+
+
+::: {.callout-note icon=false}
+## Theorem: Filter Factors for Truncation and Tikhonov Regularization
+Let $\bA$ have rank $r$ and SVD $\bA=\sum_{i=1}^r\sigma_i\bu_i\bv_i^T$. For $k\leq r$, the minimum-norm least-squares solution for the truncated matrix $\bA_k$ of the referenced result is
+$$
+\begin{align}
+\bx_k=\bA_k^\dagger\bb=\sum_{i=1}^k\frac{\bu_i^T\bb}{\sigma_i}\,\bv_i.
+\end{align}
+$$
+For $\lambda>0$, the Tikhonov solution of the referenced result is
+$$
+\begin{align}
+\bx_\lambda=\sum_{i=1}^r\frac{\sigma_i^2}{\sigma_i^2+\lambda}\,\frac{\bu_i^T\bb}{\sigma_i}\,\bv_i.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For the truncated matrix, only the first $k$ positive singular triplets are retained. Applying the minimum-norm least-squares formula to that matrix gives
+$$
+\begin{align}
+\bx_k=\sum_{i=1}^k\frac{\bu_i^T\bb}{\sigma_i}\bv_i.
+\end{align}
+$$
+Relative to the untruncated pseudoinverse, the first $k$ terms have multiplier one and every discarded term has multiplier zero. These are the truncation filters.
+
+For Tikhonov regularization, let $\by=\bV^T\bx$ and $\bc=\bU^T\bb$. Substitute the SVD into the normal equations and multiply by $\bV^T$ on the left:
+$$
+\begin{align}
+(\bsigma^T\bsigma+\lambda\bI)\by=\bsigma^T\bc.
+\end{align}
+$$
+This is a diagonal system. For $i\leq r$, its $i$th equation is $(\sigma_i^2+\lambda)y_i=\sigma_ic_i$, so
+$$
+\begin{align}
+y_i=\frac{\sigma_i c_i}{\sigma_i^2+\lambda}
+ =\frac{\sigma_i^2}{\sigma_i^2+\lambda}\frac{c_i}{\sigma_i}.
+\end{align}
+$$
+For $i>r$, the equation is $\lambda y_i=0$, giving $y_i=0$. The assumption $\lambda>0$ makes all diagonal coefficients strictly positive, including those in null-space directions.
+
+Multiplication by $\bV$ gives the stated filtered sum. The filter $\sigma_i^2/(\sigma_i^2+\lambda)$ lies strictly between zero and one. It is small for singular values much smaller than $\sqrt\lambda$, whereas it approaches one when $\sigma_i^2$ is large relative to $\lambda$.
+:::
+
+
+Both regularized solutions multiply the unregularized coefficient $\bu_i^T\bb/\sigma_i$ by a filter factor. Truncation uses the factor one for $i\leq k$ and zero for $i>k$, so it removes the weak directions entirely. Tikhonov regularization uses $\sigma_i^2/(\sigma_i^2+\lambda)$, which is close to one when $\sigma_i^2\gg\lambda$ and close to $\sigma_i^2/\lambda$ when $\sigma_i^2\ll\lambda$. The amplification $1/\sigma_i$ is therefore replaced by at most $1/(2\sqrt{\lambda})$, and the transition between kept and damped directions occurs near $\sigma_i=\sqrt{\lambda}$. The choice between the two methods, and the choice of $k$ or $\lambda$, depends on the noise level in $\bb$ and on the assumption about the solution discussed after the referenced result.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Computing the SVD)**
+The proof of the referenced result constructs the SVD from the eigendecomposition of $\bA^T\bA$, but practical codes do not compute it that way. A backward stable eigensolver applied to $\bA^T\bA$ computes its eigenvalues with absolute errors of order $u\sigma_1^2$, so singular values below about $\sqrt{u}\,\sigma_1$ lose all relative accuracy. Golub and Kahan instead reduce $\bA$ to an upper bidiagonal matrix $\bB=\bU_0^T\bA\bV_0$ by applying Householder reflections alternately from the left and from the right [@golubkahan1965]. A shifted QR iteration applied implicitly to $\bB$ then computes the singular values, and standard dense libraries follow this two-phase approach. For a large sparse matrix, the bidiagonal matrix can instead be built one column at a time by a recurrence that uses only products with $\bA$ and $\bA^T$. The recurrence is closely related to the Lanczos iteration of the referenced section applied to $\bA^T\bA$.
+:::
+
+
+## Further Exercises
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**(Hand computation of full and thin SVD)**  For $\bA = \begin{pmatrix} 3 & 3 \\ 4 & 4 \end{pmatrix}$:
+
+1. Compute $\bA^T\bA$ and find its eigenvalues $\lambda_1, \lambda_2$ and orthonormal eigenvectors $\bv_1, \bv_2$.
+
+1. Compute $\sigma_1, \sigma_2$ and the left singular vector $\bu_1 = \frac{1}{\sigma_1}\bA\bv_1$.
+
+1. Complete $\{\bu_1\}$ to an orthonormal basis of $\fR^2$ to find $\bu_2$.
+
+1. Write down the full SVD $\bA = \bU\bsigma\bV^T$ and verify that $\bU\bsigma\bV^T = \bA$.
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**(Truncation versus Tikhonov regularization)**  Let $\bA=\operatorname{diag}(1,10^{-2},10^{-4})$, let $\bx_*=(1,1,1)^T$, and let $\bb=\bA\bx_*+10^{-3}(1,-1,1)^T$.
+
+1. Compute the least-squares solution $\bA^{-1}\bb$ and its error $\|\bA^{-1}\bb-\bx_*\|_2$. Identify the component responsible for the error using the coefficients $\bu_i^T\bb/\sigma_i$.
+
+1. Compute the truncated solutions $\bx_1,\bx_2,\bx_3$ of the referenced result and their errors.
+
+1. Compute the Tikhonov solutions for $\lambda=10^{-2},10^{-4},10^{-6}$. For each $\lambda$, list the three filter factors and explain which components are kept and which are damped.
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**(SVD image compression and energy decay)**  In Python, load a grayscale image as a matrix $\bA \in \fR^{m \times n}$.
+
+1. Compute the full SVD using `scipy.linalg.svd`.
+
+1. Plot the singular value spectrum $\sigma_i$ on a semilog scale and the cumulative energy ratio $E(k) = \frac{\sum_{i=1}^k \sigma_i^2}{\sum_{i=1}^r \sigma_i^2}$ as a function of $k$.
+
+1. Reconstruct the image at ranks $k \in \{5, 20, 50\}$. Compare memory storage against the original image.
 
 :::

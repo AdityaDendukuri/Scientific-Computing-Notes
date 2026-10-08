@@ -1,0 +1,12 @@
+/*-- scss:defaults --*/
+
+// UCSB navy for statements, UCA purple for proofs and remarks,
+// Arkansas cardinal for exercises and literature trails.
+$ucsb-blue: #003660;
+$uca-purple: #4f2d7f;
+$uark-cardinal: #9d2235;
+
+$callout-color-note: $ucsb-blue;
+$callout-color-tip: $uca-purple;
+$callout-color-warning: $uark-cardinal;
+$callout-color-important: $uark-cardinal;

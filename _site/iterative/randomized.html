@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>20&nbsp; Jacobi Eigenvalue Algorithm – Scientific Computing</title>
+<title>28&nbsp; Randomized Methods in Linear Algebra – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../iterative/iterative.html" rel="next">
-<link href="../eigenvalues/lanczos.html" rel="prev">
+<link href="../odes/ode-methods.html" rel="next">
+<link href="../iterative/multigrid.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,9 +65,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-512512a359692b6a4a631bfed0d4ecc0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/randomized.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,44 +415,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span></a>
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
   </div>
 </li>
       </ul>
@@ -440,19 +457,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +498,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +521,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,7 +553,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -544,26 +561,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -571,7 +588,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -579,20 +596,44 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
   </div>
 </li>
       </ul>
@@ -609,7 +650,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +658,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">Applications and Research Bridges</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -626,41 +667,64 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,19 +735,20 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#givens-rotations" id="toc-givens-rotations" class="nav-link active" data-scroll-target="#givens-rotations"><span class="header-section-number">20.1</span> Givens Rotations</a></li>
-  <li><a href="#the-jacobi-algorithm" id="toc-the-jacobi-algorithm" class="nav-link" data-scroll-target="#the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</a></li>
-  <li><a href="#convergence-and-cost" id="toc-convergence-and-cost" class="nav-link" data-scroll-target="#convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</a></li>
+  <li><a href="#trace-and-diagonal-estimation" id="toc-trace-and-diagonal-estimation" class="nav-link active" data-scroll-target="#trace-and-diagonal-estimation"><span class="header-section-number">28.1</span> Trace and Diagonal Estimation</a></li>
+  <li><a href="#randomized-low-rank-approximation" id="toc-randomized-low-rank-approximation" class="nav-link" data-scroll-target="#randomized-low-rank-approximation"><span class="header-section-number">28.2</span> Randomized Low-Rank Approximation</a></li>
+  <li><a href="#random-sampling-in-gaussian-elimination" id="toc-random-sampling-in-gaussian-elimination" class="nav-link" data-scroll-target="#random-sampling-in-gaussian-elimination"><span class="header-section-number">28.3</span> Random Sampling in Gaussian Elimination</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">28.4</span> Further Exercises</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/jacobi-eig.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/randomized.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/randomized.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></h1>
+<h1 class="title"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></h1>
 </div>
 
 
@@ -700,136 +765,44 @@ window.Quarto = {
 </header>
 
 
-<p>Iterative algorithm for symmetric matrices using plane rotations to zero off-diagonal entries.</p>
-<section id="givens-rotations" class="level2" data-number="20.1">
-<h2 data-number="20.1" class="anchored" data-anchor-id="givens-rotations"><span class="header-section-number">20.1</span> Givens Rotations</h2>
+<p>A calculation may require only a sum of matrix entries or a few dominant directions. Computing an entire inverse or a full SVD can then do much more work than is needed. Random vectors let us estimate selected quantities through products and solves. We must specify what is random and how its error is measured.</p>
+<p>We first estimate traces and diagonals from random probe vectors. We then compute low-rank approximations from the range of <span class="math inline">\(\bA\boldsymbol{\Omega}\)</span> for a random matrix <span class="math inline">\(\boldsymbol{\Omega}\)</span>. Finally, we show how random sampling limits fill during Gaussian elimination on graph Laplacians, which produces a preconditioner for the conjugate gradient method.</p>
+<section id="trace-and-diagonal-estimation" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="trace-and-diagonal-estimation"><span class="header-section-number">28.1</span> Trace and Diagonal Estimation</h2>
+<p>The trace of <span class="math inline">\(\bA^{-1}\)</span> and the diagonal of <span class="math inline">\(\bA^{-1}\)</span> appear as sums of variances in statistics, as effective resistances in graphs, and as sensitivities of linear models. Computing <span class="math inline">\(\operatorname{diag}(\bA^{-1})\)</span> exactly requires solving <span class="math inline">\(\bA\bx=\be_i\)</span> for every <span class="math inline">\(i\)</span>. The estimators below use only products <span class="math inline">\(\bz\mapsto\bA\bz\)</span>, or solves with <span class="math inline">\(\bA\)</span>, applied to a few random vectors <span class="math inline">\(\bz\)</span>.</p>
+<p>For independent signs <span class="math inline">\(z_i=\pm1\)</span> with equal probability, <span class="math inline">\(z_i^2=1\)</span> whereas <span class="math inline">\(\mathbb E[z_iz_j]=0\)</span> for <span class="math inline">\(i\neq j\)</span>. In a quadratic form, the diagonal contributions therefore survive averaging and the off-diagonal contributions cancel in expectation. A finite average still has random error. <em>Unbiased</em> means its expectation is correct, not that every sample is accurate.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bA=\begin{pmatrix}2&amp;c\\c&amp;3\end{pmatrix}\)</span>, list the values of <span class="math inline">\(\bz^T\bA\bz\)</span> for all four sign vectors. Compute their mean and variance. Explain why the mean is independent of <span class="math inline">\(c\)</span> although the uncertainty is not.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Givens Rotation
+<span class="screen-reader-only">Note</span>Theorem: Hutchinson’s Trace Estimator
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(G(p, q, \theta)\)</span> is an identity matrix with a <span class="math inline">\(2 \times 2\)</span> rotation block at <span class="math inline">\((p, p), (p, q), (q, p), (q, q)\)</span>.</p>
-<ul>
-<li><p><strong>Similarity Transform:</strong> <span class="math inline">\(\bA' = G^T \bA G\)</span>.</p></li>
-<li><p><strong>Effect:</strong> Modifies only rows/columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. Preserves eigenvalues (<span class="math inline">\(\bA'\)</span> is orthogonally similar to <span class="math inline">\(\bA\)</span>).</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Optimal Rotation Angle
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To set <span class="math inline">\(A'_{pq} = 0\)</span>, let <span class="math inline">\(\tau = (A_{qq} - A_{pp}) / (2A_{pq})\)</span>. The optimal tangent <span class="math inline">\(t = \tan\theta\)</span> is: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> be symmetric, and let <span class="math inline">\(\bz\in\fR^n\)</span> have independent entries with mean zero and variance one. Then <span class="math inline">\(\mathbb{E}[\bz^T\bA\bz]=\operatorname{tr}(\bA)\)</span>. If the entries of <span class="math inline">\(\bz\)</span> are <span class="math inline">\(\pm1\)</span> with equal probability, then <span class="math display">\[
 \begin{align}
-t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sqrt{1+t^2}}, \quad s = ct.
+\operatorname{Var}(\bz^T\bA\bz)=2\Big(\|\bA\|_F^2-\sum_{i=1}^na_{ii}^2\Big).
 \end{align}
-\]</span> Choosing the smaller root <span class="math inline">\(|t| \leq 1\)</span> ensures numerical stability and minimal perturbation.</p>
-</div>
-</div>
-</section>
-<section id="the-jacobi-algorithm" class="level2" data-number="20.2">
-<h2 data-number="20.2" class="anchored" data-anchor-id="the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</h2>
-<p>The Jacobi eigenvalue algorithm repeatedly applies orthogonal similarity transformations <span class="math display">\[
-\begin{align}
-\bA^{(k+1)} = \bG_k^T \bA^{(k)} \bG_k
-\end{align}
-\]</span> to a symmetric matrix. Each rotation zeros one off-diagonal entry while preserving eigenvalues. As the off-diagonal entries converge to zero, <span class="math inline">\(\bA^{(k)}\)</span> converges to a diagonal matrix whose diagonal entries are the eigenvalues.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Jacobi Eigenvalue Algorithm
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Input:</strong> Symmetric matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> and tolerance <code>tol</code>.\ <strong>Initialize:</strong> <span class="math inline">\(\bA^{(0)}=\bA\)</span>, <span class="math inline">\(\bV^{(0)}=\bI\)</span>.\ <strong>Repeat:</strong></p>
-<ol type="1">
-<li><p>Choose an off-diagonal pivot <span class="math inline">\((p,q)\)</span> with <span class="math inline">\(p&lt;q\)</span>.</p></li>
-<li><p>Compute <span class="math inline">\(c=\cos\theta\)</span> and <span class="math inline">\(s=\sin\theta\)</span> using the stable tangent formula so that <span class="math inline">\((\bG^T\bA^{(k)}\bG)_{pq}=0\)</span>.</p></li>
-<li><p>Update the matrix by orthogonal similarity: <span class="math display">\[
-\begin{align}
-\bA^{(k+1)}=\bG^T\bA^{(k)}\bG.
-\end{align}
-\]</span></p></li>
-<li><p>Accumulate eigenvectors: <span class="math display">\[
-\begin{align}
-\bV^{(k+1)}=\bV^{(k)}\bG.
-\end{align}
-\]</span></p></li>
-</ol>
-<p><strong>Stop:</strong> when <span class="math inline">\(\sigma_{\text{off}}(\bA^{(k)}) \leq `tol`\|\bA^{(k)}\|_F\)</span>.\ <strong>Output:</strong> Diagonal entries of <span class="math inline">\(\bA^{(k)}\)</span> approximate eigenvalues; columns of <span class="math inline">\(\bV^{(k)}\)</span> approximate eigenvectors.</p>
+\]</span> If the entries of <span class="math inline">\(\bz\)</span> are standard normal, then <span class="math inline">\(\operatorname{Var}(\bz^T\bA\bz)=2\|\bA\|_F^2\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Pivot choices)</strong></p>
-<ul>
-<li><p><strong>Classical Jacobi:</strong> choose the largest off-diagonal entry <span class="math inline">\(|A_{pq}|\)</span>.</p></li>
-<li><p><strong>Cyclic Jacobi:</strong> sweep through all pairs <span class="math inline">\((p,q)\)</span> in a fixed order.</p></li>
-</ul>
-<p>The largest-entry rule gives the clearest convergence proof. Cyclic sweeps are simpler to implement and often used in practice.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Why eigenvectors accumulate)</strong> After <span class="math inline">\(k\)</span> rotations, <span class="math display">\[
-\begin{align}
-\bA^{(k)} = (\bV^{(k)})^T \bA \bV^{(k)}.
-\end{align}
-\]</span> If <span class="math inline">\(\bA^{(k)}\)</span> is nearly diagonal, then <span class="math inline">\(\bA \bV^{(k)} \approx \bV^{(k)}\boldsymbol{\Lambda}\)</span>, so the columns of <span class="math inline">\(\bV^{(k)}\)</span> are approximate eigenvectors of the original matrix.</p>
-</div>
-</div>
-</section>
-<section id="convergence-and-cost" class="level2" data-number="20.3">
-<h2 data-number="20.3" class="anchored" data-anchor-id="convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Monotone Convergence
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\sigma^2_{\text{off}}(\bA) = \sum_{p &lt; q} A_{pq}^2\)</span> be the Frobenius norm of the off-diagonal entries. Each rotation <span class="math inline">\(G(p, q, \theta)\)</span> reduces this norm: <span class="math display">\[
-\begin{align}
-\sigma^2_{\text{off}}(\bA') = \sigma^2_{\text{off}}(\bA) - A_{pq}^2.
-\end{align}
-\]</span> <strong>Convergence:</strong> Off-diagonals decrease monotonically. Convergence is ultimately <strong>quadratic</strong> (errors square each sweep).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -838,42 +811,35 @@ t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sq
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The orthogonal transform <span class="math inline">\(\bA' = G^T\bA G\)</span> preserves the Frobenius norm: <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>. Let <span class="math inline">\(d(\bA) = \sum A_{ii}^2\)</span> be the sum of squares of diagonal entries. Then: <span class="math display">\[
+<p>Write the quadratic form as <span class="math inline">\(\bz^T\bA\bz=\sum_{i,j}a_{ij}z_iz_j\)</span>. Independence and zero means give <span class="math inline">\(\mathbb E[z_iz_j]=0\)</span> for <span class="math inline">\(i\neq j\)</span>, while unit variance gives <span class="math inline">\(\mathbb E[z_i^2]=1\)</span>. Linearity of expectation therefore gives <span class="math display">\[
 \begin{align}
-\|\bA\|_F^2 = d(\bA) + 2\sigma_{\text{off}}^2(\bA).
+\mathbb E[\bz^T\bA\bz]=\sum_i a_{ii}=\operatorname{tr}(\bA).
 \end{align}
-\]</span> A Jacobi rotation <span class="math inline">\(G(p,q,\theta)\)</span> only affects rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. For the <span class="math inline">\(2 \times 2\)</span> submatrix at <span class="math inline">\(\{p,q\}\)</span>, the transformation is an eigendecomposition, so: <span class="math display">\[
+\]</span> This expectation argument needs no assumption about higher moments.</p>
+<p>For independent signs, <span class="math inline">\(z_i^2=1\)</span> on every outcome. Symmetry of <span class="math inline">\(\bA\)</span> pairs the off-diagonal terms, so the centered estimator is <span class="math display">\[
 \begin{align}
-(A'_{pp})^2 + (A'_{qq})^2 &amp;= A_{pp}^2 + A_{qq}^2 + 2A_{pq}^2 \\
-    d(\bA') &amp;= d(\bA) + 2A_{pq}^2.
+Z=\bz^T\bA\bz-\operatorname{tr}(\bA)
+=2\sum_{i&lt;j}a_{ij}z_iz_j.
 \end{align}
-\]</span> Substituting this into the norm conservation <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>: <span class="math display">\[
+\]</span> Each product has mean zero and squared value one. Two different unordered pairs have zero cross expectation. If the pairs are disjoint, all four independent factors have mean zero. If they share one index, its square is one and the two remaining independent factors each have mean zero. Thus <span class="math display">\[
 \begin{align}
-d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    (d(\bA) + 2A_{pq}^2) + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    \sigma_{\text{off}}^2(\bA') &amp;= \sigma_{\text{off}}^2(\bA) - A_{pq}^2.
+\operatorname{Var}(Z)=\mathbb E[Z^2]
+=4\sum_{i&lt;j}a_{ij}^2
+=2\sum_{i\neq j}a_{ij}^2.
 \end{align}
-\]</span> Thus each rotation reduces the off-diagonal mass by exactly <span class="math inline">\(A_{pq}^2\)</span>.</p>
+\]</span> Subtracting the diagonal squares from <span class="math inline">\(\|\bA\|_F^2\)</span> gives the first variance formula. The products need not be independent: the zero cross expectations are sufficient.</p>
+<p>For Gaussian probes, diagonalize <span class="math inline">\(\bA=\bQ\boldsymbol\Lambda\bQ^T\)</span> and put <span class="math inline">\(\bg=\bQ^T\bz\)</span>. The standard Gaussian density is proportional to <span class="math inline">\(e^{-\|\bz\|_2^2/2}\)</span>. Orthogonal changes preserve both the norm and volume, so <span class="math inline">\(\bg\)</span> has the same independent standard normal coordinates. Hence <span class="math display">\[
+\begin{align}
+\bz^T\bA\bz=\sum_i\lambda_i g_i^2.
+\end{align}
+\]</span> A standard normal has second moment one and fourth moment three, obtained by integration by parts against its density. Thus <span class="math inline">\(\operatorname{Var}(g_i^2)=3-1=2\)</span>. Independence makes the covariances of distinct squared coordinates zero, giving <span class="math display">\[
+\begin{align}
+\operatorname{Var}(\bz^T\bA\bz)=2\sum_i\lambda_i^2=2\|\bA\|_F^2.
+\end{align}
+\]</span> The sign-probe estimator is attributed to <span class="citation" data-cites="hutchinson1990">Hutchinson (<a href="../references.html#ref-hutchinson1990" role="doc-biblioref">1990</a>)</span>.</p>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Performance vs.&nbsp;Accuracy:</strong></p>
-<ul>
-<li><p><strong>Cost:</strong> <span class="math inline">\(O(n^3)\)</span> per sweep. Typically 5–15 sweeps for convergence. More expensive than QR.</p></li>
-<li><p><strong>Accuracy:</strong> Unlike QR, Jacobi achieves <strong>high relative accuracy</strong> on small eigenvalues.</p></li>
-</ul>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -886,15 +852,247 @@ d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\b
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Show that Hutchinson’s estimator with <span class="math inline">\(\pm1\)</span> entries is exact for every diagonal matrix. Then show that, for every symmetric matrix, its variance is at most that of the Gaussian estimator, with equality exactly when the diagonal of <span class="math inline">\(\bA\)</span> is zero.</p>
+</div>
+</div>
+<p>Averaging <span class="math inline">\(k\)</span> independent samples divides the variance by <span class="math inline">\(k\)</span>. For a symmetric positive semidefinite matrix, <span class="math inline">\(\|\bA\|_F^2=\sum_i\lambda_i^2\leq(\sum_i\lambda_i)^2=\operatorname{tr}(\bA)^2\)</span>, so with Gaussian probes the relative standard deviation of the averaged estimate is at most <span class="math inline">\(\sqrt{2/k}\)</span>. The error decreases like <span class="math inline">\(k^{-1/2}\)</span>, independently of <span class="math inline">\(n\)</span>, which is the usual Monte Carlo rate. One hundred probes therefore give a relative standard deviation of at most about fourteen percent, and the estimator is most useful when this accuracy is sufficient or when <span class="math inline">\(\|\bA\|_F\)</span> is much smaller than <span class="math inline">\(\operatorname{tr}(\bA)\)</span> <span class="citation" data-cites="hutchinson1990">(<a href="../references.html#ref-hutchinson1990" role="doc-biblioref">Hutchinson 1990</a>)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Diagonal Estimator
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bz_1,...,\bz_k\)</span> be independent vectors with independent <span class="math inline">\(\pm1\)</span> entries, and let <span class="math inline">\(\odot\)</span> denote the entrywise product. Then <span class="math display">\[
+\begin{align}
+\bd_k=\frac1k\sum_{l=1}^k\bz_l\odot(\bA\bz_l)
+\end{align}
+\]</span> satisfies <span class="math inline">\(\mathbb{E}[\bd_k]=\operatorname{diag}(\bA)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expand entry <span class="math inline">\(i\)</span> of <span class="math inline">\(\bz\odot(\bA\bz)\)</span>. Separate the diagonal term, use <span class="math inline">\(z_i^2=1\)</span>, and take expectations. Derive the variance of this entry and show that averaging <span class="math inline">\(k\)</span> independent probes divides it by <span class="math inline">\(k\)</span>.</p>
+</div>
+</div>
+<p>To estimate <span class="math inline">\(\operatorname{diag}(\bA^{-1})\)</span>, we replace <span class="math inline">\(\bA\bz_l\)</span> by <span class="math inline">\(\bA^{-1}\bz_l\)</span> <span class="citation" data-cites="bekas2007">(<a href="../references.html#ref-bekas2007" role="doc-biblioref">Bekas et al. 2007</a>)</span>. One sparse factorization of <span class="math inline">\(\bA\)</span> is computed once, and each probe then costs one pair of triangular solves. For <span class="math inline">\(k\ll n\)</span>, this replaces <span class="math inline">\(n\)</span> solves by <span class="math inline">\(k\)</span> solves. Bekas, Kokiopoulou, and Saad also use structured probe vectors that are orthogonal on blocks of the matrix, which removes the error from entries within those blocks.</p>
+</section>
+<section id="randomized-low-rank-approximation" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="randomized-low-rank-approximation"><span class="header-section-number">28.2</span> Randomized Low-Rank Approximation</h2>
+<p>By the referenced result, the best rank-<span class="math inline">\(k\)</span> approximation of <span class="math inline">\(\bA\)</span> is given by its truncated SVD. Computing the full SVD of a large matrix in order to keep a few singular triplets wastes almost all of the work. If the singular values decay, the dominant left singular vectors span most of the range of <span class="math inline">\(\bA\)</span>. A product <span class="math inline">\(\bA\boldsymbol{\omega}\)</span> with a random vector <span class="math inline">\(\boldsymbol{\omega}\)</span> is a random combination of the columns of <span class="math inline">\(\bA\)</span>, and it lies mostly in that dominant subspace. A few such products therefore span most of the dominant range.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Randomized SVD
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\in\fR^{m\times n}\)</span>, let <span class="math inline">\(k\)</span> be the target rank, and let <span class="math inline">\(p\geq2\)</span> be an oversampling parameter with <span class="math inline">\(k+p\leq\min(m,n)\)</span>. If the sample matrix is rank deficient, retain only its independent orthonormal columns and adjust the reduced dimensions below.</p>
 <ol type="1">
-<li><p>Apply one Jacobi rotation to zero <span class="math inline">\(A_{12}\)</span> in <span class="math inline">\(\bA = \begin{pmatrix}2 &amp; 1 \\ 1 &amp; 3\end{pmatrix}\)</span>.</p></li>
-<li><p>Show that after zeroing <span class="math inline">\(A_{pq}\)</span>, the new diagonal entries <span class="math inline">\(A'_{pp}\)</span> and <span class="math inline">\(A'_{qq}\)</span> are the eigenvalues of the <span class="math inline">\(2 \times 2\)</span> submatrix at <span class="math inline">\(\{p, q\}\)</span>.</p></li>
-<li><p>Perform one full cyclic sweep on <span class="math inline">\(\bA = \begin{pmatrix}1&amp;1&amp;0\\1&amp;2&amp;1\\0&amp;1&amp;3\end{pmatrix}\)</span> by hand.</p></li>
+<li><p>Draw <span class="math inline">\(\boldsymbol{\Omega}\in\fR^{n\times(k+p)}\)</span> with independent standard normal entries.</p></li>
+<li><p>Form <span class="math inline">\(\bY=\bA\boldsymbol{\Omega}\)</span> and compute its thin QR factorization <span class="math inline">\(\bY=\bQ\bR\)</span>.</p></li>
+<li><p>Form <span class="math inline">\(\bB=\bQ^T\bA\in\fR^{(k+p)\times n}\)</span> and compute its SVD <span class="math inline">\(\bB=\tilde{\bU}\bsigma\bV^T\)</span>.</p></li>
+<li><p>Return the approximate SVD <span class="math inline">\(\bA\approx(\bQ\tilde{\bU})\bsigma\bV^T\)</span>, truncated to rank <span class="math inline">\(k\)</span> if required.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assume <span class="math inline">\(\bA\)</span> has rank exactly <span class="math inline">\(k\)</span> and the columns of <span class="math inline">\(\bY\)</span> span its range. Show that <span class="math inline">\(\bQ\bQ^T\bA=\bA\)</span>, so the reduced SVD recovers the matrix exactly in exact arithmetic. For a matrix of larger rank, derive <span class="math inline">\(\bA-\bQ\bB=(\bI-\bQ\bQ^T)\bA\)</span>. What error remains before any singular values of <span class="math inline">\(\bB\)</span> are discarded?</p>
+</div>
+</div>
+<p>The algorithm touches <span class="math inline">\(\bA\)</span> only through the two products <span class="math inline">\(\bA\boldsymbol{\Omega}\)</span> and <span class="math inline">\(\bQ^T\bA\)</span>. For a dense matrix these cost <span class="math inline">\(O(mn(k+p))\)</span> flops, and for a sparse matrix <span class="math inline">\(O(\operatorname{nnz}(\bA)(k+p))\)</span>. The QR factorization and the small SVD cost <span class="math inline">\(O((m+n)(k+p)^2)\)</span>. Before the final truncation, the approximation error is <span class="math inline">\(\|\bA-\bQ\bQ^T\bA\|\)</span>, because <span class="math inline">\(\bQ\tilde{\bU}\bsigma\bV^T=\bQ\bQ^T\bA\)</span>. Halko, Martinsson, and Tropp prove that <span class="math display">\[
+\begin{align}
+\mathbb{E}\,\|\bA-\bQ\bQ^T\bA\|_F
+    \leq\Big(1+\frac{k}{p-1}\Big)^{1/2}\Big(\sum_{j&gt;k}\sigma_j^2\Big)^{1/2}
+\end{align}
+\]</span> for Gaussian <span class="math inline">\(\boldsymbol{\Omega}\)</span> <span class="citation" data-cites="halko2011">(<a href="../references.html#ref-halko2011" role="doc-biblioref">Halko et al. 2011</a>)</span>. The second factor is the error of the truncated SVD, so the randomized method loses at most the first factor in expectation. With <span class="math inline">\(p=k+1\)</span>, that factor is <span class="math inline">\(\sqrt2\)</span>.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Slowly decaying singular values)</strong> When the singular values decay slowly, the range of <span class="math inline">\(\bA\boldsymbol{\Omega}\)</span> contains significant components from the trailing singular vectors. Replacing <span class="math inline">\(\bY=\bA\boldsymbol{\Omega}\)</span> by <span class="math inline">\(\bY=(\bA\bA^T)^q\bA\boldsymbol{\Omega}\)</span> multiplies the <span class="math inline">\(j\)</span>th singular direction by <span class="math inline">\(\sigma_j^{2q+1}\)</span> and suppresses the trailing directions, exactly as in power iteration (the referenced result). In floating-point arithmetic, the columns are orthonormalized after each multiplication, because the powers otherwise become numerically dependent <span class="citation" data-cites="halko2011">(<a href="../references.html#ref-halko2011" role="doc-biblioref">Halko et al. 2011</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="random-sampling-in-gaussian-elimination" class="level2" data-number="28.3">
+<h2 data-number="28.3" class="anchored" data-anchor-id="random-sampling-in-gaussian-elimination"><span class="header-section-number">28.3</span> Random Sampling in Gaussian Elimination</h2>
+<p>the referenced section showed that eliminating a vertex joins all of its neighbors into a clique, and that the resulting fill makes sparse Cholesky expensive on large meshes. For the Laplacian of a weighted graph, the clique has an explicit form. Random sampling can replace it by a sparse graph that is correct on average.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: Elimination in a Graph Laplacian
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bL=\bD-\bW\)</span> be the Laplacian of a connected graph with nonnegative edge weights <span class="math inline">\(w_{ij}\)</span> and degrees <span class="math inline">\(d_i=\sum_jw_{ij}\)</span>. Eliminating vertex <span class="math inline">\(v\)</span> produces a Schur complement that is again a graph Laplacian. Its graph is the graph of <span class="math inline">\(\bL\)</span> with <span class="math inline">\(v\)</span> removed, plus an edge of weight <span class="math inline">\(w_{iv}w_{jv}/d_v\)</span> between each pair of neighbors <span class="math inline">\(i,j\)</span> of <span class="math inline">\(v\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Place the eliminated vertex first and write its Laplacian in blocks as <span class="math display">\[
+\begin{align}
+\bL=\begin{pmatrix}d_v&amp;\br^T\\\br&amp;\bB\end{pmatrix},
+\qquad r_i=-w_{iv}.
+\end{align}
+\]</span> For a connected graph with more than one vertex, <span class="math inline">\(d_v&gt;0\)</span>, so elimination is defined. Its Schur complement is <span class="math inline">\(\bS=\bB-\br\br^T/d_v\)</span>.</p>
+<p>For distinct remaining indices <span class="math inline">\(i,j\)</span>, expand the entry: <span class="math display">\[
+\begin{align}
+s_{ij}=-w_{ij}-\frac{(-w_{iv})(-w_{jv})}{d_v}
+=-\left(w_{ij}+\frac{w_{iv}w_{jv}}{d_v}\right).
+\end{align}
+\]</span> Thus a pair of neighbors acquires the additional edge weight in the statement. If either is not a neighbor, its contribution is zero. An existing edge receives that weight in addition to its previous weight.</p>
+<p>We also check the diagonal through conservation of row sums. Removing column <span class="math inline">\(v\)</span> from row <span class="math inline">\(i\)</span> removes entry <span class="math inline">\(-w_{iv}\)</span>, so the row sum of <span class="math inline">\(\bB\)</span> is <span class="math inline">\(w_{iv}\)</span>. On the other hand, <span class="math display">\[
+\begin{align}
+\sum_j\frac{r_ir_j}{d_v}
+=\frac{w_{iv}}{d_v}\sum_jw_{jv}=w_{iv}.
+\end{align}
+\]</span> The row sum of <span class="math inline">\(\bS\)</span> is therefore zero. Symmetry is preserved, and all off-diagonal entries are nonpositive. Its diagonal is consequently the sum of its incident edge weights, which proves that the whole Schur complement, not just its off-diagonal part, is the claimed graph Laplacian.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: An Unbiased Sparse Replacement for the Clique
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let vertex <span class="math inline">\(v\)</span> have neighbors <span class="math inline">\(1,...,\delta\)</span> with weights <span class="math inline">\(w_i=w_{iv}\)</span> and <span class="math inline">\(d=\sum_iw_i\)</span>. For each neighbor <span class="math inline">\(i\)</span>, draw one neighbor <span class="math inline">\(j\)</span> with probability <span class="math inline">\(w_j/d\)</span> and, if <span class="math inline">\(j\neq i\)</span>, add an edge between <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> with weight <span class="math inline">\(w_i/2\)</span>. The Laplacian of the resulting graph of at most <span class="math inline">\(\delta\)</span> edges has expected value equal to the Laplacian of the clique in the referenced result.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For a unit edge between distinct vertices <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, let <span class="math inline">\(\bL_{ij}=(\be_i-\be_j)(\be_i-\be_j)^T\)</span>. The same matrix represents the edge in either order: <span class="math inline">\(\bL_{ij}=\bL_{ji}\)</span>. Define <span class="math inline">\(\bL_{ii}=\bzero\)</span>, matching the rule that a self-selection adds no edge.</p>
+<p>For the draw associated with vertex <span class="math inline">\(i\)</span>, the event of selecting <span class="math inline">\(j\)</span> has probability <span class="math inline">\(w_j/d\)</span>. Its contributed Laplacian is <span class="math inline">\((w_i/2)\bL_{ij}\)</span>. Taking its expectation gives <span class="math display">\[
+\begin{align}
+\sum_j\frac{w_j}{d}\frac{w_i}{2}\bL_{ij}.
+\end{align}
+\]</span> The Laplacian of a sum of edges is the sum of their Laplacians. Linearity of expectation therefore makes the expected total matrix <span class="math display">\[
+\begin{align}
+\sum_i\sum_j\frac{w_iw_j}{2d}\bL_{ij}.
+\end{align}
+\]</span> Terms with <span class="math inline">\(i=j\)</span> are zero. For each unordered pair <span class="math inline">\(i&lt;j\)</span>, there are two equal terms, from the draws associated with <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>. Their combined coefficient is <span class="math inline">\(w_iw_j/d\)</span>. Thus the expected matrix is <span class="math display">\[
+\begin{align}
+\sum_{i&lt;j}\frac{w_iw_j}{d}\bL_{ij},
+\end{align}
+\]</span> exactly the elimination clique. At most one edge is added per neighbor, so a realization has at most <span class="math inline">\(\delta\)</span> edges before merging duplicates. This calculation proves unbiasedness only, not a bound on the error of a realization.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Verify the referenced result for a vertex with three neighbors of weights <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, and <span class="math inline">\(3\)</span> by listing every outcome of the sampling and its probability.</p>
+</div>
+</div>
+<p>An unbiased clique replacement does not by itself control the accumulated error or guarantee a useful preconditioner. A single sample may even disconnect the graph. A full approximate-elimination solver therefore needs concentration estimates and a carefully designed sampling scheme. For a connected Laplacian, the solve is restricted to the subspace orthogonal to <span class="math inline">\(\mathbf1\)</span>, or one vertex is grounded, since the full matrix is singular. Kyng and Sachdeva use a refinement of this sampling, eliminate the vertices in random order, and prove that the resulting solver reaches relative accuracy <span class="math inline">\(\varepsilon\)</span> in <span class="math inline">\(O(m\log^3n\log(1/\varepsilon))\)</span> expected time for a graph with <span class="math inline">\(m\)</span> edges <span class="citation" data-cites="kyngsachdeva2016">(<a href="../references.html#ref-kyngsachdeva2016" role="doc-biblioref">Kyng and Sachdeva 2016</a>)</span>. Practical implementations eliminate vertices in minimum-degree order, which reduces fill further but is not covered by the proof.</p>
+</section>
+<section id="further-exercises" class="level2" data-number="28.4">
+<h2 data-number="28.4" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">28.4</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be the one-dimensional Poisson matrix with <span class="math inline">\(n=1000\)</span>. Estimate <span class="math inline">\(\operatorname{tr}(\bA^{-1})\)</span> with <span class="math inline">\(k=10,100,1000\)</span> probes using one Cholesky factorization. Plot the relative error against <span class="math inline">\(k\)</span> on logarithmic axes and compare the slope with <span class="math inline">\(-1/2\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Construct a <span class="math inline">\(1000\times500\)</span> matrix with singular values <span class="math inline">\(\sigma_j=2^{-j}\)</span> and random singular vectors. Apply the referenced result with <span class="math inline">\(k=20\)</span> and <span class="math inline">\(p=0,5,20\)</span>, and compare <span class="math inline">\(\|\bA-\bQ\bQ^T\bA\|_2\)</span> with <span class="math inline">\(\sigma_{21}\)</span>. Repeat with <span class="math inline">\(\sigma_j=j^{-1/2}\)</span>, with and without one step of the power iteration in the remark.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bekas2007" class="csl-entry" role="listitem">
+Bekas, Costas, Effrosyni Kokiopoulou, and Yousef Saad. 2007. <span>“An Estimator for the Diagonal of a Matrix.”</span> <em>Applied Numerical Mathematics</em> 57 (11–12): 1214–29.
+</div>
+<div id="ref-halko2011" class="csl-entry" role="listitem">
+Halko, Nathan, Per-Gunnar Martinsson, and Joel A. Tropp. 2011. <span>“Finding Structure with Randomness: Probabilistic Algorithms for Constructing Approximate Matrix Decompositions.”</span> <em>SIAM Review</em> 53 (2): 217–88.
+</div>
+<div id="ref-hutchinson1990" class="csl-entry" role="listitem">
+Hutchinson, M. F. 1990. <span>“A Stochastic Estimator of the Trace of the Influence Matrix for <span>Laplacian</span> Smoothing Splines.”</span> <em>Communications in Statistics – Simulation and Computation</em> 19 (2): 433–50.
+</div>
+<div id="ref-kyngsachdeva2016" class="csl-entry" role="listitem">
+Kyng, Rasmus, and Sushant Sachdeva. 2016. <span>“Approximate <span>Gaussian</span> Elimination for <span>Laplacians</span>: Fast, Sparse, and Simple.”</span> <em>Proceedings of the 57th Annual IEEE Symposium on Foundations of Computer Science</em>, 573–82.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1313,18 +1511,18 @@ d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\b
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../eigenvalues/lanczos.html" class="pagination-link" aria-label="Lanczos Algorithm">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span>
+      <a href="../iterative/multigrid.html" class="pagination-link" aria-label="Multigrid Methods">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../iterative/iterative.html" class="pagination-link" aria-label="Iterative Methods for Linear Systems">
-        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../odes/ode-methods.html" class="pagination-link" aria-label="Numerical Methods for Ordinary Differential Equations">
+        <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/jacobi-eig.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/randomized.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
           background:rgba(255,255,255,0.85);border:1px solid #ccc;
           border-radius:50%;width:2.4rem;height:2.4rem;
           display:flex;align-items:center;justify-content:center;

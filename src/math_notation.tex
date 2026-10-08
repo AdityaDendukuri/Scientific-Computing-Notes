@@ -1,11 +1,13 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
 \subsection{Mathematical Notation and Proof Techniques}
 \label{sub:math-notation}
 
-Standard vocabulary for proofs and algorithms.
+\textBox{%
+This section establishes the logical, set-theoretic, and matrix notation used throughout these notes, together with the standard proof structures.
+}
 
 \subsubsection{Logic and Set Notation}
 
@@ -18,6 +20,11 @@ Standard vocabulary for proofs and algorithms.
 }
 \label{def:quantifiers}
 
+\addExcr{%
+Compare ``for every real $x$ there exists a real $y$ with $y>x$'' with ``there exists a real $y$ such that $y>x$ for every real $x$.'' Which statement is true? Explain why reversing the quantifiers changes the assertion. In an error estimate, what changes if its constant is allowed to depend on the problem size?
+}
+
+
 \addDef{Implication and Equivalence}{%
 \begin{itemize}
   \item \textbf{Implication ($P \Rightarrow Q$):}\enspace $P$ implies $Q$.
@@ -27,11 +34,16 @@ Standard vocabulary for proofs and algorithms.
 }
 \label{def:implication}
 
+\addExcr{%
+For a square matrix, compare the statements ``if $\bA$ is invertible, then $\bA\bx=\bb$ has a solution'' and ``if $\bA\bx=\bb$ has a solution, then $\bA$ is invertible.'' Give a counterexample to the second statement for one right-hand side. How must the solvability statement be strengthened to become equivalent to invertibility?
+}
+
+
 \addDef{Set Notation}{%
 \begin{itemize}
   \item $x \in S$: $x$ is an element of $S$.
   \item $S \subseteq T$: $S$ is a subset of $T$.
-  \item $S \cup T$: Union; $S \cap T$: Intersection; $S \setminus T$: Set difference.
+  \item $S \cup T$ (union), $S \cap T$ (intersection), and $S \setminus T$ (set difference).
   \item $\{x \in S : P(x)\}$: Set builder notation.
   \item \textbf{Number Sets:}\enspace $\fZ$ (integers), $\fR$ (reals), $\fC$ (complex), $\fR^n$ (vectors), $\fR^{m \times n}$ (matrices).
 \end{itemize}
@@ -68,7 +80,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 \label{def:proof-induction}
 
 \addRemark{%
-\textbf{Numerical Proofs:}\enspace Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
+\textbf{(Proof and numerical evidence)}\enspace A proof establishes a claim for every input satisfying its hypotheses. A finite experiment can test an implementation or expose a counterexample, but agreement on a sample does not prove a universal claim. In an error bound, state the norm, the limiting parameter, and which quantities the constant may depend on.
 }
 
 \addExcr{%
@@ -87,14 +99,14 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
   \item \textbf{Scalars:}\enspace Lowercase italic ($a, b, x$).
   \item \textbf{Vectors:}\enspace Lowercase bold ($\bx, \by, \ba$). Default is column vector.
   \item \textbf{Matrices:}\enspace Uppercase bold ($\bA, \bB, \bQ$).
-  \item \textbf{Indexing:}\enspace 1-based (unlike Python). $x_i$ is $i$-th entry; $a_{ij}$ is $(i,j)$ entry.
+  \item \textbf{Indexing:}\enspace Usually begins at one, unlike Python. The Fourier sections explicitly begin at zero. Here $x_i$ denotes a vector entry and $a_{ij}$ a matrix entry.
 \end{itemize}
 }
 
 \addRemark{%
 \textbf{(Transpose and Inverse)}\enspace
 \begin{itemize}
-  \item $\bA^T$: Transpose.
+  \item $\bA^T$: Transpose. The notation $\bA^*$ denotes the conjugate transpose, which agrees with $\bA^T$ for real entries.
   \item $\bA^{-1}$: Matrix inverse (square, nonsingular matrices).
   \item $\bA^{-T}$: Transpose of the inverse $(\bA^{-1})^T$.
   \item $\bA^k$: $k$-th power. $\bA^0 = \bI$.

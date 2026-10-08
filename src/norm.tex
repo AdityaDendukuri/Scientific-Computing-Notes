@@ -1,87 +1,370 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Vector and Matrix Norms}
+\subsection{Matrix Norms and Condition Numbers}
 \label{sub:norm-theory}
 
-Foundations for measuring approximation errors and convergence.
+\textBox{%
+A matrix changes the size of a vector. To bound the effect of an error in the input, we need the largest possible ratio between output length and input length. This ratio defines the induced matrix norm. We distinguish it from the Frobenius norm, which measures the entries of a matrix as data.
+}
 
-\subsubsection{Vector Norms}
+\textBox{%
+An invertible matrix may stretch one direction and compress another. Solving a system reverses that action. The condition number compares the largest stretch with the smallest and will explain why a small residual can accompany a large solution error.
+}
 
-\addDef{Vector Norm}{%
-$\|\cdot\| : \fR^n \to \fR$ satisfies:
+\subsubsection{Induced Matrix Norms}
+
+\addDef{Induced Operator Norm}{%
+Let $\|\cdot\|_{\mathrm{in}}$ be a norm on $\fR^n$ and let $\|\cdot\|_{\mathrm{out}}$ be a norm on $\fR^m$. For $\bA\in\fR^{m\times n}$, the induced operator norm is
+\begin{align*}
+  \|\bA\|
+  =\sup_{\bx\neq\bzero}
+  \frac{\|\bA\bx\|_{\mathrm{out}}}{\|\bx\|_{\mathrm{in}}}
+  =\max_{\|\bx\|_{\mathrm{in}}=1}\|\bA\bx\|_{\mathrm{out}}.
+\end{align*}
+When the same $p$-norm is used in the domain and range, we write $\|\bA\|_p$.
+}
+\label{def:induced-matrix-norm}
+
+\addExcr{%
+For $\bA=\begin{pmatrix}1&1\\1&1\end{pmatrix}$, compare $\|\bA\bx\|_2/\|\bx\|_2$ for $\bx=(1,1)^T$ and $\bx=(1,-1)^T$. Find the largest ratio by expanding $\|\bA\bx\|_2^2$. Explain why neither one test vector nor the largest matrix entry determines the induced norm.
+}
+
+
+The quotient is unchanged when $\bx$ is rescaled, so only directions matter. Restricting to the unit sphere removes the irrelevant magnitude. In finite dimensions the unit sphere is compact and the objective is continuous, so the maximum is attained.
+
+\addThm{Fundamental Properties of Induced Norms}{%
+For compatible matrices and vectors,
 \begin{enumerate}
-    \item \textbf{Definiteness:}\enspace $\|\bx\| \geq 0$, with equality iff $\bx = \bzero$.
-    \item \textbf{Homogeneity:}\enspace $\|c\bx\| = |c|\|\bx\|$.
-    \item \textbf{Triangle Inequality:}\enspace $\|\bx + \by\| \leq \|\bx\| + \|\by\|$.
+  \item \textbf{Consistency:} $\|\bA\bx\|\leq\|\bA\|\,\|\bx\|$.
+  \item \textbf{Submultiplicativity:} $\|\bA\bB\|\leq\|\bA\|\,\|\bB\|$.
+  \item \textbf{Identity:} $\|\bI\|=1$.
+  \item \textbf{Norm axioms:} the induced norm is positive definite, absolutely homogeneous, and satisfies the triangle inequality.
 \end{enumerate}
 }
-\label{def:vector-norm}
+\label{thm:induced-norm-properties}
 
-\addDef{$\ell^p$ Norms}{%
-$\|\bx\|_p = (\sum |x_i|^p)^{1/p}$.
-\begin{itemize}
-    \item \textbf{$\ell_1$:}\enspace $\sum |x_i|$ (Sparsity).
-    \item \textbf{$\ell_2$:}\enspace $\sqrt{\bx^T\bx}$ (Energy).
-    \item \textbf{$\ell_\infty$:}\enspace $\max |x_i|$ (Tolerance).
-\end{itemize}
-}
-\label{def:lp-norms}
-
-\addThm{Fundamental Inequalities}{%
-\begin{itemize}
-    \item \textbf{Cauchy-Schwarz:}\enspace $|\bx^T\by| \leq \|\bx\|_2 \|\by\|_2$.
-    \item \textbf{Hölder:}\enspace $|\bx^T\by| \leq \|\bx\|_p \|\by\|_q$ where $1/p + 1/q = 1$.
-\end{itemize}
-}
-\label{thm:norm-inequalities}
-
-\addRemark{%
-\textbf{Equivalence:}\enspace
-On $\fR^n$, all norms are equivalent: $c_1 \|\bx\|_\beta \leq \|\bx\|_\alpha \leq c_2 \|\bx\|_\beta$. Convergence in one implies convergence in all.
+\addPrf{%
+We verify each assertion from the definition. All norms on intermediate vector spaces must be compatible, so the output norm for $\bB$ is the input norm for $\bA$.
+\begin{enumerate}
+\item If $\bx=\bzero$, the inequality reads $0\leq0$. Otherwise the quotient $\|\bA\bx\|/\|\bx\|$ is one of the values bounded by the supremum defining $\|\bA\|$. Multiplication by $\|\bx\|>0$ gives the result.
+\item For any unit vector $\bx$, apply consistency twice:
+\begin{align*}
+ \|\bA\bB\bx\|\leq\|\bA\|\|\bB\bx\|
+ \leq\|\bA\|\|\bB\|\|\bx\|=\|\bA\|\|\bB\|.
+\end{align*}
+The right side does not depend on $\bx$. Taking the maximum over unit inputs proves submultiplicativity.
+\item When the same norm is used on input and output, $\|\bI\bx\|/\|\bx\|=1$ for every nonzero input. Its supremum is therefore one.
+\item Every quotient is nonnegative. If $\bA=\bzero$, all quotients vanish. Conversely, if $\|\bA\|=0$, consistency gives $\bA\be_j=\bzero$ for each coordinate vector. These are exactly the columns of $\bA$, so $\bA=\bzero$.
+\item For $\|\bx\|=1$, $\|\alpha\bA\bx\|=|\alpha|\|\bA\bx\|$. Taking maxima yields $\|\alpha\bA\|=|\alpha|\|\bA\|$.
+\item For every unit input,
+\begin{align*}
+ \|(\bA+\bB)\bx\|\leq\|\bA\bx\|+\|\bB\bx\|
+ \leq\|\bA\|+\|\bB\|.
+\end{align*}
+Taking the maximum gives $\|\bA+\bB\|\leq\|\bA\|+\|\bB\|$.
+\end{enumerate}
 }
 
 \addExcr{%
+\textbf{Submultiplicativity from amplification.}\enspace Prove $\|\bA_1\cdots\bA_k\|\leq\prod_{j=1}^k\|\bA_j\|$. Explain why this bound may be conservative when the direction of greatest stretch for one factor is not mapped into the direction of greatest stretch for the next.
+}
+
+
+
+\addExmpl{%
+For the diagonal matrix
+\begin{align*}
+  \bD=\begin{pmatrix}4&0\\0&1/2\end{pmatrix},
+\end{align*}
+the Euclidean unit circle is sent to an ellipse with semiaxis lengths $4$ and $1/2$. Hence $\|\bD\|_2=4$. The norm records the greatest stretch, not the average stretch and not the largest entry by convention. In this example those quantities happen to agree because the coordinate axes are the stretching directions.
+}
+
+\addThm{The Induced $1$- and Infinity Norms}{%
+For $\bA=(a_{ij})\in\fR^{m\times n}$,
+\begin{align*}
+  \|\bA\|_1
+  &=\max_{1\leq j\leq n}\sum_{i=1}^m|a_{ij}|,
+  &
+  \|\bA\|_\infty
+  &=\max_{1\leq i\leq m}\sum_{j=1}^n|a_{ij}|.
+\end{align*}
+Thus the induced $1$-norm is the largest absolute column sum, while the induced infinity norm is the largest absolute row sum.
+}
+\label{thm:matrix-norm-formulas}
+
+\addPrf{%
+For each formula we need an upper bound for every input and an input that attains it.
+
+Let $C=\max_j\sum_i|a_{ij}|$, the largest absolute column sum. Expanding each output entry and using the triangle inequality gives
+\begin{align*}
+ \|\bA\bx\|_1
+ &=\sum_{i=1}^m\left|\sum_{j=1}^na_{ij}x_j\right|\\
+ &\leq\sum_{i=1}^m\sum_{j=1}^n|a_{ij}||x_j|\\
+ &=\sum_{j=1}^n|x_j|\left(\sum_{i=1}^m|a_{ij}|\right)
+ \leq C\sum_{j=1}^n|x_j|=C\|\bx\|_1.
+\end{align*}
+The interchange of sums is legitimate because both are finite. For unit inputs this proves $\|\bA\|_1\leq C$.
+
+Choose a column $j_*$ attaining $C$. The input $\be_{j_*}$ has $1$-norm one, and multiplying by it selects that column. Therefore
+\begin{align*}
+ \|\bA\be_{j_*}\|_1=\sum_i|a_{ij_*}|=C.
+\end{align*}
+The maximum is at least $C$, so the upper bound is exact.
+
+For the infinity norm, put $R=\max_i\sum_j|a_{ij}|$. For any input,
+\begin{align*}
+ |(\bA\bx)_i|
+ &\leq\sum_j|a_{ij}||x_j|
+ \leq\left(\sum_j|a_{ij}|\right)\|\bx\|_\infty
+ \leq R\|\bx\|_\infty.
+\end{align*}
+This holds for every row, so taking their maximum gives $\|\bA\|_\infty\leq R$.
+
+Choose a maximizing row $i_*$. Set $x_j=1$ when $a_{i_*j}\geq0$ and $x_j=-1$ when $a_{i_*j}<0$. In particular choose $1$ for a zero entry, so the input has infinity norm one even for the zero matrix. Each product in that row is $a_{i_*j}x_j=|a_{i_*j}|$. Thus $(\bA\bx)_{i_*}=R$, proving attainment and the second formula.
+}
+
+\addExcr{%
+\textbf{Three induced norms.}\enspace For
+  \begin{align*}
+    \bA=\begin{pmatrix}1&-2\\3&4\end{pmatrix},
+  \end{align*}
+  compute $\|\bA\|_1$ and $\|\bA\|_\infty$. Estimate $\|\bA\|_2$ from below by testing at least four unit vectors and from above using $\|\bA\|_F$.
+}
+
+
+
+\addDef{The Induced Euclidean Norm}{%
+The induced Euclidean norm is
+\begin{align*}
+  \|\bA\|_2
+  =\max_{\|\bx\|_2=1}\|\bA\bx\|_2.
+\end{align*}
+Equivalently,
+\begin{align*}
+  \|\bA\|_2^2
+  =\max_{\|\bx\|_2=1}\bx^T\bA^T\bA\bx.
+\end{align*}
+}
+\label{def:matrix-two-norm}
+
+The second expression follows by squaring the output norm. It already shows why $\bA^T\bA$ appears in questions about Euclidean amplification. Once the singular value decomposition is available, Thm~\ref{thm:svd-norms} proves the computable formula
+\begin{align*}
+  \|\bA\|_2=\sqrt{\lambda_{\max}(\bA^T\bA)}=\sigma_{\max}(\bA).
+\end{align*}
+
+\addThm{Orthogonal Transformations Have Unit Euclidean Norm}{%
+If $\bQ^T\bQ=\bI$, then
+\begin{align*}
+  \|\bQ\bx\|_2=\|\bx\|_2
+  \qquad\text{and}\qquad
+  \|\bQ\|_2=1.
+\end{align*}
+}
+\label{thm:orthogonal-unit-norm}
+
+\addExcr{%
+Compute $\|\bQ\bx\|_2^2$ using $\bQ^T\bQ=\bI$. Then take the maximum over unit vectors. Does the argument require $\bQ$ to be square?
+}
+
+\subsubsection{Dual Norms}
+
+An inner product turns a vector $\by$ into the linear measurement $\bx\mapsto\by^T\bx$. The dual norm measures the largest value of this measurement on the unit ball.
+
+\addDef{Dual Norm}{%
+For a norm $\|\cdot\|$ on $\fR^n$, its dual norm is
+\begin{align*}
+  \|\by\|_*
+  =\max_{\|\bx\|=1}|\by^T\bx|.
+\end{align*}
+Consequently,
+\begin{align*}
+  |\by^T\bx|\leq\|\by\|_*\|\bx\|.
+\end{align*}
+}
+\label{def:dual-norm}
+
+\addThm{Duals of the Standard Norms}{%
+The Euclidean norm is self-dual. The $1$- and infinity norms are dual to one another:
+\begin{align*}
+  \|\by\|_{2,*}=\|\by\|_2,
+  \qquad
+  \|\by\|_{1,*}=\|\by\|_\infty,
+  \qquad
+  \|\by\|_{\infty,*}=\|\by\|_1.
+\end{align*}
+}
+\label{thm:standard-dual-norms}
+
+\addPrf{%
+For a dual norm, an upper estimate alone is insufficient. We must also find a unit vector attaining that estimate. If $\by=\bzero$, every claimed norm is zero. Assume below that $\by\neq\bzero$.
 \begin{enumerate}
-    \item Prove the triangle inequality for $\|\cdot\|_2$ using Cauchy-Schwarz.
-    \item Show that $\|\bx\|_\infty = \lim_{p\to\infty} \|\bx\|_p$.
+\item For $\|\bx\|_2=1$, Cauchy--Schwarz gives $|\by^T\bx|\leq\|\by\|_2$. Choose $\bx=\by/\|\by\|_2$. It is a unit vector, and $\by^T\bx=\|\by\|_2$. Hence the maximum is exactly $\|\by\|_2$.
+\item For $\|\bx\|_1=1$,
+\begin{align*}
+ |\by^T\bx|\leq\sum_i|y_i||x_i|
+ \leq(\max_i|y_i|)\sum_i|x_i|=\|\by\|_\infty.
+\end{align*}
+Choose an index $j$ of largest $|y_j|$ and set $\bx=\operatorname{sign}(y_j)\be_j$. Its $1$-norm is one and $\by^T\bx=|y_j|=\|\by\|_\infty$.
+\item For $\|\bx\|_\infty=1$,
+\begin{align*}
+ |\by^T\bx|\leq\sum_i|y_i||x_i|\leq\sum_i|y_i|=\|\by\|_1.
+\end{align*}
+Set $x_i=1$ if $y_i\geq0$ and $x_i=-1$ if $y_i<0$. Then $\|\bx\|_\infty=1$ and every product $y_ix_i$ equals $|y_i|$. Thus equality is attained.
 \end{enumerate}
 }
 
-\subsubsection{Matrix Norms}
+Dual norms explain why the norm used for a residual determines the norm that appears in the corresponding linear functional. They also explain the row-sum and column-sum formulas above. The transpose interchanges inputs with linear measurements, giving the useful identity
+\begin{align*}
+  \|\bA\|_1=\|\bA^T\|_\infty.
+\end{align*}
 
-Measure how much a matrix amplifies vectors.
+\subsubsection{The Frobenius Norm}
 
-\addDef{Induced (Operator) Norm}{%
-$\|\bA\| = \max_{\bx \neq \bzero} \frac{\|\bA\bx\|}{\|\bx\|}$.
-\begin{itemize}
-    \item \textbf{$\|\bA\|_1$:}\enspace Max absolute column sum.
-    \item \textbf{$\|\bA\|_\infty$:}\enspace Max absolute row sum.
-    \item \textbf{$\|\bA\|_2$ (Spectral):}\enspace $\sigma_{\max}(\bA) = \sqrt{\lambda_{\max}(\bA^T\bA)}$.
-\end{itemize}
-}
-\label{def:matrix-norm}
+Matrices themselves form a vector space. When a matrix is being treated as data rather than as an operator, the natural Euclidean measurement is entrywise.
 
-\addDef{Frobenius Norm}{%
-$\|\bA\|_F = \sqrt{\sum a_{ij}^2} = \sqrt{\text{Tr}(\bA^T\bA)}$.
-\begin{itemize}
-    \item \textbf{Relation:}\enspace $\|\bA\|_2 \leq \|\bA\|_F \leq \sqrt{\text{rank}(\bA)} \|\bA\|_2$.
-\end{itemize}
+\addDef{Frobenius Inner Product and Norm}{%
+For matrices $\bA,\bB\in\fR^{m\times n}$, the Frobenius inner product is
+\begin{align*}
+  \langle\bA,\bB\rangle_F
+  =\sum_{i=1}^m\sum_{j=1}^n a_{ij}b_{ij}
+  =\operatorname{trace}(\bA^T\bB).
+\end{align*}
+Its induced norm is
+\begin{align*}
+  \|\bA\|_F
+  =\left(\sum_{i=1}^m\sum_{j=1}^n a_{ij}^2\right)^{1/2}.
+\end{align*}
 }
 \label{def:frobenius-norm}
 
+\addExcr{%
+\textbf{Frobenius geometry.}\enspace Verify the inner-product axioms for $\langle\bA,\bB\rangle_F$. Prove the matrix Cauchy--Schwarz inequality $|\langle\bA,\bB\rangle_F|\leq\|\bA\|_F\|\bB\|_F$ by treating the entries as vectors.
+}
+
+
+
 \addRemark{%
-\textbf{Consistency and Submultiplicativity:}\enspace
-Matrix norms are useful when they satisfy $\|\bA\bx\| \leq \|\bA\|\|\bx\|$. All induced norms are additionally submultiplicative: $\|\bA\bB\| \leq \|\bA\|\|\bB\|$.
+\textbf{(Two different questions)}\enspace
+The Frobenius norm measures the collective size of the entries. The induced $2$-norm measures the largest amplification of a vector. Both are useful, but they answer different questions. Calling both a ``matrix norm'' does not make them interchangeable.
+}
+
+\addThm{Bounds Relating Frobenius and Operator Norms}{%
+For $\bA\in\fR^{m\times n}$,
+\begin{align*}
+  \|\bA\|_2\leq\|\bA\|_F\leq\sqrt n\,\|\bA\|_2.
+\end{align*}
+For compatible matrices $\bA$ and $\bB$,
+\begin{align*}
+  \|\bA\bB\|_F\leq\|\bA\|_2\|\bB\|_F.
+\end{align*}
+}
+\label{thm:frobenius-spectral-relations}
+
+\addPrf{%
+Let $\ba_i^T$ denote row $i$ of $\bA$. For $\|\bx\|_2=1$, each output entry is $\ba_i^T\bx$. Cauchy--Schwarz applies separately in each row:
+\begin{align*}
+ \|\bA\bx\|_2^2
+ =\sum_{i=1}^m|\ba_i^T\bx|^2
+ \leq\sum_{i=1}^m\|\ba_i\|_2^2\|\bx\|_2^2
+ =\sum_{i,j}a_{ij}^2=\|\bA\|_F^2.
+\end{align*}
+Taking the maximum over unit $\bx$ and then square roots gives $\|\bA\|_2\leq\|\bA\|_F$.
+
+For the opposite comparison, use columns instead of rows. Column $j$ is $\bA\be_j$, and $\|\be_j\|_2=1$. Consistency gives $\|\bA\be_j\|_2\leq\|\bA\|_2$. Summing the squared estimates over all $n$ columns yields
+\begin{align*}
+ \|\bA\|_F^2=\sum_{j=1}^n\|\bA\be_j\|_2^2
+ \leq\sum_{j=1}^n\|\bA\|_2^2=n\|\bA\|_2^2.
+\end{align*}
+The nonnegative square root gives the factor $\sqrt n$.
+
+Finally let $\bB\in\fR^{n\times k}$ have columns $\bb_1,\ldots,\bb_k$. Column $j$ of the product is $\bA\bb_j$. Apply consistency to each such column before summing:
+\begin{align*}
+ \|\bA\bB\|_F^2
+ &=\sum_{j=1}^k\|\bA\bb_j\|_2^2\\
+ &\leq\sum_{j=1}^k\|\bA\|_2^2\|\bb_j\|_2^2\\
+ &=\|\bA\|_2^2\|\bB\|_F^2.
+\end{align*}
+Taking square roots proves the product estimate. The dimensions $n$ and $k$ enter only through the corresponding sums over columns.
+}
+
+\subsubsection{Matrix Condition Numbers}
+
+An invertible matrix can stretch some directions and compress others. A solve with that matrix must undo both effects. The condition number measures the total distortion.
+
+\addDef{Condition Number}{%
+For a nonsingular square matrix $\bA$ and an induced norm,
+\begin{align*}
+  \kappa(\bA)=\|\bA\|\,\|\bA^{-1}\|.
+\end{align*}
+}
+\label{def:condition-number-geometric}
+
+\addThm{Two-Sided Stretching Bound}{%
+For every nonzero vector $\bx$,
+\begin{align*}
+  \frac{1}{\|\bA^{-1}\|}
+  \leq
+  \frac{\|\bA\bx\|}{\|\bx\|}
+  \leq
+  \|\bA\|.
+\end{align*}
+The ratio between the largest possible upper stretch and the guaranteed lower stretch is $\kappa(\bA)$.
+}
+\label{thm:two-sided-stretch}
+
+\addPrf{%
+The assumption that $\bA$ is nonsingular is needed for the lower estimate. Fix $\bx\neq\bzero$.
+\begin{enumerate}
+\item By the definition of the induced norm, the ratio for this particular input cannot exceed the largest possible ratio:
+\begin{align*}
+ \frac{\|\bA\bx\|}{\|\bx\|}\leq
+ \sup_{\bz\neq\bzero}\frac{\|\bA\bz\|}{\|\bz\|}=\|\bA\|.
+\end{align*}
+\item Undo the action of $\bA$ and apply consistency to its inverse:
+\begin{align*}
+ \bx&=\bA^{-1}(\bA\bx),\\
+ \|\bx\|&\leq\|\bA^{-1}\|\|\bA\bx\|.
+\end{align*}
+Both $\|\bx\|$ and $\|\bA^{-1}\|$ are positive. Dividing by their product gives
+\begin{align*}
+ \frac1{\|\bA^{-1}\|}\leq\frac{\|\bA\bx\|}{\|\bx\|}.
+\end{align*}
+\item The upper stretch is $\|\bA\|$ and the lower stretch is $1/\|\bA^{-1}\|$. Dividing the former by the latter gives $\|\bA\|\|\bA^{-1}\|=\kappa(\bA)$.
+\end{enumerate}
 }
 
 \addExcr{%
-\begin{enumerate}
-    \item Compute $\|\bA\|_1, \|\bA\|_\infty, \|\bA\|_2, \|\bA\|_F$ for $\bA = \begin{pmatrix} 1 & -2 \\ -3 & 4 \end{pmatrix}$.
-    \item \textbf{Low-Rank Approximation:}\enspace The Frobenius norm is central to the Eckart-Young-Mirsky theorem. How is it related to singular values?
-    \item Find a $2 \times 2$ example where the max norm ($\max|a_{ij}|$) is not submultiplicative.
-\end{enumerate}
+\textbf{Conditioning as a thin ellipse.}\enspace Let $\bA=\operatorname{diag}(1,\varepsilon)$ with $0<\varepsilon<1$. Describe the image of the Euclidean unit circle, compute $\|\bA\|_2$, $\|\bA^{-1}\|_2$, and $\kappa_2(\bA)$ directly from the definition, and explain which component of a solution is sensitive to perturbations.
 }
+
+
+
+
+
+If $\kappa(\bA)$ is near one, the matrix treats every direction comparably. If it is large, at least one direction is compressed relative to another. Recovering a component in a strongly compressed direction requires amplification by $\bA^{-1}$. Consequently, ill-conditioned linear systems can turn small data errors into large solution errors. Theorem~\ref{thm:linear-system-perturbation} makes this statement quantitative.
+
+
+\subsubsection{Further Exercises}
+
+\addExcr{%
+\textbf{Entries do not determine action.}\enspace Compare
+  \begin{align*}
+    \bA=\begin{pmatrix}1&1\\1&1\end{pmatrix},
+    \qquad
+    \bB=\begin{pmatrix}1&1\\-1&-1\end{pmatrix}.
+  \end{align*}
+  Both matrices have the same entry magnitudes. Find their ranges and null spaces, identify directions they annihilate, and explain why an entrywise description misses this structure.
+}
+
+\addExcr{%
+\textbf{Duality and transpose.}\enspace Starting from the definition of a dual norm, prove $\|\bA\|_1=\|\bA^T\|_\infty$. Then formulate the corresponding statement for an arbitrary norm and its dual.
+}
+
+\addExcr{%
+\textbf{Changing units.}\enspace Suppose the two coordinates of $\bx$ are measured in meters and millimeters. Introduce a diagonal scaling matrix that expresses both in meters. Derive the transformed matrix for the same linear map and compare its induced norm before and after scaling. Explain why a condition number is meaningful only after the input and output measurements have been specified.
+}
+\label{ex:norm-exercises}
 
 \end{document}

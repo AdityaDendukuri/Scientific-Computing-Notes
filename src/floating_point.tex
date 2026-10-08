@@ -1,4 +1,4 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
@@ -6,20 +6,20 @@
 \label{sub:floating-point}
 
 \textBox{%
-Digital computers represent real numbers using a finite number of bits. The result is not the real line, but a finite, non-uniform grid of representable numbers. Numerical analysis begins with this mismatch: the mathematical algorithm acts on real numbers, while the computer executes a nearby algorithm on rounded numbers.
+Digital computers store only finitely many real numbers. Even when a formula is exact on paper, its implementation rounds intermediate results to this finite set. We need to determine the size of one rounding error before studying how an algorithm propagates many of them.
 }
 
 \textBox{%
-Floating-point arithmetic is usually accurate locally: one elementary operation is rounded to a nearby representable number. Instability appears when an algorithm repeatedly amplifies these tiny local errors, or when it subtracts nearly equal quantities and exposes digits that were already contaminated by rounding.
+Floating-point arithmetic is usually accurate locally, since one elementary operation is rounded to a nearby representable number. Instability appears when an algorithm repeatedly amplifies these tiny local errors, or when it subtracts nearly equal quantities and exposes digits that were already contaminated by rounding.
 }
 
 \subsubsection{Floating Point Representation}
 
-Most modern systems adhere to the IEEE 754 standard, which represents numbers in a scientific-like notation. Normalized numbers take the form $x = (-1)^s \times (1.f) \times 2^e$.
+In binary floating-point arithmetic, a normalized number is stored in the form $x=(-1)^s(1.f)_2\,2^e$. The subscript $2$ means that the digits after the point represent powers $2^{-1},2^{-2},\ldots$. IEEE 754 specifies common formats and rounding rules. The fields have the following roles.
 \begin{itemize}
   \item \textbf{s:} Sign bit, determining whether the number is positive or negative.
-  \item \textbf{f:} Fractional significand (mantissa); the leading 1 is implicit to maximize precision.
-  \item \textbf{e:} Biased exponent, allowing both very large and very small numbers to be represented.
+  \item \textbf{f:} Fractional significand (mantissa). The leading 1 is implicit to maximize precision.
+  \item \textbf{e:} Unbiased exponent. The stored exponent field adds a fixed bias to $e$; reserved fields encode zeros, subnormals, infinities, and NaNs.
 \end{itemize}
 
 \textBox{%
@@ -35,7 +35,7 @@ The exponent controls scale and the significand controls precision. This means f
 }
 
 \addExmpl{%
-\textbf{(16-bit float)}\enspace 1 sign, 5 exp (bias 15), 10 frac. Represent $-3.25$:
+A binary16 number has one sign bit, five exponent bits, and ten fraction bits. The exponent bias is $15$. To store $-3.25$, we compute the fields as follows.
 \begin{enumerate}
   \item $s=1$.
   \item $3.25_{10} = 11.01_2 = 1.101_2 \times 2^1$.
@@ -53,7 +53,7 @@ Result: \texttt{1 10000 1010000000}.
 }
 
 \addDef{Machine Epsilon ($\varepsilon_{\text{mach}}$)}{%
-Machine epsilon is the distance from $1$ to the next larger floating-point number. Equivalently, it is the smallest positive floating-point number $\varepsilon$ such that $\text{fl}(1+\varepsilon) > 1$. It characterizes the spacing of representable numbers near $1$ and is given by $\varepsilon_{\text{mach}} = 2^{1-p}$, where $p$ is the number of bits in the significand.
+Machine epsilon is the distance from $1$ to the next larger floating-point number. It is a spacing, rather than the threshold at which an increment first changes a rounded sum. It characterizes the spacing of representable numbers near $1$ and is given by $\varepsilon_{\text{mach}} = 2^{1-p}$, where $p$ is the number of bits in the significand.
 \begin{itemize}
   \item For double precision (64-bit), $\varepsilon_{\text{mach}} \approx 2.22 \times 10^{-16}$.
 \end{itemize}
@@ -61,11 +61,11 @@ Machine epsilon is the distance from $1$ to the next larger floating-point numbe
 \label{def:mach-eps}
 
 \addRemark{%
-\textbf{(Spacing rule)}\enspace Near a normalized number $x$, the distance to the next representable number is approximately $\varepsilon_{\text{mach}}|x|$. Near $10^{16}$, the gap is on the order of $1$; near $1$, the gap is on the order of $10^{-16}$. This is why adding a small number to a huge number may do nothing.
+\textbf{(Spacing rule)}\enspace Near a normalized number $x$, the distance to the next representable number is approximately $\varepsilon_{\text{mach}}|x|$. Near $10^{16}$, the gap is on the order of $1$, whereas near $1$, the gap is on the order of $10^{-16}$. This explains why adding a small number to a sufficiently large number has no effect.
 }
 
 \addThm{Absorption Criterion}{%
-In round-to-nearest arithmetic, if $|y|$ is less than half the spacing between adjacent floating-point numbers near $x$, then
+Let $x$ be a representable number with two finite neighbors. In round-to-nearest arithmetic, if $|y|$ is less than half the smaller of the two distances from $x$ to its neighbors, then
 \begin{align*}
     \operatorname{fl}(x+y)=x.
 \end{align*}
@@ -75,7 +75,7 @@ Equivalently, small increments disappear when they are below the local resolutio
 
 \addExcr{%
 \begin{enumerate}
-  \item Use Def~\ref{def:mach-eps} to predict whether \texttt{1.0 + 1e-16} and \texttt{1.0 + 2e-16} differ from \texttt{1.0}; then check in Python.
+  \item Use Def~\ref{def:mach-eps} to predict whether \texttt{1.0 + 1e-16} and \texttt{1.0 + 2e-16} differ from \texttt{1.0}. Then test the prediction in Python.
   \item Find $\varepsilon_{\text{mach}}$ empirically via loop.
   \item Use Thm~\ref{thm:absorption-criterion} to predict the smallest power of $10$ for which \texttt{1e16 + 10**k} changes \texttt{1e16}.
   \item Explain why the answer changes if \texttt{1e16} is replaced by \texttt{1.0}.
@@ -84,7 +84,7 @@ Equivalently, small increments disappear when they are below the local resolutio
 \label{ex:spacing-absorption}
 
 \addDef{Unit Roundoff ($u$)}{%
-Unit roundoff is the maximum relative error caused by rounding one real number to the nearest floating-point number:
+Unit roundoff bounds the relative error caused by rounding a nonzero real number within the normalized range to the nearest floating-point number:
 \begin{align*}
   \frac{|\text{fl}(x) - x|}{|x|} \leq u.
 \end{align*}
@@ -97,31 +97,39 @@ For round-to-nearest arithmetic, $u = \varepsilon_{\text{mach}}/2 = 2^{-p}$.
 }
 
 \addThm{Fundamental Axiom}{%
-IEEE 754 guarantees $\text{fl}(a \circ b) = (a \circ b)(1 + \delta)$ for $\circ \in \{+, -, \times, \div\}$ and $|\delta| \leq u$. Individual operations are as accurate as the representation allows.
+Suppose the exact result $a\circ b$ is finite, nonzero, and lies in the normalized floating-point range. In round-to-nearest arithmetic,
+\begin{align*}
+    \operatorname{fl}(a\circ b)=(a\circ b)(1+\delta),
+    \qquad |\delta|\leq u,
+\end{align*}
+for $\circ\in\{+,-,\times,\div\}$. Overflow and gradual underflow require separate absolute-error models.
 }
 \label{thm:fp-axiom}
 
 \addPrf{%
-The real line near $x$ is partitioned into intervals, each containing exactly one floating point number. In round-to-nearest mode, $\text{fl}(x)$ is the closer endpoint, so:
+Assume rounding to nearest, and exclude overflow and the subnormal range as in the theorem. It suffices to consider $|x|$, because the representable numbers and rounding rule are symmetric about zero.
+\begin{enumerate}
+\item Choose the integer $e$ such that $2^e\leq|x|<2^{e+1}$. In this interval, changing the last stored significand bit changes the value by $s=2^{e+1-p}$. Thus consecutive representable normalized values are separated by $s$.
+\item Rounding to nearest selects one of the two representable values surrounding $|x|$. Its distance is at most half their separation. Therefore
 \begin{align*}
-    |\text{fl}(x) - x| \leq \frac{1}{2} \text{gap} = \frac{1}{2} (\varepsilon_{\text{mach}} |x|) = u|x|.
+ |\operatorname{fl}(x)-x|\leq\frac{s}{2}=2^{e-p}.
 \end{align*}
-Dividing by $|x|$ gives the relative error bound $|\delta| \leq u$.
-For any operation $\circ$, IEEE 754 mandates computing the exact result first, then rounding, ensuring:
+At an exactly representable value the error is zero, which also satisfies this bound.
+\item Since $|x|\geq2^e>0$,
 \begin{align*}
-    \text{fl}(a \circ b) = \text{round}(a \circ b) = (a \circ b)(1 + \delta).
+ \frac{|\operatorname{fl}(x)-x|}{|x|}
+ \leq\frac{2^{e-p}}{2^e}=2^{-p}=u.
 \end{align*}
+Define $\delta=(\operatorname{fl}(x)-x)/x$. Then $\operatorname{fl}(x)=x(1+\delta)$ and $|\delta|\leq u$. For $x=0$, take $\delta=0$.
+\end{enumerate}
 }
 
 \addRemark{%
-\textbf{Warning:}\enspace After $n$ operations, error often grows like $O(nu)$ when errors do not systematically amplify. This is a rule of thumb, not a guarantee. Operation order matters because each intermediate result is rounded.
+\textbf{(Accumulation of rounding errors)}\enspace A sequence of $n$ benign operations often produces an error proportional to $nu$ when $nu\ll1$. The rule is a heuristic. Cancellation and ill-conditioning can amplify the perturbations well beyond $nu$. Operation order matters because every intermediate result is rounded.
 }
 
 \addExcr{%
-\begin{enumerate}
-  \item Let $a=1, b=-0.999\dots$. Is error in $\text{fl}(a+b)$ bounded by $u$?
-  \item Estimate worst-case relative error for $10^6$ sequential additions.
-\end{enumerate}
+Let $x=1$ and $y=1-10^{-12}$ be exact real data, and let $\hat x$ and $\hat y$ be their rounded values. Distinguish the error made when subtracting $\hat x-\hat y$ from the error caused by rounding $x$ and $y$ before subtraction. Which error does the fundamental rounding model bound? Estimate the amplification of the operand errors relative to $x-y$.
 }
 
 \subsubsection{IEEE 754 Special Values}
@@ -136,13 +144,13 @@ For any operation $\circ$, IEEE 754 mandates computing the exact result first, t
 }
 
 \addRemark{%
-\textbf{(NaN propagation)}\enspace A NaN usually contaminates all later arithmetic. This is useful for debugging: it marks an invalid operation that happened earlier, even if the failure is observed much later.
+\textbf{(NaN propagation)}\enspace A NaN usually contaminates all later arithmetic. This behavior helps with debugging, because the NaN marks an invalid operation that happened earlier even if the failure is observed much later.
 }
 
 \addExcr{%
 \begin{enumerate}
-  \item Python: \texttt{1.0/0.0} vs \texttt{1.0/-0.0}.
-  \item Result of \texttt{float('inf') - float('inf')} and \texttt{float('nan') == float('nan')}.
+  \item Using NumPy scalars, compare \texttt{np.float64(1.0)/np.float64(0.0)} with division by \texttt{np.float64(-0.0)}. Explain the warnings and the signs of the results. (Python's built-in float division raises \texttt{ZeroDivisionError} instead.)
+  \item Evaluate \texttt{float('inf') - float('inf')} and \texttt{float('nan') == float('nan')}.
 \end{enumerate}
 }
 
@@ -170,7 +178,7 @@ in double precision. The second expression first rounds $b+c$ back to $-10^{16}$
 }
 
 \addRemark{%
-\textbf{(Summation rule)}\enspace Add numbers of similar magnitude when possible. Summing from smallest to largest, pairwise summation, or compensated summation reduces the loss of small terms. This is why library reductions may give different answers than a hand-written loop while still being more accurate.
+\textbf{(Summation rule)}\enspace Add numbers of similar magnitude when possible. Summing from smallest to largest, pairwise summation, or compensated summation reduces the loss of small terms. Consequently, library reductions may give different answers than a hand-written loop and still be more accurate.
 }
 
 \addExcr{%
@@ -197,7 +205,7 @@ in double precision. The second expression first rounds $b+c$ back to $-10^{16}$
 }
 
 \textBox{%
-Absolute error measures the size of the mistake in the original units. Relative error measures the size of the mistake compared to the quantity being computed. In numerical computing, relative error is usually more informative: an error of $10^{-6}$ is excellent for a number of size $10^3$ and terrible for a number of size $10^{-9}$.
+Absolute error measures the size of the mistake in the original units. Relative error measures the size of the mistake compared to the quantity being computed. In numerical computing, relative error is usually more informative. An error of $10^{-6}$ is excellent for a number of size $10^3$ and terrible for a number of size $10^{-9}$.
 }
 
 \addRemark{%
@@ -205,50 +213,58 @@ Absolute error measures the size of the mistake in the original units. Relative 
 \begin{align*}
     |\hat{x}-x| \leq \text{atol} + \text{rtol}|x|.
 \end{align*}
-This is the logic behind \texttt{np.isclose}. Absolute tolerance handles values near zero; relative tolerance handles scale.
+This principle underlies \texttt{np.isclose}. The absolute tolerance bounds errors near zero, whereas the relative tolerance scales with magnitude.
 }
 
 \addExcr{%
 \begin{enumerate}
-  \item $\sqrt{2} \approx 1.414$. Errors?
-  \item Relative error of product $\hat{x}\hat{y}$? (Sum of individual relative errors).
+  \item Compute the absolute and relative errors of using $1.414$ for $\sqrt2$.
+  \item Let $\hat x=x(1+\delta_x)$ and $\hat y=y(1+\delta_y)$ with $xy\neq0$. Derive the exact relative perturbation of $\hat x\hat y$ before rounding the product. Bound it when $|\delta_x|,|\delta_y|\leq u$, and identify the first-order term.
 \end{enumerate}
 }
 
 \addDef{Catastrophic Cancellation}{%
-The most dangerous error in numerical computing is \textbf{catastrophic cancellation}. This occurs when two nearly equal numbers are subtracted, causing the most significant digits to cancel out and leaving only the rounding errors as the "leading" digits.
+\textbf{Catastrophic cancellation} occurs when two nearly equal approximations are subtracted. The leading digits cancel, so errors already present in the operands become large relative to the small difference.
 \begin{itemize}
-  \item Relative error bound: $\varepsilon_{\text{rel}} \leq u \cdot \frac{x+y}{x-y}$.
-  \item As $x \to y$, the amplification factor $\frac{x+y}{x-y}$ tends to infinity.
+  \item For $x\neq y$ and operand errors $|\hat x-x|\leq u|x|$, $|\hat y-y|\leq u|y|$, exact subtraction of the perturbed operands has relative error at most $u(|x|+|y|)/|x-y|$. Rounding that subtraction contributes a further local error.
+  \item As $x \to y$, the amplification factor $(|x|+|y|)/|x-y|$ can become arbitrarily large.
 \end{itemize}
 }
 \label{def:cancellation}
 
 \addPrf{%
-Let $\hat{x} = x(1+\varepsilon_x)$ and $\hat{y} = y(1+\varepsilon_y)$ with $|\varepsilon_x|, |\varepsilon_y| \leq u$.
-The error in the subtraction is:
+We distinguish errors in the operands from any additional rounding of the subtraction itself. Assume $x-y\neq0$, since relative error with respect to a zero answer is undefined. Write the perturbed operands as
 \begin{align*}
-    (\hat{x}-\hat{y})-(x-y) &= x(1+\varepsilon_x) - y(1+\varepsilon_y) - x + y \\
-    &= x\varepsilon_x - y\varepsilon_y.
+ \hat x=x(1+\varepsilon_x),\qquad
+ \hat y=y(1+\varepsilon_y),\qquad
+ |\varepsilon_x|,|\varepsilon_y|\leq u.
 \end{align*}
-The relative error is bounded by:
+First regard $\hat x-\hat y$ as an exact real subtraction of these perturbed data. Expand and cancel the unperturbed terms:
 \begin{align*}
-    \frac{|x\varepsilon_x - y\varepsilon_y|}{x-y} &\leq \frac{x|\varepsilon_x| + y|\varepsilon_y|}{x-y} \\
-    &\leq \frac{xu + yu}{x-y} \\
-    &= u \cdot \frac{x+y}{x-y}.
+ (\hat x-\hat y)-(x-y)
+ &=x+x\varepsilon_x-y-y\varepsilon_y-x+y\\
+ &=x\varepsilon_x-y\varepsilon_y.
 \end{align*}
-As $x \to y$, the denominator $x-y \to 0$, causing the relative error to explode.
+The triangle inequality and the operand bounds give
+\begin{align*}
+ |(\hat x-\hat y)-(x-y)|
+ &\leq |x||\varepsilon_x|+|y||\varepsilon_y|\\
+ &\leq u(|x|+|y|).
+\end{align*}
+Dividing by $|x-y|>0$ yields the stated amplification factor.
+
+This factor can be large when the operands have comparable nonzero magnitude but their difference is small. It measures sensitivity to the operand errors. If the subtraction is also rounded, the floating-point model adds a further error bounded by $u|\hat x-\hat y|$ in absolute value. That additional operation error is separate from the potentially amplified operand errors. The bound does not assert that every subtraction exhibits its worst possible error.
 }
 
 \addRemark{%
-\textbf{Numerical Stability Principle:}\enspace Rounding error is an inevitable consequence of finite precision. However, catastrophic cancellation is an algorithmic flaw that can often be avoided by mathematically rearranging the problem.
+\textbf{(Numerical stability principle)}\enspace Rounding error is an inevitable consequence of finite precision. However, catastrophic cancellation is an algorithmic flaw that can often be avoided by mathematically rearranging the problem.
 }
 
 \addExmpl{%
-\textbf{(Stabilizing Cancellation)}\enspace $f(x) = \sqrt{x+1} - \sqrt{x}$ for $x = 10^8$.
+\textbf{(Stabilizing Cancellation)}\enspace $f(x) = \sqrt{x+1} - \sqrt{x}$ for $x = 10^{16}$.
 \begin{itemize}
-  \item \textbf{Direct:} $10000.00000005 - 10000 \approx 0$ (Catastrophic).
-  \item \textbf{Stable:} $\frac{1}{\sqrt{x+1} + \sqrt{x}} \approx 5 \times 10^{-5}$.
+  \item \textbf{Direct:} In double precision, both square roots round to $10^8$, so the computed difference is zero.
+  \item \textbf{Stable:} $\frac{1}{\sqrt{x+1} + \sqrt{x}} \approx 5 \times 10^{-9}$.
 \end{itemize}
 }
 
@@ -274,22 +290,23 @@ Stabilize:
 }
 \label{ex:cancellation-stabilization}
 
-\subsubsection{Error Analysis Frameworks}
+\subsubsection{Error Analysis}
 
 \textBox{%
-\begin{itemize}
-  \item \textbf{Forward Error Analysis:} Tracks the accumulation of error from inputs to outputs.
-  \item \textbf{Backward Error Analysis:} Determines the input perturbation that would make the computed result exact.
-  \item \textbf{Backward Stability:} An algorithm is backward stable if the backward error is $O(u)$, where $u$ is the unit roundoff.
-\end{itemize}
+A computed result can be judged in two ways. Forward error analysis bounds the distance between the computed output and the exact output. Backward error analysis instead seeks the smallest perturbation of the input for which the computed output is exact. An algorithm is \textbf{backward stable} if this perturbation is a modest multiple of the unit roundoff $u$ for every input.
 }
 
 \textBox{%
-Forward error asks whether the computed answer is close to the exact answer. Backward error asks whether the computed answer is the exact answer to a nearby problem. Backward error is often easier to prove and more useful in practice: if the data are uncertain at the level of the backward error, the algorithm has not introduced a meaningful additional error.
+Backward error is often easier to bound than forward error, and it is directly comparable with the uncertainty in the data. If the input is known only to a relative accuracy larger than the backward error, the algorithm has introduced no error beyond what the data already contain. The condition number then converts a backward error into a forward error.
 }
 
 \addDef{Condition Number ($\kappa$)}{%
-Inherent sensitivity of the problem. $\text{Forward Error} \leq \kappa \cdot \text{Backward Error}$.
+The condition number measures the local sensitivity of a problem's output to perturbations in its input. For sufficiently small relative perturbations, the first-order relation has the form
+\begin{align*}
+    \text{relative forward error}
+    \lesssim \kappa\,\text{relative backward error},
+\end{align*}
+with the precise definition of $\kappa$ determined by the problem and the chosen norms. For the linear system $\bA\bx=\bb$, Section~\ref{sub:stability-theory} shows that this role is played by the matrix condition number of Def~\ref{def:condition-number-geometric}.
 }
 \label{def:cond-num-intro}
 
@@ -298,31 +315,7 @@ Inherent sensitivity of the problem. $\text{Forward Error} \leq \kappa \cdot \te
 }
 
 \addExcr{%
-\begin{enumerate}
-  \item $\kappa(A) = 10^8, \text{Backward Error} = 10^{-15}$. Max forward error?
-  \item Prove BE for linear systems: $(\bA + \bE)\hat{\bx} = \bb$ for $\bE = -\br\hat{\bx}^T/\|\hat{\bx}\|^2$.
-\end{enumerate}
-}
-
-\addPrf{%
-\textbf{(1):}\enspace Substituting $\bE$ into $(\bA + \bE)\hat{\bx}$:
-\begin{align*}
-    (\bA + \bE)\hat{\bx} &= \bA\hat{\bx} + \bE\hat{\bx} \\
-    &= \bA\hat{\bx} - \frac{\br\hat{\bx}^T}{\|\hat{\bx}\|^2} \hat{\bx} \\
-    &= \bA\hat{\bx} - \br \frac{\hat{\bx}^T\hat{\bx}}{\|\hat{\bx}\|^2} \\
-    &= \bA\hat{\bx} - \br.
-\end{align*}
-Since $\br = \bb - \bA\hat{\bx}$, we have $\bA\hat{\bx} - (\bb - \bA\hat{\bx}) = \bb$.
-
-\textbf{(2):}\enspace For the relative error, using the rank-1 norm property $\|\br\bv^T\|_2 = \|\br\|_2\|\bv\|_2$:
-\begin{align*}
-    \|\bE\|_2 &= \left\| \frac{\br\hat{\bx}^T}{\|\hat{\bx}\|^2} \right\|_2 \\
-    &= \frac{\|\br\|_2 \|\hat{\bx}\|_2}{\|\hat{\bx}\|^2} = \frac{\|\br\|_2}{\|\hat{\bx}\|_2}.
-\end{align*}
-Dividing by $\|\bA\|_2$ gives the result:
-\begin{align*}
-    \frac{\|\bE\|_2}{\|\bA\|_2} = \frac{\|\br\|_2}{\|\bA\|_2 \|\hat{\bx}\|_2}.
-\end{align*}
+A problem has condition number $\kappa=10^8$, and an algorithm computes a solution with relative backward error $10^{-15}$. Use Def~\ref{def:cond-num-intro} to estimate the largest relative forward error, and state how many correct significant digits the result can be expected to have.
 }
 
 \end{document}

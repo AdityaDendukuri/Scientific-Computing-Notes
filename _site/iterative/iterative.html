@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>21&nbsp; Iterative Methods for Linear Systems – Scientific Computing</title>
+<title>23&nbsp; Iterative Methods for Linear Systems – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -34,7 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../iterative/jacobi.html" rel="next">
-<link href="../eigenvalues/jacobi-eig.html" rel="prev">
+<link href="../applications/operators.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,9 +46,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-512512a359692b6a4a631bfed0d4ecc0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1e1ed17e33b34061a1e69bd1b4de30c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-f2e1eca1eee158b71a3ef1ae49344af7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/iterative.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/iterative.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,44 +396,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span></a>
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
   </div>
 </li>
       </ul>
@@ -440,19 +438,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +479,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +502,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,7 +534,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -544,26 +542,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -571,7 +569,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -579,20 +577,44 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
   </div>
 </li>
       </ul>
@@ -609,7 +631,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +639,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">Applications and Research Bridges</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -626,41 +648,64 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,10 +716,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#direct-vs.-iterative-solvers" id="toc-direct-vs.-iterative-solvers" class="nav-link active" data-scroll-target="#direct-vs.-iterative-solvers"><span class="header-section-number">21.1</span> Direct vs.&nbsp;Iterative Solvers</a></li>
-  <li><a href="#convergence-and-spectral-radius" id="toc-convergence-and-spectral-radius" class="nav-link" data-scroll-target="#convergence-and-spectral-radius"><span class="header-section-number">21.2</span> Convergence and Spectral Radius</a></li>
-  <li><a href="#stopping-criteria" id="toc-stopping-criteria" class="nav-link" data-scroll-target="#stopping-criteria"><span class="header-section-number">21.3</span> Stopping Criteria</a></li>
-  <li><a href="#fill-in-and-sparse-storage" id="toc-fill-in-and-sparse-storage" class="nav-link" data-scroll-target="#fill-in-and-sparse-storage"><span class="header-section-number">21.4</span> Fill-in and Sparse Storage</a></li>
+  <li><a href="#matrix-splittings-and-stationary-iterations" id="toc-matrix-splittings-and-stationary-iterations" class="nav-link active" data-scroll-target="#matrix-splittings-and-stationary-iterations"><span class="header-section-number">23.1</span> Matrix Splittings and Stationary Iterations</a></li>
+  <li><a href="#convergence-theory-and-the-spectral-radius" id="toc-convergence-theory-and-the-spectral-radius" class="nav-link" data-scroll-target="#convergence-theory-and-the-spectral-radius"><span class="header-section-number">23.2</span> Convergence Theory and the Spectral Radius</a></li>
+  <li><a href="#krylov-subspaces-and-matrix-free-solvers" id="toc-krylov-subspaces-and-matrix-free-solvers" class="nav-link" data-scroll-target="#krylov-subspaces-and-matrix-free-solvers"><span class="header-section-number">23.3</span> Krylov Subspaces and Matrix-Free Solvers</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">23.4</span> Further Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/iterative.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -682,9 +727,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/iterative.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/iterative.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></h1>
+<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></h1>
 </div>
 
 
@@ -701,100 +746,11 @@ window.Quarto = {
 </header>
 
 
-<p>Alternative to direct solvers for large, sparse systems where matrix factorization is impractical due to memory or compute limits.</p>
-<p>Direct methods factor the matrix. Iterative methods repeatedly improve an approximate solution using cheap operations, usually matrix-vector products. They are preferred when <span class="math inline">\(\bA\)</span> is large, sparse, or available only as a function that computes <span class="math inline">\(\bA\bv\)</span>.</p>
-<section id="direct-vs.-iterative-solvers" class="level2" data-number="21.1">
-<h2 data-number="21.1" class="anchored" data-anchor-id="direct-vs.-iterative-solvers"><span class="header-section-number">21.1</span> Direct vs.&nbsp;Iterative Solvers</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Sparse fill-in)</strong> Even if <span class="math inline">\(\bA\)</span> is sparse, its LU or Cholesky factors are typically much denser (<strong>fill-in</strong>). For a 2D Poisson problem on an <span class="math inline">\(n \times n\)</span> grid:</p>
-<ul>
-<li><p><span class="math inline">\(\bA\)</span> has <span class="math inline">\(O(n^2)\)</span> nonzeros.</p></li>
-<li><p>LU factors have <span class="math inline">\(O(n^3)\)</span> nonzeros.</p></li>
-</ul>
-<p>Iterative methods exploit sparsity by using only matrix-vector products (<span class="math inline">\(O(\text{nnz})\)</span>).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Matrix-free viewpoint)</strong> Many scientific codes never assemble <span class="math inline">\(\bA\)</span> explicitly. They only provide a routine that maps <span class="math inline">\(\bv\mapsto\bA\bv\)</span>. Krylov methods such as CG and GMRES are designed for this setting.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Krylov Subspace
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Given a matrix <span class="math inline">\(\bA\)</span> and a vector <span class="math inline">\(\bv\)</span>, the <span class="math inline">\(k\)</span>-th Krylov subspace is <span class="math display">\[
-\begin{align}
-\mathcal{K}_k(\bA,\bv)
-    =
-    \operatorname{span}\{\bv,\bA\bv,\bA^2\bv,...,\bA^{k-1}\bv\}.
-\end{align}
-\]</span> It is the smallest subspace that contains <span class="math inline">\(\bv\)</span> and is built by repeated multiplication by <span class="math inline">\(\bA\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Krylov Approximation Principle
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\br^{(0)}=\bb-\bA\bx^{(0)}\)</span>. Any iterate of the form <span class="math display">\[
-\begin{align}
-\bx^{(k)}=\bx^{(0)}+p_{k-1}(\bA)\br^{(0)},
-\end{align}
-\]</span> where <span class="math inline">\(p_{k-1}\)</span> is a polynomial of degree at most <span class="math inline">\(k-1\)</span>, lies in the affine space <span class="math display">\[
-\begin{align}
-\bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)}).
-\end{align}
-\]</span> Thus a matrix-free method can improve <span class="math inline">\(\bx^{(0)}\)</span> by choosing increasingly good corrections from Krylov subspaces using only matrix-vector products.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Write <span class="math inline">\(p_{k-1}(t)=c_0+c_1t+\cdots+c_{k-1}t^{k-1}\)</span> and expand <span class="math inline">\(p_{k-1}(\bA)\br^{(0)}\)</span>.</p></li>
-<li><p>Use the result above to show that this correction belongs to <span class="math inline">\(\mathcal{K}_k(\bA,\br^{(0)})\)</span>.</p></li>
-<li><p>List <span class="math inline">\(\mathcal{K}_1\)</span>, <span class="math inline">\(\mathcal{K}_2\)</span>, and <span class="math inline">\(\mathcal{K}_3\)</span> explicitly. What new vector must be computed to move from <span class="math inline">\(\mathcal{K}_k\)</span> to <span class="math inline">\(\mathcal{K}_{k+1}\)</span>?</p></li>
-<li><p>Explain why the result above makes Krylov methods compatible with the matrix-free viewpoint above.</p></li>
-<li><p>Preview the later chapters: CG chooses the best correction in an energy norm for SPD systems, while GMRES chooses the correction with smallest residual norm.</p></li>
-</ol>
-</div>
-</div>
+<p>A sparse matrix can have a factorization that is too expensive to store. Iterative methods instead improve an approximate solution through matrix–vector products and simpler solves. Their cost depends both on the cost of one correction and on how many corrections are needed.</p>
+<p>For an approximation <span class="math inline">\(\bx\)</span>, compute the residual <span class="math inline">\(\br=\bb-\bA\bx\)</span>. The exact correction satisfies <span class="math inline">\(\bA\boldsymbol\delta=\br\)</span>. Solving that equation exactly would be the original task again. We instead solve <span class="math inline">\(\bM\boldsymbol\delta=\br\)</span> with a matrix <span class="math inline">\(\bM\)</span> that is cheap to use, and add the correction to <span class="math inline">\(\bx\)</span>.</p>
+<section id="matrix-splittings-and-stationary-iterations" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="matrix-splittings-and-stationary-iterations"><span class="header-section-number">23.1</span> Matrix Splittings and Stationary Iterations</h2>
+<p>The correction update is <span class="math inline">\(\bx^{(k+1)}=\bx^{(k)}+\bM^{-1}(\bb-\bA\bx^{(k)})\)</span>. The inverse here denotes a solve with <span class="math inline">\(\bM\)</span>, rather than a matrix to form. Rearranging this expression gives the traditional splitting <span class="math inline">\(\bA=\bM-\mathbf N\)</span> and the recurrence below. The same <span class="math inline">\(\bM\)</span> is used at every step, which explains the word <em>stationary</em>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -805,15 +761,26 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>An iteration of the form , where:</p>
-<ul>
-<li><p><span class="math inline">\(\bT = \bI - \bM^{-1}\bA\)</span> is the iteration matrix.</p></li>
-<li><p><span class="math inline">\(\bc = \bM^{-1}\bb\)</span> is the updated right-hand side.</p></li>
-<li><p><span class="math inline">\(\bM\)</span> is the <strong>splitting matrix</strong> (ideally <span class="math inline">\(\bM \approx \bA\)</span> and <span class="math inline">\(\bM^{-1}\)</span> is cheap).</p></li>
-</ul>
+<p>Given a splitting <span class="math inline">\(\bA = \bM - \mathbf{N}\)</span>, the corresponding stationary iteration computes successive approximations via the fixed-point recurrence <span class="math display">\[
+\begin{align}
+\bM\bx^{(k+1)} = \mathbf{N}\bx^{(k)} + \bb \iff \bx^{(k+1)} = \bT\bx^{(k)} + \bc,
+\end{align}
+\]</span> where <span class="math inline">\(\bT = \bM^{-1}\mathbf{N} = \bI - \bM^{-1}\bA\)</span> is the <strong>iteration matrix</strong> and <span class="math inline">\(\bc = \bM^{-1}\bb\)</span> is the modified right-hand side vector.</p>
 </div>
 </div>
-<p>Stationary iterations are fixed-point iterations. Instead of solving <span class="math inline">\(\bA\bx=\bb\)</span> directly, we rewrite the problem as <span class="math inline">\(\bx=\bT\bx+\bc\)</span> and repeatedly apply the map. The exact solution is a fixed point of this map.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider the matrix <span class="math inline">\(\bA = \begin{pmatrix} 4 &amp; 1 \\ 2 &amp; 3 \end{pmatrix}\)</span> and the splitting <span class="math inline">\(\bM = 4\bI\)</span>. Compute the iteration matrix <span class="math inline">\(\bT = \bI - \bM^{-1}\bA\)</span>, find its eigenvalues, and evaluate its spectral radius <span class="math inline">\(\rho(\bT)\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -824,22 +791,26 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Splitting form)</strong> If <span class="math inline">\(\bA=\bM-\mathbf{N}\)</span>, then <span class="math display">\[
-\begin{align}
-\bA\bx=\bb
-    \quad \Longleftrightarrow \quad
-    \bM\bx=\mathbf{N}\bx+\bb.
-\end{align}
-\]</span> The iteration is <span class="math display">\[
-\begin{align}
-\bx^{(k+1)}=\bM^{-1}\mathbf{N}\bx^{(k)}+\bM^{-1}\bb.
-\end{align}
-\]</span> The art is choosing <span class="math inline">\(\bM\)</span> easy to invert while making the iteration converge quickly.</p>
+<p>The exact solution is a fixed point because its residual is zero. That fact establishes consistency of the iteration, but does not imply convergence to the fixed point. The correction must reduce every possible error direction. The following spectral-radius criterion states exactly when this occurs.</p>
 </div>
 </div>
 </section>
-<section id="convergence-and-spectral-radius" class="level2" data-number="21.2">
-<h2 data-number="21.2" class="anchored" data-anchor-id="convergence-and-spectral-radius"><span class="header-section-number">21.2</span> Convergence and Spectral Radius</h2>
+<section id="convergence-theory-and-the-spectral-radius" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="convergence-theory-and-the-spectral-radius"><span class="header-section-number">23.2</span> Convergence Theory and the Spectral Radius</h2>
+<p>The convergence of a linear stationary iteration is determined entirely by the spectral properties of the iteration matrix <span class="math inline">\(\bT\)</span>.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the scalar equation <span class="math inline">\(ax=b\)</span> with <span class="math inline">\(a&gt;0\)</span>, use the correction <span class="math inline">\(\delta=(b-ax)/m\)</span> with <span class="math inline">\(m&gt;0\)</span>. Derive the error relation <span class="math inline">\(e^{(k+1)}=(1-a/m)e^{(k)}\)</span>. Determine the values of <span class="math inline">\(a/m\)</span> for which the errors decrease, alternate in sign, remain unchanged in magnitude, or grow. The matrix criterion extends this calculation to all eigenvector directions.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -850,20 +821,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\rho(\bB) = \max \{|\lambda| : \lambda \in \sigma(\bB)\}\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Spectral radius intuition)</strong> The eigenvalue of largest magnitude controls the long-run behavior of repeated multiplication. If every eigenvalue of <span class="math inline">\(\bT\)</span> lies inside the unit disk, powers of <span class="math inline">\(\bT\)</span> decay and the iteration converges.</p>
+<p>Let <span class="math inline">\(\bT \in \fR^{n \times n}\)</span> with spectrum <span class="math inline">\(\sigma(\bT) \subset \fC\)</span>. The spectral radius of <span class="math inline">\(\bT\)</span> is defined as the maximum modulus among all its eigenvalues: <span class="math display">\[
+\begin{align}
+\rho(\bT) = \max \{ |\lambda| : \lambda \in \sigma(\bT) \}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -872,11 +834,28 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Gelfand’s Formula
+<span class="screen-reader-only">Note</span>Theorem: Gelfand’s Spectral Radius Theorem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For any submultiplicative norm, <span class="math inline">\(\rho(\bB) = \lim_{k\to\infty} \|\bB^k\|^{1/k}\)</span>. For large <span class="math inline">\(k\)</span>, <span class="math inline">\(\|\bB^k\| \approx \rho(\bB)^k\)</span>.</p>
+<p>For any matrix norm <span class="math inline">\(\|\cdot\|\)</span> induced by a vector norm on <span class="math inline">\(\fC^n\)</span> and any matrix <span class="math inline">\(\bT \in \fR^{n \times n}\)</span>, <span class="math display">\[
+\begin{align}
+\rho(\bT) = \lim_{k \to \infty} \|\bT^k\|^{1/k}.
+\end{align}
+\]</span> In particular, for any <span class="math inline">\(\varepsilon &gt; 0\)</span>, there exists an induced matrix norm <span class="math inline">\(\|\cdot\|_*\)</span> such that <span class="math inline">\(\|\bT\|_* \leq \rho(\bT) + \varepsilon\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The following construction proves the norm assertion and the limit. Use Schur form <span class="math inline">\(\bT=\bQ\bU\bQ^*\)</span> and set <span class="math inline">\(\bD=\operatorname{diag}(1,\eta,...,\eta^{n-1})\)</span>. Show that every strictly upper triangular entry of <span class="math inline">\(\bD^{-1}\bU\bD\)</span> tends to zero as <span class="math inline">\(\eta\to0\)</span>. Choose <span class="math inline">\(\eta\)</span> so that its infinity norm is at most <span class="math inline">\(\rho(\bT)+\varepsilon\)</span>, and define <span class="math inline">\(\|\bx\|_*=\|\bD^{-1}\bQ^*\bx\|_\infty\)</span>. Finally use equivalence of norms to obtain <span class="math inline">\(\limsup_k\|\bT^k\|^{1/k}\leq\rho(\bT)+\varepsilon\)</span> in any fixed norm, and an eigenvector to obtain the reverse bound. Let <span class="math inline">\(\varepsilon\downarrow0\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -885,15 +864,19 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Fundamental Convergence Condition
+<span class="screen-reader-only">Note</span>Theorem: Fundamental Convergence Criterion for Stationary Iterations
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The iteration <span class="math inline">\(\bx^{(k+1)} = \bT\bx^{(k)} + \bc\)</span> converges for any <span class="math inline">\(\bx^{(0)}\)</span> iff <strong><span class="math inline">\(\rho(\bT) &lt; 1\)</span></strong>.</p>
+<p>The stationary iteration <span class="math inline">\(\bx^{(k+1)} = \bT\bx^{(k)} + \bc\)</span> converges to the unique solution <span class="math inline">\(\bx^* = \bA^{-1}\bb\)</span> for every initial guess <span class="math inline">\(\bx^{(0)} \in \fR^n\)</span> if and only if <span class="math display">\[
+\begin{align}
+\rho(\bT) &lt; 1.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -902,53 +885,30 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\bx^*\)</span> be the exact solution satisfying <span class="math inline">\(\bx^* = \bT\bx^* + \bc\)</span>. Subtracting this from the iteration formula gives the error evolution: <span class="math display">\[
+<p>Let <span class="math inline">\(\be^{(k)} = \bx^{(k)} - \bx^*\)</span> denote the error vector at step <span class="math inline">\(k\)</span>. Subtracting the fixed-point identity <span class="math inline">\(\bx^* = \bT\bx^* + \bc\)</span> from the iteration formula <span class="math inline">\(\bx^{(k+1)} = \bT\bx^{(k)} + \bc\)</span>: <span class="math display">\[
 \begin{align}
-\bx^{(k+1)} - \bx^* &amp;= (\bT\bx^{(k)} + \bc) - (\bT\bx^* + \bc) \\
-    \be^{(k+1)} &amp;= \bT \be^{(k)}.
+\be^{(k+1)}
+    &amp;= \bx^{(k+1)} - \bx^* \\
+    &amp;= (\bT\bx^{(k)} + \bc) - (\bT\bx^* + \bc) \\
+    &amp;= \bT(\bx^{(k)} - \bx^*)
+    = \bT \be^{(k)}.
 \end{align}
-\]</span> Applying this relation recursively from <span class="math inline">\(k=0\)</span>: <span class="math display">\[
+\]</span> Applying this recurrence recursively yields <span class="math display">\[
 \begin{align}
 \be^{(k)} = \bT^k \be^{(0)}.
 \end{align}
-\]</span> The error <span class="math inline">\(\be^{(k)} \to \bzero\)</span> for any <span class="math inline">\(\be^{(0)}\)</span> iff <span class="math inline">\(\bT^k \to \bzero\)</span> as <span class="math inline">\(k \to \infty\)</span>, which is guaranteed iff <span class="math inline">\(\rho(\bT) &lt; 1\)</span> by Gelfand’s formula.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Iteration count)</strong> To reduce error by <span class="math inline">\(10^{-p}\)</span>, the required iterations are <span class="math inline">\(k \approx \frac{p}{\log_{10}(1/\rho(\bT))}\)</span>. As <span class="math inline">\(\rho(\bT) \to 1^-\)</span>, the cost explodes.</p>
-</div>
-</div>
-</section>
-<section id="stopping-criteria" class="level2" data-number="21.3">
-<h2 data-number="21.3" class="anchored" data-anchor-id="stopping-criteria"><span class="header-section-number">21.3</span> Stopping Criteria</h2>
-<p>Iterative methods need a stopping rule. The true error <span class="math inline">\(\|\bx^{(k)}-\bx^*\|\)</span> is usually unknown, so algorithms monitor the residual <span class="math inline">\(\br^{(k)}=\bb-\bA\bx^{(k)}\)</span>.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Common stopping test)</strong> Stop when <span class="math display">\[
+\]</span> The recurrence shows why the error, rather than the iterate itself, is the convenient object: the fixed right-hand side has cancelled. In particular, testing all initial guesses is equivalent to testing all initial errors, since any error vector can be realized by choosing <span class="math inline">\(\bx^{(0)}=\bx^*+\be^{(0)}\)</span>.</p>
+<p>The error <span class="math inline">\(\be^{(k)} \to \bzero\)</span> for all initial errors <span class="math inline">\(\be^{(0)} \in \fR^n\)</span> if and only if <span class="math inline">\(\lim_{k\to\infty} \bT^k = \bzero\)</span>.</p>
+<p>If <span class="math inline">\(\rho(\bT) &lt; 1\)</span>, choose <span class="math inline">\(\varepsilon = \frac{1 - \rho(\bT)}{2} &gt; 0\)</span>. By Gelfand’s theorem (the referenced result), there exists an induced matrix norm <span class="math inline">\(\|\cdot\|_*\)</span> such that <span class="math display">\[
 \begin{align}
-\frac{\|\br^{(k)}\|}{\|\bb\|} \leq `tol`.
+\|\bT\|_* \leq \rho(\bT) + \varepsilon = \frac{1 + \rho(\bT)}{2} &lt; 1.
 \end{align}
-\]</span> This is a relative residual test. It is cheap and scale-aware, but it is not the same as a relative error test unless the problem is well-conditioned.</p>
+\]</span> Then <span class="math inline">\(\|\bT^k\|_* \leq \|\bT\|_*^k \to 0\)</span> as <span class="math inline">\(k \to \infty\)</span>, so <span class="math inline">\(\bT^k \to \bzero\)</span> and <span class="math inline">\(\|\be^{(k)}\|_* \leq \|\bT\|_*^k \|\be^{(0)}\|_* \to 0\)</span>.</p>
+<p>Conversely, suppose <span class="math inline">\(\bT^k \to \bzero\)</span>. If <span class="math inline">\(\lambda \in \sigma(\bT)\)</span> with eigenvector <span class="math inline">\(\bv \neq \bzero\)</span>, then <span class="math inline">\(\bT^k \bv = \lambda^k \bv\)</span>. For this sequence to converge to <span class="math inline">\(\bzero\)</span>, we must have <span class="math inline">\(|\lambda|^k \to 0\)</span>, forcing <span class="math inline">\(|\lambda| &lt; 1\)</span>. If an eigenvector is complex while the matrix is real, write it as <span class="math inline">\(\bv=\ba+i\bb\)</span>. Convergence of <span class="math inline">\(\bT^k\)</span> on every real vector makes both <span class="math inline">\(\bT^k\ba\)</span> and <span class="math inline">\(\bT^k\bb\)</span> tend to zero, so convergence also holds for their complex combination. Thus the eigenvector test covers complex eigenvalues as well.</p>
+<p>Because this holds for all eigenvalues, <span class="math inline">\(\rho(\bT) &lt; 1\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -961,29 +921,38 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Preconditioning preview)</strong> Most useful iterative solvers are preconditioned. A preconditioner <span class="math inline">\(\bM\approx\bA\)</span> should be cheap to solve with and should make the transformed system easier for the iterative method. Good preconditioning changes the problem from “possible but slow” to practical.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For <span class="math inline">\(\bA = \begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 3 \end{pmatrix}\)</span>, find <span class="math inline">\(\rho(\bT)\)</span> for the splitting <span class="math inline">\(\bM = 3\bI\)</span>.</p></li>
-<li><p>If <span class="math inline">\(\rho(\bT) = 0.99\)</span>, how many iterations are needed to gain 4 digits of precision?</p></li>
-<li><p>Start <span class="math inline">\(\bx^{(0)}=\bzero\)</span> and solve <span class="math inline">\(\bA\bx = (4, 4)^T\)</span> via 3 steps of this iteration.</p></li>
-</ol>
+<p><strong>(Asymptotic convergence rate and iteration count)</strong> The quantity <span class="math inline">\(-\log_{10} \rho(\bT)\)</span> represents the asymptotic rate of convergence, measuring the number of decimal digits of accuracy gained per iteration. To reduce the initial error by a relative tolerance factor <span class="math inline">\(\varepsilon\)</span>, the required number of iterations satisfies <span class="math display">\[
+\begin{align}
+k \approx \frac{\ln(1/\varepsilon)}{-\ln \rho(\bT)}.
+\end{align}
+\]</span> If <span class="math inline">\(\rho(\bT) = 0.99\)</span>, we have <span class="math inline">\(-\ln(0.99) \approx 0.01005\)</span>, which requires approximately <span class="math inline">\(230\)</span> iterations to reduce the error by a factor of ten. As <span class="math inline">\(\rho(\bT) \to 1\)</span>, convergence slows drastically.</p>
 </div>
 </div>
 </section>
-<section id="fill-in-and-sparse-storage" class="level2" data-number="21.4">
-<h2 data-number="21.4" class="anchored" data-anchor-id="fill-in-and-sparse-storage"><span class="header-section-number">21.4</span> Fill-in and Sparse Storage</h2>
+<section id="krylov-subspaces-and-matrix-free-solvers" class="level2" data-number="23.3">
+<h2 data-number="23.3" class="anchored" data-anchor-id="krylov-subspaces-and-matrix-free-solvers"><span class="header-section-number">23.3</span> Krylov Subspaces and Matrix-Free Solvers</h2>
+<p>A stationary method applies the same splitting at every step. A Krylov method instead chooses the iterate <span class="math inline">\(\bx^{(k)}\)</span> from the affine space <span class="math inline">\(\bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)})\)</span>, where <span class="math inline">\(\mathcal{K}_k\)</span> is the Krylov subspace of the referenced result generated by the initial residual. The basis for this space is built by the Arnoldi process of the referenced section, or by the Lanczos recurrence when <span class="math inline">\(\bA\)</span> is symmetric. The conjugate gradient and GMRES methods differ in the optimality criterion used to select <span class="math inline">\(\bx^{(k)}\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Krylov Polynomial Representation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bx^{(0)}\)</span> be an initial guess with residual <span class="math inline">\(\br^{(0)} = \bb - \bA\bx^{(0)}\)</span>. Any iterate <span class="math inline">\(\bx^{(k)}\)</span> belonging to the affine Krylov space <span class="math inline">\(\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})\)</span> can be represented as <span class="math display">\[
+\begin{align}
+\bx^{(k)} = \bx^{(0)} + p_{k-1}(\bA)\br^{(0)},
+\end{align}
+\]</span> where <span class="math inline">\(p_{k-1}\)</span> is a polynomial of degree at most <span class="math inline">\(k-1\)</span>. The corresponding residual vector satisfies <span class="math display">\[
+\begin{align}
+\br^{(k)} = \bb - \bA\bx^{(k)} = q_k(\bA)\br^{(0)},
+\end{align}
+\]</span> where <span class="math inline">\(q_k(t) = 1 - t p_{k-1}(t)\)</span> is a polynomial of degree at most <span class="math inline">\(k\)</span> satisfying the normalization constraint <span class="math inline">\(q_k(0) = 1\)</span>.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -994,10 +963,81 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Write a general correction as <span class="math inline">\(\sum_{j=0}^{k-1}c_j\bA^j\br^{(0)}\)</span> and subtract its image from <span class="math inline">\(\br^{(0)}\)</span>. Prove the polynomial representation. Conversely, if <span class="math inline">\(q_k(0)=1\)</span>, show that <span class="math inline">\((1-q_k(t))/t\)</span> is a polynomial of degree at most <span class="math inline">\(k-1\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Matrix-free computation)</strong> Krylov subspace methods never require explicit access to the individual entries of <span class="math inline">\(\bA\)</span>. They interact with the linear operator exclusively by computing matrix–vector products <span class="math inline">\(\bv \mapsto \bA\bv\)</span>. Consequently, linear systems can be solved efficiently even when the matrix is defined implicitly as a differential operator or a numerical simulation routine.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Stopping Criteria for Iterative Solvers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Because the true error <span class="math inline">\(\be^{(k)} = \bx^{(k)} - \bx^*\)</span> is unobservable, termination is determined using the computable residual vector <span class="math inline">\(\br^{(k)} = \bb - \bA\bx^{(k)}\)</span>. Common stopping criteria include:</p>
 <ol type="1">
-<li><p><strong>Fill-in Demo:</strong> Generate a large sparse tridiagonal matrix. Compare nonzeros in <span class="math inline">\(\bA\)</span> vs.&nbsp;LU factors.</p></li>
-<li><p><strong>Timing:</strong> Use <code>scipy.sparse.linalg.spsolve</code> vs.&nbsp;dense <code>np.linalg.solve</code> for <span class="math inline">\(n=2000\)</span>. Record memory and time.</p></li>
+<li><p><strong>Relative residual test:</strong> <span class="math inline">\(\frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq `tol`\)</span>.</p></li>
+<li><p><strong>Preconditioned relative residual test:</strong> <span class="math inline">\(\frac{\|\bM^{-1}\br^{(k)}\|_2}{\|\bM^{-1}\bb\|_2} \leq `tol`\)</span>.</p></li>
+<li><p><strong>Step difference test:</strong> <span class="math inline">\(\frac{\|\bx^{(k+1)} - \bx^{(k)}\|_2}{\|\bx^{(k+1)}\|_2} \leq `tol`\)</span>.</p></li>
 </ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prove that if <span class="math inline">\(\|\bT\| &lt; 1\)</span> for some induced matrix norm, then the error satisfies <span class="math inline">\(\|\be^{(k)}\| \leq \frac{\|\bT\|}{1 - \|\bT\|} \|\bx^{(k)} - \bx^{(k-1)}\|\)</span>.</p>
+</div>
+</div>
+<p>Relative tests require a nonzero denominator; for <span class="math inline">\(\bb=\bzero\)</span>, use an absolute residual tolerance. A small step alone can also signal stagnation. Recompute the true residual before accepting convergence, and use the residual–error bound to interpret its size. The normwise backward-error denominator <span class="math inline">\(\|\bA\|\|\bx^{(k)}\|+\|\bb\|\)</span> often gives a more useful scale than <span class="math inline">\(\|\bb\|\)</span> alone.</p>
+</section>
+<section id="further-exercises" class="level2" data-number="23.4">
+<h2 data-number="23.4" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">23.4</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bA=\begin{pmatrix}4&amp;1\\2&amp;3\end{pmatrix}\)</span> and <span class="math inline">\(\bM=4\bI\)</span>, determine how many iterations guarantee <span class="math inline">\(\|\be^{(k)}\|_\infty\leq10^{-6}\|\be^{(0)}\|_\infty\)</span>. Compare a bound from <span class="math inline">\(\|\bT\|_\infty\)</span> with the asymptotic estimate from <span class="math inline">\(\rho(\bT)\)</span>. Why are these different kinds of estimates?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> and let <span class="math inline">\(\br^{(0)} \in \fR^n\)</span>. the referenced result shows that <span class="math inline">\(\dim\mathcal{K}_k(\bA,\br^{(0)})\)</span> stops growing once the Krylov subspace is invariant. Prove the complementary statement: before that step, the dimension increases by exactly one at each step.</p>
 </div>
 </div>
 
@@ -1420,13 +1460,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../eigenvalues/jacobi-eig.html" class="pagination-link" aria-label="Jacobi Eigenvalue Algorithm">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span>
+      <a href="../applications/operators.html" class="pagination-link" aria-label="Linear Operators and the Poisson Equation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../iterative/jacobi.html" class="pagination-link" aria-label="Jacobi and Gauss-Seidel Methods">
-        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../iterative/jacobi.html" class="pagination-link" aria-label="Jacobi, Gauss-Seidel, and SOR Methods">
+        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
