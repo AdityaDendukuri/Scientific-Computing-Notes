@@ -1,308 +1,174 @@
-# Stability and Condition Number
+# Conditioning and Numerical Stability
 
 
-Sensitivity of problems vs.\ robustness of algorithms.
-
-
-Conditioning asks whether the mathematical problem is sensitive to small changes in the data. Stability asks whether the algorithm introduces only small changes to the problem. A good computation needs both: a well-conditioned problem and a stable algorithm.
+In numerical linear algebra, errors in computed solutions arise from two distinct sources: the inherent sensitivity of the mathematical problem, and the accumulation of roundoff errors within the executing algorithm. The condition number quantifies problem sensitivity, whereas numerical stability describes the fidelity of the algorithm. A reliable computational result requires both a well-conditioned problem and a backward stable algorithm.
 
 
 ## Residual, Forward Error, and Backward Error
 
 
+Let $\bA\bx = \bb$ be a nonsingular linear system with exact solution $\bx^* = \bA^{-1}\bb$, and let $\hat{\bx}$ denote a computed approximation. We assess the quality of $\hat{\bx}$ through three interrelated quantities.
+
+
 ::: {.callout-note icon=false}
-## Definition: Residual and Forward Error
-For a computed solution $\hat{\bx}$ to the linear system in the result above:
+## Definition: Forward Error, Residual, and Backward Error
+For a computed approximation $\hat{\bx}$:
+
+1. The **forward error** is the vector difference $\Delta\bx = \hat{\bx} - \bx^*$, with relative measure $\frac{\|\hat{\bx} - \bx^*\|}{\|\bx^*\|}$.
+    
+1. The **residual** is the vector defect $\br = \bb - \bA\hat{\bx}$, with relative measure $\frac{\|\br\|}{\|\bA\|\|\hat{\bx}\| + \|\bb\|}$.
+    
+1. The **backward error** is the smallest perturbation $(\delta\bA, \delta\bb)$ such that $\hat{\bx}$ is the exact solution to the perturbed system $(\bA + \delta\bA)\hat{\bx} = \bb + \delta\bb$.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: The Fundamental Residual-Error Bound
+Let $\bA \in \fR^{n \times n}$ be nonsingular, let $\bb \neq \bzero$, and let $\bx^*$ satisfy $\bA\bx^* = \bb$. For any vector $\hat{\bx}$ with residual $\br = \bb - \bA\hat{\bx}$, the relative forward error satisfies
 $$
 \begin{align}
-\br = \bb-\bA\hat{\bx}
-    \qquad \text{and} \qquad
-    \be = \hat{\bx}-\bx^*,
+\frac{\|\hat{\bx} - \bx^*\|}{\|\bx^*\|} \leq \kappa(\bA) \frac{\|\br\|}{\|\bb\|},
 \end{align}
 $$
-where $\bx^*$ is the exact solution.
-
-- **Residual:**  How well the computed answer satisfies the equations.
-    
-- **Forward error:**  How close the computed answer is to the exact answer.
-
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(Small residual, large error)**  Let
-$$
-\begin{align}
-\bA=\begin{pmatrix}1&0\\0&10^{-8}\end{pmatrix},
-    \qquad
-    \bb=\begin{pmatrix}1\\10^{-8}\end{pmatrix}.
-\end{align}
-$$
-The exact solution is $\bx^*=(1,1)^T$. The approximation $\hat{\bx}=(1,0)^T$ has residual
-$$
-\begin{align}
-\br=\bb-\bA\hat{\bx}=(0,10^{-8})^T,
-\end{align}
-$$
-which is tiny in absolute norm, but the solution error is $(0,-1)^T$. The small singular value makes one direction hard to determine accurately.
-:::
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Return to the result above. Explain why the residual in the result above is computable but the forward error usually is not.
-    
-1. Verify every number in the small-residual example above.
-    
-1. Change the small diagonal entry from $10^{-8}$ to $10^{-12}$. How do the residual and forward error change?
-
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Residual-Error Bound
-Let $\bA$ be nonsingular, $\bx^*$ solve $\bA\bx=\bb$, and $\hat{\bx}$ have residual $\br=\bb-\bA\hat{\bx}$. If $\bb\neq\bzero$, then
-$$
-\begin{align}
-\frac{\|\hat{\bx}-\bx^*\|}{\|\bx^*\|}
-    \leq
-    \kappa(\bA)\frac{\|\br\|}{\|\bb\|}.
-\end{align}
-$$
-Thus a small relative residual guarantees a small relative forward error only when the problem is well-conditioned.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Starting from $\br=\bb-\bA\hat{\bx}$ and $\bb=\bA\bx^*$, show that $\br=\bA(\bx^*-\hat{\bx})$.
-    
-1. Use the previous step to prove $\|\hat{\bx}-\bx^*\|\leq \|\bA^{-1}\|\|\br\|$.
-    
-1. Use $\|\bb\|\leq \|\bA\|\|\bx^*\|$ to finish the proof of the result above.
-    
-1. Apply the bound to the small-residual example above. Is the bound sharp?
-
-:::
-
-
-## Why Factorize instead of Invert?
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Explicit inverse rule)**  Never compute $\bA^{-1}$ explicitly.
-
-- **Cost:**  Computing $\bA^{-1}$ takes $3\times$ longer than LU ($\frac{8}{3}n^3$ vs.\ $\frac{2}{3}n^3$).
-    
-- **Stability:**  Round-off in $\bA^{-1}$ propagates into the entire product $\bA^{-1}\bb$. Stable factorizations confine errors.
-    
-- **Efficiency:**  LU allows solving for new $\bb$'s in $O(n^2)$ without storing a dense inverse.
-
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the LU factorization costs from the LU chapter to compare total flops for solving 10 systems via $\bA^{-1}$ vs.\ LU when $n=500$.
-    
-1. Construct $\bA = \text{diag}(1, 1, 10^{-12})$. Compare residuals of `inv(A) @ b` and `solve(A, b)` using the result above.
-    
-1. Explain the result using the distinction between residual and forward error from the result above.
-
-:::
-
-
-## Numerical Stability
-
-A property of the **algorithm**.
-
-
-::: {.callout-note icon=false}
-## Definition: Backward Stability
-An algorithm is backward stable if its computed $\hat{\bx}$ is the **exact solution to a nearby problem**:
-$(\bA + \delta \bA)\hat{\bx} = \bb + \delta \bb$, with $\|\delta \bA\|/\|\bA\| = O(\varepsilon_{\text{mach}})$.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Normwise Backward Error for Linear Systems
-For a computed vector $\hat{\bx}$ with residual $\br=\bb-\bA\hat{\bx}$, the normwise relative backward error for the linear system $\bA\bx=\bb$ is
-$$
-\begin{align}
-\eta(\hat{\bx})
-    =
-    \frac{\|\br\|}
-    {\|\bA\|\|\hat{\bx}\|+\|\bb\|}.
-\end{align}
-$$
-This is the smallest relative perturbation size, measured normwise in both $\bA$ and $\bb$, that makes $\hat{\bx}$ an exact solution of a nearby system.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Suppose $(\bA+\delta\bA)\hat{\bx}=\bb+\delta\bb$. Show that $\br=\delta\bb-\delta\bA\hat{\bx}$.
-    
-1. Use the triangle inequality to prove the lower bound
-    $$\|\br\|\leq \|\delta\bA\|\|\hat{\bx}\|+\|\delta\bb\|.$$
-    
-1. Divide by $\|\bA\|\|\hat{\bx}\|+\|\bb\|$ to obtain the denominator in the result above.
-    
-1. Construct a rank-one perturbation in the direction of $\br$ to see why the bound can be attained.
-    
-1. Compare this computable backward error with the residual-error bound in the result above.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**GEPP Stability:** 
-Gaussian Elimination with Partial Pivoting is backward stable for virtually all practical matrices. The growth factor $\rho$ stays small, preventing exponential error amplification.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Stable algorithms)**  Householder QR and Cholesky for SPD systems are backward stable under their usual assumptions. LU with partial pivoting is reliable in practice, though its worst-case growth factor can be large.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the result above to explain why backward stability is a natural standard when input data are already uncertain.
-    
-1. Explain why a small residual does not always guarantee a small forward error. Use the result above.
-    
-1. Compute $\eta(\hat{\bx})$ from the result above for the small-residual example above.
-    
-1. Histogram growth factors for 100 random matrices via `scipy.linalg.lu`.
-
-:::
-
-
-## Condition Number
-
-A property of the **problem**.
-
-
-::: {.callout-note icon=false}
-## Definition: Condition Number
-$\kappa(\bA) = \|\bA\|\|\bA^{-1}\|$.
-
-- **Interpretation:**  Worst-case error amplification. A perturbation of size $\varepsilon$ in $\bb$ can cause error up to $\kappa(\bA) \varepsilon$ in $\bx$.
-    
-- **Rule of Thumb:**  You expect at most $16 - \log_{10}(\kappa(\bA))$ correct digits in double precision.
-
+where $\kappa(\bA) = \|\bA\|\|\bA^{-1}\|$ is the condition number of $\bA$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Let $\bA\bx = \bb$ be the original system and $\bA(\bx+\delta\bx) = \bb+\delta\bb$ the perturbed system. Subtracting gives $\bA \delta\bx = \delta\bb$, so $\delta\bx = \bA^{-1} \delta\bb$.
-Taking norms:
+Because $\bb = \bA\bx^*$, the residual can be written in terms of the forward error as $\br = \bb - \bA\hat{\bx} = \bA(\bx^* - \hat{\bx})$. Multiplying both sides by $\bA^{-1}$ yields $\bx^* - \hat{\bx} = \bA^{-1}\br$. Taking vector norms and applying the submultiplicative property of induced matrix norms gives
 $$
 \begin{align}
-\|\delta\bx\| \leq \|\bA^{-1}\| \|\delta\bb\|.
+\|\hat{\bx} - \bx^*\| \leq \|\bA^{-1}\| \|\br\|.
 \end{align}
 $$
-Also, from $\bA\bx = \bb$, we have $\|\bb\| \leq \|\bA\| \|\bx\|$, which implies $1/\|\bx\| \leq \|\bA\|/\|\bb\|$.
-Combining these inequalities for the relative error:
+Furthermore, from $\bb = \bA\bx^*$, we obtain $\|\bb\| \leq \|\bA\| \|\bx^*\|$, which rearranges to $\frac{1}{\|\bx^*\|} \leq \frac{\|\bA\|}{\|\bb\|}$. Multiplying these two inequalities produces
 $$
 \begin{align}
-\frac{\|\delta\bx\|}{\|\bx\|} &\leq \|\bA^{-1}\| \|\delta\bb\| \frac{\|\bA\|}{\|\bb\|} \\
-    &= (\|\bA\| \|\bA^{-1}\|) \frac{\|\delta\bb\|}{\|\bb\|} \\
-    &= \kappa(\bA) \frac{\|\delta\bb\|}{\|\bb\|}.
+\frac{\|\hat{\bx} - \bx^*\|}{\|\bx^*\|} \leq (\|\bA\| \|\bA^{-1}\|) \frac{\|\br\|}{\|\bb\|} = \kappa(\bA) \frac{\|\br\|}{\|\bb\|}.
 \end{align}
 $$
-Thus, the condition number $\kappa(\bA)$ acts as the amplification factor for relative perturbations in the right-hand side.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Reproduce the perturbation argument above without looking.
-    
-1. Compute $\kappa_2(H_n)$ for Hilbert matrices $n=3, ..., 10$. How fast does it grow?
-    
-1. Use the result above, the result above, and the result above to explain why a stable algorithm on an ill-conditioned problem may still lose many digits.
-    
-1. **The Neumann Series:**  Use it to prove the perturbation bound: $\frac{\|\delta \bx\|}{\|\bx\|} \leq \frac{\kappa(\bA)}{1 - ...}$.
-
-:::
-
-
-## Solver Selection Hierarchy
-
-
-::: {.callout-note icon=false}
-## Theorem: Solver Selection by Structure
-Choose a solver from the most specific trustworthy structure in the problem:
-
-1. If $\bA$ is SPD and dense, use Cholesky; if it is SPD and large sparse, use CG with a preconditioner.
-    
-1. If $\bA$ is general, square, dense, and nonsingular, use LU with partial pivoting.
-    
-1. If the problem is full-rank least squares, use Householder QR.
-    
-1. If the problem is rank-deficient, nearly rank-deficient, or requires numerical rank information, use the SVD.
-    
-1. If $\bA$ is large, sparse, nonsymmetric, and only matrix-vector products are practical, use GMRES or another nonsymmetric Krylov method.
-
-The more structure a solver exploits, the cheaper it can be; the less trustworthy the structure, the more robust the solver must be.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. For each case in the result above, identify the mathematical structure being used: symmetry, positive definiteness, sparsity, full column rank, or numerical rank.
-    
-1. Explain why Cholesky is inappropriate if the SPD assumption fails.
-    
-1. Explain why QR is preferred to normal equations for full-rank least squares, using the result above.
-    
-1. Explain why the SVD is the natural fallback when rank is uncertain, using the result above.
-    
-1. Explain why CG and GMRES fit the Krylov approximation principle from the result above.
-
 :::
 
 
 ::: {.callout-note icon=false}
-## Definition: Iterative Refinement
-The accuracy of a computed solution $\hat{\bx}$ can be improved by iterative refinement:
+## Example
+**(A small residual does not guarantee a small error)** 
+Consider the diagonal system
+$$
+\begin{align}
+\bA = \begin{pmatrix} 1 & 0 \\ 0 & 10^{-8} \end{pmatrix}, \qquad \bb = \begin{pmatrix} 1 \\ 10^{-8} \end{pmatrix}.
+\end{align}
+$$
+The exact solution is $\bx^* = (1, 1)^T$. Suppose an algorithm produces the approximation $\hat{\bx} = (1, 0)^T$. The residual evaluates to
+$$
+\begin{align}
+\br = \bb - \bA\hat{\bx} = \begin{pmatrix} 1 \\ 10^{-8} \end{pmatrix} - \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 0 \\ 10^{-8} \end{pmatrix},
+\end{align}
+$$
+which satisfies $\|\br\|_2 / \|\bb\|_2 \approx 10^{-8}$. However, the forward error is $\hat{\bx} - \bx^* = (0, -1)^T$, yielding a relative forward error of $\|\hat{\bx} - \bx^*\|_2 / \|\bx^*\|_2 = 1/\sqrt{2} \approx 0.707$ (a seventy percent error). The matrix has condition number $\kappa_2(\bA) = 10^8$, which amplifies the small residual into an $O(1)$ error in the solution.
+:::
+## Conditioning and Backward Stability
 
-1. Compute the residual $\br = \bb - \bA\hat{\bx}$.
-    
-1. Solve $\bA \boldsymbol{\delta} = \br$.
-    
-1. Update the estimate: $\hat{\bx} \leftarrow \hat{\bx} + \boldsymbol{\delta}$.
 
-Each step recovers digits lost due to ill-conditioning, up to the limits of machine precision.
+::: {.callout-note icon=false}
+## Definition: Condition Number of a Matrix
+The condition number of a nonsingular matrix $\bA \in \fR^{n \times n}$ with respect to a given norm is
+$$
+\begin{align}
+\kappa(\bA) = \|\bA\|\|\bA^{-1}\|.
+\end{align}
+$$
+In the Euclidean 2-norm, $\kappa_2(\bA) = \sigma_{\max}(\bA) / \sigma_{\min}(\bA)$. The condition number measures the worst-case sensitivity of the exact solution $\bx^*$ to relative perturbations in the input data $\bA$ and $\bb$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Rigal-Gaches Theorem on Normwise Backward Error
+For any computed approximation $\hat{\bx}$ with residual $\br = \bb - \bA\hat{\bx}$, the smallest relative perturbation size satisfying $(\bA + \delta\bA)\hat{\bx} = \bb + \delta\bb$ with $\|\delta\bA\| \leq \eta \|\bA\|$ and $\|\delta\bb\| \leq \eta \|\bb\|$ is given explicitly by
+$$
+\begin{align}
+\eta(\hat{\bx}) = \frac{\|\br\|}{\|\bA\|\|\hat{\bx}\| + \|\bb\|}.
+\end{align}
+$$
+An algorithm is termed **backward stable** if for every problem instance, the computed solution satisfies $\eta(\hat{\bx}) = O(\varepsilon_{\text{mach}})$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+From $(\bA + \delta\bA)\hat{\bx} = \bb + \delta\bb$, rearranging gives $\br = \bb - \bA\hat{\bx} = \delta\bA\hat{\bx} - \delta\bb$. Taking norms and applying the triangle inequality yields
+$$
+\begin{align}
+\|\br\| \leq \|\delta\bA\|\|\hat{\bx}\| + \|\delta\bb\| \leq \eta \|\bA\|\|\hat{\bx}\| + \eta \|\bb\| = \eta (\|\bA\|\|\hat{\bx}\| + \|\bb\|),
+\end{align}
+$$
+which establishes that $\eta \geq \frac{\|\br\|}{\|\bA\|\|\hat{\bx}\| + \|\bb\|}$. To prove that this lower bound is attainable, define the rank-one matrix perturbation $\delta\bA = \frac{\|\bA\|\|\hat{\bx}\|}{\|\bA\|\|\hat{\bx}\| + \|\bb\|} \frac{\br \hat{\bx}^T}{\|\hat{\bx}\|_2^2}$ and the vector perturbation $\delta\bb = -\frac{\|\bb\|}{\|\bA\|\|\hat{\bx}\| + \|\bb\|} \br$. Direct substitution confirms that $(\bA + \delta\bA)\hat{\bx} = \bb + \delta\bb$ with perturbations achieving the minimal bound.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Limitations)**  Iterative refinement helps when the residual can be computed accurately and the correction equation can be solved reliably. It cannot overcome a problem whose condition number is so large that the desired digits are not present in the data.
+**(The fundamental theorem of numerical analysis)** 
+Combining backward stability with problem conditioning yields the master error estimate of scientific computation:
+$$
+\begin{align}
+\text{Forward Error} \lesssim \kappa(\bA) \times \text{Backward Error}.
+\end{align}
+$$
+A backward stable algorithm guarantees that the backward error is on the order of machine precision $\varepsilon_{\text{mach}}$. If the computed solution is inaccurate, the loss of precision is entirely due to the ill-conditioning of the mathematical model $\kappa(\bA)$, not a defect of the numerical algorithm.
+:::
+
+
+## The Solver Selection Hierarchy
+
+
+::: {.callout-note icon=false}
+## Theorem: Solver Selection Hierarchy for Linear Systems
+To maximize computational efficiency and numerical stability, direct and iterative solvers should be selected according to the structural hierarchy of the coefficient matrix:
+
+1. **Symmetric Positive Definite (Dense):** Cholesky factorization $\bA = \bL\bL^T$ ($\frac{1}{3}n^3$ flops, unconditionally backward stable without pivoting).
+    
+1. **Symmetric Positive Definite (Large Sparse):** Preconditioned Conjugate Gradient (PCG) ($O(\text{nnz})$ per iteration, $O(n)$ memory).
+    
+1. **General Square (Dense):** Gaussian Elimination with Partial Pivoting $\bP\bA = \bL\bU$ ($\frac{2}{3}n^3$ flops, backward stable in practice).
+    
+1. **General Square (Large Sparse):** Preconditioned GMRES or BiCGStab ($O(\text{nnz})$ per iteration).
+    
+1. **Overdetermined Full-Rank ($m \geq n$):** Householder QR factorization $\bA = \bQ\bR$ ($2mn^2 - \frac{2}{3}n^3$ flops, avoids squaring the condition number).
+    
+1. **Rank-Deficient or Ill-Conditioned ($m \geq n$):** Singular Value Decomposition $\bA = \bU\bsigma\bV^T$ (reveals numerical rank and computes minimum-norm solutions).
+
+:::
+
+
+## Iterative Refinement
+
+
+::: {.callout-note icon=false}
+## Definition: Iterative Refinement Algorithm
+Given a computed solution $\hat{\bx}^{(0)}$ from an initial LU or Cholesky factorization, iterative refinement improves the solution accuracy:
+
+1. Compute the residual with high precision: $\br^{(k)} = \bb - \bA\hat{\bx}^{(k)}$.
+    
+1. Solve the error correction system using the existing factors: $\bA \bd^{(k)} = \br^{(k)}$.
+    
+1. Update the solution: $\hat{\bx}^{(k+1)} = \hat{\bx}^{(k)} + \bd^{(k)}$.
+
+If $\kappa(\bA) \varepsilon_{\text{mach}} < 1$ and the residual is evaluated with extended precision, iterative refinement converges to machine precision accuracy in a few steps.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Solve $H_{10}\bx = H_{10}\mathbf{1}$. Apply one step of iterative refinement from the result above. How many digits are recovered?
+1. Let $\bA = \begin{pmatrix} 1 & 1 \\ 1 & 1 + 10^{-10} \end{pmatrix}$. Compute $\bA^{-1}$ explicitly and evaluate $\kappa_\infty(\bA)$.
     
-1. Compare forward errors of `solve` (LU) vs `lstsq` (QR) on a Hilbert system. Interpret the result using the result above.
+1. Suppose $\bA\bx = \bb$ is solved using a backward stable algorithm on a computer with $\varepsilon_{\text{mach}} \approx 10^{-16}$. If $\kappa_2(\bA) = 10^{11}$, estimate the number of correct decimal digits in the computed solution.
     
-1. Choose a solver for each case in the result above: SPD, dense general square, full-rank least squares, rank-deficient least squares, large sparse SPD, and large sparse nonsymmetric. Justify each choice by citing one earlier result or exercise.
+1. Prove that for any two nonsingular matrices $\bA$ and $\bB$, $\kappa(\bA\bB) \leq \kappa(\bA)\kappa(\bB)$.
+    
+1. Show that for an orthogonal matrix $\bQ$, $\kappa_2(\bQ\bA) = \kappa_2(\bA)$ for any square matrix $\bA$.
 
 :::

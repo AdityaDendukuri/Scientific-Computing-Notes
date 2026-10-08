@@ -2,231 +2,181 @@
 
 \begin{document}
 
-\subsection{Orthogonal Matrices}
+\subsection{Orthogonal Transformations and the QR Factorization}
 \label{sub:orthogonal}
 
-Transformations that preserve lengths and angles. Numerically ideal due to optimal conditioning ($\kappa_2(\bQ) = 1$).
+\textBox{%
+Orthogonal transformations are the gold standard of numerical linear algebra. Because an orthogonal transformation preserves Euclidean lengths and angles, it neither amplifies nor attenuates perturbations in the data. When an algorithm is composed entirely of orthogonal operations, the accumulation of floating-point rounding errors is strictly controlled, and the condition number of the transformation is identically one.
+}
 
 \textBox{%
-Orthogonal transformations rotate or reflect space without stretching it. Because they preserve lengths, they do not amplify errors in the Euclidean norm. This is why stable numerical linear algebra tries to use orthogonal transformations whenever possible.
+The QR factorization expresses a matrix as the product of an orthogonal matrix $\bQ$ and an upper triangular matrix $\bR$. This factorization provides an orthonormal basis for the column space of the matrix, transforming complicated geometric projections and overdetermined least-squares problems into straightforward triangular solves.
 }
 
-\subsubsection{Orthogonality and Orthonormal Bases}
-
-\addDef{Orthogonal Vectors}{%
-$\bx, \by \in \fR^n$ are orthogonal if $\bx^T\by = 0$.
-\begin{itemize}
-  \item \textbf{Mutually Orthogonal Set:}\enspace $\bv_i^T\bv_j = 0$ for all $i \neq j$.
-\end{itemize}
-}
-\label{def:orthogonal-vectors}
-
-\addDef{Orthonormal Basis}{%
-A set $\{\bq_1, \dots, \bq_n\}$ where $\bq_i^T\bq_j = \delta_{ij}$ (unit length and mutually orthogonal).
-\begin{itemize}
-  \item \textbf{Matrix Form:}\enspace If $\bQ = [\bq_1, \dots, \bq_n]$, then $\bQ^T\bQ = \bI$.
-\end{itemize}
-}
-\label{def:orthonormal-basis}
-
-\addRemark{%
-\textbf{(Efficiency in Orthonormal Bases)}\enspace
-In an orthonormal basis, the coefficients of a vector $\bv = \sum c_i \bq_i$ are given by standard inner products: $c_i = \bq_i^T\bv$. This allows the solution of a linear system, which generally requires $O(n^3)$ operations, to be computed using a sequence of inner products in $O(n^2)$ time.
-}
-\label{rem:orthonormal-coordinates}
-
-\addExcr{%
-\begin{enumerate}
-    \item Verify $\bq_1 = \frac{1}{\sqrt{2}}(1, 1)^T, \bq_2 = \frac{1}{\sqrt{2}}(1, -1)^T$ is an orthonormal basis using Def~\ref{def:orthonormal-basis}.
-    \item Express $\bv = (3, -1)^T$ in this basis using Remark~\ref{rem:orthonormal-coordinates}.
-    \item Prove that any set of $n$ mutually orthogonal nonzero vectors is linearly independent.
-\end{enumerate}
-}
-\label{ex:orthonormal-coordinates}
+\subsubsection{Orthogonality, Isometry, and Invariance}
 
 \addDef{Orthogonal Matrix}{%
-Square matrix $\bQ$ where $\bQ^T = \bQ^{-1}$. Columns (and rows) form an orthonormal basis.
+A square matrix $\bQ \in \fR^{n \times n}$ is termed \textbf{orthogonal} if its columns form an orthonormal basis for $\fR^n$. Equivalently,
+\begin{align*}
+    \bQ^T\bQ = \bQ\bQ^T = \bI_n \iff \bQ^{-1} = \bQ^T.
+\end{align*}
+For rectangular matrices $\bQ \in \fR^{m \times n}$ with $m \geq n$, we say that $\bQ$ has orthonormal columns if $\bQ^T\bQ = \bI_n$.
 }
 \label{def:orthogonal-matrix}
 
-\addExmpl{%
-\textbf{(Rotation and reflection)}\enspace In $\fR^2$,
-\begin{align*}
-    \begin{pmatrix}\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta\end{pmatrix}
-    \quad \text{rotates, while} \quad
-    \begin{pmatrix}1&0\\0&-1\end{pmatrix}
-    \quad \text{reflects.}
-\end{align*}
-Both are orthogonal. The determinant distinguishes orientation: rotations have determinant $1$, reflections have determinant $-1$.
-}
-
-\addThm{Invariance Properties}{%
-For any orthogonal $\bQ$ from Def~\ref{def:orthogonal-matrix} and vectors $\bx, \by$:
+\addThm{Geometric Invariance Properties of Orthogonal Transformations}{%
+Let $\bQ \in \fR^{n \times n}$ be an orthogonal matrix. For all vectors $\bx, \by \in \fR^n$, the transformation $\bx \mapsto \bQ\bx$ satisfies the following properties:
 \begin{enumerate}
-    \item \textbf{Inner Product Preserving:}\enspace $(\bQ\bx)^T(\bQ\by) = \bx^T\by$.
-    \item \textbf{Isometry:}\enspace $\|\bQ\bx\|_2 = \|\bx\|_2$.
-    \item \textbf{Conditioning:}\enspace $\kappa_2(\bQ) = 1$ (Optimally conditioned).
+    \item \textbf{Inner Product Preservation:} $\langle \bQ\bx, \bQ\by \rangle = (\bQ\bx)^T(\bQ\by) = \bx^T\by = \langle \bx, \by \rangle$.
+    \item \textbf{Isometry (Length Preservation):} $\|\bQ\bx\|_2 = \|\bx\|_2$.
+    \item \textbf{Matrix 2-Norm and Conditioning:} $\|\bQ\|_2 = 1$ and $\kappa_2(\bQ) = \|\bQ\|_2 \|\bQ^{-1}\|_2 = 1$.
+    \item \textbf{Determinant:} $\det(\bQ) = \pm 1$, where $+1$ corresponds to a pure rotation and $-1$ corresponds to a reflection.
 \end{enumerate}
 }
 \label{thm:orthogonal-invariance}
 
 \addPrf{%
-\textbf{(1):}\enspace Applying the Reversal Law for transposes and the fact that $\bQ^T\bQ = \bI$:
-\begin{align*}
-    (\bQ\bx)^T(\bQ\by) &= \bx^T \bQ^T \bQ \by \\
-    &= \bx^T (\bQ^T \bQ) \by \\
-    &= \bx^T \bI \by = \bx^T \by.
-\end{align*}
-
-\textbf{(2):}\enspace Using the result from (1) with $\bx = \by$:
-\begin{align*}
-    \|\bQ\bx\|_2^2 &= (\bQ\bx)^T(\bQ\bx) \\
-    &= \bx^T\bx = \|\bx\|_2^2.
-\end{align*}
-Taking the square root gives $\|\bQ\bx\|_2 = \|\bx\|_2$.
-
-\textbf{(3):}\enspace From (2), we see that the induced norm is $\|\bQ\|_2 = 1$. Similarly, $\|\bQ^T\|_2 = 1$ because $\bQ^T$ is also orthogonal. Thus:
-\begin{align*}
-    \kappa_2(\bQ) = \|\bQ\|_2 \|\bQ^T\|_2 = 1 \cdot 1 = 1.
-\end{align*}
+Using the transpose property of matrix multiplication, $(\bQ\bx)^T(\bQ\by) = \bx^T(\bQ^T\bQ)\by = \bx^T\bI\by = \bx^T\by$, which proves the preservation of inner products. Setting $\bx = \by$ gives $\|\bQ\bx\|_2^2 = \bx^T\bx = \|\bx\|_2^2$, proving length preservation. Taking the supremum over unit vectors yields $\|\bQ\|_2 = \sup_{\|\bx\|_2=1} \|\bQ\bx\|_2 = 1$. Because $\bQ^{-1} = \bQ^T$ is also orthogonal, $\|\bQ^{-1}\|_2 = 1$, which establishes $\kappa_2(\bQ) = 1 \cdot 1 = 1$. Finally, taking determinants on $\bQ^T\bQ = \bI$ gives $(\det \bQ)^2 = 1 \implies \det \bQ = \pm 1$.
 }
 
-\addExcr{%
+\subsubsection{The QR Factorization}
+
+\addDef{Full and Thin QR Factorizations}{%
+Let $\bA \in \fR^{m \times n}$ with $m \geq n$.
 \begin{enumerate}
-    \item Verify rotation matrix $\bQ = \begin{pmatrix}\cos\theta & -\sin\theta \\ \sin\theta & \cos\theta\end{pmatrix}$ is orthogonal using Def~\ref{def:orthogonal-matrix}.
-    \item Use Thm~\ref{thm:orthogonal-invariance} to explain why rotations preserve Euclidean distance.
-    \item Prove that the product of two orthogonal matrices is orthogonal.
-    \item If $\bQ$ is orthogonal, show $\det(\bQ) = \pm 1$.
+    \item The \textbf{Full QR Factorization} is given by
+    \begin{align*}
+        \bA = \bQ\bR = \begin{pmatrix} \bQ_1 & \bQ_2 \end{pmatrix} \begin{pmatrix} \bR_1 \\ \bzero \end{pmatrix},
+    \end{align*}
+    where $\bQ \in \fR^{m \times m}$ is orthogonal, $\bQ_1 \in \fR^{m \times n}$, $\bQ_2 \in \fR^{m \times (m-n)}$, and $\bR_1 \in \fR^{n \times n}$ is upper triangular.
+    \item The \textbf{Thin (Economy) QR Factorization} retains only the first $n$ columns:
+    \begin{align*}
+        \bA = \bQ_1 \bR_1,
+    \end{align*}
+    where $\bQ_1 \in \fR^{m \times n}$ satisfies $\bQ_1^T\bQ_1 = \bI_n$ and $\bR_1 \in \fR^{n \times n}$ is upper triangular.
 \end{enumerate}
-}
-\label{ex:orthogonal-invariance}
-
-\subsubsection{QR Decomposition}
-
-Factors $\bA$ into an orthogonal $\bQ$ and upper triangular $\bR$. Default choice for least squares and eigenvalue algorithms.
-
-\textBox{%
-QR factorization builds an orthonormal basis for the column space of $\bA$. Once the columns have been replaced by an orthonormal basis, projections and least squares problems become much easier because coefficients are computed by inner products.
-}
-
-\addDef{QR Decomposition}{%
-For $\bA \in \fR^{m \times n}$ ($m \geq n$): $\bA = \bQ\bR$. The columns of $\bQ$ form an orthonormal basis for the column space introduced in Def~\ref{def:rank}.
-\begin{itemize}
-    \item \textbf{Full QR:}\enspace $\bQ \in \fR^{m \times m}, \bR \in \fR^{m \times n}$.
-    \item \textbf{Thin QR:}\enspace $\bQ_1 \in \fR^{m \times n}, \bR_1 \in \fR^{n \times n}$. Columns of $\bQ_1$ span $\mathcal{R}(\bA)$.
-\end{itemize}
+If $\bA$ has full column rank, the thin QR factorization is unique when the diagonal entries of $\bR_1$ are chosen to be strictly positive.
 }
 \label{def:qr}
 
 \addRemark{%
-\textbf{(Thin and full QR)}\enspace For least squares with $m\geq n$, the thin QR is usually the useful one:
-\begin{align*}
-    \bA=\bQ_1\bR_1,\qquad \bQ_1\in\fR^{m\times n},\quad \bR_1\in\fR^{n\times n}.
-\end{align*}
-The remaining $m-n$ columns in full QR span the orthogonal complement of $\mathcal{R}(\bA)$, but they are often unnecessary to store.
+\textbf{(Subspace identification via QR)}\enspace
+The columns of $\bQ_1$ form an orthonormal basis for the column space (range) $\mathcal{R}(\bA)$, while the columns of $\bQ_2$ form an orthonormal basis for the orthogonal complement $\mathcal{R}(\bA)^\perp = \mathcal{N}(\bA^T)$. For overdetermined least-squares problems where $m \gg n$, the thin factorization requires significantly less storage ($O(mn)$ vs $O(m^2)$) and is used in practical implementations.
+}
+
+\subsubsection{Householder Triangularization}
+
+\textBox{%
+The standard method for computing the QR factorization of a dense matrix is the Householder reflection technique. At each step, a Householder reflector is constructed to zero out all subdiagonal entries of a column simultaneously.
 }
 
 \addDef{Householder Reflector}{%
-A reflector $\bH = \bI - 2\frac{\bv\bv^T}{\bv^T\bv}$ reflects $\bx$ across the hyperplane $\bv^\perp$.
-\begin{itemize}
-    \item \textbf{Zeroing Property:}\enspace For any $\bx$, we can choose $\bv$ such that $\bH\bx = \pm \|\bx\| \be_1$.
-    \item \textbf{Efficiency:}\enspace Never form $\bH$ explicitly. Apply as $\bH\bx = \bx - \bv(2\frac{\bv^T\bx}{\bv^T\bv})$, a rank-1 update costing $O(m)$.
-\end{itemize}
+Let $\bv \in \fR^m$ be a nonzero vector. The Householder reflector associated with $\bv$ is the matrix
+\begin{align*}
+    \bH = \bI - 2 \frac{\bv\bv^T}{\bv^T\bv}.
+\end{align*}
+Geometrically, $\bH$ reflects any vector across the hyperplane orthogonal to $\bv$. Every Householder reflector is symmetric ($\bH^T = \bH$) and orthogonal ($\bH^T\bH = \bH^2 = \bI$).
 }
 \label{def:householder}
 
-\addRemark{%
-\textbf{(Householder QR cost)}\enspace
-For $\bA \in \fR^{m \times n}$ via Householder: $\text{Cost} \approx 2mn^2 - \frac{2}{3}n^3$.
-Square case ($m=n$): $\frac{4}{3}n^3$ (twice the cost of LU).
+\addThm{Householder Vector Construction}{%
+Given a vector $\bx \in \fR^m$, we wish to find a reflector $\bH$ that aligns $\bx$ with the first canonical coordinate axis: $\bH\bx = \pm \|\bx\|_2 \be_1$.
+The vector $\bv$ is chosen as
+\begin{align*}
+    \bv = \bx + \operatorname{sign}(x_1) \|\bx\|_2 \be_1,
+\end{align*}
+where $\operatorname{sign}(x_1) = 1$ if $x_1 \geq 0$ and $-1$ if $x_1 < 0$. Choosing the sign of the first component ensures that the two added terms have identical signs, completely preventing catastrophic cancellation.
+}
+\label{thm:householder-vector}
+
+\addPrf{%
+Let $\bv = \bx - \alpha \be_1$. Because $\bH$ preserves vector lengths, we must have $\|\bH\bx\|_2 = \|\bx\|_2$, which requires $\alpha = \pm \|\bx\|_2$. Computing $\bv^T\bv$ gives
+\begin{align*}
+    \bv^T\bv = (\bx - \alpha \be_1)^T(\bx - \alpha \be_1) = \|\bx\|_2^2 - 2\alpha x_1 + \alpha^2 = 2 \|\bx\|_2^2 - 2\alpha x_1 = 2 \bv^T\bx.
+\end{align*}
+Applying $\bH$ to $\bx$ yields
+\begin{align*}
+    \bH\bx = \bx - 2 \frac{\bv^T\bx}{\bv^T\bv} \bv = \bx - \bv = \alpha \be_1 = \pm \|\bx\|_2 \be_1.
+\end{align*}
+To ensure numerical stability in floating-point arithmetic, we choose $\alpha = -\operatorname{sign}(x_1)\|\bx\|_2$, so that $v_1 = x_1 + \operatorname{sign}(x_1)\|\bx\|_2$ avoids subtracting nearly equal quantities.
 }
 
 \addRemark{%
-\textbf{(Householder stability)}\enspace A Householder reflector is orthogonal, so applying it preserves vector norms. QR by Householder is a sequence of orthogonal transformations, which avoids the error amplification caused by subtracting nearly dependent projections in classical Gram-Schmidt.
+\textbf{(Matrix-free application and complexity)}\enspace
+A Householder matrix $\bH$ is never constructed as an explicit $m \times m$ array. To apply $\bH$ to a vector $\by$, we compute
+\begin{align*}
+    \bH\by = \by - \left( \frac{2\bv^T\by}{\bv^T\bv} \right) \bv,
+\end{align*}
+which requires only an inner product and a vector update costing $O(m)$ flops. For a matrix $\bA \in \fR^{m \times n}$, Householder QR requires $2mn^2 - \frac{2}{3}n^3$ flops.
 }
-\label{rem:householder-stability}
 
-\addExcr{%
-\begin{enumerate}
-    \item Find $\bv$ so that the reflector in Def~\ref{def:householder} satisfies $\bH(3, 4)^T = (-5, 0)^T$.
-    \item Use Householder reflectors to triangularize $\bA = \begin{pmatrix} 1 & 2 \\ 2 & 3 \\ 2 & 4 \end{pmatrix}$ and identify the resulting $\bQ$ and $\bR$ from Def~\ref{def:qr}.
-    \item Use Thm~\ref{thm:orthogonal-invariance} to explain Remark~\ref{rem:householder-stability}.
-    \item Compare thin vs.\ full QR shapes in NumPy for a $5 \times 3$ matrix.
-\end{enumerate}
-}
-\label{ex:householder-qr}
-
-\subsubsection{Gram-Schmidt Process}
+\subsubsection{Gram-Schmidt Orthogonalization}
 
 \textBox{%
-Gram-Schmidt constructs an orthonormal basis by taking the columns of $\bA$ one at a time and removing the components already explained by previous basis vectors. It is conceptually simple, but finite precision can destroy orthogonality when the original columns are nearly linearly dependent.
+The Gram-Schmidt process constructs the thin QR factorization column by column by projecting each column of $\bA$ onto the orthogonal complement of the previously computed basis vectors.
 }
 
-\addRemark{%
-\textbf{(Classical and modified Gram-Schmidt)}\enspace
-\begin{itemize}
-    \item \textbf{Classical (CGS):}\enspace $\bu_k = \bv_k - \sum_{j < k} \text{proj}_{\bu_j}(\bv_k)$. Numerically unstable for ill-conditioned $\bA$ ($\text{Error} \propto \kappa(\bA)^2$).
-    \item \textbf{Modified (MGS):}\enspace Orthogonalize sequentially against partially updated vectors. Better stability ($\text{Error} \propto \kappa(\bA)$).
-\end{itemize}
-}
-
-\addRemark{%
-\textbf{(Orthogonalization hierarchy)}\enspace
-Householder QR is the most stable ($O(\varepsilon_{\text{mach}})$ loss of orthogonality) and is used by \texttt{np.linalg.qr}. MGS is used when $\bQ$ columns are needed one by one (e.g., Arnoldi/GMRES).
-}
-
-\addRemark{%
-\textbf{(Orthogonalization method comparison)}\enspace
-\begin{itemize}
-    \item \textbf{Classical Gram-Schmidt:}\enspace Best for deriving the idea; weakest numerically.
-    \item \textbf{Modified Gram-Schmidt:}\enspace Better when basis vectors must be generated sequentially.
-    \item \textbf{Householder QR:}\enspace Default dense QR method; most stable for least squares.
-\end{itemize}
-}
-
-\addExcr{%
+\addThm{Classical and Modified Gram-Schmidt Algorithms}{%
+Let $\ba_1, \dots, \ba_n \in \fR^m$ be the columns of $\bA$.
 \begin{enumerate}
-    \item Apply hand CGS to columns of $\bA = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 0 & 1 \end{pmatrix}$ and compare the resulting basis with Def~\ref{def:orthonormal-basis}.
-    \item Construct a nearly singular Vandermonde matrix. Compare loss of orthogonality ($\|\bQ^T\bQ - \bI\|_F$) for CGS, MGS, and Householder.
-    \item Explain the experiment using Remark~\ref{rem:householder-stability}.
+    \item \textbf{Classical Gram-Schmidt (CGS):} For each column $k = 1, \dots, n$, compute all projections against the original vector simultaneously:
+    \begin{align*}
+        r_{ik} = \bq_i^T \ba_k \quad (i = 1, \dots, k-1), \qquad \bv_k = \ba_k - \sum_{i=1}^{k-1} r_{ik} \bq_i, \qquad r_{kk} = \|\bv_k\|_2, \qquad \bq_k = \frac{\bv_k}{r_{kk}}.
+    \end{align*}
+    \item \textbf{Modified Gram-Schmidt (MGS):} For each column $k$, subtract projections sequentially from the partially updated vector:
+    \begin{align*}
+        \bv_k^{(1)} = \ba_k, \qquad \bv_k^{(i+1)} = \bv_k^{(i)} - (\bq_i^T \bv_k^{(i)}) \bq_i \quad (i = 1, \dots, k-1), \qquad \bq_k = \frac{\bv_k^{(k)}}{\|\bv_k^{(k)}\|_2}.
+    \end{align*}
 \end{enumerate}
 }
-\label{ex:gram-schmidt-vs-householder}
+\label{thm:gram-schmidt-algorithms}
 
-\subsubsection{Orthogonal Projection}
-
-\textBox{%
-Projection is the geometric operation behind least squares. If $\bb$ is not in a subspace $S$, the best approximation from $S$ is the vector in $S$ closest to $\bb$. The error vector must be orthogonal to $S$; otherwise one could move within $S$ and reduce the error.
+\addRemark{%
+\textbf{(Stability hierarchy among orthogonalization methods)}\enspace
+In exact arithmetic, CGS and MGS produce identical outputs. In floating-point arithmetic, however:
+\begin{enumerate}
+    \item Classical Gram-Schmidt loses orthogonality rapidly: $\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}} \kappa(\bA)^2)$.
+    \item Modified Gram-Schmidt is significantly more robust: $\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}} \kappa(\bA))$.
+    \item Householder QR maintains orthogonality to machine precision: $\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}})$, completely independent of $\kappa(\bA)$.
+\end{enumerate}
 }
+
+\subsubsection{Orthogonal Projectors}
 
 \addDef{Orthogonal Projector}{%
-For a subspace $S$ with orthonormal basis $\bQ$ from Def~\ref{def:orthonormal-basis}: $\bP = \bQ\bQ^T$.
-\begin{itemize}
-    \item \textbf{Properties:}\enspace $\bP^2 = \bP$ (Idempotent), $\bP^T = \bP$ (Symmetric).
-    \item \textbf{Geometric View:}\enspace $\bP\bx$ is the closest vector in $S$ to $\bx$. Residual $\br = \bx - \bP\bx$ lies in $S^\perp = \mathcal{N}(\bQ^T)$.
-\end{itemize}
+Let $S \subset \fR^m$ be a subspace with orthonormal basis columns stored in $\bQ_1 \in \fR^{m \times n}$. The orthogonal projector onto $S$ is the matrix
+\begin{align*}
+    \bP = \bQ_1 \bQ_1^T.
+\end{align*}
+Every orthogonal projector is symmetric ($\bP^T = \bP$) and idempotent ($\bP^2 = \bP$). The complementary projector $\bP^\perp = \bI - \bP$ projects onto the orthogonal complement $S^\perp$.
 }
 \label{def:orthogonal-projector}
 
-\addThm{Closest Point Theorem}{%
-Let $S$ be a subspace of $\fR^m$ and let $\bP$ be the orthogonal projector onto $S$ from Def~\ref{def:orthogonal-projector}. For every $\bb\in\fR^m$, $\bP\bb$ is the unique vector in $S$ closest to $\bb$ in the Euclidean norm:
+\addThm{Closest Point Property of Orthogonal Projections}{%
+Let $S \subset \fR^m$ be a linear subspace and let $\bP$ be the orthogonal projector onto $S$. For any vector $\bb \in \fR^m$, the projected vector $\bP\bb$ is the unique point in $S$ that minimizes the Euclidean distance to $\bb$:
 \begin{align*}
-    \|\bb-\bP\bb\|_2 \leq \|\bb-\bs\|_2
-    \qquad \text{for every } \bs\in S.
+    \|\bb - \bP\bb\|_2 \leq \|\bb - \bs\|_2 \qquad \text{for all } \bs \in S.
 \end{align*}
-Moreover, the residual $\bb-\bP\bb$ is orthogonal to $S$.
+Equality holds if and only if $\bs = \bP\bb$.
 }
 \label{thm:closest-point}
 
+\addPrf{%
+For any $\bs \in S$, decompose the error vector as $\bb - \bs = (\bb - \bP\bb) + (\bP\bb - \bs)$. The first term satisfies $\bb - \bP\bb = (\bI - \bP)\bb \in S^\perp$. The second term satisfies $\bP\bb - \bs \in S$ because both vectors lie in $S$. Since the two vectors belong to mutually orthogonal subspaces, the Pythagorean theorem yields
+\begin{align*}
+    \|\bb - \bs\|_2^2 = \|(\bb - \bP\bb) + (\bP\bb - \bs)\|_2^2 = \|\bb - \bP\bb\|_2^2 + \|\bP\bb - \bs\|_2^2.
+\end{align*}
+Because $\|\bP\bb - \bs\|_2^2 \geq 0$, we have $\|\bb - \bs\|_2^2 \geq \|\bb - \bP\bb\|_2^2$, with strict equality holding if and only if $\|\bP\bb - \bs\|_2 = 0 \iff \bs = \bP\bb$.
+}
+
 \addExcr{%
 \begin{enumerate}
-    \item Use Def~\ref{def:orthogonal-projector} to show that $\bP^2=\bP$ and $\bP^T=\bP$.
-    \item Show that the residual $\bx-\bP\bx$ is orthogonal to every vector in the target subspace.
-    \item Project $\bx = (1, 2, 3)^T$ onto the span of $(1, 1, 1)^T$.
-    \item Prove Thm~\ref{thm:closest-point}: write any $\bs\in S$ as $\bs=\bP\bb+\bw$ with $\bw\in S$, then use the Pythagorean theorem.
-    \item Relate this residual orthogonality to Thm~\ref{thm:least-squares-projection}.
+    \item Construct the Householder reflector $\bH$ that transforms the vector $\bx = (3, 4)^T$ into $\alpha \be_1 = (-5, 0)^T$. Explicitly write out the $2 \times 2$ matrix $\bH$ and verify that $\bH = \bH^T$ and $\bH^2 = \bI$.
+    \item Compute the thin QR factorization of $\bA = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 1 & 3 \end{pmatrix}$ using Modified Gram-Schmidt.
+    \item Let $\bP \in \fR^{m \times m}$ be an orthogonal projector. Prove that the eigenvalues of $\bP$ can only be $0$ or $1$, and show that $\operatorname{trace}(\bP) = \operatorname{rank}(\bP)$.
+    \item Explain why the condition number of any orthogonal matrix is equal to $1$. What does this imply about the propagation of errors when applying orthogonal transformations?
 \end{enumerate}
 }
-\label{ex:orthogonal-projection}
+\label{ex:orthogonal-exercises}
 
 \end{document}

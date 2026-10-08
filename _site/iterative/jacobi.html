@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>22&nbsp; Jacobi and Gauss-Seidel Methods – Scientific Computing</title>
+<title>22&nbsp; Jacobi, Gauss-Seidel, and SOR Methods – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -340,7 +340,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/jacobi.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/jacobi.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -452,7 +452,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,7 +469,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -481,13 +481,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Least Squares and Overdetermined Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -510,25 +510,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -551,19 +551,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
       </ul>
@@ -671,11 +671,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#jacobi-iteration" id="toc-jacobi-iteration" class="nav-link active" data-scroll-target="#jacobi-iteration"><span class="header-section-number">22.1</span> Jacobi Iteration</a></li>
-  <li><a href="#gauss-seidel-iteration" id="toc-gauss-seidel-iteration" class="nav-link" data-scroll-target="#gauss-seidel-iteration"><span class="header-section-number">22.2</span> Gauss-Seidel Iteration</a></li>
-  <li><a href="#convergence-conditions" id="toc-convergence-conditions" class="nav-link" data-scroll-target="#convergence-conditions"><span class="header-section-number">22.3</span> Convergence Conditions</a></li>
+  <li><a href="#the-jacobi-method" id="toc-the-jacobi-method" class="nav-link active" data-scroll-target="#the-jacobi-method"><span class="header-section-number">22.1</span> The Jacobi Method</a></li>
+  <li><a href="#the-gauss-seidel-method" id="toc-the-gauss-seidel-method" class="nav-link" data-scroll-target="#the-gauss-seidel-method"><span class="header-section-number">22.2</span> The Gauss-Seidel Method</a></li>
+  <li><a href="#convergence-theorems" id="toc-convergence-theorems" class="nav-link" data-scroll-target="#convergence-theorems"><span class="header-section-number">22.3</span> Convergence Theorems</a></li>
   <li><a href="#successive-over-relaxation-sor" id="toc-successive-over-relaxation-sor" class="nav-link" data-scroll-target="#successive-over-relaxation-sor"><span class="header-section-number">22.4</span> Successive Over-Relaxation (SOR)</a></li>
-  <li><a href="#stopping-criteria" id="toc-stopping-criteria" class="nav-link" data-scroll-target="#stopping-criteria"><span class="header-section-number">22.5</span> Stopping Criteria</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/jacobi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -683,9 +682,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/jacobi.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/jacobi.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></h1>
+<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></h1>
 </div>
 
 
@@ -702,29 +701,33 @@ window.Quarto = {
 </header>
 
 
-<p>Standard stationary iterations based on diagonal and triangular splittings.</p>
-<section id="jacobi-iteration" class="level2" data-number="22.1">
-<h2 data-number="22.1" class="anchored" data-anchor-id="jacobi-iteration"><span class="header-section-number">22.1</span> Jacobi Iteration</h2>
-<p>Decomposes <span class="math inline">\(\bA\)</span> into diagonal <span class="math inline">\(\bD\)</span> and remainder <span class="math inline">\(\bR\)</span>: <span class="math inline">\(\bA = \bD + \bR\)</span>.</p>
+<p>The classical stationary iterations represent the earliest systematic approaches to solving linear systems iteratively. They partition the matrix <span class="math inline">\(\bA\)</span> into its diagonal, strictly lower triangular, and strictly upper triangular components: <span class="math display">\[
+\begin{align}
+\bA = \bD - \bL_A - \bU_A,
+\end{align}
+\]</span> where <span class="math inline">\(\bD = \operatorname{diag}(a_{11}, ..., a_{nn})\)</span>, <span class="math inline">\(-\bL_A\)</span> is the strictly lower triangular part of <span class="math inline">\(\bA\)</span>, and <span class="math inline">\(-\bU_A\)</span> is the strictly upper triangular part of <span class="math inline">\(\bA\)</span>. By choosing different combinations of these components for the splitting matrix <span class="math inline">\(\bM\)</span>, we obtain the Jacobi, Gauss-Seidel, and Successive Over-Relaxation (SOR) algorithms.</p>
+<section id="the-jacobi-method" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="the-jacobi-method"><span class="header-section-number">22.1</span> The Jacobi Method</h2>
+<p>The Jacobi method assumes that the diagonal elements dominate the matrix. It computes the <span class="math inline">\((k+1)\)</span>-th estimate of each unknown <span class="math inline">\(x_i\)</span> exclusively from the <span class="math inline">\(k\)</span>-th estimates of all other variables.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Jacobi Scheme
+<span class="screen-reader-only">Note</span>Definition: Jacobi Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> with nonzero diagonal entries <span class="math inline">\(a_{ii} \neq 0\)</span>. The Jacobi method corresponds to the splitting <span class="math inline">\(\bM = \bD\)</span> and <span class="math inline">\(\mathbf{N} = \bL_A + \bU_A\)</span>. In component form, the update is <span class="math display">\[
 \begin{align}
-\bx^{(k+1)} = \bD^{-1}(\bb - \bR\bx^{(k)})
+x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j \neq i} a_{ij} x_j^{(k)} \right), \qquad i = 1, 2, ..., n.
 \end{align}
-\]</span></p>
-<ul>
-<li><p><strong>Component form:</strong> <span class="math inline">\(x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j \neq i} a_{ij}x_j^{(k)}\right)\)</span>.</p></li>
-<li><p><strong>Concurrency:</strong> All components update independently using values from the <em>previous</em> step.</p></li>
-</ul>
+\]</span> In matrix notation, the iteration is given by <span class="math display">\[
+\begin{align}
+\bx^{(k+1)} = \bT_J \bx^{(k)} + \bc_J,
+\end{align}
+\]</span> where <span class="math inline">\(\bT_J = \bD^{-1}(\bL_A + \bU_A) = \bI - \bD^{-1}\bA\)</span> is the Jacobi iteration matrix and <span class="math inline">\(\bc_J = \bD^{-1}\bb\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -737,32 +740,32 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Jacobi performance)</strong> Jacobi iteration is <strong>inherently parallel</strong>, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.</p>
+<p><strong>(Parallel execution and memory)</strong> Because each component <span class="math inline">\(x_i^{(k+1)}\)</span> depends only on values from the previous iteration vector <span class="math inline">\(\bx^{(k)}\)</span>, all <span class="math inline">\(n\)</span> components can be computed concurrently. This fine-grained parallelism makes Jacobi attractive on vector and GPU hardware. However, it requires double buffering in memory to store <span class="math inline">\(\bx^{(k)}\)</span> and <span class="math inline">\(\bx^{(k+1)}\)</span> simultaneously.</p>
 </div>
 </div>
 </section>
-<section id="gauss-seidel-iteration" class="level2" data-number="22.2">
-<h2 data-number="22.2" class="anchored" data-anchor-id="gauss-seidel-iteration"><span class="header-section-number">22.2</span> Gauss-Seidel Iteration</h2>
-<p>Splits <span class="math inline">\(\bA = \bL_* + \bU_*\)</span>, where <span class="math inline">\(\bL_*\)</span> includes the diagonal.</p>
+<section id="the-gauss-seidel-method" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="the-gauss-seidel-method"><span class="header-section-number">22.2</span> The Gauss-Seidel Method</h2>
+<p>The Gauss-Seidel method improves upon Jacobi by utilizing updated variable values as soon as they become available within the current sweep.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Gauss-Seidel Scheme
+<span class="screen-reader-only">Note</span>Definition: Gauss-Seidel Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> with nonzero diagonal entries. The Gauss-Seidel method corresponds to the triangular splitting <span class="math inline">\(\bM = \bD - \bL_A\)</span> and <span class="math inline">\(\mathbf{N} = \bU_A\)</span>. In component form, the update is <span class="math display">\[
 \begin{align}
-\bL_* \bx^{(k+1)} = \bb - \bU_* \bx^{(k)}
+x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j &lt; i} a_{ij} x_j^{(k+1)} - \sum_{j &gt; i} a_{ij} x_j^{(k)} \right), \qquad i = 1, 2, ..., n.
 \end{align}
-\]</span></p>
-<ul>
-<li><p><strong>Component form:</strong> <span class="math inline">\(x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j &lt; i} a_{ij}x_j^{(k+1)} - \sum_{j &gt; i} a_{ij}x_j^{(k)}\right)\)</span>.</p></li>
-<li><p><strong>Update rule:</strong> Use updated values <em>immediately</em> within the same sweep.</p></li>
-</ul>
+\]</span> In matrix notation, the iteration is given by <span class="math display">\[
+\begin{align}
+(\bD - \bL_A) \bx^{(k+1)} = \bU_A \bx^{(k)} + \bb \iff \bx^{(k+1)} = \bT_{GS} \bx^{(k)} + \bc_{GS},
+\end{align}
+\]</span> where <span class="math inline">\(\bT_{GS} = (\bD - \bL_A)^{-1}\bU_A\)</span> is the Gauss-Seidel iteration matrix and <span class="math inline">\(\bc_{GS} = (\bD - \bL_A)^{-1}\bb\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -775,49 +778,84 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Gauss-Seidel performance)</strong> Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges <strong>twice as fast</strong> as Jacobi and allows for in-place updates.</p>
+<p><strong>(Sequential dependencies and in-place updates)</strong> Because the calculation of <span class="math inline">\(x_i^{(k+1)}\)</span> requires the newly computed values <span class="math inline">\(x_1^{(k+1)}, ..., x_{i-1}^{(k+1)}\)</span>, the standard Gauss-Seidel sweep is inherently sequential. However, it allows for in-place memory updates: new values immediately overwrite old values in a single vector array. For many classes of matrices, Gauss-Seidel converges approximately twice as fast as Jacobi.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Comparison of one Jacobi and Gauss-Seidel step)</strong> Consider the linear system <span class="math display">\[
+\begin{align}
+\begin{pmatrix} 4 &amp; 1 &amp; 0 \\ 1 &amp; 4 &amp; 1 \\ 0 &amp; 1 &amp; 4 \end{pmatrix}
+    \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix}
+    =
+    \begin{pmatrix} 5 \\ 6 \\ 5 \end{pmatrix},
+\end{align}
+\]</span> whose exact solution is <span class="math inline">\(\bx^* = (1, 1, 1)^T\)</span>. Let the initial guess be <span class="math inline">\(\bx^{(0)} = (0, 0, 0)^T\)</span>.</p>
+<ul>
+<li><p><strong>Jacobi Step:</strong> <span class="math display">\[
+\begin{align}
+x_1^{(1)} &amp;= \frac{1}{4}(5 - 0 - 0) = 1.25, \\
+      x_2^{(1)} &amp;= \frac{1}{4}(6 - 0 - 0) = 1.50, \\
+      x_3^{(1)} &amp;= \frac{1}{4}(5 - 0 - 0) = 1.25, \qquad \implies \bx_J^{(1)} = \begin{pmatrix} 1.25 \\ 1.50 \\ 1.25 \end{pmatrix}.
+\end{align}
+\]</span></p></li>
+<li><p><strong>Gauss-Seidel Step:</strong> <span class="math display">\[
+\begin{align}
+x_1^{(1)} &amp;= \frac{1}{4}(5 - 0 - 0) = 1.25, \\
+      x_2^{(1)} &amp;= \frac{1}{4}(6 - (1.25) - 0) = \frac{4.75}{4} = 1.1875, \\
+      x_3^{(1)} &amp;= \frac{1}{4}(5 - (1.1875) - 0) = \frac{3.8125}{4} \approx 0.9531, \qquad \implies \bx_{GS}^{(1)} \approx \begin{pmatrix} 1.2500 \\ 1.1875 \\ 0.9531 \end{pmatrix}.
+\end{align}
+\]</span></p></li>
+</ul>
+<p>The Gauss-Seidel iterate is significantly closer to the true solution <span class="math inline">\((1, 1, 1)^T\)</span> because the update for <span class="math inline">\(x_2\)</span> immediately leveraged the new value of <span class="math inline">\(x_1\)</span>, and the update for <span class="math inline">\(x_3\)</span> leveraged the new value of <span class="math inline">\(x_2\)</span>.</p>
 </div>
 </div>
 </section>
-<section id="convergence-conditions" class="level2" data-number="22.3">
-<h2 data-number="22.3" class="anchored" data-anchor-id="convergence-conditions"><span class="header-section-number">22.3</span> Convergence Conditions</h2>
+<section id="convergence-theorems" class="level2" data-number="22.3">
+<h2 data-number="22.3" class="anchored" data-anchor-id="convergence-theorems"><span class="header-section-number">22.3</span> Convergence Theorems</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Stationary Iteration Matrices
+<span class="screen-reader-only">Note</span>Theorem: Convergence Under Strict Diagonal Dominance
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bA=\bD+\bL+\bU\)</span>, where <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> are the strict lower and upper triangular parts, <span class="math display">\[
+<p>A matrix <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> is strictly diagonally dominant if <span class="math display">\[
 \begin{align}
-\bT_J = -\bD^{-1}(\bL+\bU)
+|a_{ii}| &gt; \sum_{j \neq i} |a_{ij}| \qquad \text{for all } i = 1, 2, ..., n.
 \end{align}
-\]</span> is the Jacobi iteration matrix, and <span class="math display">\[
+\]</span> If <span class="math inline">\(\bA\)</span> is strictly diagonally dominant, then both the Jacobi iteration and the Gauss-Seidel iteration converge for any initial guess <span class="math inline">\(\bx^{(0)} \in \fR^n\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We prove the result for the Jacobi iteration by showing that the matrix <span class="math inline">\(\infty\)</span>-norm of the iteration matrix <span class="math inline">\(\bT_J\)</span> is strictly less than one. The entries of <span class="math inline">\(\bT_J = \bD^{-1}(\bL_A + \bU_A)\)</span> are given by <span class="math inline">\((\bT_J)_{ij} = -a_{ij}/a_{ii}\)</span> for <span class="math inline">\(i \neq j\)</span>, and <span class="math inline">\((\bT_J)_{ii} = 0\)</span>. The induced <span class="math inline">\(\infty\)</span>-norm is the maximum absolute row sum: <span class="math display">\[
 \begin{align}
-\bT_{GS}=-(\bD+\bL)^{-1}\bU
+\|\bT_J\|_\infty = \max_{1 \leq i \leq n} \sum_{j=1}^n |(\bT_J)_{ij}| = \max_{1 \leq i \leq n} \sum_{j \neq i} \frac{|a_{ij}|}{|a_{ii}|}.
 \end{align}
-\]</span> is the Gauss-Seidel iteration matrix. By the result above, each method converges for every initial guess exactly when the corresponding spectral radius is less than <span class="math inline">\(1\)</span>.</p>
+\]</span> Because <span class="math inline">\(\bA\)</span> is strictly diagonally dominant, <span class="math inline">\(\sum_{j \neq i} |a_{ij}| &lt; |a_{ii}|\)</span> for every <span class="math inline">\(i\)</span>, which implies that <span class="math inline">\(\sum_{j \neq i} \frac{|a_{ij}|}{|a_{ii}|} &lt; 1\)</span>. Therefore, <span class="math inline">\(\|\bT_J\|_\infty &lt; 1\)</span>. By Gelfand’s spectral radius theorem, <span class="math inline">\(\rho(\bT_J) \leq \|\bT_J\|_\infty &lt; 1\)</span>, which establishes convergence. A similar argument applied to the componentwise error recurrence proves convergence for Gauss-Seidel.</p>
 </div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Rewrite the result above in the form <span class="math inline">\(\bx^{(k+1)}=\bT_J\bx^{(k)}+\bc_J\)</span>.</p></li>
-<li><p>Rewrite the result above in the form <span class="math inline">\(\bx^{(k+1)}=\bT_{GS}\bx^{(k)}+\bc_{GS}\)</span>.</p></li>
-<li><p>Apply the result above to prove the convergence criterion in the result above.</p></li>
-<li><p>Compute <span class="math inline">\(\bT_J\)</span> and <span class="math inline">\(\bT_{GS}\)</span> for <span class="math inline">\(\bA=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span>.</p></li>
-</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -826,76 +864,34 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Diagonal Dominance
+<span class="screen-reader-only">Note</span>Theorem: Convergence of Gauss-Seidel for Symmetric Positive Definite Systems
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bA\)</span> is <strong>strictly diagonally dominant</strong> (<span class="math inline">\(|a_{ii}| &gt; \sum_{j \neq i} |a_{ij}|\)</span>), both Jacobi and Gauss-Seidel converge for any <span class="math inline">\(\bx^{(0)}\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For Jacobi, use strict diagonal dominance to show that the infinity-norm row sums of <span class="math inline">\(\bT_J\)</span> are less than <span class="math inline">\(1\)</span>.</p></li>
-<li><p>Conclude <span class="math inline">\(\rho(\bT_J)\leq \|\bT_J\|_\infty&lt;1\)</span>.</p></li>
-<li><p>Repeat the argument for Gauss-Seidel by isolating the largest component of the error equation.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: SPD Convergence
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bA\)</span> is <strong>SPD</strong>, Gauss-Seidel is guaranteed to converge. Jacobi may still diverge.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}\)</span>, compute one step of Jacobi and Gauss-Seidel from <span class="math inline">\(\bzero\)</span>.</p></li>
-<li><p>Compare <span class="math inline">\(\rho(\bT_J)\)</span> and <span class="math inline">\(\rho(\bT_{GS})\)</span>. Does <span class="math inline">\(\rho_{GS} \approx \rho_J^2\)</span> hold?</p></li>
-</ol>
+<p>If <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> is symmetric positive definite, then the Gauss-Seidel method converges for every initial vector <span class="math inline">\(\bx^{(0)} \in \fR^n\)</span>. The Jacobi method, however, is not guaranteed to converge for arbitrary SPD matrices.</p>
 </div>
 </div>
 </section>
 <section id="successive-over-relaxation-sor" class="level2" data-number="22.4">
 <h2 data-number="22.4" class="anchored" data-anchor-id="successive-over-relaxation-sor"><span class="header-section-number">22.4</span> Successive Over-Relaxation (SOR)</h2>
-<p>Accelerates Gauss-Seidel by overshooting the update.</p>
+<p>The Successive Over-Relaxation method accelerates the convergence of Gauss-Seidel by taking a weighted linear combination of the previous iterate and the new Gauss-Seidel update.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: SOR Update
+<span class="screen-reader-only">Note</span>Definition: Successive Over-Relaxation Scheme
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>Let <span class="math inline">\(\omega &gt; 0\)</span> be a relaxation parameter. The SOR method computes the updated components via <span class="math display">\[
 \begin{align}
-x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
+x_i^{(k+1)} = (1 - \omega) x_i^{(k)} + \frac{\omega}{a_{ii}} \left( b_i - \sum_{j &lt; i} a_{ij} x_j^{(k+1)} - \sum_{j &gt; i} a_{ij} x_j^{(k)} \right).
+\end{align}
+\]</span> In matrix notation, this corresponds to the splitting <span class="math inline">\(\bM_\omega = \frac{1}{\omega}\bD - \bL_A\)</span> and <span class="math inline">\(\mathbf{N}_\omega = \left( \frac{1}{\omega} - 1 \right)\bD + \bU_A\)</span>. The iteration matrix is <span class="math display">\[
+\begin{align}
+\bT_\omega = (\bD - \omega \bL_A)^{-1} \left( (1 - \omega)\bD + \omega \bU_A \right).
 \end{align}
 \]</span></p>
 </div>
@@ -906,15 +902,19 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: SOR Convergence Window
+<span class="screen-reader-only">Note</span>Theorem: Ostrowski-Reich Theorem and the Optimal Parameter
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For SPD systems, SOR converges for relaxation parameters <span class="math display">\[
+<p>If <span class="math inline">\(\bA\)</span> is symmetric positive definite, then the SOR iteration converges if and only if the relaxation parameter satisfies <span class="math display">\[
 \begin{align}
-0&lt;\omega&lt;2.
+0 &lt; \omega &lt; 2.
 \end{align}
-\]</span> For model Poisson problems, well-chosen <span class="math inline">\(\omega&gt;1\)</span> can reduce the iteration count substantially compared with Gauss-Seidel.</p>
+\]</span> Furthermore, if <span class="math inline">\(\bA\)</span> is consistently ordered (such as the standard tridiagonal or block-tridiagonal Poisson discretization matrices) and the Jacobi spectral radius is <span class="math inline">\(\rho(\bT_J) &lt; 1\)</span>, then the optimal relaxation parameter that minimizes <span class="math inline">\(\rho(\bT_\omega)\)</span> is <span class="math display">\[
+\begin{align}
+\omega^* = \frac{2}{1 + \sqrt{1 - \rho(\bT_J)^2}}.
+\end{align}
+\]</span> With this optimal choice, the spectral radius satisfies <span class="math inline">\(\rho(\bT_{\omega^*}) = \omega^* - 1\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -927,12 +927,7 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(SOR acceleration)</strong> For the 1D Poisson problem on a grid with spacing <span class="math inline">\(h\)</span>:</p>
-<ul>
-<li><p>Jacobi and Gauss-Seidel require <span class="math inline">\(O(n^2)\)</span> iterations.</p></li>
-<li><p>Optimal SOR requires only <span class="math inline">\(O(n)\)</span> iterations.</p></li>
-</ul>
-<p>SOR effectively improves the convergence rate from <span class="math inline">\(O(h^2)\)</span> to <span class="math inline">\(O(h)\)</span>.</p>
+<p><strong>(Acceleration for discrete Poisson equations)</strong> For the 1D discrete Laplacian on a grid with spacing <span class="math inline">\(h\)</span>, the Jacobi spectral radius is <span class="math inline">\(\rho(\bT_J) = \cos(\pi h) \approx 1 - \frac{1}{2}\pi^2 h^2\)</span>. Consequently, Jacobi and Gauss-Seidel require <span class="math inline">\(O(h^{-2}) = O(n^2)\)</span> iterations to converge. With optimal SOR, <span class="math inline">\(\omega^* \approx 2 - 2\pi h\)</span>, yielding <span class="math inline">\(\rho(\bT_{\omega^*}) \approx 1 - 2\pi h\)</span>. This reduces the required iteration count to <span class="math inline">\(O(h^{-1}) = O(n)\)</span>, providing an order-of-magnitude computational speedup.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -946,47 +941,10 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p><strong>Optimal Tuning:</strong> For <span class="math inline">\(\rho_J = 0.95\)</span>, calculate the optimal <span class="math inline">\(\omega^* = 2/(1 + \sqrt{1-\rho_J^2})\)</span>.</p></li>
-<li><p><strong>Convergence Sweep:</strong> Implement SOR and plot iterations to convergence vs.&nbsp;<span class="math inline">\(\omega \in [1, 2)\)</span>. Identify the ``cliff’’ at <span class="math inline">\(\omega^*\)</span>.</p></li>
-<li><p>Check numerically that choices <span class="math inline">\(\omega\leq 0\)</span> or <span class="math inline">\(\omega\geq 2\)</span> fail on an SPD Poisson matrix, as predicted by the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="stopping-criteria" class="level2" data-number="22.5">
-<h2 data-number="22.5" class="anchored" data-anchor-id="stopping-criteria"><span class="header-section-number">22.5</span> Stopping Criteria</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Iterative Stopping Tests
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Common stopping tests include</p>
-<ol type="1">
-<li><p>absolute residual: <span class="math inline">\(\|\br^{(k)}\| &lt; \varepsilon\)</span>,</p></li>
-<li><p>relative residual: <span class="math inline">\(\|\br^{(k)}\|/\|\bb\| &lt; \varepsilon\)</span>,</p></li>
-<li><p>increment: <span class="math inline">\(\|\bx^{(k+1)}-\bx^{(k)}\|&lt;\varepsilon\)</span>.</p></li>
-</ol>
-<p>Residual tests are tied to the equation; increment tests are cheap but can stop prematurely if convergence is slow.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Why is a small residual not enough to guarantee a small error <span class="math inline">\(\be^{(k)}\)</span>? Use the result above.</p></li>
-<li><p>Implement a robust solver that combines relative residual with a <code>max\_iter</code> budget.</p></li>
+<li><p>Compute the Jacobi and Gauss-Seidel iteration matrices for <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}\)</span>. Find their spectral radii and verify that <span class="math inline">\(\rho(\bT_{GS}) = \rho(\bT_J)^2\)</span>.</p></li>
+<li><p>Let <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 1 \end{pmatrix}\)</span>. Show that <span class="math inline">\(\bA\)</span> is symmetric but indefinite, and prove that both Jacobi and Gauss-Seidel diverge.</p></li>
+<li><p>Prove the Kahan theorem: for any matrix <span class="math inline">\(\bA\)</span> with nonzero diagonal entries, <span class="math inline">\(\rho(\bT_\omega) \geq |\omega - 1|\)</span>, which implies that SOR can only converge if <span class="math inline">\(0 &lt; \omega &lt; 2\)</span>.</p></li>
+<li><p>Write a Python script to solve the 1D discrete Poisson equation with <span class="math inline">\(n=50\)</span> grid points using Jacobi, Gauss-Seidel, and optimal SOR. Plot the residual norm versus iteration number on a semilogarithmic scale.</p></li>
 </ol>
 </div>
 </div>
@@ -1415,8 +1373,8 @@ x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../iterative/conjugate-gradient.html" class="pagination-link" aria-label="Conjugate Gradient Method">
-        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../iterative/conjugate-gradient.html" class="pagination-link" aria-label="The Conjugate Gradient Method">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

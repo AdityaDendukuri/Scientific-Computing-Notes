@@ -2,168 +2,126 @@
 
 \begin{document}
 
-\subsection{Singular Value Decomposition}
+\subsection{The Singular Value Decomposition}
 \label{sub:svd-theory}
 
-The Singular Value Decomposition (SVD) is a general matrix factorization that decomposes any $m \times n$ matrix into a product of orthogonal transformations and a diagonal scaling matrix.
-
 \textBox{%
-The SVD is the most complete description of what a matrix does geometrically. It finds orthonormal input directions, tells how much each direction is stretched, and gives the corresponding orthonormal output directions.
+The Singular Value Decomposition (SVD) is the pinnacle of matrix factorizations in computational linear algebra. Unlike the eigendecomposition, which is defined only for square matrices and may fail to exist for defective operators, the SVD exists unconditionally for every matrix of arbitrary rectangular dimensions $\bA \in \fR^{m \times n}$.
 }
 
-\subsubsection{The SVD Theorem}
+\textBox{%
+Geometrically, the SVD states that the action of any linear transformation on the unit sphere in $\fR^n$ maps it into a hyperellipsoid in $\fR^m$. The right singular vectors $\bv_i$ define the principal orthogonal directions in the domain, the singular values $\sigma_i$ specify the scaling lengths along each semi-axis, and the left singular vectors $\bu_i$ define the corresponding orthogonal directions in the codomain.
+}
 
-\addThm{Singular Value Decomposition (SVD)}{%
-For $\bA \in \fR^{m \times n}$, there exist orthogonal matrices $\bU \in \fR^{m \times m}, \bV \in \fR^{n \times n}$ and diagonal $\bsigma \in \fR^{m \times n}$ such that:
+\subsubsection{The SVD Theorem and Subspace Characterization}
+
+\addThm{The Singular Value Decomposition Theorem}{%
+Let $\bA \in \fR^{m \times n}$ with $m \geq n$. There exist orthogonal matrices $\bU \in \fR^{m \times m}$ and $\bV \in \fR^{n \times n}$, and a diagonal matrix $\bsigma \in \fR^{m \times n}$, such that
 \begin{align*}
-    \bA = \bU \bsigma \bV^T.
+    \bA = \bU \bsigma \bV^T,
 \end{align*}
-\begin{itemize}
-    \item \textbf{Singular Values ($\sigma_i$):}\enspace Non-negative, ordered $\sigma_1 \geq \sigma_2 \geq \dots \geq 0$.
-    \item \textbf{Modes:}\enspace $\bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T$ (Outer product expansion).
-\end{itemize}
+where the diagonal entries of $\bsigma = \operatorname{diag}(\sigma_1, \sigma_2, \dots, \sigma_n)$ are real, non-negative, and sorted in non-increasing order:
+\begin{align*}
+    \sigma_1 \geq \sigma_2 \geq \dots \geq \sigma_r > \sigma_{r+1} = \dots = \sigma_n = 0.
+\end{align*}
+The number of strictly positive singular values $r = \operatorname{rank}(\bA)$ equals the rank of $\bA$. In dyadic (outer product) form,
+\begin{align*}
+    \bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T.
+\end{align*}
 }
 \label{thm:svd}
 
-\addRemark{%
-\textbf{Geometric Interpretation:}\enspace
-$\bA$ rotates the input space ($\bV^T$), scales along the axes ($\bsigma$), and rotates the result to the output space ($\bU$).
-}
-
-\addThm{SVD Coordinates}{%
-Let $\bA=\bU\bsigma\bV^T$ be the SVD from Thm~\ref{thm:svd}. If $\bx=\bV\by$ and $\bc=\bU^T\bb$, then the equation $\bA\bx=\bb$ becomes
+\addThm{Thin SVD and the Four Fundamental Subspaces}{%
+Let $\bA \in \fR^{m \times n}$ have rank $r \leq n \leq m$. The thin (economy) SVD is given by
 \begin{align*}
-    \bsigma \by = \bc.
+    \bA = \bU_1 \bsigma_1 \bV_1^T,
 \end{align*}
-Thus the action of $\bA$ is a set of independent scalar equations $\sigma_i y_i=c_i$ in orthonormal coordinates. Small singular values correspond to directions where solving requires division by small numbers.
-}
-\label{thm:svd-coordinates}
-
-\addExcr{%
+where $\bU_1 \in \fR^{m \times r}$ and $\bV_1 \in \fR^{n \times r}$ have orthonormal columns, and $\bsigma_1 = \operatorname{diag}(\sigma_1, \dots, \sigma_r) \in \fR^{r \times r}$ is strictly positive.
+The columns of the complete singular vectors provide optimal orthonormal bases for the four fundamental subspaces:
 \begin{enumerate}
-    \item Substitute $\bx=\bV\by$ into $\bA\bx=\bb$ and use Thm~\ref{thm:svd} to obtain $\bU\bsigma\by=\bb$.
-    \item Multiply by $\bU^T$ and use orthogonality of $\bU$ to prove Thm~\ref{thm:svd-coordinates}.
-    \item For a square full-rank matrix, use the scalar equations $\sigma_i y_i=c_i$ to derive $\kappa_2(\bA)=\sigma_{\max}/\sigma_{\min}$.
-    \item Explain why a tiny nonzero $\sigma_i$ makes the system numerically close to rank deficient.
-    \item Use the same coordinate picture to explain the pseudoinverse in Def~\ref{def:pseudoinverse}.
+    \item \textbf{Column Space (Range):} $\mathcal{R}(\bA) = \operatorname{span}\{\bu_1, \dots, \bu_r\} \subset \fR^m$.
+    \item \textbf{Left Null Space:} $\mathcal{N}(\bA^T) = \operatorname{span}\{\bu_{r+1}, \dots, \bu_m\} \subset \fR^m$.
+    \item \textbf{Row Space:} $\mathcal{R}(\bA^T) = \operatorname{span}\{\bv_1, \dots, \bv_r\} \subset \fR^n$.
+    \item \textbf{Null Space (Kernel):} $\mathcal{N}(\bA) = \operatorname{span}\{\bv_{r+1}, \dots, \bv_n\} \subset \fR^n$.
 \end{enumerate}
 }
-\label{ex:svd-coordinates}
+\label{thm:svd-four-subspaces}
 
-\addRemark{%
-\textbf{(Full vs.\ thin SVD)}\enspace If $m\geq n$, the full SVD has $\bU\in\fR^{m\times m}$ and $\bsigma\in\fR^{m\times n}$. The thin SVD keeps only the first $n$ left singular vectors:
+\addPrf{%
+From $\bA = \bU\bsigma\bV^T$, we have $\bA\bv_i = \sigma_i \bu_i$ for $i = 1, \dots, r$, and $\bA\bv_i = \bzero$ for $i = r+1, \dots, n$. Any vector $\bx \in \fR^n$ can be expanded in the orthonormal basis $\{\bv_1, \dots, \bv_n\}$ as $\bx = \sum_{i=1}^n (\bv_i^T\bx)\bv_i$. Applying $\bA$ gives
 \begin{align*}
-    \bA=\bU_1\bsigma_1\bV^T,
-    \qquad
-    \bU_1\in\fR^{m\times n},\quad
-    \bsigma_1\in\fR^{n\times n}.
+    \bA\bx = \sum_{i=1}^n (\bv_i^T\bx) \bA\bv_i = \sum_{i=1}^r \sigma_i (\bv_i^T\bx) \bu_i.
 \end{align*}
-For most computations, the thin SVD contains all nonzero singular information and avoids storing unnecessary columns.
+This expresses $\bA\bx$ as a linear combination of $\{\bu_1, \dots, \bu_r\}$, proving that $\mathcal{R}(\bA) = \operatorname{span}\{\bu_1, \dots, \bu_r\}$. Furthermore, $\bA\bx = \bzero$ if and only if $\bv_i^T\bx = 0$ for all $i = 1, \dots, r$, which proves that $\mathcal{N}(\bA) = \operatorname{span}\{\bv_{r+1}, \dots, \bv_n\}$. Repeating the argument for $\bA^T = \bV\bsigma^T\bU^T$ completes the proof for the row space and left null space.
 }
 
-\addDef{Numerical Rank}{%
-The numerical rank of $\bA$ is the number of singular values considered meaningfully nonzero relative to a tolerance:
-\begin{align*}
-    \sigma_i > \tau.
-\end{align*}
-A common scale-aware choice is $\tau = \varepsilon_{\text{mach}}\max(m,n)\sigma_1$.
+\subsubsection{Low-Rank Matrix Approximation}
+
+\textBox{%
+One of the most important practical applications of the SVD is optimal low-rank matrix approximation, which forms the computational basis for Principal Component Analysis, latent semantic indexing, and data compression.
 }
-\label{def:numerical-rank}
-
-\addRemark{%
-\textbf{(Conditioning through singular values)}\enspace As shown in Ex~\ref{ex:svd-coordinates}, for a full-rank square matrix,
-\begin{align*}
-    \kappa_2(\bA)=\frac{\sigma_{\max}}{\sigma_{\min}}.
-\end{align*}
-Small singular values mark directions where $\bA$ nearly collapses information. Solving a system must divide by these small values, amplifying noise and rounding error.
-}
-
-\subsubsection{The Four Fundamental Subspaces}
-
-The SVD provides optimal orthonormal bases for the spaces defined by $\bA$ (rank $r$):
-\begin{enumerate}
-    \item \textbf{Column Space ($\mathcal{R}(\bA)$):}\enspace First $r$ columns of $\bU$.
-    \item \textbf{Null Space ($\mathcal{N}(\bA)$):}\enspace Last $n-r$ columns of $\bV$.
-    \item \textbf{Row Space ($\mathcal{R}(\bA^T)$):}\enspace First $r$ columns of $\bV$.
-    \item \textbf{Left Null Space ($\mathcal{N}(\bA^T)$):}\enspace Last $m-r$ columns of $\bU$.
-\end{enumerate}
-
-\addThm{Relationship to Eigendecomposition}{%
-\begin{itemize}
-    \item Right singular vectors ($\bv_i$) are eigenvectors of $\bA^T\bA$.
-    \item Left singular vectors ($\bu_i$) are eigenvectors of $\bA\bA^T$.
-    \item Singular values $\sigma_i = \sqrt{\lambda_i(\bA^T\bA)}$.
-\end{itemize}
-}
-\label{thm:svd-eig-relation}
-
-\addRemark{%
-\textbf{(SVD via normal equations)}\enspace The relation to eigenvalues explains why the SVD exists, but forming $\bA^T\bA$ squares the condition number. Numerical SVD algorithms avoid this loss of accuracy.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Use Thm~\ref{thm:svd-eig-relation} to show that $\kappa_2(\bA^T\bA)=\kappa_2(\bA)^2$ for full-rank $\bA$.
-    \item Compare this result with Ex~\ref{ex:normal-equations-conditioning}.
-    \item Explain why this makes $\bA^T\bA$ useful for theory but dangerous as a default computational route.
-\end{enumerate}
-}
-\label{ex:svd-normal-equations-warning}
-
-\subsubsection{Low-Rank Approximation}
 
 \addThm{Eckart-Young-Mirsky Theorem}{%
-The best rank-$k$ approximation ($k < r$) of $\bA$ in spectral and Frobenius norms is the truncated SVD:
+Let $\bA \in \fR^{m \times n}$ have singular value decomposition $\bA = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T$. For any integer $k < r$, let the truncated SVD be defined by
 \begin{align*}
     \bA_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T.
 \end{align*}
-\begin{itemize}
-    \item \textbf{Error:}\enspace $\|\bA - \bA_k\|_2 = \sigma_{k+1}$.
-\end{itemize}
+Then $\bA_k$ is the best rank-$k$ approximation to $\bA$ in both the spectral norm and the Frobenius norm:
+\begin{align*}
+    \min_{\operatorname{rank}(\bB) \leq k} \|\bA - \bB\|_2 &= \|\bA - \bA_k\|_2 = \sigma_{k+1}, \\
+    \min_{\operatorname{rank}(\bB) \leq k} \|\bA - \bB\|_F &= \|\bA - \bA_k\|_F = \sqrt{\sum_{j=k+1}^r \sigma_j^2}.
+\end{align*}
 }
 \label{thm:eckart-young}
 
 \addRemark{%
-\textbf{Applications:}\enspace
-Truncated SVD provides the computational basis for Principal Component Analysis (PCA), image compression, and latent semantic analysis.
-}
-
-\addRemark{%
-\textbf{(Singular value decay)}\enspace If the singular values decay rapidly, the matrix is well approximated by a low-rank matrix. If they decay slowly, no low-dimensional linear summary captures the matrix accurately.
-}
-
-\addExmpl{%
-\textbf{(Image compression)}\enspace A grayscale image can be treated as a matrix of pixel intensities. Keeping only the largest $k$ singular values stores
+\textbf{(Numerical rank and noise filtering)}\enspace
+In practical data analysis, singular values rarely equal zero exactly due to measurement noise and roundoff. The \textbf{numerical rank} of $\bA$ is defined as the number of singular values exceeding a tolerance threshold $\tau$:
 \begin{align*}
-    k(m+n+1)
+    r_{\text{num}} = \max \{ i : \sigma_i > \tau \}, \qquad \tau = \varepsilon_{\text{mach}} \max(m,n) \sigma_1.
 \end{align*}
-numbers instead of $mn$. The approximation error in spectral norm is exactly the next omitted singular value $\sigma_{k+1}$.
+Truncating the singular value expansion at $k = r_{\text{num}}$ removes noise components and extracts the dominant low-dimensional dynamical modes.
 }
 
-\subsubsection{The Pseudoinverse}
+\subsubsection{The Moore-Penrose Pseudoinverse}
 
 \addDef{Moore-Penrose Pseudoinverse}{%
-$\bA^+ = \bV \bsigma^+ \bU^T$, where $(\bsigma^+)_{ii} = 1/\sigma_i$ if $\sigma_i > 0$, else $0$.
-\begin{itemize}
-    \item \textbf{Minimum-Norm Solution:}\enspace For any system $\bA\bx = \bb$, the vector $\hat{\bx} = \bA^+\bb$ is the shortest vector minimizing $\|\bA\bx - \bb\|_2$.
-\end{itemize}
+Let $\bA \in \fR^{m \times n}$ have thin SVD $\bA = \bU_1 \bsigma_1 \bV_1^T$. The Moore-Penrose pseudoinverse of $\bA$ is defined by
+\begin{align*}
+    \bA^\dagger = \bV_1 \bsigma_1^{-1} \bU_1^T = \sum_{i=1}^r \frac{1}{\sigma_i} \bv_i \bu_i^T.
+\end{align*}
+For any right-hand side vector $\bb \in \fR^m$, the vector $\hat{\bx} = \bA^\dagger\bb$ is the unique solution that minimizes $\|\bA\bx - \bb\|_2$, and has minimal Euclidean norm $\|\hat{\bx}\|_2$ among all least-squares minimizers.
 }
 \label{def:pseudoinverse}
 
-\addRemark{%
-\textbf{(Why the pseudoinverse is the fallback)}\enspace In SVD coordinates, solving $\bA\bx=\bb$ means dividing by singular values. The pseudoinverse divides only by nonzero singular values and ignores null-space directions. This gives the minimum-norm least squares solution even when $\bA$ is rectangular or rank deficient.
-}
-
-\addRemark{%
-\textbf{(Regularization by truncation)}\enspace If small singular values are dominated by noise, dividing by them can make the solution explode. Truncated SVD sets small singular values to zero before applying the pseudoinverse. This trades bias for stability.
+\addExmpl{%
+\textbf{(Step-by-step SVD calculation)}\enspace
+Consider the rank-1 matrix
+\begin{align*}
+    \bA = \begin{pmatrix} 3 & 3 \\ 4 & 4 \end{pmatrix}.
+\end{align*}
+We compute $\bA^T\bA$:
+\begin{align*}
+    \bA^T\bA = \begin{pmatrix} 3 & 4 \\ 3 & 4 \end{pmatrix} \begin{pmatrix} 3 & 3 \\ 4 & 4 \end{pmatrix} = \begin{pmatrix} 25 & 25 \\ 25 & 25 \end{pmatrix}.
+\end{align*}
+The eigenvalues of $\bA^T\bA$ are $\lambda_1 = 50$ and $\lambda_2 = 0$.
+The singular values are $\sigma_1 = \sqrt{50} = 5\sqrt{2}$ and $\sigma_2 = 0$.
+The normalized eigenvector corresponding to $\lambda_1 = 50$ is $\bv_1 = \frac{1}{\sqrt{2}}(1, 1)^T$.
+The first left singular vector is
+\begin{align*}
+    \bu_1 = \frac{1}{\sigma_1} \bA\bv_1 = \frac{1}{5\sqrt{2}} \begin{pmatrix} 3 & 3 \\ 4 & 4 \end{pmatrix} \begin{pmatrix} 1/\sqrt{2} \\ 1/\sqrt{2} \end{pmatrix} = \frac{1}{10} \begin{pmatrix} 6 \\ 8 \end{pmatrix} = \begin{pmatrix} 3/5 \\ 4/5 \end{pmatrix}.
+\end{align*}
+The thin SVD is $\bA = \sigma_1 \bu_1 \bv_1^T = (5\sqrt{2}) \begin{pmatrix} 3/5 \\ 4/5 \end{pmatrix} \begin{pmatrix} 1/\sqrt{2} & 1/\sqrt{2} \end{pmatrix}$.
 }
 
 \addExcr{%
 \begin{enumerate}
-    \item Compute the SVD of $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$ by hand and verify the coordinate equation in Thm~\ref{thm:svd-coordinates}.
-    \item \textbf{Compression:}\enspace Load a $512 \times 512$ image. Plot the relative error $\|\bA - \bA_k\|_F / \|\bA\|_F$ vs.\ $k$. At what $k$ is the image recognizable?
-    \item Use the pseudoinverse to find the least squares solution to a rank-deficient $3 \times 3$ system. Explain each zero singular value using Def~\ref{def:numerical-rank}.
+    \item Compute the singular values and singular vectors by hand for $\bA = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$.
+    \item Let $\bA \in \fR^{n \times n}$ be invertible. Prove that $\|\bA\|_2 = \sigma_{\max}$ and $\|\bA^{-1}\|_2 = 1/\sigma_{\min}$, confirming that $\kappa_2(\bA) = \sigma_{\max}/\sigma_{\min}$.
+    \item Prove that the pseudoinverse satisfies the four Moore-Penrose conditions: (1) $\bA\bA^\dagger\bA = \bA$, (2) $\bA^\dagger\bA\bA^\dagger = \bA^\dagger$, (3) $(\bA\bA^\dagger)^T = \bA\bA^\dagger$, and (4) $(\bA^\dagger\bA)^T = \bA^\dagger\bA$.
+    \item Load an image as a matrix in Python. Compute its SVD and plot the relative Frobenius approximation error as a function of the truncation rank $k$.
 \end{enumerate}
 }
+\label{ex:svd-exercises}
 
 \end{document}

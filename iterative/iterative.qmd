@@ -1,216 +1,178 @@
 # Iterative Methods for Linear Systems
 
 
-Alternative to direct solvers for large, sparse systems where matrix factorization is impractical due to memory or compute limits.
+Direct methods such as Gaussian elimination and Cholesky factorization compute exact solutions up to machine roundoff in a finite number of arithmetic operations. However, for the very large linear systems arising from the discretization of three-dimensional partial differential equations or network models, direct factorizations become computationally prohibitive. Direct factorizations suffer from fill-in, in which sparse matrices produce dense triangular factors that exceed available computer memory.
 
 
-Direct methods factor the matrix. Iterative methods repeatedly improve an approximate solution using cheap operations, usually matrix-vector products. They are preferred when $\bA$ is large, sparse, or available only as a function that computes $\bA\bv$.
+Iterative methods provide an essential alternative. Instead of transforming the matrix through elimination, an iterative solver generates a sequence of improving approximations $\bx^{(0)}, \bx^{(1)}, \bx^{(2)}, ...$ that converges toward the true solution $\bx^* = \bA^{-1}\bb$. The fundamental computational primitive of an iterative method is the matrix-vector multiplication $\bv \mapsto \bA\bv$. Because sparse matrix-vector products require only $O(\text{nnz})$ operations and zero additional memory, iterative methods scale efficiently to millions of degrees of freedom.
 
 
-## Direct vs.\ Iterative Solvers
+## Matrix Splittings and Stationary Iterations
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Sparse fill-in)** 
-Even if $\bA$ is sparse, its LU or Cholesky factors are typically much denser (**fill-in**). For a 2D Poisson problem on an $n \times n$ grid:
-
-- $\bA$ has $O(n^2)$ nonzeros.
-    
-- LU factors have $O(n^3)$ nonzeros.
-
-Iterative methods exploit sparsity by using only matrix-vector products ($O(\text{nnz})$).
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Matrix-free viewpoint)**  Many scientific codes never assemble $\bA$ explicitly. They only provide a routine that maps $\bv\mapsto\bA\bv$. Krylov methods such as CG and GMRES are designed for this setting.
-:::
-
-
-::: {.callout-note icon=false}
-## Definition: Krylov Subspace
-Given a matrix $\bA$ and a vector $\bv$, the $k$-th Krylov subspace is
+The classical approach to designing an iterative solver is matrix splitting. We decompose the coefficient matrix $\bA$ into the difference of two matrices,
 $$
 \begin{align}
-\mathcal{K}_k(\bA,\bv)
-    =
-    \operatorname{span}\{\bv,\bA\bv,\bA^2\bv,...,\bA^{k-1}\bv\}.
+\bA = \bM - \mathbf{N},
 \end{align}
 $$
-It is the smallest subspace that contains $\bv$ and is built by repeated multiplication by $\bA$.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Krylov Approximation Principle
-Let $\br^{(0)}=\bb-\bA\bx^{(0)}$. Any iterate of the form
-$$
-\begin{align}
-\bx^{(k)}=\bx^{(0)}+p_{k-1}(\bA)\br^{(0)},
-\end{align}
-$$
-where $p_{k-1}$ is a polynomial of degree at most $k-1$, lies in the affine space
-$$
-\begin{align}
-\bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)}).
-\end{align}
-$$
-Thus a matrix-free method can improve $\bx^{(0)}$ by choosing increasingly good corrections from Krylov subspaces using only matrix-vector products.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Write $p_{k-1}(t)=c_0+c_1t+\cdots+c_{k-1}t^{k-1}$ and expand $p_{k-1}(\bA)\br^{(0)}$.
-    
-1. Use the result above to show that this correction belongs to $\mathcal{K}_k(\bA,\br^{(0)})$.
-    
-1. List $\mathcal{K}_1$, $\mathcal{K}_2$, and $\mathcal{K}_3$ explicitly. What new vector must be computed to move from $\mathcal{K}_k$ to $\mathcal{K}_{k+1}$?
-    
-1. Explain why the result above makes Krylov methods compatible with the matrix-free viewpoint above.
-    
-1. Preview the later chapters: CG chooses the best correction in an energy norm for SPD systems, while GMRES chooses the correction with smallest residual norm.
-
-:::
+where the splitting matrix $\bM$ is nonsingular and easily invertible. The linear system $\bA\bx = \bb$ is then algebraically equivalent to $\bM\bx = \mathbf{N}\bx + \bb$.
 
 
 ::: {.callout-note icon=false}
 ## Definition: Stationary Iteration
-An iteration of the form \textbf{$\bx^{(k+1)} = \bT\bx^{(k)} + \bc$}, where:
-
-- $\bT = \bI - \bM^{-1}\bA$ is the iteration matrix.
-    
-- $\bc = \bM^{-1}\bb$ is the updated right-hand side.
-    
-- $\bM$ is the **splitting matrix** (ideally $\bM \approx \bA$ and $\bM^{-1}$ is cheap).
-
+Given a splitting $\bA = \bM - \mathbf{N}$, the corresponding stationary iteration computes successive approximations via the fixed-point recurrence
+$$
+\begin{align}
+\bM\bx^{(k+1)} = \mathbf{N}\bx^{(k)} + \bb \iff \bx^{(k+1)} = \bT\bx^{(k)} + \bc,
+\end{align}
+$$
+where $\bT = \bM^{-1}\mathbf{N} = \bI - \bM^{-1}\bA$ is the **iteration matrix** and $\bc = \bM^{-1}\bb$ is the modified right-hand side vector.
 :::
-
-
-Stationary iterations are fixed-point iterations. Instead of solving $\bA\bx=\bb$ directly, we rewrite the problem as $\bx=\bT\bx+\bc$ and repeatedly apply the map. The exact solution is a fixed point of this map.
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Splitting form)**  If $\bA=\bM-\mathbf{N}$, then
-$$
-\begin{align}
-\bA\bx=\bb
-    \quad \Longleftrightarrow \quad
-    \bM\bx=\mathbf{N}\bx+\bb.
-\end{align}
-$$
-The iteration is
-$$
-\begin{align}
-\bx^{(k+1)}=\bM^{-1}\mathbf{N}\bx^{(k)}+\bM^{-1}\bb.
-\end{align}
-$$
-The art is choosing $\bM$ easy to invert while making the iteration converge quickly.
+**(Fixed-point interpretation)** 
+A stationary iteration is a linear fixed-point mapping. The exact solution $\bx^*$ satisfies $\bx^* = \bT\bx^* + \bc$. The effectiveness of the method depends entirely on the choice of $\bM$: the matrix $\bM$ should be as close to $\bA$ as possible to minimize the magnitude of $\bT$, while remaining computationally cheap to invert at each step.
 :::
 
 
-## Convergence and Spectral Radius
+## Convergence Theory and the Spectral Radius
+
+
+The convergence of a linear stationary iteration is determined entirely by the spectral properties of the iteration matrix $\bT$.
 
 
 ::: {.callout-note icon=false}
 ## Definition: Spectral Radius
-$\rho(\bB) = \max \{|\lambda| : \lambda \in \sigma(\bB)\}$.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Spectral radius intuition)**  The eigenvalue of largest magnitude controls the long-run behavior of repeated multiplication. If every eigenvalue of $\bT$ lies inside the unit disk, powers of $\bT$ decay and the iteration converges.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Gelfand's Formula
-For any submultiplicative norm, $\rho(\bB) = \lim_{k\to\infty} \|\bB^k\|^{1/k}$.
-For large $k$, $\|\bB^k\| \approx \rho(\bB)^k$.
+Let $\bT \in \fR^{n \times n}$ with spectrum $\sigma(\bT) \subset \fC$. The spectral radius of $\bT$ is defined as the maximum modulus among all its eigenvalues:
+$$
+\begin{align}
+\rho(\bT) = \max \{ |\lambda| : \lambda \in \sigma(\bT) \}.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Fundamental Convergence Condition
-The iteration $\bx^{(k+1)} = \bT\bx^{(k)} + \bc$ converges for any $\bx^{(0)}$ iff **$\rho(\bT) < 1$**.
+## Theorem: Gelfand's Spectral Radius Theorem
+For any matrix norm $\|\cdot\|$ induced by a vector norm on $\fC^n$ and any matrix $\bT \in \fR^{n \times n}$,
+$$
+\begin{align}
+\rho(\bT) = \lim_{k \to \infty} \|\bT^k\|^{1/k}.
+\end{align}
+$$
+In particular, for any $\varepsilon > 0$, there exists an induced matrix norm $\|\cdot\|_*$ such that $\|\bT\|_* \leq \rho(\bT) + \varepsilon$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Fundamental Convergence Criterion for Stationary Iterations
+The stationary iteration $\bx^{(k+1)} = \bT\bx^{(k)} + \bc$ converges to the unique solution $\bx^* = \bA^{-1}\bb$ for every initial guess $\bx^{(0)} \in \fR^n$ if and only if
+$$
+\begin{align}
+\rho(\bT) < 1.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Let $\bx^*$ be the exact solution satisfying $\bx^* = \bT\bx^* + \bc$. Subtracting this from the iteration formula gives the error evolution:
+Let $\be^{(k)} = \bx^{(k)} - \bx^*$ denote the error vector at step $k$. Subtracting the fixed-point identity $\bx^* = \bT\bx^* + \bc$ from the iteration formula $\bx^{(k+1)} = \bT\bx^{(k)} + \bc$ yields the homogeneous linear error recurrence
 $$
 \begin{align}
-\bx^{(k+1)} - \bx^* &= (\bT\bx^{(k)} + \bc) - (\bT\bx^* + \bc) \\
-    \be^{(k+1)} &= \bT \be^{(k)}.
+\be^{(k+1)} = \bT \be^{(k)}.
 \end{align}
 $$
-Applying this relation recursively from $k=0$:
+Applying this recurrence recursively from the initial error $\be^{(0)}$ gives
 $$
 \begin{align}
 \be^{(k)} = \bT^k \be^{(0)}.
 \end{align}
 $$
-The error $\be^{(k)} \to \bzero$ for any $\be^{(0)}$ iff $\bT^k \to \bzero$ as $k \to \infty$, which is guaranteed iff $\rho(\bT) < 1$ by Gelfand's formula.
+The error $\be^{(k)}$ converges to the zero vector for every choice of $\be^{(0)}$ if and only if the matrix sequence $\bT^k \to \bzero$ as $k \to \infty$. By the Jordan canonical form, every Jordan block $J_i = \lambda_i \bI + N_i$ satisfies $J_i^k \to \bzero$ if and only if $|\lambda_i| < 1$. Therefore, $\lim_{k \to \infty} \bT^k = \bzero$ if and only if every eigenvalue satisfies $|\lambda_i| < 1$, which is precisely the condition $\rho(\bT) < 1$.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Iteration count)** 
-To reduce error by $10^{-p}$, the required iterations are $k \approx \frac{p}{\log_{10}(1/\rho(\bT))}$. As $\rho(\bT) \to 1^-$, the cost explodes.
-:::
-
-
-## Stopping Criteria
-
-
-Iterative methods need a stopping rule. The true error $\|\bx^{(k)}-\bx^*\|$ is usually unknown, so algorithms monitor the residual $\br^{(k)}=\bb-\bA\bx^{(k)}$.
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Common stopping test)**  Stop when
+**(Asymptotic convergence rate and iteration count)** 
+The quantity $-\log_{10} \rho(\bT)$ represents the asymptotic rate of convergence, measuring the number of decimal digits of accuracy gained per iteration. To reduce the initial error by a relative tolerance factor $\varepsilon$, the required number of iterations satisfies
 $$
 \begin{align}
-\frac{\|\br^{(k)}\|}{\|\bb\|} \leq `tol`.
+k \approx \frac{\ln(1/\varepsilon)}{-\ln \rho(\bT)}.
 \end{align}
 $$
-This is a relative residual test. It is cheap and scale-aware, but it is not the same as a relative error test unless the problem is well-conditioned.
+If $\rho(\bT) = 0.99$, we have $-\ln(0.99) \approx 0.01005$, which requires approximately $230$ iterations to reduce the error by a factor of ten. As $\rho(\bT) \to 1$, convergence slows drastically.
+:::
+
+
+## Krylov Subspaces and Matrix-Free Solvers
+
+
+While stationary methods rely on fixed matrix splittings, modern iterative methods project the problem onto expanding polynomial subspaces generated by the initial residual.
+
+
+::: {.callout-note icon=false}
+## Definition: Krylov Subspace
+Let $\bA \in \fR^{n \times n}$ and let $\br^{(0)} \in \fR^n$ be a nonzero vector. The $k$-th Krylov subspace generated by $\bA$ and $\br^{(0)}$ is the linear subspace
+$$
+\begin{align}
+\mathcal{K}_k(\bA, \br^{(0)}) = \operatorname{span} \left\{ \br^{(0)}, \bA\br^{(0)}, \bA^2\br^{(0)}, ..., \bA^{k-1}\br^{(0)} \right\}.
+\end{align}
+$$
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Krylov Polynomial Representation
+Let $\bx^{(0)}$ be an initial guess with residual $\br^{(0)} = \bb - \bA\bx^{(0)}$. Any iterate $\bx^{(k)}$ belonging to the affine Krylov space $\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$ can be represented as
+$$
+\begin{align}
+\bx^{(k)} = \bx^{(0)} + p_{k-1}(\bA)\br^{(0)},
+\end{align}
+$$
+where $p_{k-1}$ is a polynomial of degree at most $k-1$. The corresponding residual vector satisfies
+$$
+\begin{align}
+\br^{(k)} = \bb - \bA\bx^{(k)} = q_k(\bA)\br^{(0)},
+\end{align}
+$$
+where $q_k(t) = 1 - t p_{k-1}(t)$ is a polynomial of degree at most $k$ satisfying the normalization constraint $q_k(0) = 1$.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Preconditioning preview)**  Most useful iterative solvers are preconditioned. A preconditioner $\bM\approx\bA$ should be cheap to solve with and should make the transformed system easier for the iterative method. Good preconditioning changes the problem from "possible but slow" to practical.
+**(Matrix-free computation)** 
+Krylov subspace methods never require explicit access to the individual entries of $\bA$. They interact with the linear operator exclusively by computing matrix-vector products $\bv \mapsto \bA\bv$. Consequently, linear systems can be solved efficiently even when the matrix is defined implicitly as a differential operator or a numerical simulation routine.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Stopping Criteria for Iterative Solvers
+Because the true error $\be^{(k)} = \bx^{(k)} - \bx^*$ is unobservable, termination is determined using the computable residual vector $\br^{(k)} = \bb - \bA\bx^{(k)}$. Common stopping criteria include:
+
+1. **Relative residual test:** $\frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq `tol`$.
+    
+1. **Preconditioned relative residual test:** $\frac{\|\bM^{-1}\br^{(k)}\|_2}{\|\bM^{-1}\bb\|_2} \leq `tol`$.
+    
+1. **Step difference test:** $\frac{\|\bx^{(k+1)} - \bx^{(k)}\|_2}{\|\bx^{(k+1)}\|_2} \leq `tol`$.
+
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. For $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 3 \end{pmatrix}$, find $\rho(\bT)$ for the splitting $\bM = 3\bI$.
+1. Consider the matrix $\bA = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$ and the splitting $\bM = 4\bI$. Compute the iteration matrix $\bT = \bI - \bM^{-1}\bA$, find its eigenvalues, and evaluate its spectral radius $\rho(\bT)$.
     
-1. If $\rho(\bT) = 0.99$, how many iterations are needed to gain 4 digits of precision?
+1. For the splitting above, determine the number of iterations required to reduce the initial error by a factor of $10^{-6}$.
     
-1. Start $\bx^{(0)}=\bzero$ and solve $\bA\bx = (4, 4)^T$ via 3 steps of this iteration.
-
-:::
-
-
-## Fill-in and Sparse Storage
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. **Fill-in Demo:**  Generate a large sparse tridiagonal matrix. Compare nonzeros in $\bA$ vs.\ LU factors.
+1. Prove that if $\|\bT\| < 1$ for some induced matrix norm, then the error satisfies $\|\be^{(k)}\| \leq \frac{\|\bT\|}{1 - \|\bT\|} \|\bx^{(k)} - \bx^{(k-1)}\|$.
     
-1. **Timing:**  Use `scipy.sparse.linalg.spsolve` vs.\ dense `np.linalg.solve` for $n=2000$. Record memory and time.
+1. Let $\bA \in \fR^{n \times n}$ and let $\br^{(0)} \in \fR^n$. Prove that the sequence of dimensions $\dim \mathcal{K}_k(\bA, \br^{(0)})$ strictly increases by one at each step until it reaches an invariant subspace of $\bA$, after which the dimension remains constant.
 
 :::

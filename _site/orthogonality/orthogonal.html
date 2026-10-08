@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>12&nbsp; Orthogonal Matrices – Scientific Computing</title>
+<title>12&nbsp; Orthogonal Transformations and the QR Factorization – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -340,7 +340,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -452,7 +452,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,7 +469,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -481,13 +481,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Linear Least Squares and Overdetermined Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -510,25 +510,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -551,19 +551,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
       </ul>
@@ -671,10 +671,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#orthogonality-and-orthonormal-bases" id="toc-orthogonality-and-orthonormal-bases" class="nav-link active" data-scroll-target="#orthogonality-and-orthonormal-bases"><span class="header-section-number">12.1</span> Orthogonality and Orthonormal Bases</a></li>
-  <li><a href="#qr-decomposition" id="toc-qr-decomposition" class="nav-link" data-scroll-target="#qr-decomposition"><span class="header-section-number">12.2</span> QR Decomposition</a></li>
-  <li><a href="#gram-schmidt-process" id="toc-gram-schmidt-process" class="nav-link" data-scroll-target="#gram-schmidt-process"><span class="header-section-number">12.3</span> Gram-Schmidt Process</a></li>
-  <li><a href="#orthogonal-projection" id="toc-orthogonal-projection" class="nav-link" data-scroll-target="#orthogonal-projection"><span class="header-section-number">12.4</span> Orthogonal Projection</a></li>
+  <li><a href="#orthogonality-isometry-and-invariance" id="toc-orthogonality-isometry-and-invariance" class="nav-link active" data-scroll-target="#orthogonality-isometry-and-invariance"><span class="header-section-number">12.1</span> Orthogonality, Isometry, and Invariance</a></li>
+  <li><a href="#the-qr-factorization" id="toc-the-qr-factorization" class="nav-link" data-scroll-target="#the-qr-factorization"><span class="header-section-number">12.2</span> The QR Factorization</a></li>
+  <li><a href="#householder-triangularization" id="toc-householder-triangularization" class="nav-link" data-scroll-target="#householder-triangularization"><span class="header-section-number">12.3</span> Householder Triangularization</a></li>
+  <li><a href="#gram-schmidt-orthogonalization" id="toc-gram-schmidt-orthogonalization" class="nav-link" data-scroll-target="#gram-schmidt-orthogonalization"><span class="header-section-number">12.4</span> Gram-Schmidt Orthogonalization</a></li>
+  <li><a href="#orthogonal-projectors" id="toc-orthogonal-projectors" class="nav-link" data-scroll-target="#orthogonal-projectors"><span class="header-section-number">12.5</span> Orthogonal Projectors</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/orthogonal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -682,9 +683,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></h1>
 </div>
 
 
@@ -701,24 +702,25 @@ window.Quarto = {
 </header>
 
 
-<p>Transformations that preserve lengths and angles. Numerically ideal due to optimal conditioning (<span class="math inline">\(\kappa_2(\bQ) = 1\)</span>).</p>
-<p>Orthogonal transformations rotate or reflect space without stretching it. Because they preserve lengths, they do not amplify errors in the Euclidean norm. This is why stable numerical linear algebra tries to use orthogonal transformations whenever possible.</p>
-<section id="orthogonality-and-orthonormal-bases" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="orthogonality-and-orthonormal-bases"><span class="header-section-number">12.1</span> Orthogonality and Orthonormal Bases</h2>
+<p>Orthogonal transformations are the gold standard of numerical linear algebra. Because an orthogonal transformation preserves Euclidean lengths and angles, it neither amplifies nor attenuates perturbations in the data. When an algorithm is composed entirely of orthogonal operations, the accumulation of floating-point rounding errors is strictly controlled, and the condition number of the transformation is identically one.</p>
+<p>The QR factorization expresses a matrix as the product of an orthogonal matrix <span class="math inline">\(\bQ\)</span> and an upper triangular matrix <span class="math inline">\(\bR\)</span>. This factorization provides an orthonormal basis for the column space of the matrix, transforming complicated geometric projections and overdetermined least-squares problems into straightforward triangular solves.</p>
+<section id="orthogonality-isometry-and-invariance" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="orthogonality-isometry-and-invariance"><span class="header-section-number">12.1</span> Orthogonality, Isometry, and Invariance</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Orthogonal Vectors
+<span class="screen-reader-only">Note</span>Definition: Orthogonal Matrix
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\bx, \by \in \fR^n\)</span> are orthogonal if <span class="math inline">\(\bx^T\by = 0\)</span>.</p>
-<ul>
-<li><strong>Mutually Orthogonal Set:</strong> <span class="math inline">\(\bv_i^T\bv_j = 0\)</span> for all <span class="math inline">\(i \neq j\)</span>.</li>
-</ul>
+<p>A square matrix <span class="math inline">\(\bQ \in \fR^{n \times n}\)</span> is termed <strong>orthogonal</strong> if its columns form an orthonormal basis for <span class="math inline">\(\fR^n\)</span>. Equivalently, <span class="math display">\[
+\begin{align}
+\bQ^T\bQ = \bQ\bQ^T = \bI_n \iff \bQ^{-1} = \bQ^T.
+\end{align}
+\]</span> For rectangular matrices <span class="math inline">\(\bQ \in \fR^{m \times n}\)</span> with <span class="math inline">\(m \geq n\)</span>, we say that <span class="math inline">\(\bQ\)</span> has orthonormal columns if <span class="math inline">\(\bQ^T\bQ = \bI_n\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -727,14 +729,62 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Orthonormal Basis
+<span class="screen-reader-only">Note</span>Theorem: Geometric Invariance Properties of Orthogonal Transformations
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A set <span class="math inline">\(\{\bq_1, ..., \bq_n\}\)</span> where <span class="math inline">\(\bq_i^T\bq_j = \delta_{ij}\)</span> (unit length and mutually orthogonal).</p>
-<ul>
-<li><strong>Matrix Form:</strong> If <span class="math inline">\(\bQ = [\bq_1, ..., \bq_n]\)</span>, then <span class="math inline">\(\bQ^T\bQ = \bI\)</span>.</li>
-</ul>
+<p>Let <span class="math inline">\(\bQ \in \fR^{n \times n}\)</span> be an orthogonal matrix. For all vectors <span class="math inline">\(\bx, \by \in \fR^n\)</span>, the transformation <span class="math inline">\(\bx \mapsto \bQ\bx\)</span> satisfies the following properties:</p>
+<ol type="1">
+<li><p><strong>Inner Product Preservation:</strong> <span class="math inline">\(\langle \bQ\bx, \bQ\by \rangle = (\bQ\bx)^T(\bQ\by) = \bx^T\by = \langle \bx, \by \rangle\)</span>.</p></li>
+<li><p><strong>Isometry (Length Preservation):</strong> <span class="math inline">\(\|\bQ\bx\|_2 = \|\bx\|_2\)</span>.</p></li>
+<li><p><strong>Matrix 2-Norm and Conditioning:</strong> <span class="math inline">\(\|\bQ\|_2 = 1\)</span> and <span class="math inline">\(\kappa_2(\bQ) = \|\bQ\|_2 \|\bQ^{-1}\|_2 = 1\)</span>.</p></li>
+<li><p><strong>Determinant:</strong> <span class="math inline">\(\det(\bQ) = \pm 1\)</span>, where <span class="math inline">\(+1\)</span> corresponds to a pure rotation and <span class="math inline">\(-1\)</span> corresponds to a reflection.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Using the transpose property of matrix multiplication, <span class="math inline">\((\bQ\bx)^T(\bQ\by) = \bx^T(\bQ^T\bQ)\by = \bx^T\bI\by = \bx^T\by\)</span>, which proves the preservation of inner products. Setting <span class="math inline">\(\bx = \by\)</span> gives <span class="math inline">\(\|\bQ\bx\|_2^2 = \bx^T\bx = \|\bx\|_2^2\)</span>, proving length preservation. Taking the supremum over unit vectors yields <span class="math inline">\(\|\bQ\|_2 = \sup_{\|\bx\|_2=1} \|\bQ\bx\|_2 = 1\)</span>. Because <span class="math inline">\(\bQ^{-1} = \bQ^T\)</span> is also orthogonal, <span class="math inline">\(\|\bQ^{-1}\|_2 = 1\)</span>, which establishes <span class="math inline">\(\kappa_2(\bQ) = 1 \cdot 1 = 1\)</span>. Finally, taking determinants on <span class="math inline">\(\bQ^T\bQ = \bI\)</span> gives <span class="math inline">\((\det \bQ)^2 = 1 \implies \det \bQ = \pm 1\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-qr-factorization" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="the-qr-factorization"><span class="header-section-number">12.2</span> The QR Factorization</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Full and Thin QR Factorizations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> with <span class="math inline">\(m \geq n\)</span>.</p>
+<ol type="1">
+<li><p>The <strong>Full QR Factorization</strong> is given by <span class="math display">\[
+\begin{align}
+\bA = \bQ\bR = \begin{pmatrix} \bQ_1 &amp; \bQ_2 \end{pmatrix} \begin{pmatrix} \bR_1 \\ \bzero \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\bQ \in \fR^{m \times m}\)</span> is orthogonal, <span class="math inline">\(\bQ_1 \in \fR^{m \times n}\)</span>, <span class="math inline">\(\bQ_2 \in \fR^{m \times (m-n)}\)</span>, and <span class="math inline">\(\bR_1 \in \fR^{n \times n}\)</span> is upper triangular.</p></li>
+<li><p>The <strong>Thin (Economy) QR Factorization</strong> retains only the first <span class="math inline">\(n\)</span> columns: <span class="math display">\[
+\begin{align}
+\bA = \bQ_1 \bR_1,
+\end{align}
+\]</span> where <span class="math inline">\(\bQ_1 \in \fR^{m \times n}\)</span> satisfies <span class="math inline">\(\bQ_1^T\bQ_1 = \bI_n\)</span> and <span class="math inline">\(\bR_1 \in \fR^{n \times n}\)</span> is upper triangular.</p></li>
+</ol>
+<p>If <span class="math inline">\(\bA\)</span> has full column rank, the thin QR factorization is unique when the diagonal entries of <span class="math inline">\(\bR_1\)</span> are chosen to be strictly positive.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -747,57 +797,28 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Efficiency in Orthonormal Bases)</strong> In an orthonormal basis, the coefficients of a vector <span class="math inline">\(\bv = \sum c_i \bq_i\)</span> are given by standard inner products: <span class="math inline">\(c_i = \bq_i^T\bv\)</span>. This allows the solution of a linear system, which generally requires <span class="math inline">\(O(n^3)\)</span> operations, to be computed using a sequence of inner products in <span class="math inline">\(O(n^2)\)</span> time.</p>
+<p><strong>(Subspace identification via QR)</strong> The columns of <span class="math inline">\(\bQ_1\)</span> form an orthonormal basis for the column space (range) <span class="math inline">\(\mathcal{R}(\bA)\)</span>, while the columns of <span class="math inline">\(\bQ_2\)</span> form an orthonormal basis for the orthogonal complement <span class="math inline">\(\mathcal{R}(\bA)^\perp = \mathcal{N}(\bA^T)\)</span>. For overdetermined least-squares problems where <span class="math inline">\(m \gg n\)</span>, the thin factorization requires significantly less storage (<span class="math inline">\(O(mn)\)</span> vs <span class="math inline">\(O(m^2)\)</span>) and is used in practical implementations.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Verify <span class="math inline">\(\bq_1 = \frac{1}{\sqrt{2}}(1, 1)^T, \bq_2 = \frac{1}{\sqrt{2}}(1, -1)^T\)</span> is an orthonormal basis using the result above.</p></li>
-<li><p>Express <span class="math inline">\(\bv = (3, -1)^T\)</span> in this basis using the result above.</p></li>
-<li><p>Prove that any set of <span class="math inline">\(n\)</span> mutually orthogonal nonzero vectors is linearly independent.</p></li>
-</ol>
-</div>
-</div>
+</section>
+<section id="householder-triangularization" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="householder-triangularization"><span class="header-section-number">12.3</span> Householder Triangularization</h2>
+<p>The standard method for computing the QR factorization of a dense matrix is the Householder reflection technique. At each step, a Householder reflector is constructed to zero out all subdiagonal entries of a column simultaneously.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Orthogonal Matrix
+<span class="screen-reader-only">Note</span>Definition: Householder Reflector
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Square matrix <span class="math inline">\(\bQ\)</span> where <span class="math inline">\(\bQ^T = \bQ^{-1}\)</span>. Columns (and rows) form an orthonormal basis.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Rotation and reflection)</strong> In <span class="math inline">\(\fR^2\)</span>, <span class="math display">\[
+<p>Let <span class="math inline">\(\bv \in \fR^m\)</span> be a nonzero vector. The Householder reflector associated with <span class="math inline">\(\bv\)</span> is the matrix <span class="math display">\[
 \begin{align}
-\begin{pmatrix}\cos\theta&amp;-\sin\theta\\ \sin\theta&amp;\cos\theta\end{pmatrix}
-    \quad \text{rotates, while} \quad
-    \begin{pmatrix}1&amp;0\\0&amp;-1\end{pmatrix}
-    \quad \text{reflects.}
+\bH = \bI - 2 \frac{\bv\bv^T}{\bv^T\bv}.
 \end{align}
-\]</span> Both are orthogonal. The determinant distinguishes orientation: rotations have determinant <span class="math inline">\(1\)</span>, reflections have determinant <span class="math inline">\(-1\)</span>.</p>
+\]</span> Geometrically, <span class="math inline">\(\bH\)</span> reflects any vector across the hyperplane orthogonal to <span class="math inline">\(\bv\)</span>. Every Householder reflector is symmetric (<span class="math inline">\(\bH^T = \bH\)</span>) and orthogonal (<span class="math inline">\(\bH^T\bH = \bH^2 = \bI\)</span>).</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -806,16 +827,15 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Invariance Properties
+<span class="screen-reader-only">Note</span>Theorem: Householder Vector Construction
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For any orthogonal <span class="math inline">\(\bQ\)</span> from the result above and vectors <span class="math inline">\(\bx, \by\)</span>:</p>
-<ol type="1">
-<li><p><strong>Inner Product Preserving:</strong> <span class="math inline">\((\bQ\bx)^T(\bQ\by) = \bx^T\by\)</span>.</p></li>
-<li><p><strong>Isometry:</strong> <span class="math inline">\(\|\bQ\bx\|_2 = \|\bx\|_2\)</span>.</p></li>
-<li><p><strong>Conditioning:</strong> <span class="math inline">\(\kappa_2(\bQ) = 1\)</span> (Optimally conditioned).</p></li>
-</ol>
+<p>Given a vector <span class="math inline">\(\bx \in \fR^m\)</span>, we wish to find a reflector <span class="math inline">\(\bH\)</span> that aligns <span class="math inline">\(\bx\)</span> with the first canonical coordinate axis: <span class="math inline">\(\bH\bx = \pm \|\bx\|_2 \be_1\)</span>. The vector <span class="math inline">\(\bv\)</span> is chosen as <span class="math display">\[
+\begin{align}
+\bv = \bx + \operatorname{sign}(x_1) \|\bx\|_2 \be_1,
+\end{align}
+\]</span> where <span class="math inline">\(\operatorname{sign}(x_1) = 1\)</span> if <span class="math inline">\(x_1 \geq 0\)</span> and <span class="math inline">\(-1\)</span> if <span class="math inline">\(x_1 &lt; 0\)</span>. Choosing the sign of the first component ensures that the two added terms have identical signs, completely preventing catastrophic cancellation.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -830,99 +850,62 @@ window.Quarto = {
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><strong>(1):</strong> Applying the Reversal Law for transposes and the fact that <span class="math inline">\(\bQ^T\bQ = \bI\)</span>: <span class="math display">\[
+<p>Let <span class="math inline">\(\bv = \bx - \alpha \be_1\)</span>. Because <span class="math inline">\(\bH\)</span> preserves vector lengths, we must have <span class="math inline">\(\|\bH\bx\|_2 = \|\bx\|_2\)</span>, which requires <span class="math inline">\(\alpha = \pm \|\bx\|_2\)</span>. Computing <span class="math inline">\(\bv^T\bv\)</span> gives <span class="math display">\[
 \begin{align}
-(\bQ\bx)^T(\bQ\by) &amp;= \bx^T \bQ^T \bQ \by \\
-    &amp;= \bx^T (\bQ^T \bQ) \by \\
-    &amp;= \bx^T \bI \by = \bx^T \by.
+\bv^T\bv = (\bx - \alpha \be_1)^T(\bx - \alpha \be_1) = \|\bx\|_2^2 - 2\alpha x_1 + \alpha^2 = 2 \|\bx\|_2^2 - 2\alpha x_1 = 2 \bv^T\bx.
 \end{align}
-\]</span></p>
-<p><strong>(2):</strong> Using the result from (1) with <span class="math inline">\(\bx = \by\)</span>: <span class="math display">\[
+\]</span> Applying <span class="math inline">\(\bH\)</span> to <span class="math inline">\(\bx\)</span> yields <span class="math display">\[
 \begin{align}
-\|\bQ\bx\|_2^2 &amp;= (\bQ\bx)^T(\bQ\bx) \\
-    &amp;= \bx^T\bx = \|\bx\|_2^2.
+\bH\bx = \bx - 2 \frac{\bv^T\bx}{\bv^T\bv} \bv = \bx - \bv = \alpha \be_1 = \pm \|\bx\|_2 \be_1.
 \end{align}
-\]</span> Taking the square root gives <span class="math inline">\(\|\bQ\bx\|_2 = \|\bx\|_2\)</span>.</p>
-<p><strong>(3):</strong> From (2), we see that the induced norm is <span class="math inline">\(\|\bQ\|_2 = 1\)</span>. Similarly, <span class="math inline">\(\|\bQ^T\|_2 = 1\)</span> because <span class="math inline">\(\bQ^T\)</span> is also orthogonal. Thus: <span class="math display">\[
-\begin{align}
-\kappa_2(\bQ) = \|\bQ\|_2 \|\bQ^T\|_2 = 1 \cdot 1 = 1.
-\end{align}
-\]</span></p>
+\]</span> To ensure numerical stability in floating-point arithmetic, we choose <span class="math inline">\(\alpha = -\operatorname{sign}(x_1)\|\bx\|_2\)</span>, so that <span class="math inline">\(v_1 = x_1 + \operatorname{sign}(x_1)\|\bx\|_2\)</span> avoids subtracting nearly equal quantities.</p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Verify rotation matrix <span class="math inline">\(\bQ = \begin{pmatrix}\cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta\end{pmatrix}\)</span> is orthogonal using the result above.</p></li>
-<li><p>Use the result above to explain why rotations preserve Euclidean distance.</p></li>
-<li><p>Prove that the product of two orthogonal matrices is orthogonal.</p></li>
-<li><p>If <span class="math inline">\(\bQ\)</span> is orthogonal, show <span class="math inline">\(\det(\bQ) = \pm 1\)</span>.</p></li>
-</ol>
+<p><strong>(Matrix-free application and complexity)</strong> A Householder matrix <span class="math inline">\(\bH\)</span> is never constructed as an explicit <span class="math inline">\(m \times m\)</span> array. To apply <span class="math inline">\(\bH\)</span> to a vector <span class="math inline">\(\by\)</span>, we compute <span class="math display">\[
+\begin{align}
+\bH\by = \by - \left( \frac{2\bv^T\by}{\bv^T\bv} \right) \bv,
+\end{align}
+\]</span> which requires only an inner product and a vector update costing <span class="math inline">\(O(m)\)</span> flops. For a matrix <span class="math inline">\(\bA \in \fR^{m \times n}\)</span>, Householder QR requires <span class="math inline">\(2mn^2 - \frac{2}{3}n^3\)</span> flops.</p>
 </div>
 </div>
 </section>
-<section id="qr-decomposition" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="qr-decomposition"><span class="header-section-number">12.2</span> QR Decomposition</h2>
-<p>Factors <span class="math inline">\(\bA\)</span> into an orthogonal <span class="math inline">\(\bQ\)</span> and upper triangular <span class="math inline">\(\bR\)</span>. Default choice for least squares and eigenvalue algorithms.</p>
-<p>QR factorization builds an orthonormal basis for the column space of <span class="math inline">\(\bA\)</span>. Once the columns have been replaced by an orthonormal basis, projections and least squares problems become much easier because coefficients are computed by inner products.</p>
+<section id="gram-schmidt-orthogonalization" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="gram-schmidt-orthogonalization"><span class="header-section-number">12.4</span> Gram-Schmidt Orthogonalization</h2>
+<p>The Gram-Schmidt process constructs the thin QR factorization column by column by projecting each column of <span class="math inline">\(\bA\)</span> onto the orthogonal complement of the previously computed basis vectors.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: QR Decomposition
+<span class="screen-reader-only">Note</span>Theorem: Classical and Modified Gram-Schmidt Algorithms
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> (<span class="math inline">\(m \geq n\)</span>): <span class="math inline">\(\bA = \bQ\bR\)</span>. The columns of <span class="math inline">\(\bQ\)</span> form an orthonormal basis for the column space introduced in the result above.</p>
-<ul>
-<li><p><strong>Full QR:</strong> <span class="math inline">\(\bQ \in \fR^{m \times m}, \bR \in \fR^{m \times n}\)</span>.</p></li>
-<li><p><strong>Thin QR:</strong> <span class="math inline">\(\bQ_1 \in \fR^{m \times n}, \bR_1 \in \fR^{n \times n}\)</span>. Columns of <span class="math inline">\(\bQ_1\)</span> span <span class="math inline">\(\mathcal{R}(\bA)\)</span>.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Thin and full QR)</strong> For least squares with <span class="math inline">\(m\geq n\)</span>, the thin QR is usually the useful one: <span class="math display">\[
+<p>Let <span class="math inline">\(\ba_1, ..., \ba_n \in \fR^m\)</span> be the columns of <span class="math inline">\(\bA\)</span>.</p>
+<ol type="1">
+<li><p><strong>Classical Gram-Schmidt (CGS):</strong> For each column <span class="math inline">\(k = 1, ..., n\)</span>, compute all projections against the original vector simultaneously: <span class="math display">\[
 \begin{align}
-\bA=\bQ_1\bR_1,\qquad \bQ_1\in\fR^{m\times n},\quad \bR_1\in\fR^{n\times n}.
+r_{ik} = \bq_i^T \ba_k \quad (i = 1, ..., k-1), \qquad \bv_k = \ba_k - \sum_{i=1}^{k-1} r_{ik} \bq_i, \qquad r_{kk} = \|\bv_k\|_2, \qquad \bq_k = \frac{\bv_k}{r_{kk}}.
 \end{align}
-\]</span> The remaining <span class="math inline">\(m-n\)</span> columns in full QR span the orthogonal complement of <span class="math inline">\(\mathcal{R}(\bA)\)</span>, but they are often unnecessary to store.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Householder Reflector
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A reflector <span class="math inline">\(\bH = \bI - 2\frac{\bv\bv^T}{\bv^T\bv}\)</span> reflects <span class="math inline">\(\bx\)</span> across the hyperplane <span class="math inline">\(\bv^\perp\)</span>.</p>
-<ul>
-<li><p><strong>Zeroing Property:</strong> For any <span class="math inline">\(\bx\)</span>, we can choose <span class="math inline">\(\bv\)</span> such that <span class="math inline">\(\bH\bx = \pm \|\bx\| \be_1\)</span>.</p></li>
-<li><p><strong>Efficiency:</strong> Never form <span class="math inline">\(\bH\)</span> explicitly. Apply as <span class="math inline">\(\bH\bx = \bx - \bv(2\frac{\bv^T\bx}{\bv^T\bv})\)</span>, a rank-1 update costing <span class="math inline">\(O(m)\)</span>.</p></li>
-</ul>
+\]</span></p></li>
+<li><p><strong>Modified Gram-Schmidt (MGS):</strong> For each column <span class="math inline">\(k\)</span>, subtract projections sequentially from the partially updated vector: <span class="math display">\[
+\begin{align}
+\bv_k^{(1)} = \ba_k, \qquad \bv_k^{(i+1)} = \bv_k^{(i)} - (\bq_i^T \bv_k^{(i)}) \bq_i \quad (i = 1, ..., k-1), \qquad \bq_k = \frac{\bv_k^{(k)}}{\|\bv_k^{(k)}\|_2}.
+\end{align}
+\]</span></p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -935,113 +918,17 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Householder QR cost)</strong> For <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> via Householder: <span class="math inline">\(\text{Cost} \approx 2mn^2 - \frac{2}{3}n^3\)</span>. Square case (<span class="math inline">\(m=n\)</span>): <span class="math inline">\(\frac{4}{3}n^3\)</span> (twice the cost of LU).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Householder stability)</strong> A Householder reflector is orthogonal, so applying it preserves vector norms. QR by Householder is a sequence of orthogonal transformations, which avoids the error amplification caused by subtracting nearly dependent projections in classical Gram-Schmidt.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p><strong>(Stability hierarchy among orthogonalization methods)</strong> In exact arithmetic, CGS and MGS produce identical outputs. In floating-point arithmetic, however:</p>
 <ol type="1">
-<li><p>Find <span class="math inline">\(\bv\)</span> so that the reflector in the result above satisfies <span class="math inline">\(\bH(3, 4)^T = (-5, 0)^T\)</span>.</p></li>
-<li><p>Use Householder reflectors to triangularize <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 3 \\ 2 &amp; 4 \end{pmatrix}\)</span> and identify the resulting <span class="math inline">\(\bQ\)</span> and <span class="math inline">\(\bR\)</span> from the result above.</p></li>
-<li><p>Use the result above to explain the result above.</p></li>
-<li><p>Compare thin vs.&nbsp;full QR shapes in NumPy for a <span class="math inline">\(5 \times 3\)</span> matrix.</p></li>
+<li><p>Classical Gram-Schmidt loses orthogonality rapidly: <span class="math inline">\(\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}} \kappa(\bA)^2)\)</span>.</p></li>
+<li><p>Modified Gram-Schmidt is significantly more robust: <span class="math inline">\(\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}} \kappa(\bA))\)</span>.</p></li>
+<li><p>Householder QR maintains orthogonality to machine precision: <span class="math inline">\(\|\bQ^T\bQ - \bI\|_2 \approx O(\varepsilon_{\text{mach}})\)</span>, completely independent of <span class="math inline">\(\kappa(\bA)\)</span>.</p></li>
 </ol>
 </div>
 </div>
 </section>
-<section id="gram-schmidt-process" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="gram-schmidt-process"><span class="header-section-number">12.3</span> Gram-Schmidt Process</h2>
-<p>Gram-Schmidt constructs an orthonormal basis by taking the columns of <span class="math inline">\(\bA\)</span> one at a time and removing the components already explained by previous basis vectors. It is conceptually simple, but finite precision can destroy orthogonality when the original columns are nearly linearly dependent.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Classical and modified Gram-Schmidt)</strong></p>
-<ul>
-<li><p><strong>Classical (CGS):</strong> <span class="math inline">\(\bu_k = \bv_k - \sum_{j &lt; k} \text{proj}_{\bu_j}(\bv_k)\)</span>. Numerically unstable for ill-conditioned <span class="math inline">\(\bA\)</span> (<span class="math inline">\(\text{Error} \propto \kappa(\bA)^2\)</span>).</p></li>
-<li><p><strong>Modified (MGS):</strong> Orthogonalize sequentially against partially updated vectors. Better stability (<span class="math inline">\(\text{Error} \propto \kappa(\bA)\)</span>).</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Orthogonalization hierarchy)</strong> Householder QR is the most stable (<span class="math inline">\(O(\varepsilon_{\text{mach}})\)</span> loss of orthogonality) and is used by <code>np.linalg.qr</code>. MGS is used when <span class="math inline">\(\bQ\)</span> columns are needed one by one (e.g., Arnoldi/GMRES).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Orthogonalization method comparison)</strong></p>
-<ul>
-<li><p><strong>Classical Gram-Schmidt:</strong> Best for deriving the idea; weakest numerically.</p></li>
-<li><p><strong>Modified Gram-Schmidt:</strong> Better when basis vectors must be generated sequentially.</p></li>
-<li><p><strong>Householder QR:</strong> Default dense QR method; most stable for least squares.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Apply hand CGS to columns of <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 2 \\ 0 &amp; 1 \end{pmatrix}\)</span> and compare the resulting basis with the result above.</p></li>
-<li><p>Construct a nearly singular Vandermonde matrix. Compare loss of orthogonality (<span class="math inline">\(\|\bQ^T\bQ - \bI\|_F\)</span>) for CGS, MGS, and Householder.</p></li>
-<li><p>Explain the experiment using the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="orthogonal-projection" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="orthogonal-projection"><span class="header-section-number">12.4</span> Orthogonal Projection</h2>
-<p>Projection is the geometric operation behind least squares. If <span class="math inline">\(\bb\)</span> is not in a subspace <span class="math inline">\(S\)</span>, the best approximation from <span class="math inline">\(S\)</span> is the vector in <span class="math inline">\(S\)</span> closest to <span class="math inline">\(\bb\)</span>. The error vector must be orthogonal to <span class="math inline">\(S\)</span>; otherwise one could move within <span class="math inline">\(S\)</span> and reduce the error.</p>
+<section id="orthogonal-projectors" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="orthogonal-projectors"><span class="header-section-number">12.5</span> Orthogonal Projectors</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1052,11 +939,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a subspace <span class="math inline">\(S\)</span> with orthonormal basis <span class="math inline">\(\bQ\)</span> from the result above: <span class="math inline">\(\bP = \bQ\bQ^T\)</span>.</p>
-<ul>
-<li><p><strong>Properties:</strong> <span class="math inline">\(\bP^2 = \bP\)</span> (Idempotent), <span class="math inline">\(\bP^T = \bP\)</span> (Symmetric).</p></li>
-<li><p><strong>Geometric View:</strong> <span class="math inline">\(\bP\bx\)</span> is the closest vector in <span class="math inline">\(S\)</span> to <span class="math inline">\(\bx\)</span>. Residual <span class="math inline">\(\br = \bx - \bP\bx\)</span> lies in <span class="math inline">\(S^\perp = \mathcal{N}(\bQ^T)\)</span>.</p></li>
-</ul>
+<p>Let <span class="math inline">\(S \subset \fR^m\)</span> be a subspace with orthonormal basis columns stored in <span class="math inline">\(\bQ_1 \in \fR^{m \times n}\)</span>. The orthogonal projector onto <span class="math inline">\(S\)</span> is the matrix <span class="math display">\[
+\begin{align}
+\bP = \bQ_1 \bQ_1^T.
+\end{align}
+\]</span> Every orthogonal projector is symmetric (<span class="math inline">\(\bP^T = \bP\)</span>) and idempotent (<span class="math inline">\(\bP^2 = \bP\)</span>). The complementary projector <span class="math inline">\(\bP^\perp = \bI - \bP\)</span> projects onto the orthogonal complement <span class="math inline">\(S^\perp\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1065,16 +952,35 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Closest Point Theorem
+<span class="screen-reader-only">Note</span>Theorem: Closest Point Property of Orthogonal Projections
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(S\)</span> be a subspace of <span class="math inline">\(\fR^m\)</span> and let <span class="math inline">\(\bP\)</span> be the orthogonal projector onto <span class="math inline">\(S\)</span> from the result above. For every <span class="math inline">\(\bb\in\fR^m\)</span>, <span class="math inline">\(\bP\bb\)</span> is the unique vector in <span class="math inline">\(S\)</span> closest to <span class="math inline">\(\bb\)</span> in the Euclidean norm: <span class="math display">\[
+<p>Let <span class="math inline">\(S \subset \fR^m\)</span> be a linear subspace and let <span class="math inline">\(\bP\)</span> be the orthogonal projector onto <span class="math inline">\(S\)</span>. For any vector <span class="math inline">\(\bb \in \fR^m\)</span>, the projected vector <span class="math inline">\(\bP\bb\)</span> is the unique point in <span class="math inline">\(S\)</span> that minimizes the Euclidean distance to <span class="math inline">\(\bb\)</span>: <span class="math display">\[
 \begin{align}
-\|\bb-\bP\bb\|_2 \leq \|\bb-\bs\|_2
-    \qquad \text{for every } \bs\in S.
+\|\bb - \bP\bb\|_2 \leq \|\bb - \bs\|_2 \qquad \text{for all } \bs \in S.
 \end{align}
-\]</span> Moreover, the residual <span class="math inline">\(\bb-\bP\bb\)</span> is orthogonal to <span class="math inline">\(S\)</span>.</p>
+\]</span> Equality holds if and only if <span class="math inline">\(\bs = \bP\bb\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For any <span class="math inline">\(\bs \in S\)</span>, decompose the error vector as <span class="math inline">\(\bb - \bs = (\bb - \bP\bb) + (\bP\bb - \bs)\)</span>. The first term satisfies <span class="math inline">\(\bb - \bP\bb = (\bI - \bP)\bb \in S^\perp\)</span>. The second term satisfies <span class="math inline">\(\bP\bb - \bs \in S\)</span> because both vectors lie in <span class="math inline">\(S\)</span>. Since the two vectors belong to mutually orthogonal subspaces, the Pythagorean theorem yields <span class="math display">\[
+\begin{align}
+\|\bb - \bs\|_2^2 = \|(\bb - \bP\bb) + (\bP\bb - \bs)\|_2^2 = \|\bb - \bP\bb\|_2^2 + \|\bP\bb - \bs\|_2^2.
+\end{align}
+\]</span> Because <span class="math inline">\(\|\bP\bb - \bs\|_2^2 \geq 0\)</span>, we have <span class="math inline">\(\|\bb - \bs\|_2^2 \geq \|\bb - \bP\bb\|_2^2\)</span>, with strict equality holding if and only if <span class="math inline">\(\|\bP\bb - \bs\|_2 = 0 \iff \bs = \bP\bb\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1088,11 +994,10 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Use the result above to show that <span class="math inline">\(\bP^2=\bP\)</span> and <span class="math inline">\(\bP^T=\bP\)</span>.</p></li>
-<li><p>Show that the residual <span class="math inline">\(\bx-\bP\bx\)</span> is orthogonal to every vector in the target subspace.</p></li>
-<li><p>Project <span class="math inline">\(\bx = (1, 2, 3)^T\)</span> onto the span of <span class="math inline">\((1, 1, 1)^T\)</span>.</p></li>
-<li><p>Prove the result above: write any <span class="math inline">\(\bs\in S\)</span> as <span class="math inline">\(\bs=\bP\bb+\bw\)</span> with <span class="math inline">\(\bw\in S\)</span>, then use the Pythagorean theorem.</p></li>
-<li><p>Relate this residual orthogonality to the result above.</p></li>
+<li><p>Construct the Householder reflector <span class="math inline">\(\bH\)</span> that transforms the vector <span class="math inline">\(\bx = (3, 4)^T\)</span> into <span class="math inline">\(\alpha \be_1 = (-5, 0)^T\)</span>. Explicitly write out the <span class="math inline">\(2 \times 2\)</span> matrix <span class="math inline">\(\bH\)</span> and verify that <span class="math inline">\(\bH = \bH^T\)</span> and <span class="math inline">\(\bH^2 = \bI\)</span>.</p></li>
+<li><p>Compute the thin QR factorization of <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 2 \\ 1 &amp; 3 \end{pmatrix}\)</span> using Modified Gram-Schmidt.</p></li>
+<li><p>Let <span class="math inline">\(\bP \in \fR^{m \times m}\)</span> be an orthogonal projector. Prove that the eigenvalues of <span class="math inline">\(\bP\)</span> can only be <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>, and show that <span class="math inline">\(\operatorname{trace}(\bP) = \operatorname{rank}(\bP)\)</span>.</p></li>
+<li><p>Explain why the condition number of any orthogonal matrix is equal to <span class="math inline">\(1\)</span>. What does this imply about the propagation of errors when applying orthogonal transformations?</p></li>
 </ol>
 </div>
 </div>
@@ -1516,8 +1421,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../direct-methods/spd.html" class="pagination-link" aria-label="Symmetric Positive Definite (SPD) Matrices">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span>
+      <a href="../direct-methods/spd.html" class="pagination-link" aria-label="Symmetric Positive Definite Matrices">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

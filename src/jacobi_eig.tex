@@ -2,123 +2,123 @@
 
 \begin{document}
 
-\subsection{Jacobi Eigenvalue Algorithm}
+\subsection{The Jacobi Eigenvalue Algorithm}
 \label{sub:jacobi-theory}
 
-Iterative algorithm for symmetric matrices using plane rotations to zero off-diagonal entries.
+\textBox{%
+The Jacobi eigenvalue algorithm, introduced by Carl Gustav Jacob Jacobi in 1846, is the oldest numerical method for computing the complete eigensystem of a real symmetric matrix $\bA = \bA^T \in \fR^{n \times n}$. The method systematically drives the matrix toward diagonal form by applying a sequence of orthogonal similarity transformations based on elementary plane rotations.
+}
 
-\subsubsection{Givens Rotations}
+\textBox{%
+Although the shifted QR algorithm is computationally faster for general dense matrices, the Jacobi method remains of profound importance in scientific computing. It achieves high relative accuracy for small eigenvalues of graded positive definite matrices that QR cannot match, and its localized transformations allow for massive fine-grained parallelization on modern GPU and systolic architectures.
+}
 
-\addDef{Givens Rotation}{%
-$G(p, q, \theta)$ is an identity matrix with a $2 \times 2$ rotation block at $(p, p), (p, q), (q, p), (q, q)$.
-\begin{itemize}
-    \item \textbf{Similarity Transform:}\enspace $\bA' = G^T \bA G$.
-    \item \textbf{Effect:}\enspace Modifies only rows/columns $p$ and $q$. Preserves eigenvalues ($\bA'$ is orthogonally similar to $\bA$).
-\end{itemize}
+\subsubsection{Givens Plane Rotations and the Zeroing Angle}
+
+\textBox{%
+At each step, the algorithm chooses an off-diagonal target entry $a_{pq}$ with $p < q$ and constructs a Givens plane rotation $\bG(p, q, \theta)$ that annihilates that entry while preserving the overall spectrum of $\bA$.
+}
+
+\addDef{Givens Plane Rotation Matrix}{%
+The matrix $\bG(p, q, \theta) \in \fR^{n \times n}$ is an identity matrix except for the four entries at the intersections of rows and columns $p$ and $q$:
+\begin{align*}
+    g_{pp} = c, \qquad g_{pq} = s, \qquad g_{qp} = -s, \qquad g_{qq} = c,
+\end{align*}
+where $c = \cos\theta$ and $s = \sin\theta$. The transformation $\bA' = \bG^T \bA \bG$ modifies only rows and columns $p$ and $q$ of $\bA$.
 }
 \label{def:givens-rotation}
 
-\addThm{Optimal Rotation Angle}{%
-To set $A'_{pq} = 0$, let $\tau = (A_{qq} - A_{pp}) / (2A_{pq})$. The optimal tangent $t = \tan\theta$ is:
+\addThm{Derivation of the Optimal Rotation Angle}{%
+To zero the transformed off-diagonal entry $a'_{pq} = 0$, we consider the $2 \times 2$ orthogonal similarity transformation on the submatrix at indices $\{p, q\}$:
 \begin{align*}
-    t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sqrt{1+t^2}}, \quad s = ct.
+    \begin{pmatrix} a'_{pp} & a'_{pq} \\ a'_{pq} & a'_{qq} \end{pmatrix}
+    =
+    \begin{pmatrix} c & -s \\ s & c \end{pmatrix}
+    \begin{pmatrix} a_{pp} & a_{pq} \\ a_{pq} & a_{qq} \end{pmatrix}
+    \begin{pmatrix} c & s \\ -s & c \end{pmatrix}.
 \end{align*}
-Choosing the smaller root $|t| \leq 1$ ensures numerical stability and minimal perturbation.
-}
-\label{thm:jacobi-angle}
-
-\subsubsection{The Jacobi Algorithm}
-
-\textBox{%
-The Jacobi eigenvalue algorithm repeatedly applies orthogonal similarity transformations
+Multiplying the matrices yields the off-diagonal formula
 \begin{align*}
-    \bA^{(k+1)} = \bG_k^T \bA^{(k)} \bG_k
+    a'_{pq} = (c^2 - s^2) a_{pq} + cs(a_{pp} - a_{qq}) = a_{pq} \cos(2\theta) + \frac{1}{2}(a_{pp} - a_{qq}) \sin(2\theta).
 \end{align*}
-to a symmetric matrix. Each rotation zeros one off-diagonal entry while preserving eigenvalues. As the off-diagonal entries converge to zero, $\bA^{(k)}$ converges to a diagonal matrix whose diagonal entries are the eigenvalues.
-}
-
-\addDef{Jacobi Eigenvalue Algorithm}{%
-\textbf{Input:}\enspace Symmetric matrix $\bA\in\fR^{n\times n}$ and tolerance \texttt{tol}.\\
-\textbf{Initialize:}\enspace $\bA^{(0)}=\bA$, $\bV^{(0)}=\bI$.\\
-\textbf{Repeat:}
-\begin{enumerate}
-    \item Choose an off-diagonal pivot $(p,q)$ with $p<q$.
-    \item Compute $c=\cos\theta$ and $s=\sin\theta$ using the stable tangent formula so that $(\bG^T\bA^{(k)}\bG)_{pq}=0$.
-    \item Update the matrix by orthogonal similarity:
-    \begin{align*}
-        \bA^{(k+1)}=\bG^T\bA^{(k)}\bG.
-    \end{align*}
-    \item Accumulate eigenvectors:
-    \begin{align*}
-        \bV^{(k+1)}=\bV^{(k)}\bG.
-    \end{align*}
-\end{enumerate}
-\textbf{Stop:}\enspace when $\sigma_{\text{off}}(\bA^{(k)}) \leq \texttt{tol}\|\bA^{(k)}\|_F$.\\
-\textbf{Output:}\enspace Diagonal entries of $\bA^{(k)}$ approximate eigenvalues; columns of $\bV^{(k)}$ approximate eigenvectors.
-}
-\label{alg:jacobi-eigenvalue}
-
-\addRemark{%
-\textbf{(Pivot choices)}\enspace
-\begin{itemize}
-    \item \textbf{Classical Jacobi:}\enspace choose the largest off-diagonal entry $|A_{pq}|$.
-    \item \textbf{Cyclic Jacobi:}\enspace sweep through all pairs $(p,q)$ in a fixed order.
-\end{itemize}
-The largest-entry rule gives the clearest convergence proof. Cyclic sweeps are simpler to implement and often used in practice.
-}
-
-\addRemark{%
-\textbf{(Why eigenvectors accumulate)}\enspace After $k$ rotations,
+Setting $a'_{pq} = 0$ yields the trigonometric condition
 \begin{align*}
-    \bA^{(k)} = (\bV^{(k)})^T \bA \bV^{(k)}.
+    \cot(2\theta) = \frac{a_{qq} - a_{pp}}{2a_{pq}} \equiv \tau.
 \end{align*}
-If $\bA^{(k)}$ is nearly diagonal, then $\bA \bV^{(k)} \approx \bV^{(k)}\boldsymbol{\Lambda}$, so the columns of $\bV^{(k)}$ are approximate eigenvectors of the original matrix.
+Using the identity $\cot(2\theta) = \frac{1 - \tan^2\theta}{2\tan\theta}$, let $t = \tan\theta$. This produces the quadratic equation
+\begin{align*}
+    t^2 + 2\tau t - 1 = 0.
+\end{align*}
+To minimize the perturbation to $\bA$ and prevent catastrophic cancellation, we select the root of smaller absolute value:
+\begin{align*}
+    t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \qquad c = \frac{1}{\sqrt{1 + t^2}}, \qquad s = ct.
+\end{align*}
+}
+\label{thm:jacobi-angle-derivation}
+
+\addPrf{%
+The standard quadratic formula gives roots $t = -\tau \pm \sqrt{1 + \tau^2}$. Multiplying the root of smaller magnitude by its conjugate algebraic expression yields
+\begin{align*}
+    t = \frac{(-\tau \pm \sqrt{1 + \tau^2})(\tau \pm \sqrt{1 + \tau^2})}{\tau \pm \sqrt{1 + \tau^2}} = \frac{1}{\tau + \operatorname{sign}(\tau)\sqrt{1 + \tau^2}} = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}.
+\end{align*}
+This formula satisfies $|t| \leq 1$, corresponding to a rotation angle $|\theta| \leq \pi/4$, and avoids subtracting nearly equal quantities.
 }
 
-\subsubsection{Convergence and Cost}
+\subsubsection{Monotone Convergence of the Off-Diagonal Norm}
 
-\addThm{Monotone Convergence}{%
-Let $\sigma^2_{\text{off}}(\bA) = \sum_{p < q} A_{pq}^2$ be the Frobenius norm of the off-diagonal entries. Each rotation $G(p, q, \theta)$ reduces this norm:
+\addThm{Monotone Decrease of the Off-Diagonal Frobenius Norm}{%
+Let the off-diagonal squared norm be defined by
 \begin{align*}
-    \sigma^2_{\text{off}}(\bA') = \sigma^2_{\text{off}}(\bA) - A_{pq}^2.
+    \operatorname{off}(\bA)^2 = \sum_{i \neq j} a_{ij}^2 = \|\bA\|_F^2 - \sum_{i=1}^n a_{ii}^2.
 \end{align*}
-\textbf{Convergence:}\enspace Off-diagonals decrease monotonically. Convergence is ultimately \textbf{quadratic} (errors square each sweep).
+Applying the Jacobi rotation $\bA' = \bG(p, q, \theta)^T \bA \bG(p, q, \theta)$ with the optimal angle strictly reduces the off-diagonal norm:
+\begin{align*}
+    \operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2.
+\end{align*}
 }
 \label{thm:jacobi-convergence}
 
 \addPrf{%
-The orthogonal transform $\bA' = G^T\bA G$ preserves the Frobenius norm: $\|\bA'\|_F^2 = \|\bA\|_F^2$. Let $d(\bA) = \sum A_{ii}^2$ be the sum of squares of diagonal entries. Then:
+Because $\bG$ is orthogonal, the total Frobenius norm is preserved: $\|\bA'\|_F^2 = \|\bA\|_F^2$. The rotation affects only entries in rows and columns $p$ and $q$. For the $2 \times 2$ submatrix, the sum of squares is invariant under orthogonal similarity:
 \begin{align*}
-    \|\bA\|_F^2 = d(\bA) + 2\sigma_{\text{off}}^2(\bA).
+    (a'_{pp})^2 + (a'_{qq})^2 + 2(a'_{pq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
 \end{align*}
-A Jacobi rotation $G(p,q,\theta)$ only affects rows and columns $p$ and $q$. For the $2 \times 2$ submatrix at $\{p,q\}$, the transformation is an eigendecomposition, so:
+Because the rotation enforces $a'_{pq} = 0$, the sum of squared diagonal entries increases:
 \begin{align*}
-    (A'_{pp})^2 + (A'_{qq})^2 &= A_{pp}^2 + A_{qq}^2 + 2A_{pq}^2 \\
-    d(\bA') &= d(\bA) + 2A_{pq}^2.
+    (a'_{pp})^2 + (a'_{qq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
 \end{align*}
-Substituting this into the norm conservation $\|\bA'\|_F^2 = \|\bA\|_F^2$:
-\begin{align*}
-    d(\bA') + 2\sigma_{\text{off}}^2(\bA') &= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    (d(\bA) + 2A_{pq}^2) + 2\sigma_{\text{off}}^2(\bA') &= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    \sigma_{\text{off}}^2(\bA') &= \sigma_{\text{off}}^2(\bA) - A_{pq}^2.
-\end{align*}
-Thus each rotation reduces the off-diagonal mass by exactly $A_{pq}^2$.
+All other diagonal entries $a_{ii}$ ($i \neq p, q$) are untouched. Substituting this into $\operatorname{off}(\bA')^2 = \|\bA'\|_F^2 - \sum (a'_{ii})^2$ proves that $\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2$.
 }
 
-\addRemark{%
-\textbf{Performance vs.\ Accuracy:}\enspace
-\begin{itemize}
-    \item \textbf{Cost:}\enspace $O(n^3)$ per sweep. Typically 5--15 sweeps for convergence. More expensive than QR.
-    \item \textbf{Accuracy:}\enspace Unlike QR, Jacobi achieves \textbf{high relative accuracy} on small eigenvalues.
-\end{itemize}
+\addThm{The Cyclic Jacobi Algorithm}{%
+The Cyclic Jacobi algorithm sweeps through all $N = n(n-1)/2$ off-diagonal index pairs $(p, q)$ with $1 \leq p < q \leq n$ in a fixed periodic order:
+\begin{enumerate}
+    \item Initialize $\bA^{(0)} = \bA$ and eigenvector accumulator $\bV^{(0)} = \bI_n$.
+    \item While $\operatorname{off}(\bA^{(k)}) > \texttt{tol} \|\bA^{(0)}\|_F$:
+    \begin{enumerate}
+        \item For each pair $1 \leq p < q \leq n$:
+        \begin{enumerate}
+            \item Compute $\tau = \frac{a_{qq} - a_{pp}}{2a_{pq}}$, $t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}$, $c = \frac{1}{\sqrt{1+t^2}}$, and $s = ct$.
+            \item Apply the rotation to $\bA$: $\bA \leftarrow \bG(p, q, \theta)^T \bA \bG(p, q, \theta)$.
+            \item Accumulate the eigenvectors: $\bV \leftarrow \bV \bG(p, q, \theta)$.
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+After a few initial sweeps, the off-diagonal entries converge to zero \textbf{quadratically}: $\operatorname{off}(\bA^{(k+1)}) \leq C \cdot \operatorname{off}(\bA^{(k)})^2$.
 }
+\label{thm:cyclic-jacobi-algorithm}
 
 \addExcr{%
 \begin{enumerate}
-    \item Apply one Jacobi rotation to zero $A_{12}$ in $\bA = \begin{pmatrix}2 & 1 \\ 1 & 3\end{pmatrix}$.
-    \item Show that after zeroing $A_{pq}$, the new diagonal entries $A'_{pp}$ and $A'_{qq}$ are the eigenvalues of the $2 \times 2$ submatrix at $\{p, q\}$.
-    \item Perform one full cyclic sweep on $\bA = \begin{pmatrix}1&1&0\\1&2&1\\0&1&3\end{pmatrix}$ by hand.
+    \item Perform one Jacobi rotation by hand to zero out the off-diagonal entry of
+    \begin{align*}
+        \bA = \begin{pmatrix} 3 & 2 \\ 2 & 6 \end{pmatrix}.
+    \end{align*}
+    Explicitly compute $\tau, t, c, s$, and the resulting diagonal matrix $\bA'$.
+    \item Verify that the eigenvalues computed on the diagonal of $\bA'$ match the exact roots of $\det(\bA - \lambda\bI) = 0$.
+    \item Prove that for an $n \times n$ matrix, if the largest off-diagonal entry is selected at each step (Classical Jacobi), then $\operatorname{off}(\bA^{(k+1)})^2 \leq \left( 1 - \frac{2}{n(n-1)} \right) \operatorname{off}(\bA^{(k)})^2$.
 \end{enumerate}
 }
+\label{ex:jacobi-eig-exercises}
 
 \end{document}

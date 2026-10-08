@@ -2,238 +2,140 @@
 
 \begin{document}
 
-\subsection{Eigenvalues and Eigenvectors}
+\subsection{Eigenvalue Problems and the QR Algorithm}
 \label{sub:eigen-theory}
 
 \textBox{%
-Reveals the scaling directions of a linear transformation. Essential for stability analysis, PCA, and spectral methods.
+The eigenvalue problem $\bA\bv = \lambda\bv$ seeks the invariant directions of a linear operator. Along an eigenvector $\bv$, the action of the matrix $\bA$ reduces to scalar multiplication by $\lambda$. Eigenvalues govern the long-term stability of dynamical systems, the resonant frequencies of vibrating structures, the convergence rates of iterative solvers, and the low-dimensional structure of data in principal component analysis.
 }
 
 \textBox{%
-Eigenvectors are directions preserved by a linear map. Along an eigenvector, the matrix acts like multiplication by a scalar. This reduces a matrix transformation to independent one-dimensional actions, when enough eigenvectors exist.
+In introductory algebra, eigenvalues are introduced as the roots of the characteristic polynomial $p(\lambda) = \det(\bA - \lambda \bI) = 0$. In numerical computing, however, computing eigenvalues via characteristic polynomials is strictly avoided. By Abel's Impossibility Theorem, no closed-form radical formula exists for $n \geq 5$, meaning all eigenvalue algorithms must be iterative. Furthermore, polynomial root-finding is notoriously ill-conditioned, whereas matrix eigenvalue algorithms can be executed with backward stability.
 }
 
-\subsubsection{Definitions and Basic Properties}
+\subsubsection{Theoretical Foundations: Multiplicity and Schur Form}
 
 \addDef{Eigenvalues and Eigenvectors}{%
-For $\bA \in \fR^{n \times n}$, a scalar $\lambda \in \fC$ is an \textbf{eigenvalue} if $\exists$ nonzero $\bv \in \fC^n$ such that:
+Let $\bA \in \fR^{n \times n}$. A nonzero vector $\bv \in \fC^n$ is an \textbf{eigenvector} of $\bA$ associated with the \textbf{eigenvalue} $\lambda \in \fC$ if
 \begin{align*}
     \bA\bv = \lambda\bv.
 \end{align*}
-\begin{itemize}
-    \item \textbf{Spectrum $\sigma(\bA)$:}\enspace The set of all eigenvalues.
-    \item \textbf{Invariance:}\enspace Multiplying $\bv$ by $\bA$ only scales its length; its direction remains fixed.
-\end{itemize}
+The set of all eigenvalues $\sigma(\bA) = \{\lambda_1, \dots, \lambda_n\}$ is the \textbf{spectrum} of $\bA$.
 }
 \label{def:eigenvalue}
 
-\addDef{Characteristic Polynomial}{%
-$p_{\bA}(\lambda) = \det(\bA - \lambda \bI)$. Eigenvalues are the roots of $p_{\bA}(\lambda) = 0$.
-}
-\label{def:char-poly}
-
-\addRemark{%
-\textbf{(Characteristic polynomial as theory)}\enspace The characteristic polynomial is useful for proofs and small hand examples. Numerical algorithms do not compute eigenvalues by forming $p_{\bA}$ and finding its roots; polynomial coefficients are extremely sensitive to perturbations.
-}
-
-\addExcr{%
+\addDef{Algebraic and Geometric Multiplicity}{%
+Let $\lambda$ be an eigenvalue of $\bA$.
 \begin{enumerate}
-    \item Verify $\bv = (1, 1)^T$ is an eigenvector of $\bA = \begin{pmatrix}3&1\\1&3\end{pmatrix}$ and find $\lambda$.
-    \item Why is the zero vector excluded from the definition of an eigenvector?
+    \item The \textbf{algebraic multiplicity} $\mu_a(\lambda)$ is the multiplicity of $\lambda$ as a root of $\det(\bA - z\bI) = 0$.
+    \item The \textbf{geometric multiplicity} $\mu_g(\lambda) = \dim \mathcal{N}(\bA - \lambda\bI)$ is the maximum number of linearly independent eigenvectors associated with $\lambda$.
 \end{enumerate}
+It is always true that $1 \leq \mu_g(\lambda) \leq \mu_a(\lambda)$. If $\mu_g(\lambda) < \mu_a(\lambda)$ for any eigenvalue, the matrix is termed \textbf{defective} and cannot be diagonalized.
 }
-
-\addThm{Similar Matrices}{%
-If $\bB = \bV^{-1}\bA\bV$ (Similarity Transform), then $\sigma(\bB) = \sigma(\bA)$.
-Eigenvalues are invariant under change of basis.
-}
-\label{thm:similar-matrices}
-
-\addDef{Diagonalization}{%
-A matrix $\bA$ is diagonalizable if there exists an invertible matrix $\bV$ such that
-\begin{align*}
-    \bA=\bV\bD\bV^{-1},
-\end{align*}
-where $\bD$ is diagonal. The columns of $\bV$ are eigenvectors and the diagonal entries of $\bD$ are eigenvalues.
-}
-\label{def:diagonalization}
-
-\addRemark{%
-\textbf{(Multiplicity and defectiveness)}\enspace Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity $2$ but only one independent eigenvector; such a matrix is \textbf{defective} and cannot be diagonalized.
-}
-
-\addExmpl{%
-\textbf{(Defective matrix)}\enspace
-\begin{align*}
-    \bA=
-    \begin{pmatrix}
-    1&1\\
-    0&1
-    \end{pmatrix}
-\end{align*}
-has characteristic polynomial $(1-\lambda)^2$. Solving $(\bA-\bI)\bv=\bzero$ gives only one independent eigenvector, so $\bA$ is not diagonalizable.
-}
-
-\addThm{Key Properties}{%
-\begin{enumerate}
-    \item \textbf{Trace:}\enspace $\sum \lambda_i = \text{tr}(\bA)$.
-    \item \textbf{Determinant:}\enspace $\prod \lambda_i = \det(\bA)$.
-    \item \textbf{Singularity:}\enspace $0 \in \sigma(\bA) \iff \bA$ is singular.
-    \item \textbf{Inversion:}\enspace If $\bA$ is invertible, eigenvalues of $\bA^{-1}$ are $1/\lambda_i$.
-\end{enumerate}
-}
-\label{thm:eigen-props}
-
-\subsubsection{Symmetric and Hermitian Matrices}
-
-Symmetric and Hermitian matrices possess special spectral properties that simplify analysis and computation.
-
-\textBox{%
-The symmetric case is the cleanest eigenvalue theory. Orthogonal eigenvectors mean that diagonalization is also a numerically safe change of basis: $\bQ^{-1}=\bQ^T$, so the transformation does not amplify Euclidean errors.
-}
-
-\addThm{Spectral Theorem (Real Symmetric)}{%
-If $\bA = \bA^T$:
-\begin{enumerate}
-    \item All eigenvalues $\lambda_i$ are \textbf{real}.
-    \item Eigenvectors for distinct $\lambda$ are \textbf{orthogonal}.
-    \item $\bA$ is \textbf{orthogonally diagonalizable}: $\bA = \bQ\bD\bQ^T$.
-\end{enumerate}
-}
-\label{thm:spectral-symmetric}
-
-\addDef{Hermitian Matrix}{%
-$\bA = \bA^*$ (conjugate transpose). The complex analog of symmetric matrices.
-\begin{itemize}
-    \item \textbf{Spectral Theorem (Hermitian):}\enspace Unitarily diagonalizable ($\bA = \bQ\bD\bQ^*$) with real eigenvalues.
-\end{itemize}
-}
-\label{def:hermitian}
-
-\addExcr{%
-\begin{enumerate}
-    \item Prove eigenvalues of $\bA^2$ are $\lambda_i^2$.
-    \item Diagonalize $\bA = \begin{pmatrix}4&1\\1&4\end{pmatrix}$ by finding an orthonormal eigenbasis.
-\end{enumerate}
-}
-
-\subsubsection{Iterative Algorithms}
-
-\textBox{%
-In practice, we compute eigenvalues via iteration, not by finding roots of the characteristic polynomial.
-}
-
-\textBox{%
-Most large eigenvalue computations do not compute the full spectrum. They target a few eigenvalues: the largest, smallest, or those closest to a shift. Matrix-vector products and linear solves are the basic primitives.
-}
-
-\addDef{Power Iteration}{%
-Repeatedly apply $\bA$ to a unit vector: $\bv^{(k)} = \frac{\bA\bv^{(k-1)}}{\|\bA\bv^{(k-1)}\|}$.
-\begin{itemize}
-    \item \textbf{Convergence:}\enspace $\bv^{(k)} \to$ dominant eigenvector (for $|\lambda_1| > |\lambda_2|$).
-    \item \textbf{Rate:}\enspace $O(|\lambda_2/\lambda_1|^k)$.
-\end{itemize}
-}
-\label{def:power-iteration}
-
-\addRemark{%
-\textbf{(Power iteration failure modes)}\enspace Power iteration can fail or converge slowly if $|\lambda_1|\approx|\lambda_2|$, if the starting vector has tiny component in the dominant eigenvector direction, or if the dominant eigenvalue is not unique in magnitude.
-}
-
-\addPrf{%
-Assume $\bA$ is diagonalizable with eigenvectors $\{\bu_1, \dots, \bu_n\}$ and eigenvalues $|\lambda_1| > |\lambda_2| \geq \dots$. Let $\bx^{(0)} = \sum_{i=1}^n c_i \bu_i$ with $c_1 \neq 0$. Applying $\bA$ $k$ times:
-\begin{align*}
-    \bA^k \bx^{(0)} &= \sum_{i=1}^n c_i \lambda_i^k \bu_i \\
-    &= c_1 \lambda_1^k \left( \bu_1 + \sum_{i=2}^n \frac{c_i}{c_1} \left(\frac{\lambda_i}{\lambda_1}\right)^k \bu_i \right).
-\end{align*}
-Since $|\lambda_i/\lambda_1| < 1$ for all $i > 1$, the summation term decays to zero as $k \to \infty$. Thus $\bA^k \bx^{(0)}$ aligns with $\bu_1$. The normalization at each step prevents overflow while preserving this alignment.
-}
-
-\addDef{Inverse Iteration}{%
-Apply power iteration to $(\bA - \sigma\bI)^{-1}$.
-\begin{itemize}
-    \item \textbf{Use:}\enspace Finds the eigenvalue closest to the shift $\sigma$.
-    \item \textbf{Efficiency:}\enspace Factorize $(\bA - \sigma\bI)$ once, then solve at each step ($O(n^2)$).
-\end{itemize}
-}
-\label{def:inverse-iteration}
-
-\addRemark{%
-\textbf{(Shifted inverse iteration)}\enspace If $\lambda_i$ is an eigenvalue of $\bA$, then $(\lambda_i-\sigma)^{-1}$ is an eigenvalue of $(\bA-\sigma\bI)^{-1}$. The eigenvalue closest to $\sigma$ becomes largest in magnitude after inversion.
-}
-
-\addDef{Rayleigh Quotient Iteration (RQI)}{%
-Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\bv^{(k)}$ at each step.
-\begin{itemize}
-    \item \textbf{Convergence:}\enspace \textbf{Cubic} for symmetric matrices (digits triple each step).
-\end{itemize}
-}
-\label{def:rqi}
-
-\addDef{Eigenvalue Method Selection}{%
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Goal} & \textbf{Typical method} \\ \hline
-Largest eigenvalue of large matrix & Power iteration \\
-Eigenvalue near a shift & Inverse iteration \\
-Fast local refinement, symmetric case & Rayleigh quotient iteration \\
-Full dense spectrum & QR algorithm \\
-Few extreme eigenvalues, symmetric sparse matrix & Lanczos \\
-\end{tabular}
-\end{center}
-}
-\label{def:eigen-method-selection}
-
-\addExcr{%
-\begin{enumerate}
-    \item Implement power iteration to find $\lambda_{\max}$ of a tridiagonal matrix.
-    \item Use RQI on a random $4 \times 4$ symmetric matrix. Observe the rate of convergence.
-\end{enumerate}
-}
-
-\subsubsection{Schur Decomposition and the QR Algorithm}
-
-\textBox{%
-The Schur decomposition provides the theoretical basis for the QR algorithm, the standard iterative method for computing the eigenvalues and eigenvectors of dense, general matrices.
-}
-
-\textBox{%
-Diagonalization may fail for defective matrices, but Schur decomposition always exists over $\fC$. This is why practical dense eigensolvers target Schur form rather than diagonal form.
-}
+\label{def:multiplicity}
 
 \addThm{Schur Decomposition}{%
-Every square $\bA$ satisfies $\bA = \bQ\bT\bQ^*$, where $\bQ$ is unitary and $\bT$ is upper triangular.
-\begin{itemize}
-    \item \textbf{Schur Vectors:}\enspace Columns of $\bQ$ provide an orthonormal basis for nested invariant subspaces.
-\end{itemize}
+Every square matrix $\bA \in \fC^{n \times n}$ is unitarily similar to an upper triangular matrix:
+\begin{align*}
+    \bA = \bQ\bT\bQ^*,
+\end{align*}
+where $\bQ \in \fC^{n \times n}$ is unitary ($\bQ^*\bQ = \bI$) and $\bT \in \fC^{n \times n}$ is upper triangular. The diagonal entries of $\bT$ are precisely the eigenvalues of $\bA$.
 }
 \label{thm:schur}
 
-\addDef{QR Iteration}{%
-Iteratively compute QR factorizations and swap the factors. The goal is to transform $\bA$ into an upper triangular (Schur) form, where the eigenvalues appear on the diagonal.
+\addPrf{%
+We proceed by induction on $n$. For $n=1$, the result is trivial. Assume the theorem holds for matrices of order $n-1$. Let $\lambda_1$ be an eigenvalue of $\bA$ with normalized eigenvector $\bv_1$ ($\|\bv_1\|_2 = 1$). Construct an orthonormal basis for $\fC^n$ starting with $\bv_1$, forming the unitary matrix $\bU_1 = \begin{pmatrix} \bv_1 & \bW \end{pmatrix}$. Computing the similarity transform yields
+\begin{align*}
+    \bU_1^* \bA \bU_1 = \begin{pmatrix} \bv_1^* \\ \bW^* \end{pmatrix} \begin{pmatrix} \bA\bv_1 & \bA\bW \end{pmatrix} = \begin{pmatrix} \lambda_1 \bv_1^*\bv_1 & \bv_1^*\bA\bW \\ \lambda_1 \bW^*\bv_1 & \bW^*\bA\bW \end{pmatrix} = \begin{pmatrix} \lambda_1 & \bw^T \\ \bzero & \bA_1 \end{pmatrix},
+\end{align*}
+where $\bA_1 = \bW^*\bA\bW \in \fC^{(n-1) \times (n-1)}$. By the induction hypothesis, there exists a unitary matrix $\bQ_1$ such that $\bQ_1^* \bA_1 \bQ_1 = \bT_1$ is upper triangular. Setting $\bQ = \bU_1 \begin{pmatrix} 1 & \bzero \\ \bzero & \bQ_1 \end{pmatrix}$ yields the complete triangularization $\bQ^*\bA\bQ = \bT$.
+}
+
+\addThm{Spectral Theorem for Hermitian and Real Symmetric Matrices}{%
+If $\bA \in \fR^{n \times n}$ is real symmetric ($\bA = \bA^T$), then all eigenvalues of $\bA$ are real, and $\bA$ is orthogonally diagonalizable:
+\begin{align*}
+    \bA = \bQ\boldsymbol{\Lambda}\bQ^T = \sum_{i=1}^n \lambda_i \bq_i \bq_i^T,
+\end{align*}
+where $\bQ = [\bq_1, \dots, \bq_n]$ is a real orthogonal matrix whose columns are orthonormal eigenvectors.
+}
+\label{thm:spectral-symmetric}
+
+\subsubsection{Power Iteration and Shifted Inverse Iteration}
+
+\textBox{%
+When only a single dominant eigenvalue or an eigenvalue closest to a target frequency is required, vector iterations provide rapid, memory-efficient solutions.
+}
+
+\addDef{Power Iteration}{%
+Given an initial vector $\bv^{(0)}$ with $\|\bv^{(0)}\|_2 = 1$, power iteration generates successive approximations via
+\begin{align*}
+    \bw^{(k)} = \bA \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}, \qquad \lambda^{(k)} = (\bv^{(k)})^T \bA \bv^{(k)}.
+\end{align*}
+If the dominant eigenvalue satisfies $|\lambda_1| > |\lambda_2| \geq \dots \geq |\lambda_n|$ and the initial vector has a nonzero component along the dominant eigenvector $\bq_1$, then $\bv^{(k)}$ converges to $\bq_1$ at the linear rate
+\begin{align*}
+    \|\bv^{(k)} - (\pm \bq_1)\|_2 = O\left( \left| \frac{\lambda_2}{\lambda_1} \right|^k \right).
+\end{align*}
+}
+\label{def:power-iteration}
+
+\addDef{Inverse Iteration with Shifts}{%
+To compute the eigenvalue closest to a target scalar $\sigma \in \fC$, power iteration is applied to the shifted and inverted operator $(\bA - \sigma \bI)^{-1}$:
+\begin{align*}
+    (\bA - \sigma \bI) \bw^{(k)} = \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}.
+\end{align*}
+The eigenvalues of $(\bA - \sigma \bI)^{-1}$ are $(\lambda_i - \sigma)^{-1}$. The eigenvalue of $\bA$ closest to $\sigma$ becomes the dominant eigenvalue of the shifted operator, accelerating convergence to the linear rate $|\lambda_J - \sigma| / |\lambda_K - \sigma|$, where $\lambda_J$ is the closest eigenvalue and $\lambda_K$ is the second closest.
+}
+\label{def:inverse-iteration}
+
+\addDef{Rayleigh Quotient Iteration (RQI)}{%
+For symmetric matrices, updating the shift dynamically to the current Rayleigh quotient $\sigma_k = (\bv^{(k)})^T \bA \bv^{(k)}$ yields \textbf{Rayleigh Quotient Iteration}. At each step, we solve
+\begin{align*}
+    (\bA - \sigma_k \bI) \bw^{(k+1)} = \bv^{(k)}, \qquad \bv^{(k+1)} = \frac{\bw^{(k+1)}}{\|\bw^{(k+1)}\|_2}, \qquad \sigma_{k+1} = (\bv^{(k+1)})^T \bA \bv^{(k+1)}.
+\end{align*}
+For symmetric matrices, RQI converges \textbf{cubically}: the number of correct decimal digits triples at each iteration once the iterate enters the asymptotic regime.
+}
+\label{def:rqi}
+
+\subsubsection{The Practical QR Algorithm}
+
+\textBox{%
+The standard method for computing the complete spectrum of a dense matrix is the QR algorithm with shifts.
+}
+
+\addDef{Basic QR Iteration}{%
+The unshifted QR iteration computes a sequence of orthogonally similar matrices:
 \begin{enumerate}
-    \item $\bA_k = \bQ_k \bR_k$
-    \item $\bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k$
+    \item Initialize $\bA_0 = \bA$.
+    \item For $k = 0, 1, 2, \dots$:
+    \begin{enumerate}
+        \item Compute the QR factorization: $\bA_k = \bQ_k \bR_k$.
+        \item Recombine the factors in reverse order: $\bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k$.
+    \end{enumerate}
 \end{enumerate}
-\textbf{Convergence:}\enspace $\bA_k$ converges to the Schur form $\bT$.
+Because $\bA_{k+1}$ is orthogonally similar to $\bA_k$, all iterates share identical eigenvalues. As $k \to \infty$, $\bA_k$ converges to the upper triangular Schur form $\bT$.
 }
 \label{def:qr-iteration}
 
-\addRemark{%
-\textbf{(QR iteration performance)}\enspace
-Raw QR iteration requires $O(n^3)$ operations per step. Practical implementations, such as those in standard numerical libraries, typically use:
+\addThm{Practical Shifted QR Algorithm on Hessenberg Forms}{%
+To make the QR algorithm computationally efficient, standard numerical libraries implement two essential enhancements:
 \begin{enumerate}
-    \item \textbf{Hessenberg Reduction:}\enspace Pre-process $\bA$ to upper Hessenberg form in $O(n^3)$ operations.
-    \item \textbf{Triangularization:}\enspace Subsequent QR steps on a Hessenberg matrix cost only $O(n^2)$.
-    \item \textbf{Shifts:}\enspace Techniques to accelerate convergence to quadratic or cubic rates.
+    \item \textbf{Preliminary Hessenberg Reduction:} The matrix $\bA$ is pre-transformed to upper Hessenberg form $\bH_0 = \bQ_0^T \bA \bQ_0$ using Householder reflectors in $O(n^3)$ operations once. Subsequent QR steps preserve the Hessenberg structure and require only $O(n^2)$ flops using Givens rotations.
+    \item \textbf{Wilkinson Shifts:} At each step, a shift $\mu_k$ is chosen as the eigenvalue of the trailing $2 \times 2$ submatrix of $\bH_k$ closest to $h_{nn}$:
+    \begin{align*}
+        \bH_k - \mu_k \bI = \bQ_k \bR_k, \qquad \bH_{k+1} = \bR_k \bQ_k + \mu_k \bI.
+    \end{align*}
+    The shift accelerates subdiagonal convergence to cubic order for symmetric matrices and quadratic order for nonsymmetric matrices. When the subdiagonal entry satisfies $|h_{n,n-1}| \leq \varepsilon_{\text{mach}}(|h_{nn}| + |h_{n-1,n-1}|)$, $h_{nn}$ is decoupled as a converged eigenvalue and the matrix is deflated.
 \end{enumerate}
 }
+\label{thm:practical-qr-algorithm}
 
 \addExcr{%
 \begin{enumerate}
-    \item For $\bA = \begin{pmatrix}3&1&0\\0&2&1\\0&0&2\end{pmatrix}$, identify the Schur vectors and eigenvalues by inspection.
-    \item Implement 50 steps of basic QR iteration on a random $3 \times 3$ symmetric matrix. Check the off-diagonals.
+    \item Compute the dominant eigenvalue and eigenvector of $\bA = \begin{pmatrix} 3 & 1 \\ 1 & 3 \end{pmatrix}$ by hand using two steps of power iteration starting with $\bv^{(0)} = (1, 0)^T$.
+    \item Apply one step of unshifted QR iteration to $\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$. Compute the QR factors explicitly and show that the off-diagonal entries decrease.
+    \item Let $\bA = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$. Show that unshifted QR iteration fails to converge because the factors oscillate indefinitely. Explain how introducing a shift resolves this cycle.
 \end{enumerate}
 }
+\label{ex:eigen-exercises}
 
 \end{document}

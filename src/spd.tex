@@ -2,233 +2,226 @@
 
 \begin{document}
 
-\subsection{Symmetric Positive Definite (SPD) Matrices}
+\subsection{Symmetric Positive Definite Matrices}
 \label{sub:spd}
 
 \textBox{%
-Symmetric Positive Definite (SPD) matrices form one of the most important classes of matrices in scientific computing. They possess several remarkable properties that allow for algorithms that are twice as fast and significantly more stable than those for general matrices.
+Symmetric positive definite matrices constitute the most mathematically elegant and computationally well-behaved class of matrices in numerical linear algebra. They arise throughout computational science, including the discretization of elliptic partial differential equations, Hessian matrices in convex optimization, covariance and information matrices in statistics, and the normal equations of linear least squares.
 }
 
 \textBox{%
-An SPD matrix is the matrix version of positive curvature or positive energy. The quadratic form $\bx^T\bA\bx$ is always positive away from the origin, so it defines a geometry, a convex energy landscape, and a stable class of linear systems.
+When a matrix possesses both symmetry and positive definiteness, standard numerical algorithms simplify dramatically. Gaussian elimination requires no pivoting to ensure backward stability, memory requirements are halved because only one triangular factor must be stored, and the total computational work is reduced by fifty percent compared to the general nonsymmetric case.
 }
 
-\subsubsection{Definitions and Properties}
-
-SPD matrices arise naturally in a wide variety of engineering contexts, including optimization (as Hessian matrices of convex functions), statistics (as covariance matrices), and physical simulations (as stiffness matrices in structural mechanics).
+\subsubsection{Definitions and Characterizations}
 
 \textBox{%
-The expression $\bx^T\bA\bx$ is called a \textbf{quadratic form}. It converts a vector into a scalar. If $\bA$ is symmetric, then this scalar measures the energy of $\bx$ in the geometry defined by $\bA$.
+The algebraic characterization of positive definiteness is stated in terms of a quadratic form. For a symmetric matrix $\bA$, the scalar mapping $\bx \mapsto \bx^T\bA\bx$ assigns an energy value to every direction in $\fR^n$.
 }
 
-\addDef{Positive Definite}{%
-A symmetric matrix $\bA \in \fR^{n \times n}$ is \textbf{positive definite} (PD) if the quadratic form $\bx^T\bA\bx$ is strictly positive for every nonzero vector $\bx \in \fR^n$:
+\addDef{Symmetric Positive Definite Matrix}{%
+A matrix $\bA \in \fR^{n \times n}$ is symmetric positive definite if $\bA = \bA^T$ and the quadratic form is strictly positive for every nonzero vector $\bx \in \fR^n$:
 \begin{align*}
-    \bx^T\bA\bx > 0 \quad \text{for every nonzero } \bx \in \fR^n.
+    \bx^T\bA\bx > 0 \qquad \text{for all } \bx \neq \bzero.
 \end{align*}
-If $\bA$ is both symmetric and PD, it is \textbf{SPD}.
+If the inequality is non-strict, so that $\bx^T\bA\bx \geq 0$ for all $\bx \in \fR^n$, the matrix is termed \textbf{symmetric positive semidefinite}.
 }
 \label{def:positive-definite}
 
-\addDef{Positive Semidefinite}{%
-A symmetric matrix $\bA$ is \textbf{positive semidefinite} (PSD) if
-\begin{align*}
-    \bx^T\bA\bx \geq 0 \quad \text{for every } \bx \in \fR^n.
-\end{align*}
-Positive definite means strictly positive for every nonzero vector. Positive semidefinite allows flat directions where $\bx^T\bA\bx=0$.
-}
-\label{def:positive-semidefinite}
-
-\addExmpl{%
-\textbf{(Definite vs.\ semidefinite)}\enspace
-\begin{align*}
-    \begin{pmatrix}2&0\\0&1\end{pmatrix}
-    \quad \text{is SPD, while} \quad
-    \begin{pmatrix}1&0\\0&0\end{pmatrix}
-    \quad \text{is PSD but not PD.}
-\end{align*}
-The second matrix has a flat direction: $(0,1)^T$ has zero quadratic energy.
-}
-
-\addExcr{%
+\addThm{Equivalent Characterizations of Positive Definiteness}{%
+Let $\bA \in \fR^{n \times n}$ be a real symmetric matrix. The following statements are mathematically equivalent.
 \begin{enumerate}
-    \item Test $\bA = \begin{pmatrix}2 & 1 \\ 1 & 2\end{pmatrix}$ for PD property by expanding $\bx^T\bA\bx$.
-    \item Prove a diagonal matrix $\bD$ is PD iff all diagonal entries $d_i > 0$.
+    \item The matrix $\bA$ is positive definite ($\bx^T\bA\bx > 0$ for all $\bx \neq \bzero$).
+    \item All eigenvalues of $\bA$ are strictly positive: $\lambda_i(\bA) > 0$ for each $i = 1, \dots, n$.
+    \item All leading principal minors are positive: $\det(\bA[1:k, 1:k]) > 0$ for each $k = 1, \dots, n$.
+    \item There exists a unique lower triangular matrix $\bL \in \fR^{n \times n}$ with strictly positive diagonal entries such that $\bA = \bL\bL^T$.
+    \item There exists a nonsingular matrix $\bW \in \fR^{n \times n}$ such that $\bA = \bW^T\bW$.
 \end{enumerate}
 }
-
-\addRemark{%
-\textbf{(Spectral Characterization)}\enspace
-A symmetric matrix is PD iff \textbf{all its eigenvalues are strictly positive}.
-Every SPD matrix is invertible ($\det \bA = \prod \lambda_i > 0$).
-}
-
-\addRemark{%
-\textbf{(Equivalent tests for SPD)}\enspace For a symmetric matrix $\bA$, the following are equivalent:
-\begin{enumerate}
-    \item $\bx^T\bA\bx>0$ for every nonzero $\bx$.
-    \item Every eigenvalue of $\bA$ is positive.
-    \item Cholesky factorization succeeds with positive pivots.
-    \item All leading principal minors are positive.
-\end{enumerate}
-The eigenvalue and Cholesky tests are the most useful computationally.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item If $\bA$ is SPD, show $\bB = \bA + c\bI$ for $c > 0$ is also SPD.
-    \item Use \texttt{np.linalg.eigvalsh} to verify SPD property for several test matrices.
-\end{enumerate}
-}
-
-\subsubsection{Geometry and Metric}
-
-\textBox{%
-An SPD matrix $\bA$ can be thought of as defining a new geometry or "metric" on $\fR^n$, where the distance and angle between vectors are weighted by the entries of $\bA$. This perspective is fundamental to understanding the behavior of iterative solvers like the Conjugate Gradient method.
-}
-
-\textBox{%
-If $\bA=\bQ\boldsymbol{\Lambda}\bQ^T$, then
-\begin{align*}
-    \bx^T\bA\bx = \sum_{i=1}^n \lambda_i z_i^2,
-    \qquad \bz=\bQ^T\bx.
-\end{align*}
-The eigenvectors give the principal directions of the geometry, and the eigenvalues determine how expensive motion is in each direction.
-}
-
-\addDef{$\bA$-Inner Product}{%
-For SPD $\bA$, the mapping $\langle \bx, \by \rangle_\bA = \bx^T\bA\by$ satisfies the axioms of an inner product.
-\begin{itemize}
-    \item \textbf{$\bA$-Norm:} The induced norm is $\|\bx\|_\bA = \sqrt{\bx^T\bA\bx}$.
-    \item \textbf{Ellipsoid:} The unit ball in this norm, $\{\bx : \|\bx\|_\bA = 1\}$, is an $n$-dimensional ellipsoid whose principal axes are aligned with the eigenvectors of $\bA$.
-\end{itemize}
-}
-\label{def:a-metric}
-
-\addRemark{%
-\textbf{Physical Meaning:}\enspace Directions with large eigenvalues are ``stiff'' or ``expensive'' (small axes in the unit ellipsoid); small eigenvalues represent ``sensitive'' directions.
-}
-
-\addExmpl{%
-\textbf{(Ellipse)}\enspace For
-\begin{align*}
-    \bA=\begin{pmatrix}4&0\\0&1\end{pmatrix},
-\end{align*}
-the unit $\bA$-norm curve is
-\begin{align*}
-    4x_1^2+x_2^2=1.
-\end{align*}
-The axis in the $x_1$ direction is shorter because that direction has larger eigenvalue. Moving in that direction costs more energy.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item For $\bA = \begin{pmatrix} 4 & 0 \\ 0 & 1 \end{pmatrix}$, compute the distance between $(1,0)^T$ and origin in both Euclidean and $\bA$-metrics.
-    \item Where does the $\bA$-metric appear in statistics? (Mahalanobis distance).
-\end{enumerate}
-}
-
-\subsubsection{Cholesky Decomposition}
-
-\textBox{%
-The symmetry and positive definiteness of $\bA$ allow for a specialized version of the LU factorization known as the \textbf{Cholesky decomposition}. The decomposition can be interpreted as a generalized square root for SPD matrices, where $\bA = \bL\bL^T$.
-}
-
-\textBox{%
-Cholesky is the natural direct solver for SPD systems. It stores only one triangular factor instead of two, avoids pivoting, and preserves the symmetry of the problem.
-}
-
-\addDef{Cholesky Decomposition}{%
-Every SPD matrix $\bA$ admits a unique decomposition $\bA = \bL\bL^T$, where $\bL$ is lower triangular with strictly positive diagonal entries.
-}
-\label{def:cholesky}
-
-\addExmpl{%
-\textbf{(A $2\times2$ Cholesky factor)}\enspace Let
-\begin{align*}
-    \bA=\begin{pmatrix}4&2\\2&3\end{pmatrix}.
-\end{align*}
-Assume
-\begin{align*}
-    \bL=\begin{pmatrix}\ell_{11}&0\\\ell_{21}&\ell_{22}\end{pmatrix}.
-\end{align*}
-Matching $\bA=\bL\bL^T$ gives $\ell_{11}=2$, $\ell_{21}=1$, and $\ell_{22}=\sqrt{2}$, so
-\begin{align*}
-    \bL=\begin{pmatrix}2&0\\1&\sqrt{2}\end{pmatrix}.
-\end{align*}
-}
-
-\addRemark{%
-\textbf{(Flop Cost)}\enspace
-The computational cost of the Cholesky decomposition is \textbf{$\frac{1}{3}n^3$ flops}, approximately half that of a general LU factorization.
-}
-
-\addRemark{%
-\textbf{Stability Advantage:}\enspace
-Unlike general LU, Cholesky is \textbf{guaranteed to be stable without pivoting}. In code, \texttt{np.linalg.cholesky} is the standard numerical test for positive definiteness; if it raises a \texttt{LinAlgError}, the matrix is not PD.
-}
-
-\addRemark{%
-\textbf{(Solving with Cholesky)}\enspace If $\bA=\bL\bL^T$, then solving $\bA\bx=\bb$ requires two triangular solves:
-\begin{enumerate}
-    \item Solve $\bL\by=\bb$.
-    \item Solve $\bL^T\bx=\by$.
-\end{enumerate}
-The factorization costs $O(n^3)$, but each solve costs only $O(n^2)$.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Factor $\bA = \begin{pmatrix} 4 & 2 \\ 2 & 3 \end{pmatrix}$ by hand.
-    \item Why does Cholesky not require row swaps?
-    \item Solve $\bA\bx = \bb$ using Cholesky for $\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$.
-\end{enumerate}
-}
-
-\addExcr{%
-\textbf{(Applications)}
-\begin{enumerate}
-    \item \textbf{Covariance:}\enspace Generate \texttt{X = np.random.randn(100, 4)}. Verify \texttt{X.T @ X} is SPD via Cholesky.
-    \item \textbf{Gram Matrix:}\enspace Prove that $\mathbf{G} = \bX^T\bX$ is at least positive semidefinite for any $\bX$, and PD if $\bX$ has full column rank.
-\end{enumerate}
-}
-
-\addRemark{%
-\textbf{(Where SPD matrices appear)}\enspace
-\begin{itemize}
-    \item \textbf{Optimization:}\enspace Hessians of strictly convex quadratic functions.
-    \item \textbf{Statistics:}\enspace Covariance and Gram matrices, often PSD and SPD when data are full rank.
-    \item \textbf{PDEs:}\enspace Discrete Laplacians and stiffness matrices for elliptic problems.
-    \item \textbf{Least squares:}\enspace Normal equations $\bA^T\bA\bx=\bA^T\bb$ are SPD when $\bA$ has full column rank.
-\end{itemize}
-}
-
-\addRemark{%
-\textbf{(Connection to CG)}\enspace Conjugate Gradient is designed for large sparse SPD systems. It minimizes the quadratic energy
-\begin{align*}
-    \phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx,
-\end{align*}
-whose unique minimizer satisfies $\bA\bx=\bb$ when $\bA$ is SPD.
-}
+\label{thm:spd-equivalences}
 
 \addPrf{%
-For any nonzero vector $\bv \in \fR^n$, consider the quadratic form:
+We demonstrate the equivalence between the quadratic form, the eigenvalues, and the existence of a factorization. By the Spectral Theorem, any real symmetric matrix has an orthogonal eigendecomposition $\bA = \bQ\boldsymbol{\Lambda}\bQ^T$, where $\bQ$ is orthogonal and $\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$ contains the real eigenvalues. For any vector $\bx \neq \bzero$, let $\by = \bQ^T\bx$. Since $\bQ$ is nonsingular, $\by \neq \bzero$. The quadratic form becomes
 \begin{align*}
-    \bv^T \mathbf{G} \bv &= \bv^T (\bX^T \bX) \bv \\
-    &= (\bX \bv)^T (\bX \bv) \\
-    &= \|\bX \bv\|_2^2.
+    \bx^T\bA\bx = \bx^T\bQ\boldsymbol{\Lambda}\bQ^T\bx = \by^T\boldsymbol{\Lambda}\by = \sum_{i=1}^n \lambda_i y_i^2.
 \end{align*}
-Since the squared Euclidean norm is always non-negative, $\bv^T \mathbf{G} \bv \geq 0$, proving $\mathbf{G}$ is positive semidefinite.
-If $\bX$ has full column rank, then $\bX \bv = \bzero$ iff $\bv = \bzero$. Thus $\bv^T \mathbf{G} \bv > 0$ for all nonzero $\bv$, making $\mathbf{G}$ positive definite.
+If all $\lambda_i > 0$, this sum is strictly positive for any $\by \neq \bzero$, proving that positive eigenvalues imply positive definiteness. Conversely, if $\lambda_j \leq 0$ for some index $j$, choosing $\bx = \bq_j$ (the $j$-th eigenvector) gives $\bx^T\bA\bx = \lambda_j \|\bq_j\|_2^2 \leq 0$, showing that positive definiteness implies all eigenvalues are positive.
+
+To establish the equivalence with the factorization $\bA = \bW^T\bW$, let $\bW = \boldsymbol{\Lambda}^{1/2}\bQ^T$, where $\boldsymbol{\Lambda}^{1/2} = \operatorname{diag}(\sqrt{\lambda_1}, \dots, \sqrt{\lambda_n})$. This matrix is well-defined and nonsingular because each $\lambda_i > 0$. Then $\bW^T\bW = \bQ\boldsymbol{\Lambda}^{1/2}\boldsymbol{\Lambda}^{1/2}\bQ^T = \bQ\boldsymbol{\Lambda}\bQ^T = \bA$. Conversely, if $\bA = \bW^T\bW$ with $\bW$ nonsingular, then for every $\bx \neq \bzero$, we have $\bx^T\bA\bx = (\bW\bx)^T(\bW\bx) = \|\bW\bx\|_2^2 > 0$.
 }
 
+\addRemark{%
+\textbf{(Practical tests for positive definiteness)}\enspace
+Although Sylvester's criterion on leading principal minors is theoretically elegant, computing $n$ determinants is numerically impractical. In scientific software, the standard numerical test for positive definiteness is attempting to compute the Cholesky factorization. If the algorithm successfully completes with all positive square roots, the matrix is guaranteed to be positive definite; if a non-positive pivot is encountered, the matrix is indefinite or singular.
+}
 
-\addExcr{%
-\textbf{(SPD Condition Number)}\enspace $\kappa_2(\bA) = \lambda_{\max} / \lambda_{\min}$.
+\subsubsection{Geometry of the Energy Norm}
+
+\textBox{%
+Every symmetric positive definite matrix induces a natural inner product and a corresponding geometry on $\fR^n$. The level sets of the quadratic form define ellipsoids whose principal axes align with the eigenvectors of $\bA$.
+}
+
+\addDef{The A-Inner Product and Energy Norm}{%
+Let $\bA \in \fR^{n \times n}$ be symmetric positive definite. The $\bA$-inner product of two vectors $\bx, \by \in \fR^n$ is defined by
+\begin{align*}
+    \langle \bx, \by \rangle_\bA = \bx^T\bA\by.
+\end{align*}
+The induced norm, known as the $\bA$-norm or energy norm, is given by
+\begin{align*}
+    \|\bx\|_\bA = \sqrt{\bx^T\bA\bx}.
+\end{align*}
+The unit sphere in this norm, $\{\bx \in \fR^n : \|\bx\|_\bA = 1\}$, forms an $n$-dimensional ellipsoid whose semi-axis lengths are $1/\sqrt{\lambda_i}$, oriented along the eigenvectors $\bq_i$ of $\bA$.
+}
+\label{def:a-norm}
+
+\addExmpl{%
+\textbf{(Geometric interpretation of the energy ellipsoid)}\enspace
+Consider the diagonal positive definite matrix
+\begin{align*}
+    \bA = \begin{pmatrix} 4 & 0 \\ 0 & 1 \end{pmatrix}.
+\end{align*}
+The unit sphere in the $\bA$-norm satisfies the equation $4x_1^2 + x_2^2 = 1$. This describes an ellipse in the plane with semi-major axis of length $1$ along the $x_2$-direction and semi-minor axis of length $1/2$ along the $x_1$-direction. The direction corresponding to the larger eigenvalue $\lambda_1 = 4$ is geometrically stiffer, meaning that moving along $x_1$ incurs a higher energy penalty than moving along $x_2$.
+}
+
+\subsubsection{The Cholesky Factorization Algorithm}
+
+\textBox{%
+Because an SPD matrix satisfies $\bA = \bA^T$, the lower and upper triangular factors in Gaussian elimination must mirror each other: $\bU = \bL^T$ after accounting for diagonal scalings. The Cholesky algorithm computes this single triangular factor directly.
+}
+
+\addThm{Cholesky Factorization}{%
+Every symmetric positive definite matrix $\bA \in \fR^{n \times n}$ has a unique factorization of the form
+\begin{align*}
+    \bA = \bL\bL^T,
+\end{align*}
+where $\bL \in \fR^{n \times n}$ is lower triangular with strictly positive diagonal entries $\ell_{jj} > 0$.
+}
+\label{thm:cholesky}
+
+\addPrf{%
+We derive the recursive formulas for the entries of $\bL$ by equating entry $(i,j)$ of $\bA$ with the product $\bL\bL^T$. Because $\bL$ is lower triangular, the product yields
+\begin{align*}
+    a_{ij} = \sum_{k=1}^n \ell_{ik} (\bL^T)_{kj} = \sum_{k=1}^{\min(i,j)} \ell_{ik} \ell_{jk}.
+\end{align*}
+For the diagonal entry where $i = j$, the equation becomes
+\begin{align*}
+    a_{jj} = \sum_{k=1}^{j-1} \ell_{jk}^2 + \ell_{jj}^2 \implies \ell_{jj} = \sqrt{a_{jj} - \sum_{k=1}^{j-1} \ell_{jk}^2}.
+\end{align*}
+Because $\bA$ is positive definite, the quantity under the radical is strictly positive at every step. For the strictly subdiagonal entries in column $j$ where $i > j$, we obtain
+\begin{align*}
+    a_{ij} = \sum_{k=1}^{j-1} \ell_{ik} \ell_{jk} + \ell_{ij} \ell_{jj} \implies \ell_{ij} = \frac{1}{\ell_{jj}} \left( a_{ij} - \sum_{k=1}^{j-1} \ell_{ik} \ell_{jk} \right).
+\end{align*}
+Evaluating these formulas column by column for $j = 1, \dots, n$ computes the factor $\bL$ uniquely.
+}
+
+\addThm{The Cholesky Algorithm}{%
+Let $\bA \in \fR^{n \times n}$ be a symmetric positive definite matrix. The lower triangular factor $\bL$ is computed via the following column-oriented algorithm.
 \begin{enumerate}
-    \item If $\bA$ is SPD with eigenvalues $\{10, 0.01\}$, what is $\kappa_2(\bA)$?
-    \item Verify $\kappa_2(\bL) = \sqrt{\kappa_2(\bA)}$ where $\bL$ is the Cholesky factor.
+    \item For $j = 1, 2, \dots, n$:
+    \begin{enumerate}
+        \item Compute the diagonal entry:
+        \begin{align*}
+            v = a_{jj} - \sum_{k=1}^{j-1} \ell_{jk}^2.
+        \end{align*}
+        If $v \leq 0$, the matrix is not positive definite and the algorithm terminates. Otherwise, set $\ell_{jj} = \sqrt{v}$.
+        \item For each row index $i = j+1, \dots, n$, compute the subdiagonal entries:
+        \begin{align*}
+            \ell_{ij} = \frac{1}{\ell_{jj}} \left( a_{ij} - \sum_{k=1}^{j-1} \ell_{ik} \ell_{jk} \right).
+        \end{align*}
+    \end{enumerate}
 \end{enumerate}
 }
+\label{thm:cholesky-algorithm}
+
+\addExmpl{%
+\textbf{(Step-by-step calculation of a $3 \times 3$ Cholesky factor)}\enspace
+Consider the symmetric positive definite matrix
+\begin{align*}
+    \bA = \begin{pmatrix}
+        4 & 2 & -2 \\
+        2 & 10 & 2 \\
+        -2 & 2 & 6
+    \end{pmatrix}.
+\end{align*}
+We compute the entries of the lower triangular factor $\bL$ column by column.
+\begin{enumerate}
+    \item \textbf{First column ($j = 1$):}
+    \begin{align*}
+        \ell_{11} &= \sqrt{a_{11}} = \sqrt{4} = 2, \\
+        \ell_{21} &= \frac{a_{21}}{\ell_{11}} = \frac{2}{2} = 1, \\
+        \ell_{31} &= \frac{a_{31}}{\ell_{11}} = \frac{-2}{2} = -1.
+    \end{align*}
+    \item \textbf{Second column ($j = 2$):}
+    \begin{align*}
+        \ell_{22} &= \sqrt{a_{22} - \ell_{21}^2} = \sqrt{10 - 1^2} = \sqrt{9} = 3, \\
+        \ell_{32} &= \frac{1}{\ell_{22}} \left( a_{32} - \ell_{31}\ell_{21} \right) = \frac{1}{3} \left( 2 - (-1)(1) \right) = \frac{3}{3} = 1.
+    \end{align*}
+    \item \textbf{Third column ($j = 3$):}
+    \begin{align*}
+        \ell_{33} &= \sqrt{a_{33} - \ell_{31}^2 - \ell_{32}^2} = \sqrt{6 - (-1)^2 - 1^2} = \sqrt{4} = 2.
+    \end{align*}
+\end{enumerate}
+The complete Cholesky factor is
+\begin{align*}
+    \bL = \begin{pmatrix}
+        2 & 0 & 0 \\
+        1 & 3 & 0 \\
+        -1 & 1 & 2
+    \end{pmatrix}.
+\end{align*}
+Direct matrix multiplication confirms that $\bL\bL^T = \bA$.
+}
+
+\subsubsection{Stability and Complexity Analysis}
+
+\textBox{%
+The Cholesky algorithm has outstanding numerical stability properties that distinguish it from general LU factorization.
+}
+
+\addThm{Flop Count and Memory Efficiency}{%
+For a symmetric positive definite matrix $\bA \in \fR^{n \times n}$, the Cholesky factorization requires asymptotically $\frac{1}{3}n^3$ floating-point operations and $n$ square roots. This represents half the computational work and half the memory storage of a standard LU factorization.
+}
+\label{thm:cholesky-complexity}
+
+\addPrf{%
+At column $j$, computing the diagonal entry requires $j-1$ multiplications and subtractions followed by one square root. Computing the $n-j$ subdiagonal entries requires $(n-j)(j-1)$ multiplications and subtractions, and $n-j$ divisions. Summing the dominant multiplicative terms across all columns gives
+\begin{align*}
+    \sum_{j=1}^n 2(n-j)j = 2n \sum_{j=1}^n j - 2 \sum_{j=1}^n j^2
+    = 2n \left( \frac{n^2}{2} \right) - 2 \left( \frac{n^3}{3} \right)
+    = \frac{1}{3}n^3 \text{ flops}.
+\end{align*}
+Solving $\bA\bx = \bb$ using $\bL\by = \bb$ and $\bL^T\bx = \by$ requires $2n^2$ flops, identical to standard triangular substitution.
+}
+
+\addRemark{%
+\textbf{(Inherent stability without pivoting)}\enspace
+A critical property of the Cholesky decomposition is that row interchanges are entirely unnecessary. For every entry in the factor, the diagonal identity $a_{ii} = \sum_{k=1}^i \ell_{ik}^2$ implies that $\ell_{ik}^2 \leq a_{ii}$ for all $k \leq i$. Consequently, the entries of the factor $\bL$ are bounded directly by the diagonal entries of the original matrix:
+\begin{align*}
+    |\ell_{ik}| \leq \sqrt{a_{ii}} \leq \sqrt{\max_m a_{mm}}.
+\end{align*}
+There is no possibility of element growth during factorization. The algorithm is unconditionally backward stable, satisfying $\|\delta\bA\|_2 / \|\bA\|_2 \leq c n \varepsilon_{\text{mach}}$ for a small constant $c$.
+}
+
+\addRemark{%
+\textbf{(Condition number of SPD matrices)}\enspace
+For any symmetric positive definite matrix $\bA$, the condition number in the Euclidean norm simplifies to the ratio of extreme eigenvalues:
+\begin{align*}
+    \kappa_2(\bA) = \frac{\lambda_{\max}(\bA)}{\lambda_{\min}(\bA)}.
+\end{align*}
+Furthermore, the Cholesky factor satisfies $\kappa_2(\bL) = \sqrt{\kappa_2(\bA)}$, showing that the triangular solves operate on matrices with significantly milder condition numbers than the original operator.
+}
+
+\addExcr{%
+\begin{enumerate}
+    \item Compute the Cholesky factorization by hand for the matrix
+    \begin{align*}
+        \bA = \begin{pmatrix} 9 & 3 & -6 \\ 3 & 26 & -7 \\ -6 & -7 & 9 \end{pmatrix}.
+    \end{align*}
+    \item Using the Cholesky factor computed above, solve $\bA\bx = (6, 44, 2)^T$ via forward and backward substitution.
+    \item Let $\bA \in \fR^{n \times n}$ be an SPD matrix. Prove that the largest entry of $\bA$ in absolute value must lie on the main diagonal.
+    \item Let $\bX \in \fR^{m \times n}$ be a data matrix with $m \geq n$. Prove that the Gram matrix $\bX^T\bX$ is symmetric positive definite if and only if $\bX$ has full column rank.
+\end{enumerate}
+}
+\label{ex:spd-exercises}
 
 \end{document}

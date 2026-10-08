@@ -2,122 +2,111 @@
 
 \begin{document}
 
-\subsection{Lanczos Algorithm}
+\subsection{The Lanczos Algorithm}
 \label{sub:lanczos-theory}
 
 \textBox{%
-Iterative method for finding extreme eigenpairs of large, symmetric matrices without explicit $O(n^2)$ formation.
+The Lanczos algorithm is the symmetric specialization of the Arnoldi iteration for large, sparse real symmetric matrices $\bA = \bA^T \in \fR^{n \times n}$. When $\bA$ is symmetric, the upper Hessenberg projection matrix becomes symmetric tridiagonal, collapsing the $k$-term Gram-Schmidt orthogonalization into a three-term recurrence involving only the two immediately preceding basis vectors.
 }
 
-\addRemark{%
-\textbf{(Symmetric assumption)}\enspace Lanczos applies to symmetric or Hermitian matrices. For nonsymmetric matrices, use Arnoldi or GMRES-type constructions.
+\textBox{%
+By projecting the large $n \times n$ matrix onto an expanding $k$-dimensional Krylov subspace ($k \ll n$), the Lanczos algorithm rapidly computes extremal eigenvalues (the largest and smallest frequencies in the spectrum) using only one sparse matrix-vector product per step and minimal vector memory.
 }
 
-\subsubsection{Krylov Subspaces}
+\subsubsection{The Three-Term Lanczos Recurrence}
 
-\addDef{Krylov Subspace}{%
-$\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, \dots,\, \bA^{k-1}\bv\}$.
-$\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
-}
-\label{def:krylov-subspace}
-
-\addRemark{%
-\textbf{(Power iteration with memory)}\enspace Power iteration keeps only the newest vector. Lanczos keeps an orthonormal basis for the whole Krylov subspace, so it can approximate several eigenvalues at once.
-}
-
-\subsubsection{The Lanczos Recurrence}
-
-\addThm{Lanczos Relation}{%
-The process builds an orthonormal basis $V_k = [\bv_1, \dots, \bv_k]$ for $\mathcal{K}_k$ satisfying:
+\addThm{The Lanczos Factorization}{%
+Let $\bA \in \fR^{n \times n}$ be real symmetric, and let $\bv_1 \in \fR^n$ be a normalized initial vector ($\|\bv_1\|_2 = 1$). Set $\bv_0 = \bzero$ and $\beta_0 = 0$.
+For $j = 1, 2, \dots, k$:
+\begin{enumerate}
+    \item Compute the matrix-vector product: $\bw = \bA\bv_j$.
+    \item Compute the diagonal Rayleigh quotient: $\alpha_j = \bv_j^T \bw$.
+    \item Orthogonalize against the previous two vectors: $\bw \leftarrow \bw - \alpha_j \bv_j - \beta_{j-1} \bv_{j-1}$.
+    \item Compute the subdiagonal norm: $\beta_j = \|\bw\|_2$.
+    \item If $\beta_j = 0$, terminate. Otherwise, set $\bv_{j+1} = \bw / \beta_j$.
+\end{enumerate}
+In matrix notation, after $k$ steps, the orthonormal Lanczos basis $\bV_k = [\bv_1, \dots, \bv_k]$ satisfies the algebraic relation
 \begin{align*}
-    \bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T.
+    \bA \bV_k = \bV_k \bT_k + \beta_k \bv_{k+1} \be_k^T,
 \end{align*}
-\begin{itemize}
-    \item \textbf{$T_k$:}\enspace Symmetric \textbf{tridiagonal} matrix.
-    \item \textbf{$\alpha_j = \bv_j^T \bA \bv_j$:}\enspace Rayleigh quotients (diagonal).
-    \item \textbf{$\beta_j = \|\text{residual}\|$:}\enspace Orthogonalization coefficients (off-diagonal).
-\end{itemize}
+where $\bT_k \in \fR^{k \times k}$ is the symmetric tridiagonal matrix
+\begin{align*}
+    \bT_k = \begin{pmatrix}
+        \alpha_1 & \beta_1 & 0 & \dots & 0 \\
+        \beta_1 & \alpha_2 & \beta_2 & \dots & 0 \\
+        0 & \beta_2 & \alpha_3 & \ddots & \vdots \\
+        \vdots & \vdots & \ddots & \ddots & \beta_{k-1} \\
+        0 & 0 & \dots & \beta_{k-1} & \alpha_k
+    \end{pmatrix}.
+\end{align*}
 }
 \label{thm:lanczos-relation}
 
-\addProp{Galerkin Projection}{%
-In exact arithmetic,
+\addProp{Galerkin Projection Property}{%
+In exact arithmetic, the Lanczos basis vectors are mutually orthonormal ($\bV_k^T\bV_k = \bI_k$). Multiplying the Lanczos relation on the left by $\bV_k^T$ yields the Rayleigh-Ritz Galerkin projection:
 \begin{align*}
-    T_k=V_k^T\bA V_k.
+    \bT_k = \bV_k^T \bA \bV_k.
 \end{align*}
-Thus Lanczos replaces the large symmetric matrix $\bA$ by a small symmetric tridiagonal projection.
 }
 \label{prop:lanczos-galerkin}
 
-\addPrf{%
-Left multiply the Lanczos relation in Thm~\ref{thm:lanczos-relation} by $V_k^T$:
-\begin{align*}
-    V_k^T\bA V_k
-    =
-    V_k^T V_k T_k+\beta_k V_k^T\bv_{k+1}\be_k^T.
-\end{align*}
-Since the Lanczos vectors are orthonormal, $V_k^T V_k=\bI$ and $V_k^T\bv_{k+1}=\bzero$. Hence $V_k^T\bA V_k=T_k$.
-}
+\subsubsection{Ritz Values, Ritz Vectors, and Error Bounds}
 
-\addRemark{%
-\textbf{Performance Advantage:}\enspace
-Unlike Gram-Schmidt, which orthogonalizes against all previous vectors, Lanczos only requires the \textbf{two previous vectors} (three-term recurrence). This makes it $O(k \cdot \text{nnz})$ for sparse matrices.
-}
-
-\subsubsection{Ritz Values and Vectors}
-
-Approximations to the true eigenpairs from the Krylov subspace.
-
-\addDef{Ritz Pair}{%
-\begin{itemize}
-    \item \textbf{Ritz Value ($\theta_i$):}\enspace Eigenvalue of $T_k$.
-    \item \textbf{Ritz Vector ($\tilde{\bu}_i$):}\enspace $V_k \bs_i$, where $\bs_i$ is an eigenvector of $T_k$.
-\end{itemize}
+\addDef{Ritz Pairs}{%
+Let $\bT_k \bs_i = \theta_i \bs_i$ be the eigendecomposition of the small symmetric tridiagonal matrix $\bT_k$, with normalized eigenvectors $\|\bs_i\|_2 = 1$.
+\begin{enumerate}
+    \item The eigenvalue $\theta_i \in \fR$ is termed the \textbf{$i$-th Ritz value} of $\bA$ with respect to $\mathcal{K}_k(\bA, \bv_1)$.
+    \item The vector $\tilde{\bu}_i = \bV_k \bs_i \in \fR^n$ is termed the \textbf{$i$-th Ritz vector}.
+\end{enumerate}
 }
 \label{def:ritz-pair}
 
-\addThm{Residual Estimate}{%
-The residual of the $i$-th Ritz pair $(\theta_i, \tilde{\bu}_i)$ satisfies:
+\addThm{A Posteriori Residual Bound for Ritz Pairs}{%
+The residual of the Ritz pair $(\theta_i, \tilde{\bu}_i)$ satisfies the explicit identity
 \begin{align*}
-    \|\bA\tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 = \beta_k |s_i(k)|.
+    \|\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 = \beta_k |s_{k,i}|,
 \end{align*}
-\textbf{Significance:}\enspace Convergence of a Ritz pair can be monitored for $O(k)$ cost without forming the full $n$-vector $\tilde{\bu}_i$.
+where $s_{k,i}$ is the final component of the $i$-th tridiagonal eigenvector $\bs_i \in \fR^k$.
 }
 \label{thm:ritz-residual}
 
 \addPrf{%
-Starting from the Lanczos relation $\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T$, multiply by the $i$-th eigenvector $\bs_i$ of $T_k$ on the right:
+Multiplying the Lanczos relation $\bA \bV_k = \bV_k \bT_k + \beta_k \bv_{k+1} \be_k^T$ on the right by $\bs_i$ gives
 \begin{align*}
-    \bA V_k \bs_i &= V_k T_k \bs_i + \beta_k \bv_{k+1} \be_k^T \bs_i \\
-    \bA \tilde{\bu}_i &= V_k (\theta_i \bs_i) + \beta_k \bv_{k+1} s_i(k).
+    \bA (\bV_k \bs_i) = \bV_k (\bT_k \bs_i) + \beta_k \bv_{k+1} (\be_k^T \bs_i)
+    \implies \bA \tilde{\bu}_i = \theta_i \tilde{\bu}_i + \beta_k s_{k,i} \bv_{k+1}.
 \end{align*}
-where $s_i(k)$ is the $k$-th entry of $\bs_i$. Rearranging:
+Rearranging and taking the Euclidean norm yields
 \begin{align*}
-    \bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i = \beta_k \bv_{k+1} s_i(k).
+    \|\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 = \|\beta_k s_{k,i} \bv_{k+1}\|_2 = \beta_k |s_{k,i}| \|\bv_{k+1}\|_2 = \beta_k |s_{k,i}|,
 \end{align*}
-Taking the $L_2$ norm and using the fact that $\|\bv_{k+1}\|_2 = 1$:
-\begin{align*}
-    \|\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 &= |\beta_k s_i(k)| \|\bv_{k+1}\|_2 \\
-    &= \beta_k |s_i(k)|.
-\end{align*}
+because $\|\bv_{k+1}\|_2 = 1$. This allows monitoring the convergence of every Ritz pair for $O(k)$ operations without forming the $n$-dimensional Ritz vectors $\tilde{\bu}_i$.
+}
+
+\subsubsection{Loss of Orthogonality and Ghost Eigenvalues}
+
+\addRemark{%
+\textbf{(Paige's theorem on loss of orthogonality)}\enspace
+In floating-point arithmetic, the three-term recurrence suffers from a fundamental numerical instability discovered by Chris Paige. The basis vectors $\bv_j$ do not remain orthogonal; rather, orthogonality is lost rapidly precisely as individual Ritz values converge to extreme eigenvalues of $\bA$. As a consequence, once an eigenvalue has converged, the algorithm continues to re-discover it in subsequent iterations, generating multiple spurious copies known as \textbf{ghost eigenvalues}.
 }
 
 \addRemark{%
-\textbf{Ghost Eigenvalues:}\enspace
-In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. \textbf{(Reorthogonalization)}\enspace Use full or selective reorthogonalization to maintain basis integrity.
-}
-
-\addRemark{%
-\textbf{Connection to Conjugate Gradient:}\enspace
-The Lanczos algorithm applied to a symmetric system $\bA\bx=\bb$ is mathematically equivalent to the Conjugate Gradient method. Both algorithms build the same Krylov subspace and produce identical iterates in exact arithmetic.
+\textbf{(Practical remedies for ghost eigenvalues)}\enspace
+To maintain numerical reliability on large problems, scientific codes employ one of three strategies:
+\begin{enumerate}
+    \item \textbf{Full Reorthogonalization:} Reorthogonalize $\bv_{j+1}$ against all previous basis vectors $\bv_1, \dots, \bv_j$ using Modified Gram-Schmidt at every step ($O(k^2 n)$ cost).
+    \item \textbf{Selective Reorthogonalization:} Orthogonalize only against converged Ritz vectors whenever loss of orthogonality is detected ($O(k \cdot n)$ cost).
+    \item \textbf{Cullum-Willoughby Identification:} Run the unorthogonalized Lanczos iteration and filter out ghost eigenvalues by comparing the spectrum of $\bT_k$ with the spectrum of the submatrix formed by deleting the first row and column of $\bT_k$.
+\end{enumerate}
 }
 
 \addExcr{%
 \begin{enumerate}
-    \item Carry out 2 steps of Lanczos for $\bA = \text{diag}(5, 3, 1)$ starting with $\bv_1 = \frac{1}{\sqrt{3}}\mathbf{1}$.
-    \item Verify Prop~\ref{prop:lanczos-galerkin} numerically for a random symmetric matrix.
-    \item Implement Lanczos on a $50 \times 50$ Hilbert matrix. Count spurious eigenvalues without reorthogonalization.
+    \item Execute two steps of the Lanczos algorithm by hand for the diagonal matrix $\bA = \operatorname{diag}(4, 2, 1)$ starting with the normalized vector $\bv_1 = \frac{1}{\sqrt{3}}(1, 1, 1)^T$. Explicitly write down $\alpha_1, \beta_1, \alpha_2$, and the $2 \times 2$ tridiagonal matrix $\bT_2$.
+    \item For the $2 \times 2$ matrix $\bT_2$ computed above, find its Ritz values and evaluate the residual error bound using Thm~\ref{thm:ritz-residual}.
+    \item Prove that the Lanczos algorithm applied to the shifted system $(\bA - \sigma\bI)$ produces the identical basis vectors $\bV_k$ as the original system, with tridiagonal matrix $\bT_k - \sigma\bI$.
 \end{enumerate}
 }
+\label{ex:lanczos-exercises}
 
 \end{document}

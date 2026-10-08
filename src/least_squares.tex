@@ -2,210 +2,131 @@
 
 \begin{document}
 
-\subsection{Overdetermined Systems and Least Squares}
+\subsection{Linear Least Squares and Overdetermined Systems}
 \label{sub:least-squares}
 
-Approximating the solution to an overdetermined system where $m > n$ and no exact solution exists.
+\textBox{%
+In scientific data fitting and parameter estimation, one frequently encounters linear systems $\bA\bx \approx \bb$ with more equations than unknowns ($m > n$). Because the data vector $\bb \in \fR^m$ is corrupted by measurement noise or modeling discrepancies, it rarely lies precisely within the column space $\mathcal{R}(\bA) \subset \fR^m$. Consequently, no exact solution exists.
+}
 
 \textBox{%
-When $\bb$ is not in the column space of $\bA$, the equation $\bA\bx=\bb$ has no exact solution. Least squares replaces the impossible goal ``make the residual zero'' with the geometric goal ``make the residual as short as possible.''
+The method of linear least squares replaces the impossible requirement of zero residual with the optimization problem of finding the vector $\hat{\bx} \in \fR^n$ that minimizes the Euclidean norm of the residual vector $\br(\bx) = \bb - \bA\bx$. Geometrically, the optimal model prediction $\bA\hat{\bx}$ is the orthogonal projection of the observation vector $\bb$ onto the range of $\bA$.
 }
 
-\subsubsection{Least Squares Problem}
+\subsubsection{The Least-Squares Problem and the Normal Equations}
 
-\addDef{Overdetermined System}{%
-$\bA\bx = \bb$ with $\bA \in \fR^{m \times n}, m > n$. Usually $\bb \notin \mathcal{R}(\bA)$.
-}
-\label{def:overdetermined}
-
-\addDef{Least Squares Problem}{%
-Find $\hat{\bx}$ that minimizes the Euclidean residual:
+\addDef{Linear Least-Squares Problem}{%
+Let $\bA \in \fR^{m \times n}$ with $m \geq n$ and let $\bb \in \fR^m$. The linear least-squares problem seeks a vector $\hat{\bx} \in \fR^n$ satisfying
 \begin{align*}
-    \hat{\bx} = \arg\min_{\bx \in \fR^n} \|\bA\bx - \bb\|_2^2.
+    \hat{\bx} = \arg\min_{\bx \in \fR^n} \|\bA\bx - \bb\|_2^2 = \arg\min_{\bx \in \fR^n} \sum_{i=1}^m \left( \sum_{j=1} a_{ij} x_j - b_i \right)^2.
 \end{align*}
-\textbf{Geometry:}\enspace $\bA\hat{\bx}$ is the orthogonal projection of $\bb$ onto $\mathcal{R}(\bA)$.
 }
 \label{def:least-squares-prob}
 
-\addThm{Projection Characterization}{%
-For the least squares problem in Def~\ref{def:least-squares-prob}, Thm~\ref{thm:closest-point} applied to $S=\mathcal{R}(\bA)$ implies that the solution $\hat{\bx}$ is characterized by
+\addThm{Orthogonal Characterization and the Normal Equations}{%
+A vector $\hat{\bx} \in \fR^n$ minimizes $\|\bA\bx - \bb\|_2^2$ if and only if the residual vector $\br = \bb - \bA\hat{\bx}$ is orthogonal to the column space $\mathcal{R}(\bA)$:
 \begin{align*}
-    \bA\hat{\bx} = \operatorname{proj}_{\mathcal{R}(\bA)}(\bb),
-    \qquad
-    \br = \bb-\bA\hat{\bx} \perp \mathcal{R}(\bA).
+    \br \perp \mathcal{R}(\bA) \iff \bA^T \br = \bzero \iff \bA^T(\bb - \bA\hat{\bx}) = \bzero.
 \end{align*}
-Equivalently, $\bA^T\br=\bzero$.
-}
-\label{thm:least-squares-projection}
-
-\addExmpl{%
-\textbf{(Fitting a line)}\enspace For data $(t_i,y_i)$, fitting $y\approx c_0+c_1t$ gives
+This orthogonality condition produces the \textbf{Normal Equations}:
 \begin{align*}
-    \bA =
-    \begin{pmatrix}
-        1&t_1\\
-        1&t_2\\
-        \vdots&\vdots\\
-        1&t_m
-    \end{pmatrix},
-    \qquad
-    \bx=\begin{pmatrix}c_0\\c_1\end{pmatrix},
-    \qquad
-    \bb=\begin{pmatrix}y_1\\y_2\\ \vdots\\ y_m\end{pmatrix}.
+    \bA^T\bA \hat{\bx} = \bA^T\bb.
 \end{align*}
-The residuals are the vertical errors between the data and the fitted line.
-}
-
-\subsubsection{Normal Equations}
-
-\addThm{Normal Equations}{%
-Using the orthogonality condition in Thm~\ref{thm:least-squares-projection}, the minimizer satisfies $\bA^T\bA\hat{\bx} = \bA^T\bb$.
-\begin{itemize}
-    \item \textbf{Condition:}\enspace $\bA^T\br = \bzero$ (Residual must be normal to the column space).
-    \item \textbf{Unique Solution:}\enspace $\hat{\bx} = (\bA^T\bA)^{-1}\bA^T\bb$ if $\bA$ has full column rank.
-\end{itemize}
+If $\bA$ has full column rank ($\operatorname{rank}(\bA) = n$), the Gram matrix $\bA^T\bA$ is symmetric positive definite, and the unique least-squares solution is $\hat{\bx} = (\bA^T\bA)^{-1}\bA^T\bb$.
 }
 \label{thm:normal-equations}
 
-\addExcr{%
-\begin{enumerate}
-    \item Starting from Thm~\ref{thm:least-squares-projection}, derive the normal equations in Thm~\ref{thm:normal-equations}.
-    \item Show that $\bA^T\br=\bzero$ is equivalent to $\br\in\mathcal{N}(\bA^T)$.
-    \item Use Thm~\ref{thm:orthogonal-complements} to explain why $\br\in\mathcal{N}(\bA^T)$ means $\bA\hat{\bx}$ is the projection of $\bb$ onto $\mathcal{R}(\bA)$.
-    \item Fit a line $y = mx + b$ to points $(1,2), (2,3), (3,5), (4,4)$ via normal equations.
-    \item Prove $\kappa_2(\bA^T\bA) = \kappa_2(\bA)^2$ using singular values. If $\kappa_2(\bA)=10^6$, estimate the number of digits that may be lost in double precision.
-    \item Explain why the normal equations are useful for derivation but should not be the default numerical algorithm. Your answer should mention $\bA^T\br=\bzero$, conditioning, QR, and SVD.
-\end{enumerate}
-}
-\label{ex:normal-equations-conditioning}
-
-\subsubsection{QR-Based Least Squares}
-
-The numerically superior approach.
-
-\addThm{Solving via QR}{%
-If $\bA = \bQ\bR$ (thin QR), the least squares solution satisfies:
+\addPrf{%
+Define the quadratic objective function $f(\bx) = \frac{1}{2} \|\bA\bx - \bb\|_2^2 = \frac{1}{2} (\bA\bx - \bb)^T(\bA\bx - \bb) = \frac{1}{2} \bx^T\bA^T\bA\bx - \bb^T\bA\bx + \frac{1}{2} \bb^T\bb$. Computing the gradient with respect to $\bx$ yields
 \begin{align*}
-    \bR\hat{\bx} = \bQ^T\bb.
+    \nabla f(\bx) = \bA^T\bA\bx - \bA^T\bb = -\bA^T(\bb - \bA\bx) = -\bA^T\br(\bx).
 \end{align*}
-This avoids forming $\bA^T\bA$, the instability diagnosed in Ex~\ref{ex:normal-equations-conditioning}.
+Setting $\nabla f(\hat{\bx}) = \bzero$ yields $\bA^T\bA\hat{\bx} = \bA^T\bb$. Because the Hessian $\nabla^2 f(\bx) = \bA^T\bA$ is symmetric positive semidefinite, any stationary point is a global minimizer. When $\bA$ has full column rank, $\bA^T\bA$ is strictly positive definite, ensuring that $\hat{\bx}$ is unique.
+}
+
+\addRemark{%
+\textbf{(The conditioning danger of normal equations)}\enspace
+Although forming and solving the normal equations $\bA^T\bA\hat{\bx} = \bA^T\bb$ via Cholesky factorization requires only $mn^2 + \frac{1}{3}n^3$ flops, it is numerically dangerous. The 2-norm condition number of the Gram matrix is the square of the condition number of $\bA$:
+\begin{align*}
+    \kappa_2(\bA^T\bA) = \kappa_2(\bA)^2.
+\end{align*}
+If $\kappa_2(\bA) = 10^8$, then $\kappa_2(\bA^T\bA) = 10^{16}$, and solving the normal equations in standard double precision arithmetic can lose all sixteen significant digits. Therefore, the normal equations should never be the default method for ill-conditioned data fitting.
+}
+
+\subsubsection{Solving Least Squares via QR Factorization}
+
+\textBox{%
+The standard, numerically stable method for solving full-rank least-squares problems is the thin QR factorization, which computes the solution without ever forming the squared matrix $\bA^T\bA$.
+}
+
+\addThm{Least-Squares Solution via QR Factorization}{%
+Let $\bA \in \fR^{m \times n}$ with $m \geq n$ have full column rank, and let $\bA = \bQ_1\bR_1$ be its thin QR factorization, where $\bQ_1 \in \fR^{m \times n}$ has orthonormal columns and $\bR_1 \in \fR^{n \times n}$ is nonsingular and upper triangular. The unique least-squares solution is computed by solving the upper triangular system
+\begin{align*}
+    \bR_1 \hat{\bx} = \bQ_1^T \bb.
+\end{align*}
+The condition number of this triangular system is $\kappa_2(\bR_1) = \kappa_2(\bA)$, completely avoiding the condition number squaring of the normal equations.
 }
 \label{thm:least-squares-qr}
 
 \addPrf{%
-The goal is to minimize $\|\bA\bx - \bb\|_2^2$. Let $\bA = \bQ\bR$ be the thin QR factorization. Using the orthogonal projector $\bP = \bQ\bQ^T$ and its complement $\bI - \bP$:
+Let $\bA = \bQ\bR = \begin{pmatrix} \bQ_1 & \bQ_2 \end{pmatrix} \begin{pmatrix} \bR_1 \\ \bzero \end{pmatrix}$ be the full QR factorization. Because orthogonal transformations preserve the Euclidean norm, we multiply the residual by $\bQ^T$:
 \begin{align*}
-    \|\bA\bx - \bb\|_2^2 &= \|\bQ\bR\bx - \bb\|_2^2 \\
-    &= \|\bQ\bR\bx - (\bQ\bQ^T\bb + (\bI - \bQ\bQ^T)\bb)\|_2^2 \\
-    &= \|(\bQ\bR\bx - \bQ\bQ^T\bb) - (\bI - \bQ\bQ^T)\bb\|_2^2.
+    \|\bA\bx - \bb\|_2^2 &= \|\bQ^T(\bA\bx - \bb)\|_2^2 \\
+    &= \left\| \begin{pmatrix} \bQ_1^T \\ \bQ_2^T \end{pmatrix} (\bQ_1\bR_1\bx - \bb) \right\|_2^2 \\
+    &= \left\| \begin{pmatrix} \bR_1\bx - \bQ_1^T\bb \\ -\bQ_2^T\bb \end{pmatrix} \right\|_2^2 \\
+    &= \|\bR_1\bx - \bQ_1^T\bb\|_2^2 + \|\bQ_2^T\bb\|_2^2.
 \end{align*}
-Since $\bQ(\bR\bx - \bQ^T\bb) \in \mathcal{R}(\bQ)$ and $(\bI - \bQ\bQ^T)\bb \in \mathcal{R}(\bQ)^\perp$, the Pythagorean theorem gives:
-\begin{align*}
-    \|\bA\bx - \bb\|_2^2 = \|\bQ(\bR\bx - \bQ^T\bb)\|_2^2 + \|(\bI - \bQ\bQ^T)\bb\|_2^2.
-\end{align*}
-The first term is minimized (set to zero) when $\bR\bx = \bQ^T\bb$, and the second term is independent of $\bx$. Thus $\hat{\bx} = \bR^{-1}\bQ^T\bb$ is the unique minimizer.
+The second term $\|\bQ_2^T\bb\|_2^2$ is independent of the choice of $\bx$, representing the inherent distance from $\bb$ to the subspace $\mathcal{R}(\bA)$. The first term is non-negative and can be driven to zero by setting $\bR_1\bx = \bQ_1^T\bb$. Since $\bA$ has full column rank, $\bR_1$ is invertible, and $\hat{\bx} = \bR_1^{-1}\bQ_1^T\bb$ is the unique global minimizer.
 }
 
-\addRemark{%
-\textbf{(Least squares solver hierarchy)}\enspace
-\begin{itemize}
-    \item \textbf{Normal equations:}\enspace Fast and simple, but least stable; condition number is squared.
-    \item \textbf{QR:}\enspace Standard method for full-rank least squares; stable and efficient.
-    \item \textbf{SVD:}\enspace Most robust; handles rank deficiency and reveals numerical rank.
-\end{itemize}
+\addExmpl{%
+\textbf{(Step-by-step least-squares line fit)}\enspace
+Suppose we wish to fit the linear model $y = c_0 + c_1 t$ to the three data points $(0, 1)$, $(1, 2)$, and $(2, 4)$. The overdetermined system $\bA\bc \approx \by$ is
+\begin{align*}
+    \begin{pmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} c_0 \\ c_1 \end{pmatrix} \approx \begin{pmatrix} 1 \\ 2 \\ 4 \end{pmatrix}.
+\end{align*}
+Computing the normal equations components:
+\begin{align*}
+    \bA^T\bA = \begin{pmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{pmatrix} \begin{pmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{pmatrix} = \begin{pmatrix} 3 & 3 \\ 3 & 5 \end{pmatrix}, \qquad
+    \bA^T\by = \begin{pmatrix} 1 & 1 & 1 \\ 0 & 1 & 2 \end{pmatrix} \begin{pmatrix} 1 \\ 2 \\ 4 \end{pmatrix} = \begin{pmatrix} 7 \\ 10 \end{pmatrix}.
+\end{align*}
+Solving $\begin{pmatrix} 3 & 3 \\ 3 & 5 \end{pmatrix} \begin{pmatrix} c_0 \\ c_1 \end{pmatrix} = \begin{pmatrix} 7 \\ 10 \end{pmatrix}$ yields $c_1 = 3/2 = 1.5$ and $c_0 = (7 - 3(1.5))/3 = 5/6 \approx 0.8333$. The fitted line is $y = \frac{5}{6} + \frac{3}{2}t$.
 }
 
-\subsubsection{Rank Deficiency and Regularization}
+\subsubsection{Rank Deficiency, SVD, and Regularization}
 
 \textBox{%
-If $\bA$ does not have full column rank, there may be infinitely many least squares minimizers. The SVD selects the minimizer with smallest Euclidean norm. Regularization modifies the problem to penalize large coefficients and improve conditioning.
+When $\bA$ is rank deficient ($\operatorname{rank}(\bA) < n$), the matrix $\bA^T\bA$ is singular, and infinitely many vectors minimize the residual norm. In this case, the Singular Value Decomposition identifies the unique solution of minimal Euclidean norm.
 }
 
-\addThm{Minimum-Norm Least Squares}{%
-For any $\bA$, the vector
+\addThm{Minimum-Norm Solution via Singular Value Decomposition}{%
+Let $\bA \in \fR^{m \times n}$ with SVD $\bA = \bU\bsigma\bV^T = \sum_{i=1}^r \sigma_i \bu_i \bv_i^T$, where $r = \operatorname{rank}(\bA)$. Among all vectors that minimize $\|\bA\bx - \bb\|_2$, the unique vector with the smallest Euclidean norm $\|\bx\|_2$ is given by the Moore-Penrose pseudoinverse solution:
 \begin{align*}
-    \hat{\bx}=\bA^\dagger\bb
+    \hat{\bx}_{\text{min}} = \bA^\dagger \bb = \sum_{i=1}^r \frac{\bu_i^T\bb}{\sigma_i} \bv_i.
 \end{align*}
-is the least squares minimizer with smallest Euclidean norm.
 }
-\label{thm:min-norm-least-squares}
+\label{thm:min-norm-svd}
+
+\addDef{Tikhonov (Ridge) Regularization}{%
+When $\bA$ is ill-conditioned or nearly rank deficient, computing $\bA^\dagger\bb$ can amplify noise in the data due to division by very small singular values $\sigma_i \ll 1$. Tikhonov regularization stabilizes the problem by adding an energy penalty:
+\begin{align*}
+    \hat{\bx}_\lambda = \arg\min_{\bx \in \fR^n} \left( \|\bA\bx - \bb\|_2^2 + \lambda \|\bx\|_2^2 \right), \qquad \lambda > 0.
+\end{align*}
+The regularized solution satisfies the modified normal equations
+\begin{align*}
+    (\bA^T\bA + \lambda \bI) \hat{\bx}_\lambda = \bA^T\bb,
+\end{align*}
+which can be solved stably via the QR factorization of the augmented matrix $\begin{pmatrix} \bA \\ \sqrt{\lambda}\bI \end{pmatrix} \bx \approx \begin{pmatrix} \bb \\ \bzero \end{pmatrix}$.
+}
+\label{def:ridge-regression}
 
 \addExcr{%
 \begin{enumerate}
-    \item Write $\bA=\bU\bsigma\bV^T$.
-    \item Transform the least squares problem into SVD coordinates.
-    \item Identify which coordinates are determined by nonzero singular values.
-    \item Show that setting nullspace coordinates to zero gives the minimum-norm solution in Thm~\ref{thm:min-norm-least-squares}.
+    \item Fit a parabola $y = c_0 + c_1 t + c_2 t^2$ to the four data points $(-1, 1)$, $(0, 0)$, $(1, 1)$, and $(2, 5)$ using thin QR factorization.
+    \item Let $\bA \in \fR^{m \times n}$ have full column rank with singular values $\sigma_1 \geq \dots \geq \sigma_n > 0$. Prove that $\kappa_2(\bA^T\bA) = (\sigma_1/\sigma_n)^2 = \kappa_2(\bA)^2$.
+    \item Prove that the Tikhonov regularized solution in SVD coordinates satisfies $\hat{\bx}_\lambda = \sum_{i=1}^n \frac{\sigma_i}{\sigma_i^2 + \lambda} (\bu_i^T\bb) \bv_i$. Explain how the filter factor $\frac{\sigma_i^2}{\sigma_i^2 + \lambda}$ prevents noise explosion for $\sigma_i \ll \sqrt{\lambda}$.
 \end{enumerate}
 }
-\label{ex:min-norm-least-squares}
-
-\addDef{Ridge-Regularized Least Squares}{%
-For $\lambda>0$, ridge regression solves
-\begin{align*}
-    \hat{\bx}_\lambda
-    =
-    \argmin_{\bx}\left(\|\bA\bx-\bb\|_2^2+\lambda\|\bx\|_2^2\right).
-\end{align*}
-The normal equations become
-\begin{align*}
-    (\bA^T\bA+\lambda\bI)\hat{\bx}_\lambda = \bA^T\bb.
-\end{align*}
-}
-\label{def:ridge-regularization}
-
-\addDef{Weighted Least Squares}{%
-Given positive weights $w_i$, weighted least squares solves
-\begin{align*}
-    \min_{\bx}\|\mathbf{W}^{1/2}(\bA\bx-\bb)\|_2^2,
-    \qquad
-    \mathbf{W}=\operatorname{diag}(w_1,\dots,w_m).
-\end{align*}
-Large $w_i$ forces the fit to match observation $i$ more strongly.
-}
-\label{def:weighted-least-squares}
-
-\addThm{Weighted Normal Equations}{%
-The weighted least squares problem in Def~\ref{def:weighted-least-squares} satisfies
-\begin{align*}
-    \bA^T\mathbf{W}\bA\hat{\bx}=\bA^T\mathbf{W}\bb.
-\end{align*}
-}
-\label{thm:weighted-normal-equations}
-
-\addPrf{%
-Apply the ordinary normal equations from Thm~\ref{thm:normal-equations} to the transformed system
-\begin{align*}
-    \mathbf{W}^{1/2}\bA\bx\approx \mathbf{W}^{1/2}\bb.
-\end{align*}
-This gives $(\mathbf{W}^{1/2}\bA)^T(\mathbf{W}^{1/2}\bA)\hat{\bx}=(\mathbf{W}^{1/2}\bA)^T\mathbf{W}^{1/2}\bb$, which simplifies to the stated equation.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Return to Ex~\ref{ex:normal-equations-conditioning}. Solve the same line-fitting problem using QR. Compare coefficients, residual norms, and the conditioning of the two linear systems solved.
-    \item \textbf{Regularization:}\enspace If $\bA$ is rank-deficient, $\|\hat{\bx}\|$ can explode. Add a penalty term $\lambda \|\bx\|_2^2$ (Ridge Regression). How do the normal equations change?
-    \item Derive Thm~\ref{thm:weighted-normal-equations} by differentiating the weighted objective directly.
-\end{enumerate}
-}
-\label{ex:least-squares-qr-regularization}
-
-\subsubsection{Polynomial Regression}
-
-\addDef{Vandermonde Matrix}{%
-For nodes $t_1, \dots, t_m$, the degree-$n$ design matrix is:
-\begin{align*}
-    V_{ij} = t_i^{j-1}.
-\end{align*}
-Polynomial fitting $p(t) = \sum c_j t^j$ is solved as $\bV\bc \approx \mathbf{f}$.
-}
-\label{def:vandermonde}
-
-\addExcr{%
-\begin{enumerate}
-    \item Fit a degree-2 polynomial to 6 data points. Verify the residual and $R^2$ score.
-    \item \textbf{Numerical Stability:}\enspace Construct a Vandermonde matrix with $n=10$. Compare the errors of \texttt{lstsq(A, b)} vs \texttt{solve(A.T @ A, A.T @ b)}. Relate the outcome to Ex~\ref{ex:normal-equations-conditioning}.
-\end{enumerate}
-}
+\label{ex:least-squares-exercises}
 
 \end{document}

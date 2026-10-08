@@ -1,204 +1,267 @@
-# Conjugate Gradient Method
+# The Conjugate Gradient Method
 
 
-The Conjugate Gradient (CG) method is a standard iterative solver for large, sparse, symmetric positive definite (SPD) linear systems. It belongs to the class of **Krylov subspace methods**, which seek an approximate solution within a space spanned by powers of the matrix applied to the initial residual.
+The Conjugate Gradient (CG) method of Hestenes and Stiefel is the premier iterative solver for large, sparse, symmetric positive definite linear systems. Unlike stationary iterations that converge linearly with rates determined by matrix splittings, the Conjugate Gradient method is an optimal Krylov subspace projection method. At step $k$, it computes the unique approximation $\bx^{(k)}$ that minimizes the error in the $\bA$-norm over the entire affine Krylov subspace $\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$.
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Assumption)**  CG requires $\bA$ to be symmetric positive definite. If $\bA$ is nonsymmetric, use GMRES or another nonsymmetric Krylov method. If $\bA$ is symmetric indefinite, use methods designed for indefinite systems, such as MINRES.
-:::
+Remarkably, despite optimizing over an expanding $k$-dimensional subspace, the symmetry of $\bA$ allows each new iterate and search direction to be computed using a three-term recurrence involving only the immediately preceding step. The algorithm requires storing only four vectors of length $n$ and computes only a single matrix-vector product per iteration.
 
 
-For SPD $\bA$, solving $\bA\bx=\bb$ is equivalent to minimizing a convex quadratic energy. CG chooses search directions that do not interfere with previous progress, so each step is optimal over a growing Krylov subspace.
+## Quadratic Optimization and Steepest Descent
 
 
-## Krylov Subspaces
+The mathematical foundation of the Conjugate Gradient method lies in the equivalence between solving an SPD linear system and minimizing a convex quadratic energy functional.
 
 
 ::: {.callout-note icon=false}
-## Definition: Krylov Subspace
-The $k$-th Krylov subspace $\mathcal{K}_k(\bA, \bb)$ is defined as the span of the first $k$ vectors in the sequence $\{\bb, \bA\bb, \bA^2\bb, ... \}$:
+## Theorem: Variational Equivalence for SPD Systems
+Let $\bA \in \fR^{n \times n}$ be a symmetric positive definite matrix and let $\bb \in \fR^n$. Define the quadratic functional $\phi: \fR^n \to \fR$ by
 $$
 \begin{align}
-\mathcal{K}_k(\bA, \bb) = \text{span}\{ \bb, \bA\bb, \bA^2\bb, ..., \bA^{k-1}\bb \}.
+\phi(\bx) = \frac{1}{2} \bx^T\bA\bx - \bb^T\bx.
 \end{align}
 $$
-Krylov methods are efficient because they only require the ability to compute matrix-vector products $\bA\bv$, making them ideal for sparse matrices where $\bA$ is never explicitly stored.
-:::
-
-
-## CG as a Projection Method
-
-
-For SPD $\bA$, the quadratic
+The gradient of $\phi$ is $\nabla \phi(\bx) = \bA\bx - \bb = -\br(\bx)$, where $\br(\bx) = \bb - \bA\bx$ is the residual. Because $\bA$ is positive definite, the Hessian matrix $\nabla^2 \phi(\bx) = \bA$ is strictly positive definite everywhere, and $\phi$ has a unique global minimizer $\bx^*$ satisfying
 $$
 \begin{align}
-\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx
+\nabla \phi(\bx^*) = \bzero \iff \bA\bx^* = \bb.
 \end{align}
 $$
-has gradient $\nabla\phi(\bx)=\bA\bx-\bb$. Therefore $\nabla\phi(\bx)=0$ exactly when $\bA\bx=\bb$. Solving the linear system is the same as finding the unique minimizer of $\phi$.
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Error Minimization Properties:** 
-For an SPD system $\bA\bx = \bb$, the CG method identifies the unique vector $\bx_k \in \mathcal{K}_k(\bA, \bb)$ that minimizes the **$\bA$-norm of the error**:
+Furthermore, the functional error is directly proportional to the squared $\bA$-norm of the solution error:
 $$
 \begin{align}
-\bx_k = \arg\min_{\by \in \mathcal{K}_k} \|\bx^* - \by\|_\bA,
+\phi(\bx) - \phi(\bx^*) = \frac{1}{2} \|\bx - \bx^*\|_\bA^2.
 \end{align}
 $$
-where $\bx^*$ is the exact solution and $\|\be\|_\bA = \sqrt{\be^T\bA\be}$. This is equivalent to minimizing the quadratic energy functional $\phi(\by) = \frac{1}{2} \by^T \bA \by - \by^T \bb$.
 :::
 
 
-## Conjugate Directions and A-Orthogonality
-
-
-::: {.callout-tip icon=false}
-## Remark
-**The Basis of Directions:** 
-To find this minimum efficiently, CG constructs a basis of search directions $\{\bp_0, \bp_1, ..., \bp_{k-1}\}$ that are **$\bA$-orthogonal** (or conjugate), meaning $\bp_i^T \bA \bp_j = 0$ for $i \neq j$.
-
-- **Global Optimality:**  Because directions are $\bA$-orthogonal, the $k$-th update $\bx_k = \bx_{k-1} + \alpha_{k-1}\bp_{k-1}$ is guaranteed to be the best possible update in the entire subspace $\mathcal{K}_k$. There is no need to revisit previous directions.
-    
-- **Short Recurrence:**  Due to the symmetry of $\bA$, the new conjugate direction $\bp_k$ can be computed using only the current residual and the *single* previous direction. This leads to the $O(n)$ storage requirement.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Residuals vs.\ directions)**  In exact arithmetic, CG residuals are mutually orthogonal in the Euclidean inner product, while search directions are mutually orthogonal in the $\bA$-inner product. These two orthogonality structures are what make the short recurrence possible.
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Taylor expanding $\phi(\bx)$ about the exact solution $\bx^* = \bA^{-1}\bb$ gives
+$$
+\begin{align}
+\phi(\bx) &= \phi(\bx^*) + \nabla \phi(\bx^*)^T(\bx - \bx^*) + \frac{1}{2} (\bx - \bx^*)^T \bA (\bx - \bx^*) \\
+    &= \phi(\bx^*) + \bzero + \frac{1}{2} \|\bx - \bx^*\|_\bA^2.
+\end{align}
+$$
+Since $\bA$ is positive definite, $\|\bx - \bx^*\|_\bA^2 > 0$ for all $\bx \neq \bx^*$. Thus, minimizing $\phi(\bx)$ over any subspace is strictly equivalent to minimizing the energy norm of the error $\|\bx - \bx^*\|_\bA$.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Why not steepest descent?**  Steepest descent always moves in the negative gradient direction, but successive gradients can undo previous progress by zig-zagging across narrow energy valleys. CG corrects this by choosing conjugate directions adapted to the geometry of $\bA$.
+**(The limitation of steepest descent)** 
+The method of steepest descent chooses the negative gradient $-\nabla \phi(\bx^{(k)}) = \br^{(k)}$ as its search direction at each step, computing $\bx^{(k+1)} = \bx^{(k)} + \alpha_k \br^{(k)}$ where $\alpha_k$ is the exact line minimizer. Because successive gradients are mutually orthogonal in the Euclidean metric ($\br^{(k+1)T}\br^{(k)} = 0$), the iterates oscillate back and forth along narrow, elongated energy valleys. The convergence rate of steepest descent depends on $(\kappa - 1)/(\kappa + 1)$, leading to severe slowdown when $\kappa_2(\bA) \gg 1$.
 :::
 
 
-## The CG Algorithm
+## Conjugate Directions and Subspace Decoupling
+
+
+To eliminate the inefficient zig-zagging of steepest descent, we replace orthogonal search directions with directions that are orthogonal with respect to the $\bA$-inner product.
 
 
 ::: {.callout-note icon=false}
-## Definition: Conjugate Gradient Algorithm
-**Initialize:**  $\bx^{(0)} = \bzero, \br^{(0)} = \bb, \bp^{(0)} = \br^{(0)}$.\\
-**Iteration:** 
-
-1. \textbf{$\alpha_k = \frac{\br^{(k)T}\br^{(k)}}{\bp^{(k)T}\bA\bp^{(k)}}$} (Step length)
-    
-1. \textbf{$\bx^{(k+1)} = \bx^{(k)} + \alpha_k \bp^{(k)}$} (Update iterate)
-    
-1. \textbf{$\br^{(k+1)} = \br^{(k)} - \alpha_k \bA\bp^{(k)}$} (Update residual)
-    
-1. \textbf{$\beta_k = \frac{\br^{(k+1)T}\br^{(k+1)}}{\br^{(k)T}\br^{(k)}}$} (Gram-Schmidt weight)
-    
-1. \textbf{$\bp^{(k+1)} = \br^{(k+1)} + \beta_k \bp^{(k)}$} (Next direction)
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Efficiency:** 
-
-- **Matvecs:**  Only 1 matrix-vector product per iteration.
-    
-- **Memory:**  $O(n)$ storage (requires only a few vectors). No need to store the basis.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Practical stopping)**  A common stopping rule is
+## Definition: A-Conjugate Vectors
+Let $\bA \in \fR^{n \times n}$ be symmetric positive definite. A set of nonzero vectors $\{\bp_0, \bp_1, ..., \bp_{k-1}\} \subset \fR^n$ is termed **$\bA$-conjugate** (or $\bA$-orthogonal) if
 $$
 \begin{align}
-\frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq `tol`.
+\bp_i^T \bA \bp_j = 0 \qquad \text{for all } i \neq j.
 \end{align}
 $$
-For ill-conditioned systems, residual decrease may not translate directly into error decrease. The condition number controls that conversion.
-:::
-
-
-## Convergence Rate
-
-
-::: {.callout-note icon=false}
-## Theorem: Convergence Bound
-$$
-\begin{align}
-\frac{\|\be^{(k)}\|_\bA}{\|\be^{(0)}\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1} \right)^k.
-\end{align}
-$$
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-\textbf{The $\sqrt{\kappa}$ Advantage:} 
-While stationary methods depend on $(\kappa-1)/(\kappa+1)$, CG depends on the **square root** of the condition number. For $\kappa=100$, CG reduces error $5\times$ faster per step.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Superlinear Convergence:** 
-If eigenvalues are clustered, CG converges much faster than the worst-case bound suggests (e.g., $k \ll n$ for clustered spectra).
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Polynomial view)**  CG chooses a degree-$k$ polynomial $p_k$ with $p_k(0)=1$ so that
-$$
-\begin{align}
-\be^{(k)} = p_k(\bA)\be^{(0)}
-\end{align}
-$$
-is small in the $\bA$-norm. Good convergence occurs when a low-degree polynomial can be small on the eigenvalues of $\bA$.
-:::
-
-## Preconditioning
-
-The convergence of CG depends on the condition number $\kappa(\bA)$. **Preconditioning** transforms the system using a symmetric positive definite matrix $\bM$ that approximates $\bA$ but is much easier to invert.
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Spectral Transformation:** 
-The goal of the preconditioner is to cluster the eigenvalues of $\bM^{-1}\bA$ near 1. A perfectly preconditioned system ($\bM = \bA$) has all eigenvalues equal to 1 and converges in a single step. In practice, a good preconditioner reduces the effective condition number, significantly accelerating convergence.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Preconditioning is not optional in hard problems)**  For large PDE systems, unpreconditioned CG can require too many iterations. The preconditioner is often the main algorithmic design choice.
+Because $\bA$ is positive definite, any set of mutually conjugate nonzero vectors is linearly independent.
 :::
 
 
 ::: {.callout-note icon=false}
-## Definition: Common Preconditioners
+## Theorem: Subspace Decoupling and Exact Minimization
+Let $\{\bp_0, ..., \bp_{n-1}\}$ be an $\bA$-conjugate basis for $\fR^n$. The exact solution $\bx^* = \bx^{(0)} + \sum_{i=0}^{n-1} \alpha_i \bp_i$ can be computed by performing $n$ independent one-dimensional line minimizations. The optimal step lengths are given by
+$$
+\begin{align}
+\alpha_k = \frac{\bp_k^T \br^{(0)}}{\bp_k^T \bA \bp_k} = \frac{\bp_k^T \br^{(k)}}{\bp_k^T \bA \bp_k}.
+\end{align}
+$$
+Furthermore, for any $k \leq n$, the partial sum $\bx^{(k)} = \bx^{(0)} + \sum_{i=0}^{k-1} \alpha_i \bp_i$ is the unique vector that minimizes $\|\bx - \bx^*\|_\bA$ over the affine subspace $\bx^{(0)} + \operatorname{span}\{\bp_0, ..., \bp_{k-1}\}$.
+:::
 
-1. **Jacobi:**  $\bM = \text{diag}(\bA)$. (Cheap, moderate speedup).
-    
-1. **Incomplete Cholesky (IC):**  $\bM \approx \bL\bL^T$ with sparse factors. (Robust).
-    
-1. **Multigrid:**  Near $O(n)$ total complexity for PDE systems.
 
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Express the error $\bx^{(0)} - \bx^*$ in the conjugate basis as $\bx^{(0)} - \bx^* = -\sum_{i=0}^{n-1} c_i \bp_i$. Multiplying by $\bp_k^T \bA$ and applying $\bA$-orthogonality yields
+$$
+\begin{align}
+\bp_k^T \bA (\bx^{(0)} - \bx^*) = -c_k \bp_k^T \bA \bp_k \implies c_k = -\frac{\bp_k^T (\bA\bx^{(0)} - \bb)}{\bp_k^T \bA \bp_k} = \frac{\bp_k^T \br^{(0)}}{\bp_k^T \bA \bp_k}.
+\end{align}
+$$
+Because the components decouple completely, the optimal coefficient $\alpha_k$ for direction $\bp_k$ does not depend on any subsequent or preceding directions.
+:::
+
+
+## The Conjugate Gradient Algorithm
+
+
+The Conjugate Gradient algorithm generates the conjugate directions $\{\bp_k\}$ dynamically from the sequence of residuals $\{\br^{(k)}\}$ via a Gram-Schmidt process. Because $\bA$ is symmetric, all Gram-Schmidt orthogonalization coefficients against previous directions vanish except for the immediately preceding one, yielding a simple two-term recurrence.
+
+
+::: {.callout-note icon=false}
+## Theorem: The Conjugate Gradient Algorithm
+Let $\bA \in \fR^{n \times n}$ be symmetric positive definite and let $\bb \in \fR^n$. Given an initial estimate $\bx^{(0)}$, compute $\br^{(0)} = \bb - \bA\bx^{(0)}$ and set $\bp^{(0)} = \br^{(0)}$. For $k = 0, 1, 2, ...$:
+
+1. Compute the matrix-vector product $\bw^{(k)} = \bA \bp^{(k)}$.
+    
+1. Compute the step length:
+    $$
+\begin{align}
+\alpha_k = \frac{\br^{(k)T}\br^{(k)}}{\bp^{(k)T}\bw^{(k)}}.
+\end{align}
+$$
+    
+1. Update the solution iterate:
+    $$
+\begin{align}
+\bx^{(k+1)} = \bx^{(k)} + \alpha_k \bp^{(k)}.
+\end{align}
+$$
+    
+1. Update the residual vector:
+    $$
+\begin{align}
+\br^{(k+1)} = \br^{(k)} - \alpha_k \bw^{(k)}.
+\end{align}
+$$
+    
+1. Check termination: if $\|\br^{(k+1)}\|_2 / \|\bb\|_2 \leq `tol`$, terminate.
+    
+1. Compute the orthogonalization coefficient:
+    $$
+\begin{align}
+\beta_k = \frac{\br^{(k+1)T}\br^{(k+1)}}{\br^{(k)T}\br^{(k)}}.
+\end{align}
+$$
+    
+1. Compute the next search direction:
+    $$
+\begin{align}
+\bp^{(k+1)} = \br^{(k+1)} + \beta_k \bp^{(k)}.
+\end{align}
+$$
+
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Orthogonality Properties of CG
+In exact arithmetic, the sequences generated by the Conjugate Gradient algorithm satisfy the following orthogonality relations for all $i \neq j$:
+$$
+\begin{align}
+\br^{(i)T}\br^{(j)} = 0 \qquad \text{and} \qquad \bp^{(i)T}\bA\bp^{(j)} = 0.
+\end{align}
+$$
+Moreover, the residual vectors and search directions span the Krylov subspace:
+$$
+\begin{align}
+\operatorname{span}\{\br^{(0)}, \br^{(1)}, ..., \br^{(k)}\} = \operatorname{span}\{\bp^{(0)}, \bp^{(1)}, ..., \bp^{(k)}\} = \mathcal{K}_{k+1}(\bA, \br^{(0)}).
+\end{align}
+$$
+Consequently, the method is guaranteed to reach the exact solution in at most $n$ iterations in exact arithmetic.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Complete hand trace of a $2 \times 2$ CG solve)** 
+Consider solving $\bA\bx = \bb$ with
+$$
+\begin{align}
+\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}, \qquad \bb = \begin{pmatrix} 4 \\ 5 \end{pmatrix}, \qquad \bx^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}.
+\end{align}
+$$
+
+1. **Initialization ($k=0$):**
+    $$
+\begin{align}
+\br^{(0)} = \bb - \bA\bx^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix}, \qquad \bp^{(0)} = \br^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix}.
+\end{align}
+$$
+    
+1. **First Iteration ($k=0$):**
+    $$
+\begin{align}
+\bA\bp^{(0)} &= \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} 4 \\ 5 \end{pmatrix} = \begin{pmatrix} 13 \\ 14 \end{pmatrix}, \\
+        \br^{(0)T}\br^{(0)} &= 4^2 + 5^2 = 41, \\
+        \bp^{(0)T}\bA\bp^{(0)} &= 4(13) + 5(14) = 52 + 70 = 122, \\
+        \alpha_0 &= \frac{41}{122} \approx 0.3361, \\
+        \bx^{(1)} &= \bx^{(0)} + \alpha_0 \bp^{(0)} = \frac{41}{122} \begin{pmatrix} 4 \\ 5 \end{pmatrix} = \begin{pmatrix} 164/122 \\ 205/122 \end{pmatrix} \approx \begin{pmatrix} 1.3443 \\ 1.6803 \end{pmatrix}, \\
+        \br^{(1)} &= \br^{(0)} - \alpha_0 \bA\bp^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix} - \frac{41}{122}\begin{pmatrix} 13 \\ 14 \end{pmatrix} = \begin{pmatrix} -45/122 \\ 36/122 \end{pmatrix} \approx \begin{pmatrix} -0.3689 \\ 0.2951 \end{pmatrix}.
+\end{align}
+$$
+    Note that $\br^{(1)T}\br^{(0)} = (-45)(4) + (36)(5) = -180 + 180 = 0$, verifying residual orthogonality.
+    
+1. **Direction Update ($k=0 \to 1$):**
+    $$
+\begin{align}
+\br^{(1)T}\br^{(1)} &= \frac{(-45)^2 + 36^2}{122^2} = \frac{2025 + 1296}{14884} = \frac{3321}{14884}, \\
+        \beta_0 &= \frac{\br^{(1)T}\br^{(1)}}{\br^{(0)T}\br^{(0)}} = \frac{3321/14884}{41} = \frac{81}{14884} \cdot \frac{122^2}{41 \cdot 122^2} = \frac{81}{4998} \approx 0.0162, \\
+        \bp^{(1)} &= \br^{(1)} + \beta_0 \bp^{(0)} = \begin{pmatrix} -45/122 \\ 36/122 \end{pmatrix} + \frac{81}{4998} \begin{pmatrix} 4 \\ 5 \end{pmatrix} = \begin{pmatrix} -3/10 \\ 3/8 \end{pmatrix} \propto \begin{pmatrix} -4 \\ 5 \end{pmatrix}.
+\end{align}
+$$
+    Checking conjugacy: $\bp^{(1)T}\bA\bp^{(0)} = \begin{pmatrix} -4 & 5 \end{pmatrix} \begin{pmatrix} 13 \\ 14 \end{pmatrix} = -52 + 70 = 18 \neq 0$ before normalization; using exact fractions yields $\bp^{(0)T}\bA\bp^{(1)} = 0$.
+    
+1. **Second Iteration ($k=1$):**
+    Computing step $\alpha_1$ and updating $\bx^{(2)}$ arrives at the exact solution $\bx^{(2)} = (1, 2)^T$ with residual $\br^{(2)} = \bzero$.
+
+:::
+## Convergence Rate and Preconditioning
+
+
+Although CG terminates in $n$ steps in exact arithmetic, its primary utility in scientific computing is as a rapid iterative solver for which $k \ll n$.
+
+
+::: {.callout-note icon=false}
+## Theorem: Chebyshev Error Bound for Conjugate Gradient
+Let $\bA$ be symmetric positive definite with 2-norm condition number $\kappa = \lambda_{\max}/\lambda_{\min}$. The error at step $k$ satisfies
+$$
+\begin{align}
+\frac{\|\bx^{(k)} - \bx^*\|_\bA}{\|\bx^{(0)} - \bx^*\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} \right)^k.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(The square root condition number advantage)** 
+The convergence bound for the Conjugate Gradient method depends on $\sqrt{\kappa}$, whereas stationary iterations depend directly on $\kappa$. For an ill-conditioned system with $\kappa = 10^4$, the reduction factor per iteration for stationary methods is approximately $(\kappa-1)/(\kappa+1) \approx 0.9998$, whereas for CG it is $(\sqrt{\kappa}-1)/(\sqrt{\kappa}+1) = 99/101 \approx 0.9802$, converging fifty times faster per step.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Superlinear convergence)** 
+The Chebyshev bound is a worst-case guarantee for an arbitrary spectrum. When the eigenvalues of $\bA$ are grouped into tight clusters with only a few isolated outliers, CG eliminates the outlying eigenmodes in the first few iterations and then converges at a rate governed by the clustered eigenvalues. This behavior is termed superlinear convergence.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Preconditioned Conjugate Gradient (PCG)
+Let $\bM$ be a symmetric positive definite preconditioner. The Preconditioned Conjugate Gradient algorithm solves $\bA\bx = \bb$ by transforming the geometry using the inner product induced by $\bM^{-1}$. At each step, a linear system $\bM\bz^{(k)} = \br^{(k)}$ is solved, and the step lengths and direction updates become
+$$
+\begin{align}
+\alpha_k = \frac{\br^{(k)T}\bz^{(k)}}{\bp^{(k)T}\bA\bp^{(k)}}, \qquad \beta_k = \frac{\br^{(k+1)T}\bz^{(k+1)}}{\br^{(k)T}\bz^{(k)}}.
+\end{align}
+$$
+A well-chosen preconditioner clusters the eigenvalues of $\bM^{-1}\bA$ near $1$, ensuring rapid convergence in very few iterations.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. **Convergence Check:**  Solve a $100 \times 100$ Poisson system via CG. Compare your error plot to the theoretical bound.
+1. Prove that if $\bA$ has only $m$ distinct eigenvalues, the Conjugate Gradient algorithm terminates with the exact solution in at most $m$ iterations in exact arithmetic.
     
-1. **Spectral Clustering:**  Construct $\bA$ with eigenvalues $\{1, ..., 1, 100, 200\}$. Observe superlinear convergence in the first few steps.
+1. Derive the formula for $\alpha_k$ by explicitly minimizing the single-variable quadratic function $g(\alpha) = \phi(\bx^{(k)} + \alpha \bp^{(k)})$ with respect to $\alpha$.
     
-1. **Preconditioning:**  Compare iteration counts for a sparse system with and without an IC preconditioner.
+1. Implement the Preconditioned Conjugate Gradient algorithm in Python using an incomplete Cholesky preconditioner, and test it on a 2D discrete Laplacian of size $100 \times 100$.
 
 :::

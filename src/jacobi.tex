@@ -2,160 +2,160 @@
 
 \begin{document}
 
-\subsection{Jacobi and Gauss-Seidel Methods}
+\subsection{Jacobi, Gauss-Seidel, and SOR Methods}
 \label{sub:jacobi-gs}
 
-Standard stationary iterations based on diagonal and triangular splittings.
-
-\subsubsection{Jacobi Iteration}
-
-Decomposes $\bA$ into diagonal $\bD$ and remainder $\bR$: $\bA = \bD + \bR$.
-
-\addDef{Jacobi Scheme}{%
+\textBox{%
+The classical stationary iterations represent the earliest systematic approaches to solving linear systems iteratively. They partition the matrix $\bA$ into its diagonal, strictly lower triangular, and strictly upper triangular components:
 \begin{align*}
-    \bx^{(k+1)} = \bD^{-1}(\bb - \bR\bx^{(k)})
+    \bA = \bD - \bL_A - \bU_A,
 \end{align*}
-\begin{itemize}
-    \item \textbf{Component form:}\enspace $x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j \neq i} a_{ij}x_j^{(k)}\right)$.
-    \item \textbf{Concurrency:}\enspace All components update independently using values from the \emph{previous} step.
-\end{itemize}
+where $\bD = \operatorname{diag}(a_{11}, \dots, a_{nn})$, $-\bL_A$ is the strictly lower triangular part of $\bA$, and $-\bU_A$ is the strictly upper triangular part of $\bA$. By choosing different combinations of these components for the splitting matrix $\bM$, we obtain the Jacobi, Gauss-Seidel, and Successive Over-Relaxation (SOR) algorithms.
+}
+
+\subsubsection{The Jacobi Method}
+
+\textBox{%
+The Jacobi method assumes that the diagonal elements dominate the matrix. It computes the $(k+1)$-th estimate of each unknown $x_i$ exclusively from the $k$-th estimates of all other variables.
+}
+
+\addDef{Jacobi Iteration}{%
+Let $\bA \in \fR^{n \times n}$ with nonzero diagonal entries $a_{ii} \neq 0$. The Jacobi method corresponds to the splitting $\bM = \bD$ and $\mathbf{N} = \bL_A + \bU_A$. In component form, the update is
+\begin{align*}
+    x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j \neq i} a_{ij} x_j^{(k)} \right), \qquad i = 1, 2, \dots, n.
+\end{align*}
+In matrix notation, the iteration is given by
+\begin{align*}
+    \bx^{(k+1)} = \bT_J \bx^{(k)} + \bc_J,
+\end{align*}
+where $\bT_J = \bD^{-1}(\bL_A + \bU_A) = \bI - \bD^{-1}\bA$ is the Jacobi iteration matrix and $\bc_J = \bD^{-1}\bb$.
 }
 \label{def:jacobi-iteration}
 
 \addRemark{%
-\textbf{(Jacobi performance)}\enspace
-Jacobi iteration is \textbf{inherently parallel}, as all components can be updated simultaneously. However, it often exhibits slow convergence and requires double buffering of the solution vector.
+\textbf{(Parallel execution and memory)}\enspace
+Because each component $x_i^{(k+1)}$ depends only on values from the previous iteration vector $\bx^{(k)}$, all $n$ components can be computed concurrently. This fine-grained parallelism makes Jacobi attractive on vector and GPU hardware. However, it requires double buffering in memory to store $\bx^{(k)}$ and $\bx^{(k+1)}$ simultaneously.
 }
 
-\subsubsection{Gauss-Seidel Iteration}
+\subsubsection{The Gauss-Seidel Method}
 
-Splits $\bA = \bL_* + \bU_*$, where $\bL_*$ includes the diagonal.
+\textBox{%
+The Gauss-Seidel method improves upon Jacobi by utilizing updated variable values as soon as they become available within the current sweep.
+}
 
-\addDef{Gauss-Seidel Scheme}{%
+\addDef{Gauss-Seidel Iteration}{%
+Let $\bA \in \fR^{n \times n}$ with nonzero diagonal entries. The Gauss-Seidel method corresponds to the triangular splitting $\bM = \bD - \bL_A$ and $\mathbf{N} = \bU_A$. In component form, the update is
 \begin{align*}
-    \bL_* \bx^{(k+1)} = \bb - \bU_* \bx^{(k)}
+    x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j < i} a_{ij} x_j^{(k+1)} - \sum_{j > i} a_{ij} x_j^{(k)} \right), \qquad i = 1, 2, \dots, n.
 \end{align*}
-\begin{itemize}
-    \item \textbf{Component form:}\enspace $x_i^{(k+1)} = \frac{1}{a_{ii}}\left(b_i - \sum_{j < i} a_{ij}x_j^{(k+1)} - \sum_{j > i} a_{ij}x_j^{(k)}\right)$.
-    \item \textbf{Update rule:}\enspace Use updated values \emph{immediately} within the same sweep.
-\end{itemize}
+In matrix notation, the iteration is given by
+\begin{align*}
+    (\bD - \bL_A) \bx^{(k+1)} = \bU_A \bx^{(k)} + \bb \iff \bx^{(k+1)} = \bT_{GS} \bx^{(k)} + \bc_{GS},
+\end{align*}
+where $\bT_{GS} = (\bD - \bL_A)^{-1}\bU_A$ is the Gauss-Seidel iteration matrix and $\bc_{GS} = (\bD - \bL_A)^{-1}\bb$.
 }
 \label{def:gs-iteration}
 
 \addRemark{%
-\textbf{(Gauss-Seidel performance)}\enspace
-Sequential dependencies restrict efficient parallelization, but Gauss-Seidel typically converges \textbf{twice as fast} as Jacobi and allows for in-place updates.
+\textbf{(Sequential dependencies and in-place updates)}\enspace
+Because the calculation of $x_i^{(k+1)}$ requires the newly computed values $x_1^{(k+1)}, \dots, x_{i-1}^{(k+1)}$, the standard Gauss-Seidel sweep is inherently sequential. However, it allows for in-place memory updates: new values immediately overwrite old values in a single vector array. For many classes of matrices, Gauss-Seidel converges approximately twice as fast as Jacobi.
 }
 
-\subsubsection{Convergence Conditions}
-
-\addThm{Stationary Iteration Matrices}{%
-For $\bA=\bD+\bL+\bU$, where $\bL$ and $\bU$ are the strict lower and upper triangular parts,
+\addExmpl{%
+\textbf{(Comparison of one Jacobi and Gauss-Seidel step)}\enspace
+Consider the linear system
 \begin{align*}
-    \bT_J = -\bD^{-1}(\bL+\bU)
+    \begin{pmatrix} 4 & 1 & 0 \\ 1 & 4 & 1 \\ 0 & 1 & 4 \end{pmatrix}
+    \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix}
+    =
+    \begin{pmatrix} 5 \\ 6 \\ 5 \end{pmatrix},
 \end{align*}
-is the Jacobi iteration matrix, and
+whose exact solution is $\bx^* = (1, 1, 1)^T$. Let the initial guess be $\bx^{(0)} = (0, 0, 0)^T$.
+\begin{itemize}
+    \item \textbf{Jacobi Step:}
+    \begin{align*}
+        x_1^{(1)} &= \frac{1}{4}(5 - 0 - 0) = 1.25, \\
+        x_2^{(1)} &= \frac{1}{4}(6 - 0 - 0) = 1.50, \\
+        x_3^{(1)} &= \frac{1}{4}(5 - 0 - 0) = 1.25, \qquad \implies \bx_J^{(1)} = \begin{pmatrix} 1.25 \\ 1.50 \\ 1.25 \end{pmatrix}.
+    \end{align*}
+    \item \textbf{Gauss-Seidel Step:}
+    \begin{align*}
+        x_1^{(1)} &= \frac{1}{4}(5 - 0 - 0) = 1.25, \\
+        x_2^{(1)} &= \frac{1}{4}(6 - (1.25) - 0) = \frac{4.75}{4} = 1.1875, \\
+        x_3^{(1)} &= \frac{1}{4}(5 - (1.1875) - 0) = \frac{3.8125}{4} \approx 0.9531, \qquad \implies \bx_{GS}^{(1)} \approx \begin{pmatrix} 1.2500 \\ 1.1875 \\ 0.9531 \end{pmatrix}.
+    \end{align*}
+\end{itemize}
+The Gauss-Seidel iterate is significantly closer to the true solution $(1, 1, 1)^T$ because the update for $x_2$ immediately leveraged the new value of $x_1$, and the update for $x_3$ leveraged the new value of $x_2$.
+}
+
+\subsubsection{Convergence Theorems}
+
+\addThm{Convergence Under Strict Diagonal Dominance}{%
+A matrix $\bA \in \fR^{n \times n}$ is strictly diagonally dominant if
 \begin{align*}
-    \bT_{GS}=-(\bD+\bL)^{-1}\bU
+    |a_{ii}| > \sum_{j \neq i} |a_{ij}| \qquad \text{for all } i = 1, 2, \dots, n.
 \end{align*}
-is the Gauss-Seidel iteration matrix. By Thm~\ref{thm:iteration-convergence}, each method converges for every initial guess exactly when the corresponding spectral radius is less than $1$.
-}
-\label{thm:jacobi-gs-iteration-matrices}
-
-\addExcr{%
-\begin{enumerate}
-    \item Rewrite Def~\ref{def:jacobi-iteration} in the form $\bx^{(k+1)}=\bT_J\bx^{(k)}+\bc_J$.
-    \item Rewrite Def~\ref{def:gs-iteration} in the form $\bx^{(k+1)}=\bT_{GS}\bx^{(k)}+\bc_{GS}$.
-    \item Apply Thm~\ref{thm:iteration-convergence} to prove the convergence criterion in Thm~\ref{thm:jacobi-gs-iteration-matrices}.
-    \item Compute $\bT_J$ and $\bT_{GS}$ for $\bA=\begin{pmatrix}2&1\\1&2\end{pmatrix}$.
-\end{enumerate}
-}
-\label{ex:jacobi-gs-iteration-matrices}
-
-\addThm{Diagonal Dominance}{%
-If $\bA$ is \textbf{strictly diagonally dominant} ($|a_{ii}| > \sum_{j \neq i} |a_{ij}|$), both Jacobi and Gauss-Seidel converge for any $\bx^{(0)}$.
+If $\bA$ is strictly diagonally dominant, then both the Jacobi iteration and the Gauss-Seidel iteration converge for any initial guess $\bx^{(0)} \in \fR^n$.
 }
 \label{thm:diag-dom-convergence}
 
-\addExcr{%
-\begin{enumerate}
-    \item For Jacobi, use strict diagonal dominance to show that the infinity-norm row sums of $\bT_J$ are less than $1$.
-    \item Conclude $\rho(\bT_J)\leq \|\bT_J\|_\infty<1$.
-    \item Repeat the argument for Gauss-Seidel by isolating the largest component of the error equation.
-\end{enumerate}
+\addPrf{%
+We prove the result for the Jacobi iteration by showing that the matrix $\infty$-norm of the iteration matrix $\bT_J$ is strictly less than one. The entries of $\bT_J = \bD^{-1}(\bL_A + \bU_A)$ are given by $(\bT_J)_{ij} = -a_{ij}/a_{ii}$ for $i \neq j$, and $(\bT_J)_{ii} = 0$. The induced $\infty$-norm is the maximum absolute row sum:
+\begin{align*}
+    \|\bT_J\|_\infty = \max_{1 \leq i \leq n} \sum_{j=1}^n |(\bT_J)_{ij}| = \max_{1 \leq i \leq n} \sum_{j \neq i} \frac{|a_{ij}|}{|a_{ii}|}.
+\end{align*}
+Because $\bA$ is strictly diagonally dominant, $\sum_{j \neq i} |a_{ij}| < |a_{ii}|$ for every $i$, which implies that $\sum_{j \neq i} \frac{|a_{ij}|}{|a_{ii}|} < 1$. Therefore, $\|\bT_J\|_\infty < 1$. By Gelfand's spectral radius theorem, $\rho(\bT_J) \leq \|\bT_J\|_\infty < 1$, which establishes convergence. A similar argument applied to the componentwise error recurrence proves convergence for Gauss-Seidel.
 }
-\label{ex:diag-dom-convergence}
 
-\addThm{SPD Convergence}{%
-If $\bA$ is \textbf{SPD}, Gauss-Seidel is guaranteed to converge. Jacobi may still diverge.
+\addThm{Convergence of Gauss-Seidel for Symmetric Positive Definite Systems}{%
+If $\bA \in \fR^{n \times n}$ is symmetric positive definite, then the Gauss-Seidel method converges for every initial vector $\bx^{(0)} \in \fR^n$. The Jacobi method, however, is not guaranteed to converge for arbitrary SPD matrices.
 }
 \label{thm:spd-gs-convergence}
 
-\addExcr{%
-\begin{enumerate}
-    \item For $\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$, compute one step of Jacobi and Gauss-Seidel from $\bzero$.
-    \item Compare $\rho(\bT_J)$ and $\rho(\bT_{GS})$. Does $\rho_{GS} \approx \rho_J^2$ hold?
-\end{enumerate}
-}
-
 \subsubsection{Successive Over-Relaxation (SOR)}
 
-Accelerates Gauss-Seidel by overshooting the update.
+\textBox{%
+The Successive Over-Relaxation method accelerates the convergence of Gauss-Seidel by taking a weighted linear combination of the previous iterate and the new Gauss-Seidel update.
+}
 
-\addDef{SOR Update}{%
+\addDef{Successive Over-Relaxation Scheme}{%
+Let $\omega > 0$ be a relaxation parameter. The SOR method computes the updated components via
 \begin{align*}
-    x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \omega \left[\text{GS update}\right]
+    x_i^{(k+1)} = (1 - \omega) x_i^{(k)} + \frac{\omega}{a_{ii}} \left( b_i - \sum_{j < i} a_{ij} x_j^{(k+1)} - \sum_{j > i} a_{ij} x_j^{(k)} \right).
+\end{align*}
+In matrix notation, this corresponds to the splitting $\bM_\omega = \frac{1}{\omega}\bD - \bL_A$ and $\mathbf{N}_\omega = \left( \frac{1}{\omega} - 1 \right)\bD + \bU_A$. The iteration matrix is
+\begin{align*}
+    \bT_\omega = (\bD - \omega \bL_A)^{-1} \left( (1 - \omega)\bD + \omega \bU_A \right).
 \end{align*}
 }
 \label{def:sor}
 
-\addThm{SOR Convergence Window}{%
-For SPD systems, SOR converges for relaxation parameters
+\addThm{Ostrowski-Reich Theorem and the Optimal Parameter}{%
+If $\bA$ is symmetric positive definite, then the SOR iteration converges if and only if the relaxation parameter satisfies
 \begin{align*}
-    0<\omega<2.
+    0 < \omega < 2.
 \end{align*}
-For model Poisson problems, well-chosen $\omega>1$ can reduce the iteration count substantially compared with Gauss-Seidel.
+Furthermore, if $\bA$ is consistently ordered (such as the standard tridiagonal or block-tridiagonal Poisson discretization matrices) and the Jacobi spectral radius is $\rho(\bT_J) < 1$, then the optimal relaxation parameter that minimizes $\rho(\bT_\omega)$ is
+\begin{align*}
+    \omega^* = \frac{2}{1 + \sqrt{1 - \rho(\bT_J)^2}}.
+\end{align*}
+With this optimal choice, the spectral radius satisfies $\rho(\bT_{\omega^*}) = \omega^* - 1$.
 }
-\label{thm:sor-convergence}
+\label{thm:sor-optimal}
 
 \addRemark{%
-\textbf{(SOR acceleration)}\enspace
-For the 1D Poisson problem on a grid with spacing $h$:
-\begin{itemize}
-    \item Jacobi and Gauss-Seidel require $O(n^2)$ iterations.
-    \item Optimal SOR requires only $O(n)$ iterations.
-\end{itemize}
-SOR effectively improves the convergence rate from $O(h^2)$ to $O(h)$.
+\textbf{(Acceleration for discrete Poisson equations)}\enspace
+For the 1D discrete Laplacian on a grid with spacing $h$, the Jacobi spectral radius is $\rho(\bT_J) = \cos(\pi h) \approx 1 - \frac{1}{2}\pi^2 h^2$. Consequently, Jacobi and Gauss-Seidel require $O(h^{-2}) = O(n^2)$ iterations to converge. With optimal SOR, $\omega^* \approx 2 - 2\pi h$, yielding $\rho(\bT_{\omega^*}) \approx 1 - 2\pi h$. This reduces the required iteration count to $O(h^{-1}) = O(n)$, providing an order-of-magnitude computational speedup.
 }
 
 \addExcr{%
 \begin{enumerate}
-    \item \textbf{Optimal Tuning:}\enspace For $\rho_J = 0.95$, calculate the optimal $\omega^* = 2/(1 + \sqrt{1-\rho_J^2})$.
-    \item \textbf{Convergence Sweep:}\enspace Implement SOR and plot iterations to convergence vs.\ $\omega \in [1, 2)$. Identify the ``cliff'' at $\omega^*$.
-    \item Check numerically that choices $\omega\leq 0$ or $\omega\geq 2$ fail on an SPD Poisson matrix, as predicted by Thm~\ref{thm:sor-convergence}.
+    \item Compute the Jacobi and Gauss-Seidel iteration matrices for $\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$. Find their spectral radii and verify that $\rho(\bT_{GS}) = \rho(\bT_J)^2$.
+    \item Let $\bA = \begin{pmatrix} 1 & 2 \\ 2 & 1 \end{pmatrix}$. Show that $\bA$ is symmetric but indefinite, and prove that both Jacobi and Gauss-Seidel diverge.
+    \item Prove the Kahan theorem: for any matrix $\bA$ with nonzero diagonal entries, $\rho(\bT_\omega) \geq |\omega - 1|$, which implies that SOR can only converge if $0 < \omega < 2$.
+    \item Write a Python script to solve the 1D discrete Poisson equation with $n=50$ grid points using Jacobi, Gauss-Seidel, and optimal SOR. Plot the residual norm versus iteration number on a semilogarithmic scale.
 \end{enumerate}
 }
-\label{ex:sor-convergence}
-
-\subsubsection{Stopping Criteria}
-
-\addDef{Iterative Stopping Tests}{%
-Common stopping tests include
-\begin{enumerate}
-    \item absolute residual: $\|\br^{(k)}\| < \varepsilon$,
-    \item relative residual: $\|\br^{(k)}\|/\|\bb\| < \varepsilon$,
-    \item increment: $\|\bx^{(k+1)}-\bx^{(k)}\|<\varepsilon$.
-\end{enumerate}
-Residual tests are tied to the equation; increment tests are cheap but can stop prematurely if convergence is slow.
-}
-\label{def:iterative-stopping-tests}
-
-\addExcr{%
-\begin{enumerate}
-    \item Why is a small residual not enough to guarantee a small error $\be^{(k)}$? Use Thm~\ref{thm:residual-error-bound}.
-    \item Implement a robust solver that combines relative residual with a \texttt{max\_iter} budget.
-\end{enumerate}
-}
-\label{ex:jacobi-stopping}
+\label{ex:jacobi-gs-exercises}
 
 \end{document}

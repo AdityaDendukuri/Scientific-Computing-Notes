@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.2)  30 JUN 2026 09:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.2)  8 OCT 2026 12:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1168,30 +1168,24 @@ cipy.sparse.csr[]matrix
  []
 
 [32]) [33] (./src/linear_systems.tex [34] [35] [36] [37]) (./src/lu.tex
-[38] [39] [40] [41]
-Overfull \hbox (21.17549pt too wide) in paragraph at lines 201--201
-[]\OT1/cmr/m/n/12 For a fixed $\OML/cmm/m/it/12 i$\OT1/cmr/m/n/12 , the sum-ma-
-tion re-quires $\OML/cmm/m/it/12 i \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 1$ mul-
-ti-pli-ca-tions and $\OML/cmm/m/it/12 i \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 1$
- ad-di-tions/subtractions. 
+[38] [39] [40] [41] [42]
+Overfull \hbox (69.88193pt too wide) detected at line 210
+[]
  []
 
-
-Overfull \hbox (59.2554pt too wide) in paragraph at lines 205--206
-[]\OT1/cmr/bx/n/12 (Implementation rule)\OT1/cmr/m/n/12 In NumPy/SciPy, use \OT
-1/cmtt/m/n/12 solve \OT1/cmr/m/n/12 for one right-hand side or \OT1/cmtt/m/n/12
- lu[]factor\OT1/cmr/m/n/12 /\OT1/cmtt/m/n/12 lu[]solve
+[43]) (./src/spd.tex [44] [45] [46] [47] [48]) (./src/orthogonal.tex [49]
+Overfull \hbox (1.26006pt too wide) in paragraph at lines 40--41
+[]\OT1/cmr/m/it/12 Proof.\OT1/cmr/m/n/12 Using the trans-pose prop-erty of ma-t
+rix mul-ti-pli-ca-tion, $(\OT1/cmr/bx/n/12 Q[]\OT1/cmr/m/n/12 )[](\OT1/cmr/bx/n
+/12 Q[]\OT1/cmr/m/n/12 ) = [][](\OT1/cmr/bx/n/12 Q[]Q\OT1/cmr/m/n/12 )[] =
  []
 
-) (./src/spd.tex [42] [43] [44] [45] [46]) (./src/orthogonal.tex [47] [48]
-[49]
-Overfull \hbox (15.69084pt too wide) in paragraph at lines 171--171
-[]\OT1/cmr/bx/n/12 Classical (CGS):$[][] \OT1/cmr/m/n/12 = [][] \OMS/cmsy/m/n/1
-2 ^^@ [][] [][]\OT1/cmr/m/n/12 ([][])$. Nu-mer-i-cally un-sta-ble for ill-condi
-tioned
+[50] [51]
+Overfull \hbox (20.49515pt too wide) detected at line 131
+[]
  []
 
-[50]) (./src/norm.tex [51]
+[52]) (./src/norm.tex [53]
 Overfull \hbox (5.30426pt too wide) in paragraph at lines 77--78
 \OMS/cmsy/m/n/12 k\OT1/cmr/bx/n/12 A[]\OMS/cmsy/m/n/12 k ^^T k\OT1/cmr/bx/n/12 
 A\OMS/cmsy/m/n/12 kk[]k$\OT1/cmr/m/n/12 . All in-duced norms are ad-di-tion-all
@@ -1205,8 +1199,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 77--78
 
  []
 
-) (./src/stability.tex [52] [53] [54] [55] [56]) (./src/least_squares.tex
-[57] [58] [59] [60]) (./src/chebyshev.tex [61]
+[54]) (./src/stability.tex [55] [56] [57]) (./src/least_squares.tex [58]
+[59] [60]) (./src/chebyshev.tex [61]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 53.
@@ -1219,51 +1213,59 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 53.
 
-[62] [63] [64] [65]) (./src/eigen.tex [66] [67] [68] [69]) (./src/svd.tex
-[70] [71] [72] [73]) (./src/lanczos.tex [74] [75]) (./src/jacobi_eig.tex
-Overfull \hbox (73.88766pt too wide) in paragraph at lines 18--18
-[]\OT1/cmr/bx/n/12 (Givens Ro-ta-tion)$\OML/cmm/m/it/12 G\OT1/cmr/m/n/12 (\OML/
-cmm/m/it/12 p; q; ^^R\OT1/cmr/m/n/12 )$ is an iden-tity ma-trix with a $2 \OMS/
-cmsy/m/n/12 ^^B \OT1/cmr/m/n/12 2$ ro-ta-tion block at $(\OML/cmm/m/it/12 p; p\
-OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 p; q\OT1/c
-mr/m/n/12 )\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 q; p\OT1/cmr/m/
-n/12 )\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 q; q\OT1/cmr/m/n/12 
-)$. 
+[62] [63] [64] [65]) (./src/eigen.tex [66] [67] [68]) (./src/svd.tex [69]
+Overfull \hbox (40.05336pt too wide) in paragraph at lines 56--57
+\OT1/cmr/m/n/12 This ex-presses $\OT1/cmr/bx/n/12 A[]$ \OT1/cmr/m/n/12 as a lin
+-ear com-bi-na-tion of $\OMS/cmsy/m/n/12 f[][]\OML/cmm/m/it/12 ; [] ; [][]\OMS/
+cmsy/m/n/12 g$\OT1/cmr/m/n/12 , prov-ing that $\OMS/cmsy/m/n/12 R\OT1/cmr/m/n/1
+2 (\OT1/cmr/bx/n/12 A\OT1/cmr/m/n/12 ) = []\OMS/cmsy/m/n/12 f[][]\OML/cmm/m/it/
+12 ; [] ; [][]\OMS/cmsy/m/n/12 g$\OT1/cmr/m/n/12 .
  []
 
-[76]
-Overfull \hbox (17.75168pt too wide) in paragraph at lines 58--58
-[]\OT1/cmr/m/n/12 Compute $\OML/cmm/m/it/12 c \OT1/cmr/m/n/12 = [] \OML/cmm/m/i
-t/12 ^^R$ \OT1/cmr/m/n/12 and $\OML/cmm/m/it/12 s \OT1/cmr/m/n/12 = [] \OML/cmm
-/m/it/12 ^^R$ \OT1/cmr/m/n/12 us-ing the sta-ble tan-gent for-mula so that $(\O
-T1/cmr/bx/n/12 G[]A[]G\OT1/cmr/m/n/12 )[] =
+[70] [71]
+Overfull \hbox (7.42406pt too wide) in paragraph at lines 124--124
+[]\OT1/cmr/m/n/12 Prove that the pseu-doin-verse sat-is-fies the four Moore-Pen
+rose con-di-tions: (1) $\OT1/cmr/bx/n/12 AA[]A \OT1/cmr/m/n/12 =
  []
 
-[77]
-Overfull \hbox (9.49052pt too wide) in paragraph at lines 86--88
-\OT1/cmr/bx/n/12 Convergence:\OT1/cmr/m/n/12 Off-diagonals de-crease mono-ton-i
--cally. Con-ver-gence is ul-ti-mately \OT1/cmr/bx/n/12 quadratic
+) (./src/lanczos.tex [72] [73]) (./src/jacobi_eig.tex [74] [75] [76]
+Overfull \hbox (27.07848pt too wide) in paragraph at lines 108--110
+\OT1/cmr/m/n/12 After a few ini-tial sweeps, the off-diagonal en-tries con-verg
+e to zero \OT1/cmr/bx/n/12 quadrat-i-cally\OT1/cmr/m/n/12 : $[](\OT1/cmr/bx/n/1
+2 A[]\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^T
  []
 
-) (./src/iterative.tex [78] [79] [80] [81]) (./src/jacobi.tex [82] [83])
-(./src/conj_grad.tex [84] [85] [86] [87]) (./src/gmres.tex [88]
+) (./src/iterative.tex [77] [78] [79]
+Overfull \hbox (9.01991pt too wide) in paragraph at lines 141--141
+[]\OT1/cmr/m/n/12 Let $\OT1/cmr/bx/n/12 A \OMS/cmsy/m/n/12 2 \U/msb/m/n/12 R[]$
+ \OT1/cmr/m/n/12 and let $[][] \OMS/cmsy/m/n/12 2 \U/msb/m/n/12 R[]$\OT1/cmr/m/
+n/12 . Prove that the se-quence of di-men-sions $[] \OMS/cmsy/m/n/12 K[]\OT1/cm
+r/m/n/12 (\OT1/cmr/bx/n/12 A\OML/cmm/m/it/12 ; [][]\OT1/cmr/m/n/12 )$
+ []
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 87.
+) (./src/jacobi.tex [80] [81] [82] [83]) (./src/conj_grad.tex [84] [85]
+Overfull \hbox (14.06523pt too wide) in paragraph at lines 73--73
+[]\OT1/cmr/bx/n/12 (Subspace De-cou-pling and Ex-act Min-i-miza-tion)\OT1/cmr/m
+/n/12 Let $\OMS/cmsy/m/n/12 f[][]\OML/cmm/m/it/12 ; [] ; [][]\OMS/cmsy/m/n/12 g
+$ \OT1/cmr/m/n/12 be an $\OT1/cmr/bx/n/12 A$\OT1/cmr/m/n/12 -conjugate
+ []
 
+[86] [87] [88]) (./src/gmres.tex [89] [90] [91]
+Overfull \hbox (23.17508pt too wide) in paragraph at lines 123--123
+[]\OT1/cmr/m/n/12 Compare Left Pre-con-di-tion-ing ($\OT1/cmr/bx/n/12 M[]A[] \O
+T1/cmr/m/n/12 = \OT1/cmr/bx/n/12 M[][]$\OT1/cmr/m/n/12 ) and Right Pre-con-di-t
+ion-ing ($\OT1/cmr/bx/n/12 AM[][] \OT1/cmr/m/n/12 =
+ []
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 87.
-
-[89]) (./src/interpolation.tex [90] [91] [92]) (./src/quadrature.tex [93]
-[94] [95] [96]) (./src/root_finding.tex [97] [98] [99] [100])
-(./src/ode_methods.tex [101] [102] [103] [104] [105]
+) (./src/interpolation.tex [92] [93]) (./src/quadrature.tex [94] [95] [96]
+[97]) (./src/root_finding.tex [98] [99] [100] [101]) (./src/ode_methods.tex
+[102] [103] [104] [105] [106]
 Overfull \hbox (0.78552pt too wide) in paragraph at lines 301--302
 []\OT1/cmr/bx/n/12 (Damping)\OT1/cmr/m/n/12 Backward Eu-ler is L-stable, so ver
 y fast de-cay-ing modes are strongly damped.
  []
 
-[106] [107] [108] [109] [110] [111]) (./src/pca.tex [112] [113] [114])
+[107] [108] [109] [110] [111] [112]) (./src/pca.tex [113] [114] [115])
 (./src/graphs.tex
 Overfull \hbox (2.66705pt too wide) in paragraph at lines 33--33
 []\OT1/cmr/bx/n/12 Quadratic Form:$[][]L[] \OT1/cmr/m/n/12 = [][] \OML/cmm/m/it
@@ -1271,8 +1273,8 @@ Overfull \hbox (2.66705pt too wide) in paragraph at lines 33--33
 /12 x[]\OT1/cmr/m/n/12 )[]$, with each undi-rected edge counted
  []
 
-[115] [116]) (./src/operators.tex [117] [118] [119]) (./src/fourier.tex
-[120] [121]
+[116] [117]) (./src/operators.tex [118] [119] [120]) (./src/fourier.tex
+[121] [122]
 Overfull \hbox (26.66522pt too wide) in paragraph at lines 105--105
 []\OT1/cmr/bx/n/12 Diagonalization:\OT1/cmr/m/n/12 Every cir-cu-lant ma-trix is
  di-ag-o-nal-ized by the DFT: $\OT1/cmr/bx/n/12 C \OT1/cmr/m/n/12 = \OT1/cmr/bx
@@ -1280,7 +1282,7 @@ Overfull \hbox (26.66522pt too wide) in paragraph at lines 105--105
 12 F$\OT1/cmr/m/n/12 . 
  []
 
-[122]) (./src/markov.tex [123] [124] [125] [126]) (./src/koopman.tex
+[123]) (./src/markov.tex [124] [125] [126] [127]) (./src/koopman.tex
 Overfull \hbox (5.01299pt too wide) in paragraph at lines 20--20
 []\OT1/cmr/bx/n/12 Koopman Op-er-a-tor $\OMS/cmsy/m/n/12 K$\OT1/cmr/bx/n/12 :\O
 T1/cmr/m/n/12 Linear op-er-a-tor act-ing on ob-serv-ables: $(\OMS/cmsy/m/n/12 K
@@ -1288,18 +1290,18 @@ T1/cmr/m/n/12 Linear op-er-a-tor act-ing on ob-serv-ables: $(\OMS/cmsy/m/n/12 K
 T1/cmr/bx/n/12 F\OT1/cmr/m/n/12 ([]))$. 
  []
 
-[127] [128]) [129] (./main.aux)
+[128] [129]) [130] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C09A8D1BEC538A9A869CAC4E227C4E8A;38406.
+(rerunfilecheck)             Checksum: E7F4126573185A23622483FA8855D430;39861.
  ) 
 Here is how much of TeX's memory you used:
- 39713 strings out of 476025
- 936923 string characters out of 5790018
+ 39539 strings out of 476025
+ 934483 string characters out of 5790018
  1880388 words of memory out of 5000000
- 57949 multiletter control sequences out of 15000+600000
+ 57928 multiletter control sequences out of 15000+600000
  524701 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 130i,18n,123p,1613b,964s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 130i,19n,123p,1613b,964s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><
 /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
@@ -1320,10 +1322,10 @@ e/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive
 2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texl
 ive/2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/
 texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (129 pages, 657143 bytes).
+Output written on main.pdf (130 pages, 688642 bytes).
 PDF statistics:
- 3230 PDF objects out of 3580 (max. 8388607)
- 3028 compressed objects within 31 object streams
- 1458 named destinations out of 1728 (max. 500000)
- 1437 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2946 PDF objects out of 2984 (max. 8388607)
+ 2746 compressed objects within 28 object streams
+ 1305 named destinations out of 1440 (max. 500000)
+ 1373 words of extra memory for PDF output out of 10000 (max. 10000000)
 
