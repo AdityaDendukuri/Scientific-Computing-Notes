@@ -1,131 +1,173 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{GMRES}
-\label{sub:gmres-basics}
+\subsection{The Generalized Minimal Residual (GMRES) Method}
+\label{sub:gmres}
 
 \textBox{%
-The Generalized Minimal Residual (GMRES) method is the standard Krylov subspace solver for general (non-symmetric) linear systems $\bA\bx = \bb$. Unlike CG, it does not require $\bA$ to be symmetric or positive definite.
-}
-
-\textBox{%
-CG relies on symmetry to get a short recurrence. GMRES works without symmetry by explicitly building an orthonormal Krylov basis and choosing the vector in that subspace with smallest residual. This makes GMRES broadly applicable, but more expensive in memory.
-}
-
-\subsubsection{Residual Minimization and Krylov Subspaces}
-
-\addRemark{%
-\textbf{The Minimization Problem:}\enspace
-At each step $k$, GMRES finds the approximate solution $\bx_k$ in the affine space $\bx_0 + \mathcal{K}_k(\bA, \br_0)$ that minimizes the \textbf{Euclidean norm of the residual}:
-\begin{align*}
-    \bx_k = \arg\min_{\bx \in \bx_0 + \mathcal{K}_k} \|\bb - \bA\bx\|_2.
-\end{align*}
-Because the residual norm is minimized explicitly, it is guaranteed to be non-increasing with $k$.
-}
-
-\addRemark{%
-\textbf{(CG vs.\ GMRES)}\enspace
-\begin{itemize}
-    \item \textbf{CG:}\enspace SPD systems only; short recurrence; $O(n)$ memory.
-    \item \textbf{GMRES:}\enspace General square systems; stores a growing basis; $O(kn)$ memory after $k$ steps.
-\end{itemize}
-}
-
-\subsubsection{The Arnoldi Process}
-
-\addRemark{%
-\textbf{Basis Construction:}\enspace
-To compute this minimum efficiently, GMRES uses the \textbf{Arnoldi process} to build an orthonormal basis $V_k = [\bv_1, \bv_2, \dots, \bv_k]$ for $\mathcal{K}_k$. This process is essentially a Gram-Schmidt orthogonalization of the Krylov sequence.
+When a linear system $\bA\bx = \bb$ is nonsymmetric or indefinite, the quadratic energy minimization framework of the Conjugate Gradient method ceases to apply. The Faber--Manteuffel theorem characterizes the exceptional matrix classes that admit an optimal Krylov method with a fixed short recurrence. No such recurrence gives optimal residuals for arbitrary nonsymmetric matrices, so GMRES retains the full Arnoldi basis.
 }
 
 \textBox{%
-Arnoldi is the nonsymmetric analog of the Lanczos process. Each step applies $\bA$ to the newest basis vector, then orthogonalizes the result against all previous basis vectors. The need to remember all previous basis vectors is the source of GMRES memory growth.
+The Generalized Minimal Residual (GMRES) method of Saad and Schultz chooses, at every step $k$, a vector $\bx^{(k)}$ in the affine Krylov subspace $\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$ that minimizes the Euclidean residual norm $\|\bb - \bA\bx\|_2$ \citep{saadschultz1986}. GMRES constructs an orthonormal basis for the growing Krylov subspace by the Arnoldi process of Section~\ref{sub:arnoldi} \citep{arnoldi1951} and reduces the original problem to a small upper-Hessenberg least-squares problem. The minimizing residual is unique, and the iterate is unique when the reduced least-squares problem has full column rank.
 }
-
-\addDef{Arnoldi Relation}{%
-The $k$ steps of the Arnoldi process yield the fundamental relation:
-\begin{align*}
-    \bA V_k = V_{k+1} \bar{H}_k,
-\end{align*}
-where $\bar{H}_k$ is an $(k+1) \times k$ upper Hessenberg matrix. This relation expresses the action of $\bA$ on the basis $V_k$ in terms of the expanded basis $V_{k+1}$.
-}
-\label{def:arnoldi-relation}
 
 \subsubsection{Reduction to Hessenberg Least Squares}
 
-The critical insight of GMRES is that the $n$-dimensional residual minimization problem can be projected onto the $k$-dimensional Krylov subspace, resulting in a much smaller problem.
+\textBox{%
+Let $\br^{(0)}=\bb-\bA\bx^{(0)}$ be nonzero and let $\beta=\|\br^{(0)}\|_2$. We run the Arnoldi iteration of Def~\ref{def:arnoldi-iteration} from $\bv_1=\br^{(0)}/\beta$. By Thm~\ref{thm:arnoldi-factorization}, after $k$ steps the columns of $\bV_k$ form an orthonormal basis of $\mathcal{K}_k(\bA,\br^{(0)})$ and $\bA\bV_k=\bV_{k+1}\bar{\bH}_k$. These two facts reduce the residual minimization in $\fR^n$ to a small least-squares problem.
+}
 
-\addThm{Projected Least Squares}{%
-Let $\bx_k = \bx_0 + V_k \by$ for some $\by \in \fR^k$. The residual norm satisfies:
+\addThm{The GMRES Projected Least-Squares Problem}{%
+Let any vector in the affine space $\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$ be parameterized as $\bx = \bx^{(0)} + \bV_k \by$ for some vector $\by \in \fR^k$. The residual vector satisfies
 \begin{align*}
-    \|\br_k\|_2 = \|\beta \be_1 - \bar{H}_k \by\|_2,
+    \br(\bx) = \bb - \bA(\bx^{(0)} + \bV_k \by) = \br^{(0)} - \bA \bV_k \by = \beta \bv_1 - \bV_{k+1} \bar{\bH}_k \by = \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by).
 \end{align*}
-where $\beta = \|\br_0\|_2$ and $\be_1$ is the first canonical basis vector. Solving the original problem thus reduces to solving a $(k+1) \times k$ least-squares problem for $\by$ using the small matrix $\bar{H}_k$.
+Because the columns of $\bV_{k+1}$ are orthonormal, $\bV_{k+1}$ is an isometry in the Euclidean norm:
+\begin{align*}
+    \|\bb - \bA\bx\|_2 = \|\beta \be_1 - \bar{\bH}_k \by\|_2,
+\end{align*}
+where $\be_1 = (1, 0, \dots, 0)^T \in \fR^{k+1}$. The GMRES iterate is $\bx^{(k)} = \bx^{(0)} + \bV_k \by_k$, where $\by_k$ uniquely solves the $(k+1) \times k$ upper Hessenberg least-squares problem
+\begin{align*}
+    \by_k = \arg\min_{\by \in \fR^k} \|\beta \be_1 - \bar{\bH}_k \by\|_2.
+\end{align*}
 }
 \label{thm:gmres-ls}
 
 \addPrf{%
-Let $\br_0=\bb-\bA\bx_0$ and choose $\bv_1=\br_0/\|\br_0\|_2$, so $\br_0=\beta V_{k+1}\be_1$. If $\bx_k=\bx_0+V_k\by$, then
+Express any $\bx \in \bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$ as $\bx = \bx^{(0)} + \bV_k \by$ for $\by \in \fR^k$. The residual vector is
 \begin{align*}
-    \br_k
-    &= \bb-\bA(\bx_0+V_k\by) \\
-    &= \br_0-\bA V_k\by \\
-    &= V_{k+1}\left(\beta\be_1-\bar{H}_k\by\right),
+    \br(\bx)
+    &= \bb - \bA(\bx^{(0)} + \bV_k \by) \\
+    &= (\bb - \bA\bx^{(0)}) - \bA \bV_k \by \\
+    &= \br^{(0)} - \bV_{k+1} \bar{\bH}_k \by.
 \end{align*}
-using the Arnoldi relation $\bA V_k=V_{k+1}\bar{H}_k$. Since $V_{k+1}$ has orthonormal columns, it preserves the Euclidean norm, giving
+Since $\bv_1 = \br^{(0)} / \beta$, we have $\br^{(0)} = \beta \bv_1 = \bV_{k+1}(\beta \be_1)$, where $\be_1 = (1, 0, \dots, 0)^T \in \fR^{k+1}$. Factoring $\bV_{k+1}$ gives
 \begin{align*}
-    \|\br_k\|_2=\|\beta\be_1-\bar{H}_k\by\|_2.
+    \br(\bx) = \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by).
 \end{align*}
-}
-
-\addRemark{%
-\textbf{Optimality:}\enspace
-By definition, GMRES finds the absolute best solution available in the growing Krylov subspace. The residual norm is non-increasing.
-}
-
-\subsubsection{Restarted GMRES($m$)}
-
-\addRemark{%
-\textbf{The Memory Wall:}\enspace
-Full GMRES storage costs $O(kn)$ and work grows quadratically with $k$ (due to orthogonalization). \textbf{Restarting} after $m$ steps prevents memory explosion but can lead to stagnation.
-}
-
-\addRemark{%
-\textbf{(Restart trade-off)}\enspace GMRES($m$) discards the Krylov basis every $m$ steps and starts again from the current residual. This controls memory, but it also discards spectral information. Small restart values can cause long plateaus in convergence.
-}
-
-\subsubsection{Convergence and Preconditioning}
-
-\addThm{Approximation Bound}{%
+Because the columns of $\bV_{k+1}$ are orthonormal, $\bV_{k+1}^T \bV_{k+1} = \bI_{k+1}$, and the Euclidean norm satisfies
 \begin{align*}
-    \frac{\|\br_k\|_2}{\|\br_0\|_2} \leq \min_{p \in \mathcal{P}_k, p(0)=1} \max_{\lambda \in \sigma(\bA)} |p(\lambda)|.
+    \|\br(\bx)\|_2^2
+    &= (\beta \be_1 - \bar{\bH}_k \by)^T \bV_{k+1}^T \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by) \\
+    &= \|\beta \be_1 - \bar{\bH}_k \by\|_2^2.
+\end{align*}
+Thus $\|\br(\bx)\|_2 = \|\beta \be_1 - \bar{\bH}_k \by\|_2$, reducing the $n$-dimensional optimization to the stated $(k+1) \times k$ Hessenberg least-squares problem.
+}
+
+\addThm{Polynomial Residual Characterization and Spectral Bound}{%
+The $k$-th GMRES residual satisfies the polynomial minimization property
+\begin{align*}
+    \|\br^{(k)}\|_2 = \min_{p \in \mathcal{P}_k,\, p(0)=1} \|p(\bA)\br^{(0)}\|_2.
+\end{align*}
+If $\bA$ is diagonalizable with $\bA = \bX \boldsymbol{\Lambda} \bX^{-1}$, where $\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$, then the relative residual is bounded by
+\begin{align*}
+    \frac{\|\br^{(k)}\|_2}{\|\br^{(0)}\|_2} \leq \kappa_2(\bX) \min_{p \in \mathcal{P}_k,\, p(0)=1} \max_{\lambda \in \sigma(\bA)} |p(\lambda)|.
 \end{align*}
 }
-\label{thm:gmres-convergence}
+\label{thm:gmres-polynomial-bound}
+
+\addPrf{%
+Any vector $\bx \in \bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})$ takes the form $\bx = \bx^{(0)} + q(\bA)\br^{(0)}$ for some polynomial $q \in \mathcal{P}_{k-1}$. The resulting residual is
+\begin{align*}
+    \br(\bx) = \bb - \bA\bx = \br^{(0)} - \bA q(\bA)\br^{(0)} = (\bI - \bA q(\bA))\br^{(0)}.
+\end{align*}
+Define $p(z) = 1 - z q(z)$. Then $p \in \mathcal{P}_k$ and $p(0) = 1$. Conversely, any polynomial $p \in \mathcal{P}_k$ satisfying $p(0) = 1$ can be written as $p(z) = 1 - z q(z)$ for some $q \in \mathcal{P}_{k-1}$. Because GMRES minimizes $\|\br(\bx)\|_2$ over all such vectors, the first equality holds.
+
+If $\bA = \bX \boldsymbol{\Lambda} \bX^{-1}$, then $p(\bA) = \bX p(\boldsymbol{\Lambda}) \bX^{-1}$. Taking norms gives
+\begin{align*}
+    \|p(\bA)\br^{(0)}\|_2 \leq \|\bX\|_2 \|p(\boldsymbol{\Lambda})\|_2 \|\bX^{-1}\|_2 \|\br^{(0)}\|_2 = \kappa_2(\bX) \left(\max_{\lambda \in \sigma(\bA)} |p(\lambda)|\right) \|\br^{(0)}\|_2,
+\end{align*}
+which yields the spectral bound upon taking the minimum over all normalized polynomials $p \in \mathcal{P}_k$.
+}
+
+\subsubsection{Solution via Givens Rotations}
+
+\addThm{Incremental QR Factorization of the Hessenberg Matrix}{%
+At step $k$, applying the previously accumulated Givens rotations $\bG_1, \dots, \bG_{k-1}$ transforms the first $k-1$ entries of the new column of $\bar{\bH}_k$. The subdiagonal entry at position $(k+1, k)$ is then eliminated using a new Givens rotation $\bG_k$ defined by
+\begin{align*}
+    \bG_k = \begin{pmatrix} c_k & s_k \\ -s_k & c_k \end{pmatrix}, \qquad c_k = \frac{h_{kk}^{(k-1)}}{\sqrt{(h_{kk}^{(k-1)})^2 + h_{k+1,k}^2}}, \quad s_k = \frac{h_{k+1,k}}{\sqrt{(h_{kk}^{(k-1)})^2 + h_{k+1,k}^2}}.
+\end{align*}
+Applying $\bG_k \dots \bG_1$ transforms $\bar{\bH}_k$ into an upper triangular matrix $\bR_k$ with a zero final row, and transforms the right-hand side vector $\beta \be_1$ into $\bg_{k+1} = (\gamma_1, \dots, \gamma_k, \gamma_{k+1})^T$. The residual norm at iteration $k$ is obtained without forming $\bx^{(k)}$:
+\begin{align*}
+    \|\br^{(k)}\|_2 = |\gamma_{k+1}|.
+\end{align*}
+}
+\label{thm:gmres-givens}
+
+\addPrf{%
+Let $\bQ_k = \bG_k \dots \bG_1 \in \fR^{(k+1) \times (k+1)}$ denote the product of Givens rotations. Because each Givens rotation is an orthogonal transformation on $\fR^{k+1}$, $\bQ_k$ is orthogonal. The least-squares problem satisfies
+\begin{align*}
+    \min_{\by \in \fR^k} \|\beta \be_1 - \bar{\bH}_k \by\|_2^2
+    =
+    \min_{\by \in \fR^k} \|\bQ_k(\beta \be_1 - \bar{\bH}_k \by)\|_2^2
+    =
+    \min_{\by \in \fR^k} \left\| \begin{pmatrix} \gamma_{1:k} \\ \gamma_{k+1} \end{pmatrix} - \begin{pmatrix} \bR_k \\ \bzero^T \end{pmatrix} \by \right\|_2^2.
+\end{align*}
+Expanding the squared Euclidean norm:
+\begin{align*}
+    \min_{\by \in \fR^k} \left( \|\gamma_{1:k} - \bR_k \by\|_2^2 + |\gamma_{k+1}|^2 \right).
+\end{align*}
+Because $\bR_k \in \fR^{k \times k}$ is upper triangular and nonsingular (assuming no earlier breakdown), we can choose $\by_k = \bR_k^{-1} \gamma_{1:k}$ to make the first term identically zero. The remaining squared residual is exactly $|\gamma_{k+1}|^2$, proving that $\|\br^{(k)}\|_2 = |\gamma_{k+1}|$.
+}
 
 \addRemark{%
-\textbf{(Convergence is less predictable than CG)}\enspace For nonnormal matrices, eigenvalues alone may not explain GMRES behavior. The geometry of eigenvectors and transient growth can matter. In practice, preconditioning is usually essential.
+\textbf{(Happy breakdown vs.\ stagnation)}\enspace
+If the subdiagonal entry $h_{k+1,k}$ vanishes, Cor~\ref{cor:arnoldi-breakdown} shows that the Krylov subspace is invariant under $\bA$. When $\bA$ is nonsingular, its restriction to this invariant subspace is nonsingular, so the GMRES least-squares problem has residual zero and $\bx^{(k)}$ is the exact solution. Termination for this reason is called happy breakdown. Stagnation is a different phenomenon. The Krylov space may continue to grow while its image under $\bA$ contributes no useful correction to the residual. Non-normality, an unfavorable polynomial approximation problem, or a poor preconditioner can all cause this behavior, and the residual history alone does not identify which one is responsible.
 }
 
-\addDef{Preconditioning}{%
-\begin{itemize}
-    \item \textbf{Left:}\enspace $\bM^{-1}\bA\bx = \bM^{-1}\bb$. (Minimizes preconditioned residual).
-    \item \textbf{Right:}\enspace $\bA\bM^{-1}(\bM\bx) = \bb$. (Minimizes true residual; standard choice).
-\end{itemize}
+\subsubsection{Restarted GMRES and Practical Considerations}
+
+\addDef{Restarted GMRES($m$)}{%
+Full GMRES requires storing $k$ basis vectors of length $n$, incurring $O(kn)$ memory storage and $O(k^2 n)$ orthogonalization flops. To avoid memory exhaustion on large systems, the algorithm is restarted every $m$ steps:
+\begin{enumerate}
+    \item Run $m$ steps of GMRES starting from $\bx^{(0)}$ to produce $\bx^{(m)}$.
+    \item Compute the residual $\br^{(m)} = \bb - \bA\bx^{(m)}$.
+    \item Clear the Krylov basis vectors, set $\bx^{(0)} \leftarrow \bx^{(m)}$, and repeat.
+\end{enumerate}
 }
-\label{def:gmres-preconditioning}
+\label{def:gmres-restarted}
 
 \addRemark{%
-\textbf{(Breakdown and stagnation)}\enspace Arnoldi breakdown can be good: if the Krylov subspace becomes invariant and the residual reaches zero, GMRES has found the exact solution. Stagnation is different: the method keeps iterating but the residual barely decreases, often because the restart length or preconditioner is poor.
+\textbf{(The trade-off of restarting)}\enspace
+Restarted GMRES($m$) bounds memory usage to $O(mn)$ and bounds orthogonalization cost per cycle. However, restarting discards the accumulated Krylov subspace and destroys the global optimality property. If $m$ is chosen too small, the algorithm may stagnate completely.
 }
+
+\subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item \textbf{GMRES vs.\ CG:}\enspace Compare residual plots for a symmetric system. Why is CG usually faster?
-    \item \textbf{Restarting:}\enspace Test GMRES($m$) on a non-symmetric system for $m=5, 20, 50$. Observe how small $m$ can cause ``plateaus'' in convergence.
-    \item \textbf{Arnoldi:}\enspace Implement the Arnoldi process via Modified Gram-Schmidt. Verify the Hessenberg structure of $H_k = V_k^T \bA V_k$.
+    \item \exCompute \textbf{(Arnoldi factorization by hand)}\enspace For the matrix and initial residual
+    \begin{align*}
+        \bA = \begin{pmatrix} 1 & 1 & 0 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}, \qquad \br^{(0)} = \begin{pmatrix} 1 \\ 0 \\ 1 \end{pmatrix},
+    \end{align*}
+    perform two steps of the Arnoldi iteration by hand.
+    \begin{enumerate}
+        \item Compute $\bv_1$ and $\bw_1 = \bA\bv_1$. Find $h_{11}, h_{21}$ and $\bv_2$.
+        \item Compute $\bw_2 = \bA\bv_2$. Find $h_{12}, h_{22}, h_{32}$ and $\bv_3$.
+        \item Explicitly assemble the matrices $\bV_2$ and the $3 \times 2$ upper Hessenberg matrix $\bar{\bH}_2$.
+    \end{enumerate}
+    \item \exCompute \textbf{(Hessenberg QR and residual norm via Givens)}\enspace Using the $3 \times 2$ matrix $\bar{\bH}_2$ from Exercise 1:
+    \begin{enumerate}
+        \item Form the Givens rotation $\bG_1$ that eliminates $h_{21}$, and the rotation $\bG_2$ that eliminates $h_{32}$.
+        \item Apply these rotations to the right-hand side vector $\beta \be_1 = (\sqrt{2}, 0, 0)^T$.
+        \item Read off the residual norm $\|\br^{(2)}\|_2$ from the transformed vector without computing $\bx^{(2)}$.
+    \end{enumerate}
+    \item \exDerive \textbf{(GMRES polynomial minimax on an ellipse)}\enspace Suppose the eigenvalues of $\bA$ are enclosed within an ellipse in the complex plane centered at $c > 0$ with focal distance $d < c$ that does not contain the origin.
+    \begin{enumerate}
+        \item Using the scaled Chebyshev polynomial $p(z) = T_k((c - z)/d) / T_k(c/d)$, show that $p(0) = 1$.
+        \item Apply Thm~\ref{thm:gmres-polynomial-bound} to derive an explicit upper bound for $\|\br^{(k)}\|_2 / \|\br^{(0)}\|_2$ in terms of the semi-axes of the ellipse.
+    \end{enumerate}
+    \item \exExplore \textbf{(Exact stagnation for a cyclic permutation)}\enspace Let $\bA$ be the cyclic permutation matrix defined by $\bA\be_j=\be_{j+1}$ for $j<n$ and $\bA\be_n=\be_1$. Take $\bx^{(0)}=\bzero$ and $\bb=\be_1$.
+    \begin{enumerate}
+        \item Prove that $\mathcal{K}_k(\bA,\bb)=\operatorname{span}\{\be_1,\dots,\be_k\}$ for $k<n$.
+        \item Show that $\bA\mathcal{K}_k=\operatorname{span}\{\be_2,\dots,\be_{k+1}\}$ is orthogonal to $\bb$. Conclude that $\|\br^{(k)}\|_2=1$ for every $k<n$.
+        \item Show that $\bx=\be_n$ becomes available at step $n$ and gives zero residual. Construct the degree-$n$ residual polynomial that vanishes on the spectrum of $\bA$, and explain why no polynomial of smaller degree can do so.
+    \end{enumerate}
+    \item \exExplore \textbf{(Left versus right preconditioning)}\enspace Compare left preconditioning ($\bM^{-1}\bA\bx = \bM^{-1}\bb$) and right preconditioning ($\bA\bM^{-1}\by = \bb$, $\bx = \bM^{-1}\by$). Show that right-preconditioned GMRES minimizes the true residual $\|\bb-\bA\bx\|_2$, whereas left-preconditioned GMRES minimizes $\|\bM^{-1}(\bb-\bA\bx)\|_2$. Explain why a code that uses left preconditioning may need to monitor both quantities.
 \end{enumerate}
 }
+\label{ex:gmres-exercises}
 
 \end{document}

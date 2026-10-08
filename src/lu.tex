@@ -1,4 +1,4 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
@@ -6,209 +6,305 @@
 \label{sub:lu}
 
 \textBox{%
-Most direct methods for solving linear systems rely on matrix factorizations that reduce a complex system into multiple simpler ones. The \textbf{LU factorization} is the most fundamental of these, decomposing a square matrix $\bA$ into a unit lower triangular matrix $\bL$ and an upper triangular matrix $\bU$. This process is essentially the matrix form of Gaussian elimination.
+The solution of a square linear system $\bA\bx = \bb$ is one of the central problems of computational science. Direct solvers transform the original system into a pair of triangular systems that can be evaluated sequentially. The most fundamental of these decompositions is the LU factorization, which formalizes Gaussian elimination as matrix multiplication.
 }
 
 \textBox{%
-Gaussian elimination transforms $\bA\bx=\bb$ into an equivalent upper triangular system. LU factorization stores the elimination steps, so the same work can be reused for many right-hand sides.
+The principle behind triangular factorization is the separation of elimination from substitution. Factoring the coefficient matrix $\bA$ into a unit lower triangular factor $\bL$ and an upper triangular factor $\bU$ requires $O(n^3)$ operations. Once $\bL$ and $\bU$ are stored, the solution $\bx$ for any right-hand side $\bb$ is computed via forward and backward substitution in only $2n^2$ operations.
 }
 
-\subsubsection{LU and Gaussian Elimination}
+\subsubsection{Gaussian Elimination as Triangular Factorization}
 
 \textBox{%
-Triangular systems are easy because the unknowns can be recovered one at a time. If $\bU$ is upper triangular, the last equation contains only $x_n$, the next contains only $x_{n-1}$ and $x_n$, and so on. This is backward substitution. Lower triangular systems are solved similarly by forward substitution.
+A triangular system can be solved one unknown at a time. In an upper triangular system $\bU\bx = \by$, the final equation contains only $x_n$. Once $x_n$ is known, the preceding equation contains only $x_{n-1}$, and backward substitution continues until all components are resolved. Gaussian elimination systematically transforms a general system into this upper triangular form by subtracting multiples of each row from the rows beneath it.
 }
 
 \addDef{LU Factorization}{%
-$\bA = \bL\bU$:
+Let $\bA \in \fR^{n \times n}$. An LU factorization of $\bA$ is a decomposition
 \begin{align*}
-\bL = \begin{pmatrix} 1 & 0 & \dots \\ \ell_{21} & 1 & \dots \\ \vdots & \vdots & \ddots \end{pmatrix}, \quad
-\bU = \begin{pmatrix} u_{11} & u_{12} & \dots \\ 0 & u_{22} & \dots \\ \vdots & \vdots & \ddots \end{pmatrix}.
+    \bA = \bL\bU,
 \end{align*}
+where $\bL \in \fR^{n \times n}$ is unit lower triangular ($\ell_{ii} = 1$ and $\ell_{ij} = 0$ for $j > i$) and $\bU \in \fR^{n \times n}$ is upper triangular ($u_{ij} = 0$ for $i > j$).
 }
 \label{def:lu}
 
+\addLem{Algebra of Unit Lower Triangular Matrices}{%
+The set of $n \times n$ unit lower triangular matrices forms a group under matrix multiplication. In particular:
+\begin{enumerate}
+    \item The product of two unit lower triangular matrices is unit lower triangular.
+    \item The inverse of a unit lower triangular matrix is unit lower triangular.
+    \item The determinant of every unit lower triangular matrix equals one.
+\end{enumerate}
+}
+\label{lem:unit-lower-triangular-group}
+
+\addPrf{%
+Let $\bL_1, \bL_2$ be unit lower triangular matrices. Entry $(i,j)$ of their product is
+\begin{align*}
+    (\bL_1 \bL_2)_{ij} = \sum_{k=1}^n (\bL_1)_{ik} (\bL_2)_{kj} = \sum_{k=j}^i (\bL_1)_{ik} (\bL_2)_{kj}.
+\end{align*}
+If $i < j$, the summation range is empty, so $(\bL_1 \bL_2)_{ij} = 0$. For the diagonal entries where $i = j$, the only surviving term is $k = i$, yielding $(\bL_1 \bL_2)_{ii} = (\bL_1)_{ii} (\bL_2)_{ii} = 1 \cdot 1 = 1$. This proves that the product is unit lower triangular.
+To prove invertibility, let $\bL$ be unit lower triangular. Because its determinant is the product of its diagonal entries, $\det(\bL) = \prod_{i=1}^n 1 = 1 \neq 0$, so $\bL^{-1}$ exists. Solving $\bL \bX = \bI$ column by column using forward substitution reveals that each column $\bx_j$ has zeros above row $j$ and $x_{jj} = 1$, which establishes that $\bL^{-1}$ is unit lower triangular.
+}
+
+\addThm{Elimination Matrices and the Structure of L}{%
+Let $\bA^{(0)} = \bA$. At step $k$ of Gaussian elimination, assuming the pivot entry $a_{kk}^{(k-1)} \neq 0$, the subdiagonal entries in column $k$ are annihilated by applying the elementary elimination matrix
+\begin{align*}
+    \bM_k = \bI - \boldsymbol{\ell}_k \be_k^T,
+\end{align*}
+where $\boldsymbol{\ell}_k = (0, \dots, 0, \ell_{k+1,k}, \dots, \ell_{n,k})^T$ contains the multipliers $\ell_{ik} = a_{ik}^{(k-1)} / a_{kk}^{(k-1)}$.
+After $n-1$ elimination steps, the upper triangular factor is $\bU = \bM_{n-1} \dots \bM_1 \bA$. The lower triangular factor is the inverse of the accumulated elimination operations:
+\begin{align*}
+    \bL = \bM_1^{-1} \bM_2^{-1} \dots \bM_{n-1}^{-1} = \bI + \sum_{k=1}^{n-1} \boldsymbol{\ell}_k \be_k^T.
+\end{align*}
+Consequently, the entries of $\bL$ strictly below the main diagonal are precisely the multipliers computed during Gaussian elimination.
+}
+\label{thm:elimination-matrices}
+
+\addPrf{%
+The inverse of an elementary elimination matrix $\bM_k = \bI - \boldsymbol{\ell}_k \be_k^T$ is $\bM_k^{-1} = \bI + \boldsymbol{\ell}_k \be_k^T$. This identity follows from the fact that the first $k$ entries of $\boldsymbol{\ell}_k$ are zero, which implies $\be_k^T \boldsymbol{\ell}_k = 0$ and therefore
+\begin{align*}
+    (\bI - \boldsymbol{\ell}_k \be_k^T)(\bI + \boldsymbol{\ell}_k \be_k^T) = \bI - \boldsymbol{\ell}_k \be_k^T + \boldsymbol{\ell}_k \be_k^T - \boldsymbol{\ell}_k (\be_k^T \boldsymbol{\ell}_k) \be_k^T = \bI.
+\end{align*}
+Next, consider the product of two successive inverse matrices $\bM_j^{-1} \bM_k^{-1}$ with $j < k$. Because $\be_j^T \boldsymbol{\ell}_k = 0$, the cross term vanishes:
+\begin{align*}
+    (\bI + \boldsymbol{\ell}_j \be_j^T)(\bI + \boldsymbol{\ell}_k \be_k^T) = \bI + \boldsymbol{\ell}_j \be_j^T + \boldsymbol{\ell}_k \be_k^T + \boldsymbol{\ell}_j (\be_j^T \boldsymbol{\ell}_k) \be_k^T = \bI + \boldsymbol{\ell}_j \be_j^T + \boldsymbol{\ell}_k \be_k^T.
+\end{align*}
+By induction, the product $\bM_1^{-1} \dots \bM_{n-1}^{-1}$ simply places each column of multipliers into column $k$ of the identity matrix without modifying any previously placed multipliers. Multiplying $\bU = \bM_{n-1} \dots \bM_1 \bA$ on the left by $\bL$ yields $\bA = \bL\bU$.
+}
+
+\addThm{Existence and Uniqueness of the LU Factorization}{%
+A matrix $\bA \in \fR^{n \times n}$ has a unique LU factorization with unit lower triangular $\bL$ and nonsingular upper triangular $\bU$ if and only if every leading principal submatrix $\bA_k = \bA[1:k, 1:k]$ is nonsingular for each $k = 1, \dots, n$.
+}
+\label{thm:lu-existence}
+
+\addPrf{%
+We proceed by induction on the matrix dimension $n$.
+For $n = 1$, $\bA = (a_{11})$. Because $\det(\bA_1) = a_{11} \neq 0$, the unique factorization is $\bL = (1)$ and $\bU = (a_{11})$.
+Assume the result holds for matrices of dimension $n-1$. Partition the $n \times n$ matrix $\bA$ into blocks:
+\begin{align*}
+    \bA = \begin{pmatrix} \bA_{n-1} & \bc \\ \bd^T & a_{nn} \end{pmatrix},
+\end{align*}
+where $\bA_{n-1} \in \fR^{(n-1) \times (n-1)}$, $\bc, \bd \in \fR^{n-1}$, and $a_{nn} \in \fR$.
+By the induction hypothesis, $\bA_{n-1}$ has a unique factorization $\bA_{n-1} = \bL_{n-1} \bU_{n-1}$ with $\bL_{n-1}$ unit lower triangular and $\bU_{n-1}$ nonsingular.
+We seek block factors
+\begin{align*}
+    \bL = \begin{pmatrix} \bL_{n-1} & \bzero \\ \boldsymbol{\ell}^T & 1 \end{pmatrix}, \qquad
+    \bU = \begin{pmatrix} \bU_{n-1} & \bu \\ \bzero^T & u_{nn} \end{pmatrix}.
+\end{align*}
+Multiplying $\bL$ and $\bU$ and equating block by block gives:
+\begin{align*}
+    \bL_{n-1}\bu = \bc, \qquad \boldsymbol{\ell}^T \bU_{n-1} = \bd^T, \qquad \boldsymbol{\ell}^T\bu + u_{nn} = a_{nn}.
+\end{align*}
+Because $\bL_{n-1}$ is unit lower triangular (hence invertible), $\bu = \bL_{n-1}^{-1}\bc$ is uniquely determined.
+Because $\bU_{n-1}$ is nonsingular, $\boldsymbol{\ell}^T = \bd^T \bU_{n-1}^{-1}$ is uniquely determined.
+Finally, the scalar diagonal entry is uniquely determined by $u_{nn} = a_{nn} - \boldsymbol{\ell}^T\bu$.
+Taking determinants of the block decomposition gives
+\begin{align*}
+    \det(\bA) = \det(\bL)\det(\bU) = (1 \cdot \det(\bL_{n-1})) (\det(\bU_{n-1}) \cdot u_{nn}) = \det(\bA_{n-1}) u_{nn}.
+\end{align*}
+Because $\det(\bA) \neq 0$ and $\det(\bA_{n-1}) \neq 0$, we have $u_{nn} = \det(\bA)/\det(\bA_{n-1}) \neq 0$, which ensures that $\bU$ is nonsingular. This completes the induction.
+}
+
+\subsubsection{Triangular Solves and Computational Complexity}
+
+\addDef{Forward and Backward Substitution}{%
+Let $\bL \in \fR^{n \times n}$ be unit lower triangular and let $\bU \in \fR^{n \times n}$ be nonsingular upper triangular.
+Solving $\bA\bx = \bb$ decouples into two triangular steps:
+\begin{enumerate}
+    \item \textbf{Forward substitution ($\bL\by = \bb$):}
+    \begin{align*}
+        y_1 = b_1, \qquad y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j \quad (i = 2, \dots, n).
+    \end{align*}
+    \item \textbf{Backward substitution ($\bU\bx = \by$):}
+    \begin{align*}
+        x_n = \frac{y_n}{u_{nn}}, \qquad x_i = \frac{1}{u_{ii}} \left( y_i - \sum_{j=i+1}^n u_{ij} x_j \right) \quad (i = n-1, \dots, 1).
+    \end{align*}
+\end{enumerate}
+}
+\label{def:triangular-solves}
+
+\addThm{Computational Operation Count of LU Factorization}{%
+For a general dense matrix $\bA \in \fR^{n \times n}$, computing the LU factorization requires asymptotically $\frac{2}{3}n^3$ floating-point operations. Evaluating the forward and backward triangular substitution steps requires $2n^2$ flops for each right-hand side vector $\bb$.
+}
+\label{thm:lu-complexity}
+
+\addPrf{%
+At step $k$ of elimination, calculating the $n-k$ multipliers $\ell_{ik} = a_{ik}/a_{kk}$ requires $n-k$ divisions.
+Updating the active $(n-k) \times (n-k)$ submatrix via $a_{ij} \leftarrow a_{ij} - \ell_{ik}a_{kj}$ requires one multiplication and one subtraction for each entry, totaling $2(n-k)^2$ operations.
+Summing over all $n-1$ elimination steps gives
+\begin{align*}
+    \sum_{k=1}^{n-1} \left[ (n-k) + 2(n-k)^2 \right] = 2 \sum_{m=1}^{n-1} m^2 + \sum_{m=1}^{n-1} m = 2 \left( \frac{(n-1)n(2n-1)}{6} \right) + \frac{(n-1)n}{2} = \frac{2}{3}n^3 - \frac{1}{2}n^2 - \frac{1}{6}n.
+\end{align*}
+For forward substitution with unit diagonal, row $i$ requires $i-1$ multiplications and $i-1$ subtractions, totaling $\sum_{i=1}^n 2(i-1) = n^2 - n$ flops.
+For backward substitution, row $i$ requires $n-i$ multiplications, $n-i$ subtractions, and one division, totaling $\sum_{i=1}^n (2(n-i) + 1) = n^2$ flops.
+The combined solve phase requires $2n^2 - n \approx 2n^2$ flops.
+}
+
+\subsubsection{Partial Pivoting and the Growth Factor}
+
 \textBox{%
-The matrix $\bU$ contains the row-echelon form produced by elimination. The matrix $\bL$ stores the multipliers used to eliminate entries below each pivot. If row $i$ is updated by subtracting $\ell_{ik}$ times row $k$, then $\ell_{ik}$ appears in $\bL$.
+In floating-point arithmetic, unpivoted Gaussian elimination fails if a pivot is zero, and it can be unstable when a pivot is small relative to the subdiagonal entries. Dividing by a small pivot creates large multipliers and can amplify rounding errors. Partial pivoting interchanges rows so that the pivot has maximal absolute value in its column. It keeps every multiplier at most one in magnitude and is usually stable, but it does not guarantee a small growth factor. The Wilkinson example below shows the exceptional worst case.
 }
 
-\addExmpl{%
-\textbf{(One elimination)}\enspace Let
+\addDef{PA = LU Factorization with Partial Pivoting}{%
+Gaussian elimination with partial pivoting produces the decomposition
 \begin{align*}
-    \bA =
-    \begin{pmatrix}
-        2 & 1 \\
-        6 & 5
-    \end{pmatrix}.
+    \bP\bA = \bL\bU,
 \end{align*}
-To eliminate the entry $6$ below the pivot $2$, subtract $3$ times row 1 from row 2:
-\begin{align*}
-    \begin{pmatrix}
-        2 & 1 \\
-        6 & 5
-    \end{pmatrix}
-    \longrightarrow
-    \begin{pmatrix}
-        2 & 1 \\
-        0 & 2
-    \end{pmatrix}.
-\end{align*}
-The multiplier is $\ell_{21}=3$, so
-\begin{align*}
-    \bL =
-    \begin{pmatrix}
-        1 & 0 \\
-        3 & 1
-    \end{pmatrix},
-    \qquad
-    \bU =
-    \begin{pmatrix}
-        2 & 1 \\
-        0 & 2
-    \end{pmatrix},
-    \qquad
-    \bA=\bL\bU.
-\end{align*}
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Compare free parameters: how many in $\bL$ vs. $\bU$? Do they sum to $n^2$?
-    \item If $\bA = \bL\bU$ is invertible, prove $\bL$ and $\bU$ are also invertible.
-\end{enumerate}
-}
-
-\addRemark{%
-\textbf{(Existence and Uniqueness)}\enspace
-$\bA$ admits a unique LU factorization iff all leading principal submatrices $\bA_k$ are nonsingular ($k=1, \dots, n-1$). The algorithm fails if a zero pivot is encountered.
-}
-
-\addRemark{%
-\textbf{(Elimination without pivoting is fragile)}\enspace A zero pivot causes the algebraic algorithm to stop. A tiny pivot may be worse numerically: dividing by a tiny number creates huge multipliers, which amplify rounding errors in later rows.
-}
-
-\addRemark{%
-\textbf{(Flop Cost)}\enspace
-Computing $\bL$ and $\bU$ via Gaussian elimination costs \textbf{$\frac{2}{3}n^3$ flops}.
-}
-
-\addRemark{%
-\textbf{(The Solve Pattern)}\enspace
-To solve $\bA\bx = \bb$ given $\bA = \bL\bU$:
-\begin{enumerate}
-    \item Solve \textbf{$\bL\by = \bb$} via forward substitution ($O(n^2)$).
-    \item Solve \textbf{$\bU\bx = \by$} via backward substitution ($O(n^2)$).
-\end{enumerate}
-\textbf{Advantage:}\enspace Once $\bA$ is factored, each new $\bb$ costs only $O(n^2)$.
-}
-
-\addExmpl{%
-\textbf{(Solving with the factors)}\enspace For the previous example, solve $\bA\bx=\bb$ with $\bb=(3,11)^T$.
-First solve $\bL\by=\bb$:
-\begin{align*}
-    y_1=3, \qquad 3y_1+y_2=11 \Rightarrow y_2=2.
-\end{align*}
-Then solve $\bU\bx=\by$:
-\begin{align*}
-    2x_2=2 \Rightarrow x_2=1, \qquad 2x_1+x_2=3 \Rightarrow x_1=1.
-\end{align*}
-The solution is $\bx=(1,1)^T$.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Factor $\bA = \begin{pmatrix} 2 & 3 & 1 \\ 4 & 7 & 3 \\ -2 & -3 & 1 \end{pmatrix}$ by hand.
-    \item Solve $\bA\bx = (5, 15, 4)^T$ using your factors.
-    \item SciPy: Use \texttt{scipy.linalg.lu} and explain why it always returns a permutation $\bP$.
-\end{enumerate}
-}
-
-\subsubsection{Pivoting and Stability}
-
-\textBox{%
-While mathematically elegant, basic LU factorization is numerically unstable if any pivot (the diagonal element used to eliminate entries below it) is small relative to the entries it is eliminating. This can lead to catastrophic rounding errors. \textbf{Partial Pivoting} mitigates this by ensuring that at each step, we swap rows to place the largest available entry in the pivot position.
-}
-
-\addExmpl{%
-\textbf{(Small pivot)}\enspace Consider
-\begin{align*}
-    \bA =
-    \begin{pmatrix}
-        10^{-20} & 1 \\
-        1 & 1
-    \end{pmatrix}.
-\end{align*}
-Without pivoting, the first multiplier is $10^{20}$. The elimination step creates huge intermediate entries even though the original matrix has modest entries. Partial pivoting swaps the two rows first, using the pivot $1$ instead of $10^{-20}$.
-}
-
-\addDef{LUP Decomposition}{%
-The result of Gaussian elimination with partial pivoting is recorded as $\mathbf{P}\bA = \bL\bU$, where $\bP$ is a permutation matrix that tracks the row swaps.
+where $\bP \in \fR^{n \times n}$ is a permutation matrix recording row swaps, $\bL \in \fR^{n \times n}$ is unit lower triangular with all subdiagonal entries bounded by $|\ell_{ij}| \leq 1$, and $\bU \in \fR^{n \times n}$ is upper triangular.
 }
 \label{def:lup}
 
-\addRemark{%
-\textbf{(Permutation matrices)}\enspace Multiplying by $\bP$ reorders rows. Permutation matrices are orthogonal: $\bP^{-1}=\bP^T$. Applying a permutation is cheap because no arithmetic is required; the code only reorders indices.
-}
-
-\addRemark{%
-\textbf{(Stability and Growth Factor)}\enspace
-The numerical stability of LUP is characterized by the growth factor $\rho = \max|u_{ij}| / \max|a_{ij}|$. If $\rho$ is large, the solution may be inaccurate. Partial pivoting keeps $\rho$ small in practice (typically $O(n)$), ensuring the algorithm is backward stable. While the theoretical worst-case growth is $2^{n-1}$, such matrices are rarely encountered in engineering applications.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Give a $2 \times 2$ matrix where LU fails (due to a zero or small pivot) but LUP succeeds.
-    \item Why is $\bP^{-1}$ trivial to compute for any permutation matrix? (\textit{Hint: consider $\bP^T$}).
-    \item Complete pivoting (swapping both rows and columns) provides even stronger stability guarantees but is rarely used. Why? (Consider the trade-off between search cost and marginal stability gain).
-\end{enumerate}
-}
-
-\subsubsection{Algorithm Cost Analysis}
-
-\textBox{%
-Understanding the computational cost is vital for choosing the right solver for large-scale engineering problems. The bulk of the work is in the factorization step.
-}
-
-\textBox{%
-There are two separate costs:
-\begin{itemize}
-    \item \textbf{Factorization cost:}\enspace Build $\bL$ and $\bU$ once. This costs $O(n^3)$.
-    \item \textbf{Solve cost:}\enspace Use the factors for a specific $\bb$. This costs $O(n^2)$.
-\end{itemize}
-This distinction is the reason factorizations are valuable.
-}
-
-\addRemark{%
-\textbf{(Total Cost for $k$ Right-Hand Sides)}\enspace
-For a system with $n$ unknowns and $k$ different right-hand side vectors $\bb$, the total cost is:
+\addThm{Wilkinson Growth Factor Bound for Partial Pivoting}{%
+Let $\bA \in \fR^{n \times n}$. The growth factor $\rho$ of Gaussian elimination is defined by
 \begin{align*}
-    \text{Cost} = \frac{2}{3}n^3 + 2kn^2 \text{ flops}.
+    \rho = \frac{\max_{i,j,k} |a_{ij}^{(k)}|}{\max_{i,j} |a_{ij}|},
 \end{align*}
-When $k$ is large, the $O(n^3)$ cost of factorization is amortized over many $O(n^2)$ solves. For example, solving for 500 $\bb$'s for $n=1000$ using one factorization is significantly faster than re-factorizing for each new $\bb$.
+where $a_{ij}^{(k)}$ denotes the entries of the active submatrix after step $k$.
+For Gaussian elimination with partial pivoting, the growth factor satisfies
+\begin{align*}
+    \rho \leq 2^{n-1}.
+\end{align*}
 }
+\label{thm:growth-factor-bound}
 
 \addPrf{%
-Forward substitution solves $\bL\by = \bb$ where $\ell_{ii} = 1$. The $i$-th entry $y_i$ is given by:
+Let $M_k = \max_{i,j} |a_{ij}^{(k)}|$ denote the maximum absolute entry of the active matrix after $k$ elimination steps, with $M_0 = \max_{i,j} |a_{ij}|$.
+At step $k$, partial pivoting guarantees that the pivot $|a_{kk}^{(k-1)}| = \max_{i \geq k} |a_{ik}^{(k-1)}|$, which ensures that all multipliers satisfy
 \begin{align*}
-    y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
+    |\ell_{ik}| = \left| \frac{a_{ik}^{(k-1)}}{a_{kk}^{(k-1)}} \right| \leq 1 \qquad \text{for all } i = k+1, \dots, n.
 \end{align*}
-Counting the floating-point operations:
-\begin{itemize}
-    \item For a fixed $i$, the summation requires $i-1$ multiplications and $i-1$ additions/subtractions.
-    \item Total flops: $\sum_{i=1}^n 2(i-1) = 2 \sum_{k=0}^{n-1} k = 2 \frac{(n-1)n}{2} = n^2 - n$.
-\end{itemize}
-For large $n$, each triangular solve costs approximately $n^2$ flops.
+The elimination update rule is $a_{ij}^{(k)} = a_{ij}^{(k-1)} - \ell_{ik} a_{kj}^{(k-1)}$. Applying the triangle inequality yields
+\begin{align*}
+    |a_{ij}^{(k)}| \leq |a_{ij}^{(k-1)}| + |\ell_{ik}| |a_{kj}^{(k-1)}| \leq M_{k-1} + (1) M_{k-1} = 2 M_{k-1}.
+\end{align*}
+Taking the maximum over all active indices gives $M_k \leq 2 M_{k-1}$.
+By induction, $M_{n-1} \leq 2^{n-1} M_0$. Dividing by $M_0$ establishes $\rho \leq 2^{n-1}$.
 }
 
-\addRemark{%
-\textbf{(Implementation rule)}\enspace In NumPy/SciPy, use \texttt{solve} for one right-hand side or \texttt{lu\_factor}/\texttt{lu\_solve} when reusing a factorization. Do not form $\bA^{-1}$ to solve a linear system.
+\textBox{%
+The growth factor matters because it controls the rounding errors committed during elimination. The next theorem expresses these errors as a perturbation of $\bA$. It uses the unit roundoff $u$ of Def~\ref{def:unit-roundoff} and the constant $\gamma_k=ku/(1-ku)$, defined whenever $ku<1$. Absolute values and inequalities between matrices are taken entrywise.
 }
+
+\addThm{Backward Error of Gaussian Elimination}{%
+Let $\bA\in\fR^{n\times n}$ be nonsingular, and suppose Gaussian elimination with partial pivoting runs to completion in floating-point arithmetic. Let $\bP$ be the computed permutation, let $\hat{\bL}$ and $\hat{\bU}$ be the computed factors, and let $\hat{\bx}$ be the solution of $\bA\bx=\bb$ computed by forward and backward substitution. Then
+\begin{align*}
+    (\bA+\Delta\bA)\hat{\bx}=\bb,
+    \qquad
+    |\bP\,\Delta\bA|\leq\gamma_{3n}|\hat{\bL}||\hat{\bU}|.
+\end{align*}
+}
+\label{thm:gepp-backward-error}
+
+\addPrf{%
+We outline the argument, and Higham gives the complete proof \citep{higham2002}. Row interchanges introduce no rounding error, so it suffices to analyze elimination without pivoting applied to $\bP\bA$. Each entry of $\hat{\bL}$ and $\hat{\bU}$ is obtained from one entry of the identity $\bP\bA=\bL\bU$ by at most $n$ multiplications and additions and possibly one division. Applying Thm~\ref{thm:fp-axiom} to each of these operations shows that $\hat{\bL}\hat{\bU}=\bP\bA+\bE$ with $|\bE|\leq\gamma_n|\hat{\bL}||\hat{\bU}|$. The same argument applied to the two triangular solves shows that the computed vectors satisfy
+\begin{align*}
+    (\hat{\bL}+\Delta\bL)\hat{\by}=\bP\bb,
+    \qquad
+    (\hat{\bU}+\Delta\bU)\hat{\bx}=\hat{\by},
+    \qquad
+    |\Delta\bL|\leq\gamma_n|\hat{\bL}|,
+    \qquad
+    |\Delta\bU|\leq\gamma_n|\hat{\bU}|.
+\end{align*}
+Multiplying the two perturbed factors gives $(\bP\bA+\bE+\hat{\bL}\Delta\bU+\Delta\bL\hat{\bU}+\Delta\bL\Delta\bU)\hat{\bx}=\bP\bb$. The four perturbation terms are bounded entrywise by $(3\gamma_n+\gamma_n^2)|\hat{\bL}||\hat{\bU}|$, and $3\gamma_n+\gamma_n^2\leq\gamma_{3n}$.
+}
+
+\addCor{Normwise Backward Error and the Growth Factor}{%
+Under the hypotheses of Thm~\ref{thm:gepp-backward-error}, let $\rho$ be the growth factor of the computed elimination. Then
+\begin{align*}
+    \frac{\|\Delta\bA\|_\infty}{\|\bA\|_\infty}\leq n^2\gamma_{3n}\,\rho.
+\end{align*}
+}
+\label{cor:gepp-normwise}
+
+\addPrf{%
+Partial pivoting gives $|\hat{\ell}_{ik}|\leq1$, and the definition of $\rho$ bounds every entry of $\hat{\bU}$ by $\rho\max_{i,j}|a_{ij}|$. Each entry of $|\hat{\bL}||\hat{\bU}|$ is a sum of at most $n$ products, so it is at most $n\rho\max_{i,j}|a_{ij}|$. The permutation $\bP$ only reorders rows. A row of $|\Delta\bA|$ therefore has absolute row sum at most $n\cdot\gamma_{3n}\cdot n\rho\max_{i,j}|a_{ij}|$, and $\max_{i,j}|a_{ij}|\leq\|\bA\|_\infty$.
+}
+
+\textBox{%
+Corollary~\ref{cor:gepp-normwise} shows that partial pivoting is backward stable whenever the growth factor is modest, and Cor~\ref{cor:forward-from-backward} then bounds the forward error by the condition number. The worst-case bound $\rho\leq2^{n-1}$ of Thm~\ref{thm:growth-factor-bound} is attained by special matrices such as the Wilkinson matrix in the exercises below, but such growth is rarely observed. For random matrices, Trefethen and Schreiber measured average growth factors of about $n^{2/3}$ for partial pivoting \citep{trefethenschreiber1990}. The factor $n^2$ in the corollary is also pessimistic, since the bound assumes that every rounding error takes its worst possible value and sign.
+}
+
+\subsubsection{Iterative Refinement}
+
+\textBox{%
+Theorem~\ref{thm:gepp-backward-error} bounds the backward error of the computed solution, but the forward error can still be as large as $\kappa(\bA)$ times that backward error. Iterative refinement reuses the computed factors to reduce the forward error. Each step costs one residual evaluation and one pair of triangular solves, which is small compared with the factorization.
+}
+
+\addDef{Iterative Refinement}{%
+Let $\hat{\bx}^{(0)}$ be computed from the factorization $\bP\bA\approx\hat{\bL}\hat{\bU}$. For $k=0,1,2,\dots$:
+\begin{enumerate}
+    \item Compute the residual $\br^{(k)}=\bb-\bA\hat{\bx}^{(k)}$, if possible in higher precision.
+    \item Solve the correction equation $\bA\bd^{(k)}=\br^{(k)}$ with the existing factors.
+    \item Update $\hat{\bx}^{(k+1)}=\hat{\bx}^{(k)}+\bd^{(k)}$.
+\end{enumerate}
+}
+\label{def:iterative-refinement}
+
+\textBox{%
+Refinement improves the forward error when the factors are accurate enough to give a useful correction and the residual is computed more accurately than the factorization. The precise convergence conditions depend on $\kappa(\bA)$ and on the precisions used for the factorization, the residual, and the update \citep{higham2002}.
+}
+
+\subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Sum the operations for forward substitution and show the cost is exactly $n^2 - n$.
-    \item Use \texttt{scipy.linalg.lu\_factor} and \texttt{lu\_solve} for a system with 3 right-hand sides. Verify residuals.
+    \item \exCompute \textbf{Hand execution of unpivoted versus pivoted LU.}\enspace Consider the matrix
+    \begin{align*}
+        \bA = \begin{pmatrix} 10^{-4} & 1 \\ 1 & 1 \end{pmatrix}, \qquad \bb = \begin{pmatrix} 1 \\ 2 \end{pmatrix}.
+    \end{align*}
+    \begin{enumerate}
+        \item Compute the unpivoted LU factorization $\bA = \bL\bU$ in exact arithmetic, and evaluate the multiplier $\ell_{21}$.
+        \item Simulate standard 3-digit floating-point arithmetic with rounding. Show that unpivoted elimination computes the erroneous solution $\hat{\bx} = (0, 1)^T$.
+        \item Compute the pivoted factorization $\bP\bA = \bL\bU$ using partial pivoting. Verify that in 3-digit arithmetic, the computed solution recovers $(1, 1)^T$ with negligible error.
+    \end{enumerate}
+    \item \exExplore \textbf{The Wilkinson counterexample and exponential growth.}\enspace Consider the $n \times n$ matrix
+    \begin{align*}
+        \bW_n = \begin{pmatrix}
+            1 & 0 & 0 & \dots & 0 & 1 \\
+            -1 & 1 & 0 & \dots & 0 & 1 \\
+            -1 & -1 & 1 & \dots & 0 & 1 \\
+            \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+            -1 & -1 & -1 & \dots & 1 & 1 \\
+            -1 & -1 & -1 & \dots & -1 & 1
+        \end{pmatrix}.
+    \end{align*}
+    \begin{enumerate}
+        \item Show that partial pivoting performs no row swaps on $\bW_n$ because every diagonal entry already has absolute value 1, matching the maximum in its column.
+        \item Compute the entries of the final column after each elimination step $k = 1, 2, \dots, n-1$.
+        \item Prove that the final bottom-right entry grows as $u_{nn} = 2^{n-1}$, confirming that the bound in Thm~\ref{thm:growth-factor-bound} is tight.
+    \end{enumerate}
+    \item \exDerive \textbf{Banded matrices and fill-in.}\enspace Let $\bA \in \fR^{n \times n}$ be a tridiagonal matrix ($a_{ij} = 0$ for $|i - j| > 1$).
+    \begin{enumerate}
+        \item Prove that without pivoting, the factors $\bL$ and $\bU$ retain the tridiagonal sparsity structure, meaning $\bL$ has bandwidth 1 on the subdiagonal and $\bU$ has bandwidth 1 on the superdiagonal.
+        \item Calculate the flop count for unpivoted tridiagonal LU factorization and forward/backward substitution. Show that the total work is $O(n)$ instead of $O(n^3)$.
+        \item Explain what happens to the upper bandwidth of $\bU$ when partial pivoting performs row interchanges.
+    \end{enumerate}
+    \item \exDerive \textbf{Block LU decomposition and the Schur complement.}\enspace Partition a nonsingular matrix $\bA$ into blocks
+    \begin{align*}
+        \bA = \begin{pmatrix} \bA_{11} & \bA_{12} \\ \bA_{21} & \bA_{22} \end{pmatrix},
+    \end{align*}
+    where $\bA_{11} \in \fR^{k \times k}$ is nonsingular.
+    \begin{enumerate}
+        \item Show that block Gaussian elimination factors $\bA$ as
+        \begin{align*}
+            \bA = \begin{pmatrix} \bI & \bzero \\ \bA_{21}\bA_{11}^{-1} & \bI \end{pmatrix}
+            \begin{pmatrix} \bA_{11} & \bA_{12} \\ \bzero & \mathbf{S} \end{pmatrix},
+        \end{align*}
+        where $\mathbf{S} = \bA_{22} - \bA_{21}\bA_{11}^{-1}\bA_{12}$ is the Schur complement of $\bA_{11}$ in $\bA$.
+        \item Prove that $\det(\bA) = \det(\bA_{11})\det(\mathbf{S})$.
+        \item Relate the Schur complement $\mathbf{S}$ to the active submatrix remaining after $k$ steps of standard Gaussian elimination.
+    \end{enumerate}
+    \item \exCompute \textbf{Determinants and multiple right-hand sides.}\enspace Let $\bP\bA = \bL\bU$ be the computed LU factorization with partial pivoting.
+    \begin{enumerate}
+        \item Prove that $\det(\bA) = (-1)^s \prod_{i=1}^n u_{ii}$, where $s$ is the number of row interchanges recorded by $\bP$.
+        \item Explain why computing the determinant via $\bP\bA = \bL\bU$ requires $O(n^3)$ flops, whereas evaluating the Leibniz expansion formula requires $O(n!)$ flops.
+        \item For $m$ distinct right-hand side vectors $\bb_1, \dots, \bb_m$, analyze the computational cost of solving $\bA\bx_j = \bb_j$ by reusing the single factorization $\bP\bA = \bL\bU$ versus computing $m$ independent solves from scratch.
+    \end{enumerate}
 \end{enumerate}
 }
+\label{ex:lu-exercises}
 
 \end{document}

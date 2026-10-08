@@ -1,0 +1,131 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Randomized Methods in Linear Algebra}
+\label{sub:randomized}
+
+\textBox{%
+Some quantities are expensive to compute exactly but inexpensive to estimate. The diagonal of $\bA^{-1}$ requires $n$ solves, a truncated SVD of an $m\times n$ matrix costs $O(mn\min(m,n))$ flops, and the Cholesky factor of a sparse matrix may be much denser than the matrix. Randomized methods replace each exact calculation by one that acts on a few random vectors or random samples. They accept an error that is controlled in expectation or with high probability, and they reuse one expensive object, such as a factorization or a product with $\bA$, for every sample.
+}
+
+\textBox{%
+We first estimate traces and diagonals from random probe vectors. We then compute low-rank approximations from the range of $\bA\boldsymbol{\Omega}$ for a random matrix $\boldsymbol{\Omega}$. Finally, we show how random sampling limits fill during Gaussian elimination on graph Laplacians, which produces a preconditioner for the conjugate gradient method.
+}
+
+\subsubsection{Trace and Diagonal Estimation}
+
+\textBox{%
+The trace of $\bA^{-1}$ and the diagonal of $\bA^{-1}$ appear as sums of variances in statistics, as effective resistances in graphs, and as sensitivities of linear models. Computing $\operatorname{diag}(\bA^{-1})$ exactly requires solving $\bA\bx=\be_i$ for every $i$. The estimators below use only products $\bz\mapsto\bA\bz$, or solves with $\bA$, applied to a few random vectors $\bz$.
+}
+
+\addThm{Hutchinson's Trace Estimator}{%
+Let $\bA\in\fR^{n\times n}$ be symmetric, and let $\bz\in\fR^n$ have independent entries with mean zero and variance one. Then $\mathbb{E}[\bz^T\bA\bz]=\operatorname{tr}(\bA)$. If the entries of $\bz$ are $\pm1$ with equal probability, then
+\begin{align*}
+    \operatorname{Var}(\bz^T\bA\bz)=2\Big(\|\bA\|_F^2-\sum_{i=1}^na_{ii}^2\Big).
+\end{align*}
+If the entries of $\bz$ are standard normal, then $\operatorname{Var}(\bz^T\bA\bz)=2\|\bA\|_F^2$.
+}
+\label{thm:hutchinson}
+
+\addPrf{%
+Expanding the quadratic form gives $\bz^T\bA\bz=\sum_{i,j}a_{ij}z_iz_j$. Since $\mathbb{E}[z_iz_j]$ is one for $i=j$ and zero otherwise, the expectation is $\sum_ia_{ii}$.
+
+For $\pm1$ entries, $z_i^2=1$, so $\bz^T\bA\bz-\operatorname{tr}(\bA)=2\sum_{i<j}a_{ij}z_iz_j$ by symmetry. The products $z_iz_j$ with $i<j$ have mean zero and variance one, and two different products are uncorrelated because $\mathbb{E}[z_iz_jz_kz_l]=0$ unless $\{i,j\}=\{k,l\}$. Hence the variance is $4\sum_{i<j}a_{ij}^2=2\sum_{i\neq j}a_{ij}^2$.
+
+For standard normal entries, write $\bA=\bQ\boldsymbol{\Lambda}\bQ^T$ by Thm~\ref{thm:spectral-symmetric}. The vector $\bg=\bQ^T\bz$ is again standard normal, and $\bz^T\bA\bz=\sum_i\lambda_ig_i^2$. Each $g_i^2$ has variance two and the $g_i$ are independent, so the variance is $2\sum_i\lambda_i^2=2\|\bA\|_F^2$.
+}
+
+\textBox{%
+Averaging $k$ independent samples divides the variance by $k$. For a symmetric positive semidefinite matrix, $\|\bA\|_F^2=\sum_i\lambda_i^2\leq(\sum_i\lambda_i)^2=\operatorname{tr}(\bA)^2$, so with Gaussian probes the relative standard deviation of the averaged estimate is at most $\sqrt{2/k}$. The error decreases like $k^{-1/2}$, independently of $n$, which is the usual Monte Carlo rate. One hundred probes therefore give a relative standard deviation of at most about fourteen percent, and the estimator is most useful when this accuracy is sufficient or when $\|\bA\|_F$ is much smaller than $\operatorname{tr}(\bA)$ \citep{hutchinson1990}.
+}
+
+\addProp{Diagonal Estimator}{%
+Let $\bz_1,\dots,\bz_k$ be independent vectors with independent $\pm1$ entries, and let $\odot$ denote the entrywise product. Then
+\begin{align*}
+    \bd_k=\frac1k\sum_{l=1}^k\bz_l\odot(\bA\bz_l)
+\end{align*}
+satisfies $\mathbb{E}[\bd_k]=\operatorname{diag}(\bA)$.
+}
+\label{prop:diagonal-estimator}
+
+\addPrf{%
+Entry $i$ of $\bz\odot(\bA\bz)$ is $z_i\sum_ja_{ij}z_j=a_{ii}+\sum_{j\neq i}a_{ij}z_iz_j$, because $z_i^2=1$. The second sum has mean zero, so each term of the average has mean $a_{ii}$.
+}
+
+\textBox{%
+To estimate $\operatorname{diag}(\bA^{-1})$, we replace $\bA\bz_l$ by $\bA^{-1}\bz_l$ \citep{bekas2007}. One sparse factorization of $\bA$ is computed once, and each probe then costs one pair of triangular solves. For $k\ll n$, this replaces $n$ solves by $k$ solves. Bekas, Kokiopoulou, and Saad also use structured probe vectors that are orthogonal on blocks of the matrix, which removes the error from entries within those blocks.
+}
+
+\subsubsection{Randomized Low-Rank Approximation}
+
+\textBox{%
+By Thm~\ref{thm:eckart-young}, the best rank-$k$ approximation of $\bA$ is given by its truncated SVD. Computing the full SVD of a large matrix in order to keep a few singular triplets wastes almost all of the work. If the singular values decay, the dominant left singular vectors span most of the range of $\bA$. A product $\bA\boldsymbol{\omega}$ with a random vector $\boldsymbol{\omega}$ is a random combination of the columns of $\bA$, and it lies mostly in that dominant subspace. A few such products therefore span most of the dominant range.
+}
+
+\addDef{Randomized SVD}{%
+Let $\bA\in\fR^{m\times n}$, let $k$ be the target rank, and let $p\geq2$ be an oversampling parameter.
+\begin{enumerate}
+    \item Draw $\boldsymbol{\Omega}\in\fR^{n\times(k+p)}$ with independent standard normal entries.
+    \item Form $\bY=\bA\boldsymbol{\Omega}$ and compute its thin QR factorization $\bY=\bQ\bR$.
+    \item Form $\bB=\bQ^T\bA\in\fR^{(k+p)\times n}$ and compute its SVD $\bB=\tilde{\bU}\bsigma\bV^T$.
+    \item Return the approximate SVD $\bA\approx(\bQ\tilde{\bU})\bsigma\bV^T$, truncated to rank $k$ if required.
+\end{enumerate}
+}
+\label{def:randomized-svd}
+
+\textBox{%
+The algorithm touches $\bA$ only through the two products $\bA\boldsymbol{\Omega}$ and $\bQ^T\bA$. For a dense matrix these cost $O(mn(k+p))$ flops, and for a sparse matrix $O(\operatorname{nnz}(\bA)(k+p))$. The QR factorization and the small SVD cost $O((m+n)(k+p)^2)$. The approximation error is $\|\bA-\bQ\bQ^T\bA\|$, because $\bQ\tilde{\bU}\bsigma\bV^T=\bQ\bQ^T\bA$. Halko, Martinsson, and Tropp prove that
+\begin{align*}
+    \mathbb{E}\,\|\bA-\bQ\bQ^T\bA\|_F
+    \leq\Big(1+\frac{k}{p-1}\Big)^{1/2}\Big(\sum_{j>k}\sigma_j^2\Big)^{1/2}
+\end{align*}
+for Gaussian $\boldsymbol{\Omega}$ \citep{halko2011}. The second factor is the error of the truncated SVD, so the randomized method loses at most the first factor in expectation. With $p=k+1$, that factor is $\sqrt2$.
+}
+
+\addRemark{%
+\textbf{(Slowly decaying singular values)}\enspace
+When the singular values decay slowly, the range of $\bA\boldsymbol{\Omega}$ contains significant components from the trailing singular vectors. Replacing $\bY=\bA\boldsymbol{\Omega}$ by $\bY=(\bA\bA^T)^q\bA\boldsymbol{\Omega}$ multiplies the $j$th singular direction by $\sigma_j^{2q+1}$ and suppresses the trailing directions, exactly as in power iteration (Def~\ref{def:power-iteration}). In floating-point arithmetic, the columns are orthonormalized after each multiplication, because the powers otherwise become numerically dependent \citep{halko2011}.
+}
+
+\subsubsection{Random Sampling in Gaussian Elimination}
+
+\textBox{%
+Section~\ref{sub:spd} showed that eliminating a vertex joins all of its neighbors into a clique, and that the resulting fill makes sparse Cholesky expensive on large meshes. For the Laplacian of a weighted graph, the clique has an explicit form. Random sampling can replace it by a sparse graph that is correct on average.
+}
+
+\addProp{Elimination in a Graph Laplacian}{%
+Let $\bL=\bD-\bW$ be the Laplacian of a connected graph with nonnegative edge weights $w_{ij}$ and degrees $d_i=\sum_jw_{ij}$. Eliminating vertex $v$ produces a Schur complement that is again a graph Laplacian. Its graph is the graph of $\bL$ with $v$ removed, plus an edge of weight $w_{iv}w_{jv}/d_v$ between each pair of neighbors $i,j$ of $v$.
+}
+\label{prop:laplacian-elimination}
+
+\addPrf{%
+The Schur complement is $\bS=\bB-\br\br^T/d_v$, where $r_i=-w_{iv}$ and $\bB$ is $\bL$ with row and column $v$ removed. For $i\neq j$, $s_{ij}=-w_{ij}-w_{iv}w_{jv}/d_v$, which is the negative of the stated edge weight. Every row of $\bL$ sums to zero, so row $i$ of $\bB$ sums to $w_{iv}$. Row $i$ of $\br\br^T/d_v$ sums to $w_{iv}\sum_jw_{jv}/d_v=w_{iv}$. Hence every row of $\bS$ sums to zero, and $\bS$ has nonpositive off-diagonal entries, which characterizes a graph Laplacian.
+}
+
+\addProp{An Unbiased Sparse Replacement for the Clique}{%
+Let vertex $v$ have neighbors $1,\dots,\delta$ with weights $w_i=w_{iv}$ and $d=\sum_iw_i$. For each neighbor $i$, draw one neighbor $j$ with probability $w_j/d$ and, if $j\neq i$, add an edge between $i$ and $j$ with weight $w_i/2$. The Laplacian of the resulting graph of at most $\delta$ edges has expected value equal to the Laplacian of the clique in Prop~\ref{prop:laplacian-elimination}.
+}
+\label{prop:sampled-clique}
+
+\addPrf{%
+Let $\bL_{ij}=(\be_i-\be_j)(\be_i-\be_j)^T$ be the Laplacian of a single unit edge, with $\bL_{ii}=\bzero$. The expected Laplacian of the edge added for neighbor $i$ is $\sum_j(w_j/d)(w_i/2)\bL_{ij}$. Summing over $i$ counts each unordered pair twice, so the expectation is $\sum_{i<j}(w_iw_j/d)\bL_{ij}$, which is the Laplacian of the clique.
+}
+
+\textBox{%
+Eliminating every vertex in this way produces a factor $\tilde{\bL}$ whose number of nonzero entries is proportional to the number of edges, rather than the superlinear fill of exact elimination. The factor is too inaccurate to solve with directly, but $\tilde{\bL}\tilde{\bL}^T$ approximates $\bL$ well enough to serve as a preconditioner for the conjugate gradient method of Section~\ref{sub:cg}. Kyng and Sachdeva use a refinement of this sampling, eliminate the vertices in random order, and prove that the resulting solver reaches relative accuracy $\varepsilon$ in $O(m\log^3n\log(1/\varepsilon))$ expected time for a graph with $m$ edges \citep{kyngsachdeva2016}. Practical implementations eliminate vertices in minimum-degree order, which reduces fill further but is not covered by the proof.
+}
+
+\subsubsection{Exercises}
+
+\addExcr{%
+\begin{enumerate}
+    \item \exCheck Verify Prop~\ref{prop:sampled-clique} for a vertex with three neighbors of weights $1$, $2$, and $3$ by listing every outcome of the sampling and its probability.
+    \item \exDerive Show that Hutchinson's estimator with $\pm1$ entries is exact for every diagonal matrix. Then show that, for every symmetric matrix, its variance is at most that of the Gaussian estimator, with equality exactly when the diagonal of $\bA$ is zero.
+    \item \exCompute Let $\bA$ be the one-dimensional Poisson matrix with $n=1000$. Estimate $\operatorname{tr}(\bA^{-1})$ with $k=10,100,1000$ probes using one Cholesky factorization. Plot the relative error against $k$ on logarithmic axes and compare the slope with $-1/2$.
+    \item \exCompute Construct a $1000\times500$ matrix with singular values $\sigma_j=2^{-j}$ and random singular vectors. Apply Def~\ref{def:randomized-svd} with $k=20$ and $p=0,5,20$, and compare $\|\bA-\bQ\bQ^T\bA\|_2$ with $\sigma_{21}$. Repeat with $\sigma_j=j^{-1/2}$, with and without one step of the power iteration in the remark.
+\end{enumerate}
+}
+\label{ex:randomized-exercises}
+
+\end{document}

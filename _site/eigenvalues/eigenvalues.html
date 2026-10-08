@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>17&nbsp; Eigenvalues and Eigenvectors – Scientific Computing</title>
+<title>16&nbsp; Eigenvalue Problems and the QR Algorithm – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -34,7 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../eigenvalues/svd.html" rel="next">
-<link href="../orthogonality/chebyshev.html" rel="prev">
+<link href="../orthogonality/least-squares.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,10 +710,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#definitions-and-basic-properties" id="toc-definitions-and-basic-properties" class="nav-link active" data-scroll-target="#definitions-and-basic-properties"><span class="header-section-number">17.1</span> Definitions and Basic Properties</a></li>
-  <li><a href="#symmetric-and-hermitian-matrices" id="toc-symmetric-and-hermitian-matrices" class="nav-link" data-scroll-target="#symmetric-and-hermitian-matrices"><span class="header-section-number">17.2</span> Symmetric and Hermitian Matrices</a></li>
-  <li><a href="#iterative-algorithms" id="toc-iterative-algorithms" class="nav-link" data-scroll-target="#iterative-algorithms"><span class="header-section-number">17.3</span> Iterative Algorithms</a></li>
-  <li><a href="#schur-decomposition-and-the-qr-algorithm" id="toc-schur-decomposition-and-the-qr-algorithm" class="nav-link" data-scroll-target="#schur-decomposition-and-the-qr-algorithm"><span class="header-section-number">17.4</span> Schur Decomposition and the QR Algorithm</a></li>
+  <li><a href="#invariant-directions-and-change-of-basis" id="toc-invariant-directions-and-change-of-basis" class="nav-link active" data-scroll-target="#invariant-directions-and-change-of-basis"><span class="header-section-number">16.1</span> Invariant Directions and Change of Basis</a></li>
+  <li><a href="#multiplicity-and-schur-form" id="toc-multiplicity-and-schur-form" class="nav-link" data-scroll-target="#multiplicity-and-schur-form"><span class="header-section-number">16.2</span> Multiplicity and Schur Form</a></li>
+  <li><a href="#power-iteration-and-shifted-inverse-iteration" id="toc-power-iteration-and-shifted-inverse-iteration" class="nav-link" data-scroll-target="#power-iteration-and-shifted-inverse-iteration"><span class="header-section-number">16.3</span> Power Iteration and Shifted Inverse Iteration</a></li>
+  <li><a href="#the-practical-qr-algorithm" id="toc-the-practical-qr-algorithm" class="nav-link" data-scroll-target="#the-practical-qr-algorithm"><span class="header-section-number">16.4</span> The Practical QR Algorithm</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">16.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/eigenvalues.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -682,9 +722,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></h1>
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></h1>
 </div>
 
 
@@ -701,10 +741,10 @@ window.Quarto = {
 </header>
 
 
-<p>Reveals the scaling directions of a linear transformation. Essential for stability analysis, PCA, and spectral methods.</p>
-<p>Eigenvectors are directions preserved by a linear map. Along an eigenvector, the matrix acts like multiplication by a scalar. This reduces a matrix transformation to independent one-dimensional actions, when enough eigenvectors exist.</p>
-<section id="definitions-and-basic-properties" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="definitions-and-basic-properties"><span class="header-section-number">17.1</span> Definitions and Basic Properties</h2>
+<p>The eigenvalue problem <span class="math inline">\(\bA\bv = \lambda\bv\)</span> identifies the invariant one-dimensional subspaces of a linear operator. Along an eigenvector <span class="math inline">\(\bv\)</span>, the action of the matrix <span class="math inline">\(\bA\)</span> reduces to scalar scaling by <span class="math inline">\(\lambda\)</span>. Eigenvalues govern the asymptotic stability of dynamical systems, the resonant frequencies of mechanical and electrical systems, the convergence rates of iterative solvers, and the dominant invariant coordinates in spectral graph theory and data science.</p>
+<p>The characteristic equation <span class="math inline">\(\det(\bA-\lambda\bI)=0\)</span> is useful for definitions and very small examples, but forming its coefficients is not a sound numerical algorithm. It discards the matrix structure and replaces one problem by a polynomial root problem that may be far more sensitive. Practical methods work with the matrix directly and use orthogonal or unitary transformations whenever possible.</p>
+<section id="invariant-directions-and-change-of-basis" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="invariant-directions-and-change-of-basis"><span class="header-section-number">16.1</span> Invariant Directions and Change of Basis</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -715,15 +755,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bA \in \fR^{n \times n}\)</span>, a scalar <span class="math inline">\(\lambda \in \fC\)</span> is an <strong>eigenvalue</strong> if <span class="math inline">\(\exists\)</span> nonzero <span class="math inline">\(\bv \in \fC^n\)</span> such that: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span>. A nonzero vector <span class="math inline">\(\bv \in \fC^n\)</span> is an eigenvector of <span class="math inline">\(\bA\)</span> associated with eigenvalue <span class="math inline">\(\lambda \in \fC\)</span> if <span class="math display">\[
 \begin{align}
 \bA\bv = \lambda\bv.
 \end{align}
-\]</span></p>
-<ul>
-<li><p><strong>Spectrum <span class="math inline">\(\sigma(\bA)\)</span>:</strong> The set of all eigenvalues.</p></li>
-<li><p><strong>Invariance:</strong> Multiplying <span class="math inline">\(\bv\)</span> by <span class="math inline">\(\bA\)</span> only scales its length; its direction remains fixed.</p></li>
-</ul>
+\]</span> The set of eigenvalues is the spectrum <span class="math inline">\(\sigma(\bA)\)</span>. When eigenvalues are listed as <span class="math inline">\(\lambda_1,...,\lambda_n\)</span>, repetitions are included according to algebraic multiplicity.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -732,83 +768,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Characteristic Polynomial
+<span class="screen-reader-only">Note</span>Definition: Invariant Subspace
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(p_{\bA}(\lambda) = \det(\bA - \lambda \bI)\)</span>. Eigenvalues are the roots of <span class="math inline">\(p_{\bA}(\lambda) = 0\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Characteristic polynomial as theory)</strong> The characteristic polynomial is useful for proofs and small hand examples. Numerical algorithms do not compute eigenvalues by forming <span class="math inline">\(p_{\bA}\)</span> and finding its roots; polynomial coefficients are extremely sensitive to perturbations.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Verify <span class="math inline">\(\bv = (1, 1)^T\)</span> is an eigenvector of <span class="math inline">\(\bA = \begin{pmatrix}3&amp;1\\1&amp;3\end{pmatrix}\)</span> and find <span class="math inline">\(\lambda\)</span>.</p></li>
-<li><p>Why is the zero vector excluded from the definition of an eigenvector?</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Similar Matrices
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bB = \bV^{-1}\bA\bV\)</span> (Similarity Transform), then <span class="math inline">\(\sigma(\bB) = \sigma(\bA)\)</span>. Eigenvalues are invariant under change of basis.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Diagonalization
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A matrix <span class="math inline">\(\bA\)</span> is diagonalizable if there exists an invertible matrix <span class="math inline">\(\bV\)</span> such that <span class="math display">\[
-\begin{align}
-\bA=\bV\bD\bV^{-1},
-\end{align}
-\]</span> where <span class="math inline">\(\bD\)</span> is diagonal. The columns of <span class="math inline">\(\bV\)</span> are eigenvectors and the diagonal entries of <span class="math inline">\(\bD\)</span> are eigenvalues.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Multiplicity and defectiveness)</strong> Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity <span class="math inline">\(2\)</span> but only one independent eigenvector; such a matrix is <strong>defective</strong> and cannot be diagonalized.</p>
+<p>A subspace <span class="math inline">\(S\subseteq\fC^n\)</span> is <strong>invariant</strong> under <span class="math inline">\(\bA\)</span> if <span class="math inline">\(\bA\bx\in S\)</span> whenever <span class="math inline">\(\bx\in S\)</span>. An eigenvector spans a one-dimensional invariant subspace. Higher-dimensional invariant subspaces remain meaningful even when no basis of eigenvectors exists.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -821,15 +785,29 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Defective matrix)</strong> <span class="math display">\[
+<p>Three two-dimensional examples show what the definition can and cannot promise.</p>
+<ol type="1">
+<li><p>A diagonal matrix scales the coordinate axes, leaving both axes invariant.</p></li>
+<li><p>The shear <span class="math inline">\(\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}\)</span> has only one independent eigenvector. Repeated application keeps sliding vectors in the same direction, so a repeated eigenvalue need not supply a full eigenbasis.</p></li>
+<li><p>A nontrivial planar rotation has no real invariant line, but it has complex eigenvectors. Complex numbers are not an artificial complication here: they encode rotation as multiplication by a complex phase.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Similarity and a Change of Basis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Matrices <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span> are <strong>similar</strong> if <span class="math display">\[
 \begin{align}
-\bA=
-    \begin{pmatrix}
-    1&amp;1\\
-    0&amp;1
-    \end{pmatrix}
+\bB=\bS^{-1}\bA\bS
 \end{align}
-\]</span> has characteristic polynomial <span class="math inline">\((1-\lambda)^2\)</span>. Solving <span class="math inline">\((\bA-\bI)\bv=\bzero\)</span> gives only one independent eigenvector, so <span class="math inline">\(\bA\)</span> is not diagonalizable.</p>
+\]</span> for some nonsingular <span class="math inline">\(\bS\)</span>. They represent the same linear map in different bases: the columns of <span class="math inline">\(\bS\)</span> are the new basis vectors written in the old coordinates.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -838,106 +816,239 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Key Properties
+<span class="screen-reader-only">Note</span>Theorem: Similarity Preserves Eigenvalues
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p><strong>Trace:</strong> <span class="math inline">\(\sum \lambda_i = \text{tr}(\bA)\)</span>.</p></li>
-<li><p><strong>Determinant:</strong> <span class="math inline">\(\prod \lambda_i = \det(\bA)\)</span>.</p></li>
-<li><p><strong>Singularity:</strong> <span class="math inline">\(0 \in \sigma(\bA) \iff \bA\)</span> is singular.</p></li>
-<li><p><strong>Inversion:</strong> If <span class="math inline">\(\bA\)</span> is invertible, eigenvalues of <span class="math inline">\(\bA^{-1}\)</span> are <span class="math inline">\(1/\lambda_i\)</span>.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="symmetric-and-hermitian-matrices" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="symmetric-and-hermitian-matrices"><span class="header-section-number">17.2</span> Symmetric and Hermitian Matrices</h2>
-<p>Symmetric and Hermitian matrices possess special spectral properties that simplify analysis and computation.</p>
-<p>The symmetric case is the cleanest eigenvalue theory. Orthogonal eigenvectors mean that diagonalization is also a numerically safe change of basis: <span class="math inline">\(\bQ^{-1}=\bQ^T\)</span>, so the transformation does not amplify Euclidean errors.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Spectral Theorem (Real Symmetric)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bA = \bA^T\)</span>:</p>
-<ol type="1">
-<li><p>All eigenvalues <span class="math inline">\(\lambda_i\)</span> are <strong>real</strong>.</p></li>
-<li><p>Eigenvectors for distinct <span class="math inline">\(\lambda\)</span> are <strong>orthogonal</strong>.</p></li>
-<li><p><span class="math inline">\(\bA\)</span> is <strong>orthogonally diagonalizable</strong>: <span class="math inline">\(\bA = \bQ\bD\bQ^T\)</span>.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Hermitian Matrix
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><span class="math inline">\(\bA = \bA^*\)</span> (conjugate transpose). The complex analog of symmetric matrices.</p>
-<ul>
-<li><strong>Spectral Theorem (Hermitian):</strong> Unitarily diagonalizable (<span class="math inline">\(\bA = \bQ\bD\bQ^*\)</span>) with real eigenvalues.</li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Prove eigenvalues of <span class="math inline">\(\bA^2\)</span> are <span class="math inline">\(\lambda_i^2\)</span>.</p></li>
-<li><p>Diagonalize <span class="math inline">\(\bA = \begin{pmatrix}4&amp;1\\1&amp;4\end{pmatrix}\)</span> by finding an orthonormal eigenbasis.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="iterative-algorithms" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="iterative-algorithms"><span class="header-section-number">17.3</span> Iterative Algorithms</h2>
-<p>In practice, we compute eigenvalues via iteration, not by finding roots of the characteristic polynomial.</p>
-<p>Most large eigenvalue computations do not compute the full spectrum. They target a few eigenvalues: the largest, smallest, or those closest to a shift. Matrix-vector products and linear solves are the basic primitives.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Power Iteration
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Repeatedly apply <span class="math inline">\(\bA\)</span> to a unit vector: <span class="math inline">\(\bv^{(k)} = \frac{\bA\bv^{(k-1)}}{\|\bA\bv^{(k-1)}\|}\)</span>.</p>
-<ul>
-<li><p><strong>Convergence:</strong> <span class="math inline">\(\bv^{(k)} \to\)</span> dominant eigenvector (for <span class="math inline">\(|\lambda_1| &gt; |\lambda_2|\)</span>).</p></li>
-<li><p><strong>Rate:</strong> <span class="math inline">\(O(|\lambda_2/\lambda_1|^k)\)</span>.</p></li>
-</ul>
+<p>If <span class="math inline">\(\bB=\bS^{-1}\bA\bS\)</span>, then <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span> have the same eigenvalues. More precisely, <span class="math inline">\(\bA\bv=\lambda\bv\)</span> if and only if <span class="math display">\[
+\begin{align}
+\bB(\bS^{-1}\bv)=\lambda(\bS^{-1}\bv).
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Multiplying <span class="math inline">\(\bA\bv=\lambda\bv\)</span> by <span class="math inline">\(\bS^{-1}\)</span> and inserting <span class="math inline">\(\bS\bS^{-1}=\bI\)</span> gives <span class="math display">\[
+\begin{align}
+(\bS^{-1}\bA\bS)(\bS^{-1}\bv)
+    =\lambda(\bS^{-1}\bv).
+\end{align}
+\]</span> The reverse implication follows by multiplying by <span class="math inline">\(\bS\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Theorem: Diagonalization Means an Eigenvector Basis
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Power iteration failure modes)</strong> Power iteration can fail or converge slowly if <span class="math inline">\(|\lambda_1|\approx|\lambda_2|\)</span>, if the starting vector has tiny component in the dominant eigenvector direction, or if the dominant eigenvalue is not unique in magnitude.</p>
+<p>A matrix <span class="math inline">\(\bA\in\fC^{n\times n}\)</span> is similar to a diagonal matrix if and only if it has a basis of eigenvectors. If <span class="math inline">\(\bS=(\bv_1\ \cdots\ \bv_n)\)</span> contains such a basis, then <span class="math display">\[
+\begin{align}
+\bA\bS=\bS\boldsymbol{\Lambda},
+    \qquad
+    \bA=\bS\boldsymbol{\Lambda}\bS^{-1}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If the columns of <span class="math inline">\(\bS\)</span> are eigenvectors, the <span class="math inline">\(j\)</span>th columns of <span class="math inline">\(\bA\bS\)</span> and <span class="math inline">\(\bS\boldsymbol{\Lambda}\)</span> are both <span class="math inline">\(\lambda_j\bv_j\)</span>, which proves the factorization. Conversely, if <span class="math inline">\(\bA=\bS\boldsymbol{\Lambda}\bS^{-1}\)</span>, then <span class="math inline">\(\bA\bS=\bS\boldsymbol{\Lambda}\)</span>, so each column of the nonsingular matrix <span class="math inline">\(\bS\)</span> is an eigenvector.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="multiplicity-and-schur-form" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="multiplicity-and-schur-form"><span class="header-section-number">16.2</span> Multiplicity and Schur Form</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Algebraic and Geometric Multiplicity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\lambda\)</span> be an eigenvalue of <span class="math inline">\(\bA\)</span>.</p>
+<ol type="1">
+<li><p>The algebraic multiplicity <span class="math inline">\(\mu_a(\lambda)\)</span> is the multiplicity of <span class="math inline">\(\lambda\)</span> as a root of <span class="math inline">\(\det(\bA - z\bI) = 0\)</span>.</p></li>
+<li><p>The geometric multiplicity <span class="math inline">\(\mu_g(\lambda) = \dim \mathcal{N}(\bA - \lambda\bI)\)</span> is the dimension of the corresponding eigenspace.</p></li>
+</ol>
+<p>Every eigenvalue satisfies <span class="math inline">\(1 \leq \mu_g(\lambda) \leq \mu_a(\lambda)\)</span>. When <span class="math inline">\(\mu_g(\lambda) &lt; \mu_a(\lambda)\)</span> for any eigenvalue, <span class="math inline">\(\bA\)</span> is defective and does not possess a complete basis of eigenvectors.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Schur Triangularization Decomposition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every square matrix <span class="math inline">\(\bA \in \fC^{n \times n}\)</span> is unitarily similar to an upper triangular matrix: <span class="math display">\[
+\begin{align}
+\bA = \bQ\bT\bQ^*,
+\end{align}
+\]</span> where <span class="math inline">\(\bQ \in \fC^{n \times n}\)</span> is unitary (<span class="math inline">\(\bQ^*\bQ = \bI\)</span>) and <span class="math inline">\(\bT \in \fC^{n \times n}\)</span> is upper triangular. The diagonal entries of <span class="math inline">\(\bT\)</span> are the eigenvalues of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We proceed by induction on the matrix dimension <span class="math inline">\(n\)</span>. For <span class="math inline">\(n = 1\)</span>, the statement holds trivially with <span class="math inline">\(\bQ = [1]\)</span> and <span class="math inline">\(\bT = \bA\)</span>.</p>
+<p>Assume the theorem holds for all square matrices of order <span class="math inline">\(n - 1\)</span>. By the Fundamental Theorem of Algebra, the characteristic polynomial <span class="math inline">\(\det(\bA - z\bI) = 0\)</span> possesses at least one complex root <span class="math inline">\(\lambda_1\)</span>. Let <span class="math inline">\(\bv_1 \in \fC^n\)</span> be an eigenvector associated with <span class="math inline">\(\lambda_1\)</span>, normalized so that <span class="math inline">\(\|\bv_1\|_2 = 1\)</span>. Using the Gram–Schmidt process or Householder reflectors, construct an orthonormal basis for <span class="math inline">\(\fC^n\)</span> whose first column is <span class="math inline">\(\bv_1\)</span>, forming a unitary matrix <span class="math inline">\(\bU_1 = [\bv_1, \bW] \in \fC^{n \times n}\)</span> with <span class="math inline">\(\bW \in \fC^{n \times (n-1)}\)</span>.</p>
+<p>Applying this unitary similarity transformation to <span class="math inline">\(\bA\)</span> gives <span class="math display">\[
+\begin{align}
+\bU_1^* \bA \bU_1
+    =
+    \begin{pmatrix} \bv_1^* \\ \bW^* \end{pmatrix} \bA \begin{pmatrix} \bv_1 &amp; \bW \end{pmatrix}
+    =
+    \begin{pmatrix} \bv_1^* \bA \bv_1 &amp; \bv_1^* \bA \bW \\ \bW^* \bA \bv_1 &amp; \bW^* \bA \bW \end{pmatrix}.
+\end{align}
+\]</span> Because <span class="math inline">\(\bA\bv_1 = \lambda_1 \bv_1\)</span>, the leading entry is <span class="math inline">\(\bv_1^*(\lambda_1\bv_1) = \lambda_1 \|\bv_1\|_2^2 = \lambda_1\)</span>. The lower-left block is <span class="math inline">\(\bW^*(\lambda_1\bv_1) = \lambda_1(\bW^*\bv_1) = \bzero\)</span>, because the columns of <span class="math inline">\(\bW\)</span> are orthogonal to <span class="math inline">\(\bv_1\)</span>. Thus <span class="math display">\[
+\begin{align}
+\bU_1^* \bA \bU_1 = \begin{pmatrix} \lambda_1 &amp; \bw^* \\ \bzero &amp; \bA_1 \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\bA_1 = \bW^* \bA \bW \in \fC^{(n-1) \times (n-1)}\)</span> and <span class="math inline">\(\bw^* = \bv_1^* \bA \bW\)</span>.</p>
+<p>By the induction hypothesis, there exists a unitary matrix <span class="math inline">\(\bQ_1 \in \fC^{(n-1) \times (n-1)}\)</span> such that <span class="math inline">\(\bQ_1^* \bA_1 \bQ_1 = \bT_1\)</span> is upper triangular. Define the <span class="math inline">\(n \times n\)</span> block-diagonal unitary matrix <span class="math display">\[
+\begin{align}
+\bV = \begin{pmatrix} 1 &amp; \bzero \\ \bzero &amp; \bQ_1 \end{pmatrix}.
+\end{align}
+\]</span> Setting <span class="math inline">\(\bQ = \bU_1 \bV\)</span>, which is unitary as the product of unitary matrices, we obtain <span class="math display">\[
+\begin{align}
+\bQ^* \bA \bQ
+    =
+    \bV^* (\bU_1^* \bA \bU_1) \bV
+    =
+    \begin{pmatrix} 1 &amp; \bzero \\ \bzero &amp; \bQ_1^* \end{pmatrix}
+    \begin{pmatrix} \lambda_1 &amp; \bw^* \\ \bzero &amp; \bA_1 \end{pmatrix}
+    \begin{pmatrix} 1 &amp; \bzero \\ \bzero &amp; \bQ_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 &amp; \bw^* \bQ_1 \\ \bzero &amp; \bQ_1^* \bA_1 \bQ_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 &amp; \bw^* \bQ_1 \\ \bzero &amp; \bT_1 \end{pmatrix}.
+\end{align}
+\]</span> Because <span class="math inline">\(\bT_1\)</span> is upper triangular, the entire block matrix <span class="math inline">\(\bT = \bQ^*\bA\bQ\)</span> is upper triangular. The diagonal entries of <span class="math inline">\(\bT\)</span> are <span class="math inline">\(\lambda_1\)</span> and the eigenvalues of <span class="math inline">\(\bA_1\)</span>, which collectively form the eigenvalues of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Theorem for Real Symmetric Matrices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> is real symmetric (<span class="math inline">\(\bA = \bA^T\)</span>), then all eigenvalues of <span class="math inline">\(\bA\)</span> are real, and <span class="math inline">\(\bA\)</span> is orthogonally diagonalizable: <span class="math display">\[
+\begin{align}
+\bA = \bQ \boldsymbol{\Lambda} \bQ^T = \sum_{i=1}^n \lambda_i \bq_i \bq_i^T,
+\end{align}
+\]</span> where <span class="math inline">\(\bQ \in \fR^{n \times n}\)</span> is real orthogonal (<span class="math inline">\(\bQ^T\bQ = \bI\)</span>) and <span class="math inline">\(\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, ..., \lambda_n)\)</span> is real diagonal.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>First, let <span class="math inline">\(\lambda \in \fC\)</span> and <span class="math inline">\(\bv \in \fC^n \setminus \{\bzero\}\)</span> satisfy <span class="math inline">\(\bA\bv = \lambda\bv\)</span>. Taking the inner product with <span class="math inline">\(\bv\)</span>, <span class="math display">\[
+\begin{align}
+\bv^*\bA\bv = \bv^*(\lambda\bv) = \lambda\|\bv\|_2^2.
+\end{align}
+\]</span> Taking the conjugate transpose of this scalar and using <span class="math inline">\(\bA = \bA^T = \bA^*\)</span>, <span class="math display">\[
+\begin{align}
+\bv^*\bA\bv = (\bv^*\bA\bv)^* = (\lambda\|\bv\|_2^2)^* = \bar{\lambda}\|\bv\|_2^2.
+\end{align}
+\]</span> Subtracting these two scalar expressions gives <span class="math display">\[
+\begin{align}
+(\lambda - \bar{\lambda})\|\bv\|_2^2 = 0.
+\end{align}
+\]</span> Because <span class="math inline">\(\bv \neq \bzero\)</span>, <span class="math inline">\(\|\bv\|_2^2 &gt; 0\)</span>, forcing <span class="math inline">\(\lambda = \bar{\lambda} \in \fR\)</span>. Thus all eigenvalues are real.</p>
+<p>Because <span class="math inline">\(\lambda_1 \in \fR\)</span> and <span class="math inline">\(\bA\)</span> is real, writing <span class="math inline">\(\bv = \bx + i\by\)</span> gives <span class="math inline">\(\bA\bx = \lambda_1\bx\)</span> and <span class="math inline">\(\bA\by = \lambda_1\by\)</span>. At least one of <span class="math inline">\(\bx,\by\)</span> is nonzero, yielding a real unit eigenvector <span class="math inline">\(\bq_1\)</span>. Extend <span class="math inline">\(\bq_1\)</span> to an orthogonal matrix <span class="math inline">\(\bQ_1 = [\bq_1, \bW] \in \fR^{n \times n}\)</span> with <span class="math inline">\(\bW \in \fR^{n \times (n-1)}\)</span>. Because <span class="math inline">\(\bA\bq_1 = \lambda_1\bq_1\)</span> and <span class="math inline">\(\bW^T\bq_1 = \bzero\)</span>: <span class="math display">\[
+\begin{align}
+\bQ_1^T\bA\bQ_1
+    =
+    \begin{pmatrix} \bq_1^T \\ \bW^T \end{pmatrix} \bA \begin{pmatrix} \bq_1 &amp; \bW \end{pmatrix}
+    =
+    \begin{pmatrix} \bq_1^T\bA\bq_1 &amp; \bq_1^T\bA\bW \\ \bW^T\bA\bq_1 &amp; \bW^T\bA\bW \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 &amp; (\bW^T\bA\bq_1)^T \\ \bzero &amp; \bA_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 &amp; \bzero^T \\ \bzero &amp; \bA_1 \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\bA_1 = \bW^T\bA\bW \in \fR^{(n-1)\times(n-1)}\)</span> is symmetric. By induction on dimension, there exists an orthogonal <span class="math inline">\(\bQ_2 \in \fR^{(n-1)\times(n-1)}\)</span> such that <span class="math inline">\(\bQ_2^T\bA_1\bQ_2 = \operatorname{diag}(\lambda_2, ..., \lambda_n)\)</span>. The matrix <span class="math display">\[
+\begin{align}
+\bQ = \bQ_1 \begin{pmatrix} 1 &amp; \bzero \\ \bzero &amp; \bQ_2 \end{pmatrix}
+\end{align}
+\]</span> is orthogonal and satisfies <span class="math inline">\(\bQ^T\bA\bQ = \boldsymbol{\Lambda}\)</span>, so <span class="math inline">\(\bA = \bQ\boldsymbol{\Lambda}\bQ^T\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Courant–Fischer Minimax Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> be real symmetric with eigenvalues ordered as <span class="math inline">\(\lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n\)</span>. Then for each <span class="math inline">\(k \in \{1, ..., n\}\)</span>, <span class="math display">\[
+\begin{align}
+\lambda_k = \min_{\dim(S) = k} \max_{\bx \in S,\, \bx \neq \bzero} \frac{\bx^T \bA \bx}{\bx^T \bx}
+    =
+    \max_{\dim(S) = n - k + 1} \min_{\bx \in S,\, \bx \neq \bzero} \frac{\bx^T \bA \bx}{\bx^T \bx}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -952,12 +1063,24 @@ window.Quarto = {
 </div>
 <div id="callout-15" class="callout-15-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Assume <span class="math inline">\(\bA\)</span> is diagonalizable with eigenvectors <span class="math inline">\(\{\bu_1, ..., \bu_n\}\)</span> and eigenvalues <span class="math inline">\(|\lambda_1| &gt; |\lambda_2| \geq ...\)</span>. Let <span class="math inline">\(\bx^{(0)} = \sum_{i=1}^n c_i \bu_i\)</span> with <span class="math inline">\(c_1 \neq 0\)</span>. Applying <span class="math inline">\(\bA\)</span> <span class="math inline">\(k\)</span> times: <span class="math display">\[
+<p>Let <span class="math inline">\(\bq_1, ..., \bq_n\)</span> be an orthonormal basis of eigenvectors of <span class="math inline">\(\bA\)</span> with <span class="math inline">\(\bA\bq_i = \lambda_i \bq_i\)</span>. For any nonzero <span class="math inline">\(\bx = \sum_{i=1}^n c_i \bq_i\)</span>, the Rayleigh quotient satisfies <span class="math display">\[
 \begin{align}
-\bA^k \bx^{(0)} &amp;= \sum_{i=1}^n c_i \lambda_i^k \bu_i \\
-    &amp;= c_1 \lambda_1^k \left( \bu_1 + \sum_{i=2}^n \frac{c_i}{c_1} \left(\frac{\lambda_i}{\lambda_1}\right)^k \bu_i \right).
+R(\bx) = \frac{\bx^T\bA\bx}{\bx^T\bx} = \frac{\sum_{i=1}^n \lambda_i c_i^2}{\sum_{i=1}^n c_i^2}.
 \end{align}
-\]</span> Since <span class="math inline">\(|\lambda_i/\lambda_1| &lt; 1\)</span> for all <span class="math inline">\(i &gt; 1\)</span>, the summation term decays to zero as <span class="math inline">\(k \to \infty\)</span>. Thus <span class="math inline">\(\bA^k \bx^{(0)}\)</span> aligns with <span class="math inline">\(\bu_1\)</span>. The normalization at each step prevents overflow while preserving this alignment.</p>
+\]</span> Define the subspace <span class="math inline">\(V_k = \operatorname{span}\{\bq_1, ..., \bq_k\}\)</span>, which has dimension <span class="math inline">\(k\)</span>. For any nonzero <span class="math inline">\(\bx \in V_k\)</span>, <span class="math inline">\(c_i = 0\)</span> for all <span class="math inline">\(i &gt; k\)</span>, so <span class="math display">\[
+\begin{align}
+R(\bx) = \frac{\sum_{i=1}^k \lambda_i c_i^2}{\sum_{i=1}^k c_i^2} \leq \lambda_k \frac{\sum_{i=1}^k c_i^2}{\sum_{i=1}^k c_i^2} = \lambda_k.
+\end{align}
+\]</span> Because <span class="math inline">\(\bq_k \in V_k\)</span> achieves <span class="math inline">\(R(\bq_k) = \lambda_k\)</span>, we have <span class="math inline">\(\max_{\bx \in V_k,\, \bx \neq \bzero} R(\bx) = \lambda_k\)</span>.</p>
+<p>Now let <span class="math inline">\(S\)</span> be any arbitrary subspace of <span class="math inline">\(\fR^n\)</span> with <span class="math inline">\(\dim(S) = k\)</span>. Define <span class="math inline">\(W_{k-1} = \operatorname{span}\{\bq_k, ..., \bq_n\}\)</span>, which has dimension <span class="math inline">\(n - k + 1\)</span>. By the dimension formula, <span class="math display">\[
+\begin{align}
+\dim(S \cap W_{k-1}) = \dim(S) + \dim(W_{k-1}) - \dim(S + W_{k-1}) \geq k + (n - k + 1) - n = 1.
+\end{align}
+\]</span> Therefore, there exists a nonzero vector <span class="math inline">\(\by \in S \cap W_{k-1}\)</span>. Because <span class="math inline">\(\by \in W_{k-1}\)</span>, its expansion <span class="math inline">\(\by = \sum_{i=k}^n d_i \bq_i\)</span> contains only modes <span class="math inline">\(i \geq k\)</span>, so <span class="math display">\[
+\begin{align}
+R(\by) = \frac{\sum_{i=k}^n \lambda_i d_i^2}{\sum_{i=k}^n d_i^2} \geq \lambda_k \frac{\sum_{i=k}^n d_i^2}{\sum_{i=k}^n d_i^2} = \lambda_k.
+\end{align}
+\]</span> Because <span class="math inline">\(\by \in S\)</span>, the maximum over <span class="math inline">\(S\)</span> satisfies <span class="math inline">\(\max_{\bx \in S,\, \bx \neq \bzero} R(\bx) \geq R(\by) \geq \lambda_k\)</span>. Taking the minimum over all <span class="math inline">\(k\)</span>-dimensional subspaces <span class="math inline">\(S\)</span> proves the first equality. The dual maximum-minimum characterization follows similarly by replacing <span class="math inline">\(\bA\)</span> with <span class="math inline">\(-\bA\)</span>.</p>
 </div>
 </div>
 </div>
@@ -967,28 +1090,94 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Inverse Iteration
+<span class="screen-reader-only">Note</span>Theorem: Cauchy Interlacing Theorem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Apply power iteration to <span class="math inline">\((\bA - \sigma\bI)^{-1}\)</span>.</p>
-<ul>
-<li><p><strong>Use:</strong> Finds the eigenvalue closest to the shift <span class="math inline">\(\sigma\)</span>.</p></li>
-<li><p><strong>Efficiency:</strong> Factorize <span class="math inline">\((\bA - \sigma\bI)\)</span> once, then solve at each step (<span class="math inline">\(O(n^2)\)</span>).</p></li>
-</ul>
+<p>Let <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> be symmetric, and let <span class="math inline">\(\bB\in\fR^{(n-1)\times(n-1)}\)</span> be a principal submatrix. If <span class="math display">\[
+\begin{align}
+\lambda_1\leq\cdots\leq\lambda_n,
+    \qquad
+    \mu_1\leq\cdots\leq\mu_{n-1}
+\end{align}
+\]</span> are the eigenvalues of <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span>, respectively, then <span class="math display">\[
+\begin{align}
+\lambda_k\leq\mu_k\leq\lambda_{k+1},
+    \qquad k=1,...,n-1.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>After a simultaneous permutation of rows and columns, we may assume that <span class="math inline">\(\bB\)</span> is obtained by deleting the last row and column. Identify <span class="math inline">\(\fR^{n-1}\)</span> with the coordinate hyperplane <span class="math display">\[
+\begin{align}
+H=\{\bx\in\fR^n:x_n=0\}.
+\end{align}
+\]</span> For every nonzero <span class="math inline">\(\bx\in H\)</span>, the Rayleigh quotients of <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span> agree.</p>
+<p>Apply the first Courant–Fischer characterization from the result above. The minimization defining <span class="math inline">\(\mu_k\)</span> ranges only over <span class="math inline">\(k\)</span>-dimensional subspaces of <span class="math inline">\(H\)</span>, whereas the minimization defining <span class="math inline">\(\lambda_k\)</span> ranges over all <span class="math inline">\(k\)</span>-dimensional subspaces of <span class="math inline">\(\fR^n\)</span>. Restricting the admissible set cannot decrease the minimum, so <span class="math inline">\(\lambda_k\leq\mu_k\)</span>.</p>
+<p>For the other inequality, use the dual characterization. Since <span class="math inline">\(\dim(H)=n-1\)</span>, <span class="math display">\[
+\begin{align}
+\mu_k
+    &amp;=\max_{\substack{S\subset H\\ \dim(S)=n-k}}
+      \min_{\bx\in S,\,\bx\neq\bzero}R_{\bA}(\bx)
+    \leq\max_{\substack{S\subset\fR^n\\ \dim(S)=n-k}}
+      \min_{\bx\in S,\,\bx\neq\bzero}R_{\bA}(\bx)
+      =\lambda_{k+1}.
+\end{align}
+\]</span> Together the two bounds give the interlacing inequalities.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="power-iteration-and-shifted-inverse-iteration" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="power-iteration-and-shifted-inverse-iteration"><span class="header-section-number">16.3</span> Power Iteration and Shifted Inverse Iteration</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Definition: Power Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Shifted inverse iteration)</strong> If <span class="math inline">\(\lambda_i\)</span> is an eigenvalue of <span class="math inline">\(\bA\)</span>, then <span class="math inline">\((\lambda_i-\sigma)^{-1}\)</span> is an eigenvalue of <span class="math inline">\((\bA-\sigma\bI)^{-1}\)</span>. The eigenvalue closest to <span class="math inline">\(\sigma\)</span> becomes largest in magnitude after inversion.</p>
+<p>Let <span class="math inline">\(\bA\)</span> be real symmetric. Given a unit vector <span class="math inline">\(\bv^{(0)}\)</span>, power iteration constructs <span class="math display">\[
+\begin{align}
+\bw^{(k)} = \bA \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}, \qquad \lambda^{(k)} = (\bv^{(k)})^T \bA \bv^{(k)}.
+\end{align}
+\]</span> Order the eigenvalues by magnitude. If <span class="math inline">\(|\lambda_1|&gt;|\lambda_2|\geq\cdots\geq|\lambda_n|\)</span> and <span class="math inline">\(\bq_1^T\bv^{(0)}\neq0\)</span>, the direction of the iterate converges linearly: <span class="math display">\[
+\begin{align}
+\|\bv^{(k)} - (\pm \bq_1)\|_2 = O\left( \left| \frac{\lambda_2}{\lambda_1} \right|^k \right).
+\end{align}
+\]</span> For a general nonnormal matrix, an eigenvector basis may be poorly conditioned or may not exist, and this simple orthogonal expansion no longer justifies the claim.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Shifted Inverse Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a real symmetric matrix, an eigenvalue near a target <span class="math inline">\(\sigma\)</span> can be isolated by applying power iteration implicitly to <span class="math inline">\((\bA-\sigma\bI)^{-1}\)</span>: <span class="math display">\[
+\begin{align}
+(\bA - \sigma \bI) \bw^{(k)} = \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}.
+\end{align}
+\]</span> The eigenvalues of <span class="math inline">\((\bA - \sigma \bI)^{-1}\)</span> are <span class="math inline">\((\lambda_i - \sigma)^{-1}\)</span>. Provided the shift is not itself an eigenvalue and the starting vector contains the desired component, the mode closest to <span class="math inline">\(\sigma\)</span> dominates. The matrix inverse is never formed: each step solves a shifted linear system.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1001,10 +1190,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Update the shift <span class="math inline">\(\sigma_k\)</span> to the current Rayleigh quotient <span class="math inline">\((\bv^{(k)})^T\bA\bv^{(k)}\)</span> at each step.</p>
-<ul>
-<li><strong>Convergence:</strong> <strong>Cubic</strong> for symmetric matrices (digits triple each step).</li>
-</ul>
+<p>For symmetric matrices, updating the shift dynamically to the current Rayleigh estimate <span class="math inline">\(\sigma_k = (\bv^{(k)})^T \bA \bv^{(k)}\)</span> defines Rayleigh Quotient Iteration: <span class="math display">\[
+\begin{align}
+(\bA - \sigma_k \bI) \bw^{(k+1)} = \bv^{(k)}, \qquad \bv^{(k+1)} = \frac{\bw^{(k+1)}}{\|\bw^{(k+1)}\|_2}, \qquad \sigma_{k+1} = (\bv^{(k+1)})^T \bA \bv^{(k+1)}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1013,86 +1203,158 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Eigenvalue Method Selection
+<span class="screen-reader-only">Note</span>Theorem: Local Cubic Convergence of Rayleigh Quotient Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Implement power iteration to find <span class="math inline">\(\lambda_{\max}\)</span> of a tridiagonal matrix.</p></li>
-<li><p>Use RQI on a random <span class="math inline">\(4 \times 4\)</span> symmetric matrix. Observe the rate of convergence.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="schur-decomposition-and-the-qr-algorithm" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="schur-decomposition-and-the-qr-algorithm"><span class="header-section-number">17.4</span> Schur Decomposition and the QR Algorithm</h2>
-<p>The Schur decomposition provides the theoretical basis for the QR algorithm, the standard iterative method for computing the eigenvalues and eigenvectors of dense, general matrices.</p>
-<p>Diagonalization may fail for defective matrices, but Schur decomposition always exists over <span class="math inline">\(\fC\)</span>. This is why practical dense eigensolvers target Schur form rather than diagonal form.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Schur Decomposition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Every square <span class="math inline">\(\bA\)</span> satisfies <span class="math inline">\(\bA = \bQ\bT\bQ^*\)</span>, where <span class="math inline">\(\bQ\)</span> is unitary and <span class="math inline">\(\bT\)</span> is upper triangular.</p>
-<ul>
-<li><strong>Schur Vectors:</strong> Columns of <span class="math inline">\(\bQ\)</span> provide an orthonormal basis for nested invariant subspaces.</li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: QR Iteration
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Iteratively compute QR factorizations and swap the factors. The goal is to transform <span class="math inline">\(\bA\)</span> into an upper triangular (Schur) form, where the eigenvalues appear on the diagonal.</p>
-<ol type="1">
-<li><p><span class="math inline">\(\bA_k = \bQ_k \bR_k\)</span></p></li>
-<li><p><span class="math inline">\(\bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k\)</span></p></li>
-</ol>
-<p><strong>Convergence:</strong> <span class="math inline">\(\bA_k\)</span> converges to the Schur form <span class="math inline">\(\bT\)</span>.</p>
+<p>Let <span class="math inline">\(\bA\)</span> be real symmetric, and let <span class="math inline">\(\lambda_*\)</span> be a simple eigenvalue with unit eigenvector <span class="math inline">\(\bq_*\)</span>. If a unit RQI iterate <span class="math inline">\(\bv^{(k)}\)</span> is sufficiently close to <span class="math inline">\(\bq_*\)</span>, then <span class="math display">\[
+\begin{align}
+\sin\angle(\bv^{(k+1)},\bq_*)
+    \leq C\sin^3\angle(\bv^{(k)},\bq_*).
+\end{align}
+\]</span> If <span class="math inline">\(\lambda_*\)</span> is an extremal eigenvalue, the Rayleigh shifts also satisfy <span class="math display">\[
+\begin{align}
+|\sigma_{k+1}-\lambda_*|
+    \leq C'|\sigma_k-\lambda_*|^3
+\end{align}
+\]</span> for iterates sufficiently close to <span class="math inline">\(\bq_*\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Write the current unit vector as <span class="math display">\[
+\begin{align}
+\bv=\cos\theta\,\bq_*+\sin\theta\,\bz,
+    \qquad
+    \bz\perp\bq_*,
+    \qquad
+    \|\bz\|_2=1.
+\end{align}
+\]</span> Its Rayleigh quotient <span class="math inline">\(\sigma=\bv^T\bA\bv\)</span> obeys <span class="math display">\[
+\begin{align}
+\sigma
+    &amp;= (\cos\theta\,\bq_*+\sin\theta\,\bz)^T\bA(\cos\theta\,\bq_*+\sin\theta\,\bz) \\
+    &amp;= \cos^2\theta\,\lambda_* + 2\cos\theta\sin\theta\,\bq_*^T\bA\bz + \sin^2\theta\,\bz^T\bA\bz.
+\end{align}
+\]</span> Because <span class="math inline">\(\bA\bq_* = \lambda_*\bq_*\)</span> and <span class="math inline">\(\bq_*^T\bz = 0\)</span>, the cross-term vanishes: <span class="math inline">\(\bq_*^T\bA\bz = \lambda_*\bq_*^T\bz = 0\)</span>. Substituting <span class="math inline">\(\cos^2\theta = 1-\sin^2\theta\)</span>, <span class="math display">\[
+\begin{align}
+\sigma-\lambda_*
+    = (1-\sin^2\theta)\lambda_* + \sin^2\theta\,\bz^T\bA\bz - \lambda_*
+    = \sin^2\theta\,(\bz^T\bA\bz-\lambda_*),
+\end{align}
+\]</span> so <span class="math inline">\(|\sigma-\lambda_*|\leq C_0\sin^2\theta\)</span>.</p>
+<p>Let <span class="math inline">\(\gamma=\min_{\lambda_j\neq\lambda_*}|\lambda_j-\lambda_*|&gt;0\)</span>. Once <span class="math inline">\(\theta\)</span> is small enough, <span class="math inline">\(|\lambda_j-\sigma|\geq\gamma/2\)</span> for every other eigenvalue. Expanding the inverse-iteration vector <span class="math inline">\(\bw=(\bA-\sigma\bI)^{-1}\bv\)</span> in an orthonormal eigenbasis, its component along <span class="math inline">\(\bq_*\)</span> has magnitude <span class="math display">\[
+\begin{align}
+\frac{|\cos\theta|}{|\lambda_*-\sigma|},
+\end{align}
+\]</span> whereas the norm of its orthogonal component is at most <span class="math inline">\(2|\sin\theta|/\gamma\)</span>. Normalization does not change their ratio. Therefore, <span class="math display">\[
+\begin{align}
+\tan\angle(\bv^+,\bq_*)
+    \leq
+    \frac{2|\lambda_*-\sigma|}{\gamma|\cos\theta|}|\sin\theta|
+    \leq C_1|\sin\theta|^3.
+\end{align}
+\]</span> For small angles, <span class="math inline">\(\sin\theta\)</span> and <span class="math inline">\(\tan\theta\)</span> are comparable, which proves cubic convergence of the eigenvector direction.</p>
+<p>If <span class="math inline">\(\lambda_*\)</span> is extremal, the spectral gap also gives two-sided local bounds <span class="math inline">\(c\sin^2\theta\leq|\sigma-\lambda_*|\leq C\sin^2\theta\)</span>. Applying the Rayleigh-quotient identity to the next iterate and using the cubic angle bound yields <span class="math display">\[
+\begin{align}
+|\sigma^+-\lambda_*|
+    \leq C_2\sin^2\angle(\bv^+,\bq_*)
+    \leq C_3\sin^6\theta
+    \leq C_4|\sigma-\lambda_*|^3.
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-practical-qr-algorithm" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="the-practical-qr-algorithm"><span class="header-section-number">16.4</span> The Practical QR Algorithm</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Definition: Basic QR Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(QR iteration performance)</strong> Raw QR iteration requires <span class="math inline">\(O(n^3)\)</span> operations per step. Practical implementations, such as those in standard numerical libraries, typically use:</p>
+<p>Given <span class="math inline">\(\bA_0 = \bA\)</span>, the unshifted QR iteration generates orthogonally similar matrices via <span class="math display">\[
+\begin{align}
+\bA_k = \bQ_k \bR_k, \qquad \bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k.
+\end{align}
+\]</span> All iterates share the same eigenvalues. Under suitable separation conditions the subdiagonal entries tend to zero and the iterates reveal a Schur form. Shifts and deflation are essential for a reliable practical method.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Invariance of Hessenberg Structure under QR Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bH \in \fR^{n \times n}\)</span> be an upper Hessenberg matrix (<span class="math inline">\(H_{ij} = 0\)</span> for all <span class="math inline">\(i &gt; j + 1\)</span>). If <span class="math inline">\(\bH = \bQ\bR\)</span> is the QR factorization of <span class="math inline">\(\bH\)</span>, then the reversed product <span class="math inline">\(\bH_+ = \bR\bQ\)</span> is also upper Hessenberg.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(\bH = \bQ\bR\)</span> and <span class="math inline">\(\bR\)</span> is upper triangular and invertible (assuming <span class="math inline">\(\bH\)</span> is nonsingular, or extending by continuity), <span class="math inline">\(\bQ = \bH \bR^{-1}\)</span>. Because the inverse of an upper triangular matrix is upper triangular, <span class="math inline">\(\bR^{-1}\)</span> is upper triangular. The product of an upper Hessenberg matrix <span class="math inline">\(\bH\)</span> and an upper triangular matrix <span class="math inline">\(\bR^{-1}\)</span> is upper Hessenberg. Therefore, <span class="math inline">\(\bQ\)</span> is upper Hessenberg.</p>
+<p>Now consider <span class="math inline">\(\bH_+ = \bR\bQ\)</span>. The matrix <span class="math inline">\(\bR\)</span> is upper triangular and <span class="math inline">\(\bQ\)</span> is upper Hessenberg. For entry <span class="math inline">\((i, j)\)</span> with <span class="math inline">\(i &gt; j + 1\)</span>: <span class="math display">\[
+\begin{align}
+(\bH_+)_{ij} = \sum_{k=1}^n R_{ik} Q_{kj}.
+\end{align}
+\]</span> Because <span class="math inline">\(\bR\)</span> is upper triangular, <span class="math inline">\(R_{ik} = 0\)</span> for all <span class="math inline">\(k &lt; i\)</span>. For the remaining terms <span class="math inline">\(k \geq i\)</span>, we have <span class="math inline">\(k \geq i &gt; j + 1\)</span>, which implies <span class="math inline">\(k &gt; j + 1\)</span>. Because <span class="math inline">\(\bQ\)</span> is upper Hessenberg, <span class="math inline">\(Q_{kj} = 0\)</span> for all <span class="math inline">\(k &gt; j + 1\)</span>. Thus every term in the sum vanishes, proving <span class="math inline">\((\bH_+)_{ij} = 0\)</span> for <span class="math inline">\(i &gt; j + 1\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Practical Shifted QR Framework
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A standard dense nonsymmetric eigenvalue computation has two phases:</p>
 <ol type="1">
-<li><p><strong>Hessenberg Reduction:</strong> Pre-process <span class="math inline">\(\bA\)</span> to upper Hessenberg form in <span class="math inline">\(O(n^3)\)</span> operations.</p></li>
-<li><p><strong>Triangularization:</strong> Subsequent QR steps on a Hessenberg matrix cost only <span class="math inline">\(O(n^2)\)</span>.</p></li>
-<li><p><strong>Shifts:</strong> Techniques to accelerate convergence to quadratic or cubic rates.</p></li>
+<li><p><strong>Hessenberg reduction:</strong> Compute <span class="math inline">\(\bH_0=\bU_0^T\bA\bU_0\)</span> with Householder reflectors. This one-time reduction costs <span class="math inline">\(O(n^3)\)</span> operations and preserves the eigenvalues.</p></li>
+<li><p><strong>Implicit shifted QR steps:</strong> Apply shifts while preserving Hessenberg form. A schematic single-shift step is <span class="math display">\[
+\begin{align}
+\bH_k - \mu_k \bI = \bQ_k \bR_k, \qquad \bH_{k+1} = \bR_k \bQ_k + \mu_k \bI.
+\end{align}
+\]</span> Lem.~above explains why each step costs <span class="math inline">\(O(n^2)\)</span> rather than <span class="math inline">\(O(n^3)\)</span>. Real nonsymmetric codes use implicit single or double shifts so that complex conjugate pairs can remain in real arithmetic. A small subdiagonal entry permits deflation and splits the problem into smaller blocks.</p></li>
 </ol>
+<p>For a real symmetric matrix, Hessenberg form reduces to tridiagonal form. Wilkinson shifts from the trailing two by two block and implicit bulge chasing then give a particularly efficient symmetric algorithm.</p>
 </div>
 </div>
+</section>
+<section id="exercises" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">16.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1104,8 +1366,32 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>For <span class="math inline">\(\bA = \begin{pmatrix}3&amp;1&amp;0\\0&amp;2&amp;1\\0&amp;0&amp;2\end{pmatrix}\)</span>, identify the Schur vectors and eigenvalues by inspection.</p></li>
-<li><p>Implement 50 steps of basic QR iteration on a random <span class="math inline">\(3 \times 3\)</span> symmetric matrix. Check the off-diagonals.</p></li>
+<li><p><strong>Derive.</strong> <strong>(Rayleigh quotient stationary points)</strong> For a real symmetric matrix <span class="math inline">\(\bA\)</span>, define the Rayleigh quotient <span class="math inline">\(R(\bx) = \frac{\bx^T\bA\bx}{\bx^T\bx}\)</span> on <span class="math inline">\(\fR^n \setminus \{\bzero\}\)</span>.</p>
+<ol type="1">
+<li><p>Compute the gradient <span class="math inline">\(\nabla R(\bx)\)</span> directly.</p></li>
+<li><p>Prove that <span class="math inline">\(\nabla R(\bx) = \bzero\)</span> if and only if <span class="math inline">\(\bx\)</span> is an eigenvector of <span class="math inline">\(\bA\)</span>.</p></li>
+<li><p>Restrict the Hessian <span class="math inline">\(\nabla^2R(\bq_i)\)</span> to directions orthogonal to <span class="math inline">\(\bq_i\)</span>. Show that its eigenvalues on this tangent space are <span class="math inline">\(\frac{2}{\|\bq_i\|_2^2}(\lambda_j-\lambda_i)\)</span> for <span class="math inline">\(j\neq i\)</span>. Explain why the radial direction has zero curvature, and conclude that the smallest and largest eigenvalues are the global extrema of <span class="math inline">\(R\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>(Similarity is a coordinate change)</strong> Choose a nonorthogonal basis of <span class="math inline">\(\fR^2\)</span>, form its basis matrix <span class="math inline">\(\bS\)</span>, and compute <span class="math inline">\(\bS^{-1}\bA\bS\)</span> for a simple diagonal matrix <span class="math inline">\(\bA\)</span>. Verify directly that eigenvalues are preserved although lengths and angles generally are not.</p></li>
+<li><p><strong>Explore.</strong> <strong>(A defective shear)</strong> For <span class="math inline">\(\bA=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}\)</span>, find the algebraic and geometric multiplicities of the eigenvalue. Compute <span class="math inline">\(\bA^k\)</span> and explain how its growth is invisible if one records only the eigenvalue <span class="math inline">\(1\)</span>.</p></li>
+<li><p><strong>Compute.</strong> <strong>(Observed cubic convergence of RQI)</strong> Apply RQI to a symmetric matrix with distinct eigenvalues, starting from several unit vectors close to the same eigenvector.</p>
+<ol type="1">
+<li><p>Record the angle errors <span class="math inline">\(\theta_k=\angle(\bv^{(k)},\bq_*)\)</span> and the ratios <span class="math inline">\(\sin\theta_{k+1}/\sin^3\theta_k\)</span>.</p></li>
+<li><p>Record the Rayleigh errors and verify the cubic relation in the result above before rounding error dominates.</p></li>
+<li><p>Repeat with two nearly repeated eigenvalues and explain how the spectral gap enters the constants in the proof.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>(Cauchy interlacing on a concrete matrix)</strong> For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}2&amp;1&amp;0\\1&amp;2&amp;1\\0&amp;1&amp;2\end{pmatrix},
+\end{align}
+\]</span> compute the eigenvalues of <span class="math inline">\(\bA\)</span> and of the leading <span class="math inline">\(2\times2\)</span> principal submatrix. Verify each inequality in the result above. Repeat after deleting the middle row and column.</p></li>
+<li><p><strong>Explore.</strong> <strong>(Failure of unshifted QR on an exchange matrix)</strong> Let <span class="math inline">\(\bP = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\)</span>.</p>
+<ol type="1">
+<li><p>Compute the QR factorization <span class="math inline">\(\bP = \bQ_0 \bR_0\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(\bP_1 = \bR_0 \bQ_0\)</span> and show that <span class="math inline">\(\bP_1 = \bP\)</span>.</p></li>
+<li><p>Repeat the step with a nonzero shift. Determine which shifts break the cycle, and explain how an eigenvalue shift from the trailing two by two block permits immediate deflation in this example.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>(Givens rotation Hessenberg QR)</strong> Write a Python function that executes one step of shifted QR on an upper Hessenberg matrix <span class="math inline">\(\bH \in \fR^{n \times n}\)</span> using <span class="math inline">\(n-1\)</span> Givens rotations. Verify that your implementation requires <span class="math inline">\(O(n^2)\)</span> flops rather than <span class="math inline">\(O(n^3)\)</span>.</p></li>
 </ol>
 </div>
 </div>
@@ -1529,13 +1815,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../orthogonality/chebyshev.html" class="pagination-link" aria-label="Chebyshev Polynomials">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span>
+      <a href="../orthogonality/least-squares.html" class="pagination-link" aria-label="Least Squares as Projection">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../eigenvalues/svd.html" class="pagination-link" aria-label="Singular Value Decomposition">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../eigenvalues/svd.html" class="pagination-link" aria-label="The Singular Value Decomposition">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

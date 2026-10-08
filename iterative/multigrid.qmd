@@ -1,0 +1,459 @@
+# Multigrid Methods
+
+
+**(Running example: Poisson matrix)**  We again use the Poisson matrix, now together with the hierarchy of grids from which it arose. Stationary iteration exposed the slow modes, whereas multigrid succeeds by changing the scale on which those modes are represented.
+
+
+## Oscillating Error and the Smoothing Property
+
+
+Classical stationary iterations such as Jacobi and Gauss--Seidel converge slowly because the *smooth* (low-frequency) error components decay slowly. High-frequency, oscillatory components decay within a few sweeps. A Fourier analysis of the error makes this asymmetry precise, and multigrid is built on it. The smoother removes the oscillatory error components, and the remaining smooth error is passed to a coarser grid, where it becomes oscillatory and cheap to resolve.
+
+
+**Frequency-Dependent Error Decay in Jacobi Iteration**  For the 1D model problem, the Jacobi update reads
+$$
+\begin{align}
+x_i^{(k+1)} = \tfrac{1}{2}\bigl(x_{i-1}^{(k)} + x_{i+1}^{(k)}\bigr) + \tfrac{1}{2}b_i.
+\end{align}
+$$
+Each new value is the *average of its two neighbors* plus a source term. Consider two extreme error profiles at some iteration:
+
+- *Oscillatory error*: neighboring values often have opposite signs, so averaging damps many high-frequency modes rapidly. The exact alternating mode is an exception for unweighted Jacobi: its sign flips without shrinking. Weighted Jacobi or Gauss--Seidel supplies the smoothing used in multigrid.
+
+- *Smooth error* ($e_i \propto \sin(j\pi h)$ for small $j$, slowly varying): neighbors of node $i$ carry nearly the same value as $e_i$ itself, so their average barely moves things. The error barely changes per sweep.
+
+Jacobi acts as a local *averaging filter* that pulls each value toward the mean of its neighbors. Oscillations cancel in that average, whereas smooth trends do not. Starting from a random initial guess, the error spans all frequencies. After a handful of sweeps the oscillatory components are gone, but the smooth residual remains, requiring a coarser grid for resolution.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Choosing a solver)**
+The structure of the coefficient matrix determines the method. The following summary collects the recommendations of the preceding sections.
+
+1. **Dense symmetric positive definite.** Cholesky factorization (the referenced result), with $n^3/3$ flops and no pivoting.
+
+1. **Large sparse symmetric positive definite.** Preconditioned conjugate gradients (the referenced section) or multigrid, with $O(\operatorname{nnz}(\bA))$ work per iteration.
+
+1. **Dense general square.** Gaussian elimination with partial pivoting (the referenced result), with $2n^3/3$ flops and the backward error of the referenced result.
+
+1. **Large sparse general square.** Preconditioned GMRES (the referenced section).
+
+1. **Overdetermined with full column rank.** Householder QR (the referenced result), which avoids the squared condition number of the normal equations.
+
+1. **Rank-deficient or nearly rank-deficient.** The SVD (the referenced result), which determines the numerical rank and the minimum-norm solution.
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**Explore.**
+**(Observing oscillating error)** Set $n = 63$, $\bb = \bzero$, and $\bx^* = \bzero$, so the error equals the iterate exactly. Run Jacobi and Gauss--Seidel from the same random initial vector $\bx^{(0)} \sim \mathcal{N}(0, \bI)$.
+
+1. Plot the error profile $\be^{(k)} = \bx^{(k)}$ at iterations $k = 0, 1, 3, 10, 20$. Describe how the spectral composition of the error changes. Observe the behavior of the high-frequency components.
+
+1. Decompose $\be^{(k)}$ into Fourier mode amplitudes $\hat{e}_j^{(k)} = \langle \be^{(k)}, \phi^{(j)}\rangle / \|\phi^{(j)}\|^2$ and plot $|\hat{e}_j^{(k)}|$ vs.\ $j$ at the same iterations. Which modes decay fast, which persist?
+
+1. The Jacobi iteration matrix has eigenvalues $\mu_j = \cos(j\pi h)$. Use this to predict the amplitude of mode $j$ after $k$ sweeps as a function of the initial amplitude $|\hat{e}_j^{(0)}|$. Does your plot match the prediction?
+
+1. After 20 sweeps, what does the remaining error look like? Argue, using the eigenvalue formula, why no fine-grid iteration alone can efficiently eliminate it, necessitating a coarse-grid correction.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Fourier Modes on a Uniform Grid
+Consider the 1D model problem with the $n \times n$ tridiagonal matrix $\bA$ having $2$ on the main diagonal and $-1$ on the off-diagonals (the finite-difference discretization of $-u'' = f$ on $[0,1]$ scaled by $h^2$). Let $h = 1/(n+1)$. The *Fourier modes* are the vectors
+$$
+\begin{align}
+\phi^{(k)}_j = \sin(kj\pi h), \quad j = 1,...,n, \quad k = 1,...,n.
+\end{align}
+$$
+These form an orthogonal basis for $\fR^n$ (by discrete sine orthogonality) and diagonalize $\bA$:
+$$
+\begin{align}
+\bA\phi^{(k)} = \lambda_k\,\phi^{(k)}, \qquad \lambda_k = 2 - 2\cos(k\pi h) = 4\sin^2\!\Bigl(\frac{k\pi h}{2}\Bigr).
+\end{align}
+$$
+Small $k$ yields long-wavelength (smooth) modes, while large $k$ yields short-wavelength (oscillatory) modes.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Eigenvalues of the Jacobi Iteration Matrix
+For the 1D model problem, the Jacobi iteration matrix $\bT_J = \bI - \tfrac{1}{2}\bA$ has eigenvalues
+$$
+\begin{align}
+\mu_k = \cos(k\pi h), \quad k = 1, ..., n,
+\end{align}
+$$
+with eigenvectors $\phi^{(k)}$. After $\nu$ Jacobi sweeps, mode $k$ of the error is scaled by $\mu_k^\nu = \cos^\nu(k\pi h)$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Since $\bD = 2\bI$, the Jacobi iteration matrix is $\bT_J = \bI - \frac{1}{2}\bA$. Applying $\bT_J$ to the eigenvector $\phi^{(k)}$:
+$$
+\begin{align}
+\bT_J\phi^{(k)}
+  &= \left(\bI - \frac{1}{2}\bA\right)\phi^{(k)}
+  = \phi^{(k)} - \frac{1}{2}\bA\phi^{(k)} \\
+  &= \phi^{(k)} - \frac{1}{2}\lambda_k\phi^{(k)}
+  = \left(1 - \frac{\lambda_k}{2}\right)\phi^{(k)}.
+\end{align}
+$$
+Substituting $\lambda_k = 2 - 2\cos(k\pi h)$ yields
+$$
+\begin{align}
+1 - \frac{\lambda_k}{2}
+  = 1 - (1 - \cos(k\pi h))
+  = \cos(k\pi h).
+\end{align}
+$$
+Therefore $\bT_J\phi^{(k)} = \cos(k\pi h)\phi^{(k)}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Low- and High-Frequency Modes
+With respect to a grid of mesh size $h = 1/(n+1)$, partition the $n$ Fourier modes by frequency:
+
+- *Low-frequency (smooth) modes*: $k = 1, ..., \lfloor n/2 \rfloor$, where $k\pi h \in (0, \pi/2)$. These satisfy $\mu_k = \cos(k\pi h) \in (0,1)$, and for small $k$, $\mu_k \approx 1 - (k\pi h)^2/2 \approx 1$, so these modes decay slowly.
+
+- *High-frequency (oscillatory) modes*: $k = \lfloor n/2 \rfloor + 1, ..., n$, where $k\pi h \in (\pi/2, \pi)$.
+
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+Standard Jacobi ($\omega = 1$) is a poor smoother, because the highest-frequency mode ($k = n$) satisfies $\mu_n = \cos(n\pi h) = \cos(\pi n/(n+1)) \approx -1$, so the iterate oscillates in sign rather than decaying. *Weighted (damped) Jacobi* with $\omega = 2/3$ fixes this by controlling the entire high-frequency band.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Weighted Jacobi Iteration
+The *weighted Jacobi* method introduces a damping parameter $\omega \in (0,1)$:
+$$
+\begin{align}
+\bx^{(k+1)} = \bx^{(k)} + \omega\bD^{-1}\bigl(\bb - \bA\bx^{(k)}\bigr),
+\end{align}
+$$
+with iteration matrix $\bT_\omega = \bI - \omega\bD^{-1}\bA$ and eigenvalues
+$$
+\begin{align}
+\mu_k(\omega) = 1 - \omega(1 - \cos(k\pi h)).
+\end{align}
+$$
+The standard multigrid choice is $\omega = 2/3$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Smoothing Property of Weighted Jacobi
+For the 1D model problem with $\omega = 2/3$, the *smoothing factor*
+$$
+\begin{align}
+\bar{\mu} = \max_{\lfloor n/2\rfloor < k \leq n}\,|\mu_k(2/3)| = \frac{1}{3}.
+\end{align}
+$$
+That is, every high-frequency component of the error is reduced by at least $2/3$ in a single weighted Jacobi step.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For $k > n/2$, we have $k\pi h \in (\pi/2, \pi)$, so $1 - \cos(k\pi h) \in (1, 2)$. With $\omega = 2/3$:
+$$
+\begin{align}
+\mu_k(2/3) = 1 - \tfrac{2}{3}(1 - \cos(k\pi h)) \in \Bigl(1 - \tfrac{4}{3},\; 1 - \tfrac{2}{3}\Bigr) = \Bigl(-\tfrac{1}{3},\; \tfrac{1}{3}\Bigr).
+\end{align}
+$$
+Hence $|\mu_k| < 1/3$ for all high-frequency modes. The supremum $1/3$ is approached as $k \to \lfloor n/2\rfloor^+$ (where $\cos(k\pi h) \to 0^-$).
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+After $\nu$ weighted Jacobi sweeps, every high-frequency error component is reduced by $(1/3)^\nu$. The remaining error is dominated by *smooth* modes, which are nearly constant on the scale of $h$. This smooth, slowly-varying error is the target of the coarse-grid correction in multigrid.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**Eigenvalue spectrum of $\bT_{2/3}$ for $n = 15$, $h = 1/16$.**
+
+The eigenvalues $\mu_k = 1 - \tfrac{2}{3}(1 - \cos(k\pi/16))$ for selected $k$:
+
+- $k = 1$ (smoothest): $\mu_1 \approx 0.981$ (minimal decay per sweep).
+
+- $k = 4$: $\mu_4 = 1 - \tfrac{2}{3}(1 - \cos(\pi/4)) \approx 0.804$ (slow decay).
+
+- $k = 8$: $\mu_8 = 1 - \tfrac{2}{3}(1 - \cos(\pi/2)) = 1/3 \approx 0.333$.
+
+- $k = 12$: $\mu_{12} = 1 - \tfrac{2}{3}(1 - \cos(3\pi/4)) \approx -0.138$ (rapid decay).
+
+- $k = 15$ (most oscillatory): $\mu_{15} \approx -0.330$ (magnitude bounded by $1/3$).
+
+
+Modes $k \geq 8$ all satisfy $|\mu_k| \leq 1/3$, confirming the smoothing property. Modes $k \leq 7$ range from $0.63$ to $0.98$ and are essentially untouched by the smoother.
+:::
+
+
+## The Two-Grid Correction Scheme
+
+
+A smooth error on a fine grid of mesh size $h$ looks *oscillatory* on a coarser grid of mesh size $2h$. More precisely, the smooth fine-grid modes ($k < n/2$) oscillate at wavelength $> 2h$ and are well-represented on the coarse grid. Once the high-frequency components have been attenuated by the smoother, the remaining error lives in a low-dimensional smooth subspace that a direct solve on a coarse grid of size $n/2$ can eliminate efficiently.
+
+
+::: {.callout-note icon=false}
+## Definition: Prolongation Operator
+The *prolongation* (or interpolation) operator $\bP: \fR^{m} \to \fR^{n}$ (where $m = (n-1)/2$ for grids satisfying $n = 2m+1$) transfers a coarse-grid vector to the fine grid by *linear interpolation*. For a coarse-grid vector $\bv \in \fR^m$, the fine-grid vector $\bP\bv \in \fR^n$ is defined by
+$$
+\begin{align}
+(\bP\bv)_{2j} = v_j, \qquad (\bP\bv)_{2j-1} = \tfrac{1}{2}(v_{j-1} + v_j), \quad j = 1, ..., m,
+\end{align}
+$$
+with boundary conventions $v_0 = v_{m+1} = 0$. In matrix form, $\bP$ is $n \times m$ with entries $1$ at coarse-grid points and $\tfrac{1}{2}$ weights at fine-grid midpoints.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Restriction Operator
+The *restriction* operator $\bR: \fR^{n} \to \fR^{m}$ transfers a fine-grid vector to the coarse grid. The standard *full-weighting restriction* averages each coarse point with its fine-grid neighbors:
+$$
+\begin{align}
+(\bR\bw)_j = \tfrac{1}{4}w_{2j-1} + \tfrac{1}{2}w_{2j} + \tfrac{1}{4}w_{2j+1}, \quad j = 1, ..., m.
+\end{align}
+$$
+In matrix form, $\bR = \tfrac{1}{2}\bP^T$. This choice ensures that the Galerkin coarse-grid operator $\bA_c = \bR\bA\bP$ is SPD whenever $\bA$ is SPD.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+The relationship $\bR = \tfrac{1}{2}\bP^T$ is called the *variational principle* and guarantees that $\bA_c = \bR\bA\bP$ is a consistent, spectrally equivalent discretization on the coarse grid. For the 1D model problem, $\bA_c$ equals the natural finite-difference matrix on the $2h$-grid exactly. This special property simplifies analysis but does not hold in general for variable-coefficient or higher-dimensional problems.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Two-Grid Correction Scheme
+Given $\bA\bx = \bb$ on the fine grid, one step of the *two-grid (TG) method* from an iterate $\bx^{(0)}$ is:
+
+1. **Pre-smoothing:** Apply $\nu_1 \geq 0$ smoother steps to get $\tilde{\bx}$.
+
+1. **Residual:** Compute $\br = \bb - \bA\tilde{\bx}$.
+
+1. **Restrict:** Form the coarse residual $\br_c = \bR\br \in \fR^m$.
+
+1. **Coarse solve:** Solve $\bA_c\be_c = \br_c$ exactly for $\be_c \in \fR^m$.
+
+1. **Prolong and correct:** Set $\hat{\bx} = \tilde{\bx} + \bP\be_c$.
+
+1. **Post-smoothing:** Apply $\nu_2 \geq 0$ smoother steps to $\hat{\bx}$ to get $\bx^{(1)}$.
+
+The coarse-grid system $\bA_c\be_c = \br_c$ solves the *residual equation*: if $\bx^* - \tilde{\bx}$ is smooth and lies in the range of $\bP$, this recovers the error exactly.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Ideal Coarse-Grid Correction
+If the error $\boldsymbol{\epsilon} = \bx^* - \tilde{\bx}$ lies in the range of $\bP$ (i.e., $\boldsymbol{\epsilon} = \bP\boldsymbol{\delta}$ for some $\boldsymbol{\delta} \in \fR^m$), then the two-grid correction recovers the exact solution: $\hat{\bx} = \bx^*$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $\boldsymbol{\epsilon} = \bx^* - \tilde{\bx} = \bP\boldsymbol{\delta}$ for some $\boldsymbol{\delta} \in \fR^m$. The residual vector is
+$$
+\begin{align}
+\br = \bb - \bA\tilde{\bx} = \bA(\bx^* - \tilde{\bx}) = \bA\boldsymbol{\epsilon} = \bA\bP\boldsymbol{\delta}.
+\end{align}
+$$
+Applying the restriction operator $\bR$:
+$$
+\begin{align}
+\br_c = \bR\br = \bR\bA\bP\boldsymbol{\delta} = \bA_c\boldsymbol{\delta}.
+\end{align}
+$$
+Since $\bA_c$ is nonsingular, solving the coarse problem $\bA_c\be_c = \br_c$ yields
+$$
+\begin{align}
+\be_c = \bA_c^{-1}\br_c = \bA_c^{-1}\bA_c\boldsymbol{\delta} = \boldsymbol{\delta}.
+\end{align}
+$$
+Prolongating the coarse correction and updating gives
+$$
+\begin{align}
+\hat{\bx} = \tilde{\bx} + \bP\be_c = \tilde{\bx} + \bP\boldsymbol{\delta} = \tilde{\bx} + \boldsymbol{\epsilon} = \bx^*.
+\end{align}
+$$
+Thus the coarse-grid correction eliminates the error exactly.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**Two-grid correction on the 1D model problem ($n = 7$, $h = 1/8$).**
+
+Take $\bA$ the $7 \times 7$ tridiagonal matrix with $2/-1$, $\bb = \mathbf{1}$, $\bx^{(0)} = \bzero$. After $\nu_1 = 2$ weighted Jacobi sweeps the residual norm is $\|\br\| \approx 0.82$, and after 20 Jacobi sweeps it is $\approx 0.32$. By contrast, a single two-grid step with $\nu_1 = \nu_2 = 2$ reduces the residual to $\approx 0.08$, which is roughly a $10\times$ improvement over pure smoothing at equal cost, because the coarse-grid solve resolves the smooth error components that the smoother leaves behind.
+:::
+
+
+## The Multigrid V-Cycle
+
+
+The two-grid method replaces the fine-grid iteration matrix with one that damps all error components, at the cost of an exact coarse-grid solve. For large problems the coarse grid may itself be large. Multigrid applies the idea recursively. Instead of solving the coarse-grid problem exactly, it applies the two-grid scheme again at the coarser level, and so on, until the coarsest grid is trivially small (a single unknown). This gives the *V-cycle*.
+
+
+::: {.callout-note icon=false}
+## Definition: Multigrid Grid Hierarchy
+For $n = 2^L - 1$, define $L$ nested grids with mesh sizes $h_\ell = 2^{-\ell}$, giving $n_\ell = 2^\ell - 1$ interior points at level $\ell = 1, ..., L$. The finest grid is $\ell = L$ (mesh size $h$) and the coarsest is $\ell = 1$ (a single point). At each level $\ell$ we have a system matrix $\bA_\ell$ (built via Galerkin: $\bA_{\ell-1} = \bR_\ell\bA_\ell\bP_\ell$), restriction $\bR_\ell: \fR^{n_\ell} \to \fR^{n_{\ell-1}}$, and prolongation $\bP_\ell: \fR^{n_{\ell-1}} \to \fR^{n_\ell}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Multigrid V-Cycle
+$\mathtt{MG}(\ell,\, \bx,\, \bb)$: one multigrid V-cycle at level $\ell$, returning an improved approximation to $\bA_\ell\bx = \bb$:
+
+1. **Base case** ($\ell = 1$): return $\bA_1^{-1}\bb$ (exact solve on a $1 \times 1$ system).
+
+1. **Pre-smoothing:** $\bx \leftarrow S_\ell^{\nu_1}(\bx,\,\bb)$ \quad ($\nu_1$ steps of the smoother at level $\ell$).
+
+1. **Restrict residual:** $\br_{\ell-1} \leftarrow \bR_\ell(\bb - \bA_\ell\bx)$.
+
+1. **Coarse-grid correction:** $\be_{\ell-1} \leftarrow \mathtt{MG}(\ell-1,\,\bzero,\,\br_{\ell-1})$.
+
+1. **Correct:** $\bx \leftarrow \bx + \bP_\ell\be_{\ell-1}$.
+
+1. **Post-smoothing:** $\bx \leftarrow S_\ell^{\nu_2}(\bx,\,\bb)$ \quad ($\nu_2$ steps of the smoother).
+
+1. Return $\bx$.
+
+Calling $\mathtt{MG}$ once as the coarse-grid solver in step 4 gives the V-cycle. Calling it twice gives the *W-cycle*, which is more robust on difficult problems at higher cost.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+A single V-cycle descends from the finest level $L$ to the coarsest level $1$ (the ``down stroke'') applying pre-smoothing and restriction, then ascends back (the ``up stroke'') applying prolongation and post-smoothing. Typical choices are $\nu_1 = \nu_2 = 1$ or $2$. The W-cycle replaces the single recursive call in step 4 with two calls, more aggressively correcting smooth error at the cost of roughly $\log n$ extra work.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Mesh-Independent Convergence Principle
+Consider a family of SPD discretizations with grid-independent smoothing and approximation constants. If the chosen smoother damps the components not represented on the coarse grid and the transfer operators approximate the remaining smooth components uniformly in $h$, then the two-grid error-propagation operator satisfies
+$$
+\begin{align}
+\|\be^{(k+1)}\|_{\bA} \leq \rho\,\|\be^{(k)}\|_{\bA},
+\end{align}
+$$
+where $\rho<1$ is independent of the mesh size. The same conclusion extends to a V-cycle when the recursive coarse solve preserves these uniform estimates. For the uniform-grid Poisson problem, weighted Jacobi or Gauss--Seidel with standard interpolation and restriction satisfies these hypotheses.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The complete proof depends on the discretization and transfer operators. Its structure combines two estimates:
+
+- **Smoothing property:** After $\nu$ smoother steps, the high-frequency components of the error satisfy $\|\bT_\omega^\nu\be\|_{\bA} \leq \eta(\nu)\|\be\|_{\bA}$ where $\eta(\nu) \to 0$ as $\nu \to \infty$, uniformly in $h$.
+
+- **Approximation property:** The coarse-grid correction resolves the smooth components: $\|(I - \bP\bA_c^{-1}\bR\bA)\be\|_{\bA} \leq C h^2 \|\bA\be\|$ for a constant $C$ independent of $h$.
+
+The smoother first removes error that cannot be represented accurately on the coarse grid. The coarse-grid correction then approximates the remaining component. Uniform constants in these two estimates give a contraction factor independent of $h$. This argument is a proof outline. A numerical value of $\rho$ requires the precise smoother, boundary conditions, and transfer operators.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+For classical iterations on the 1D Poisson problem, $\rho(\bT_J) = \cos(\pi h) \approx 1 - \pi^2h^2/2 \to 1$ as $h \to 0$, requiring $O(h^{-2}) = O(n)$ Jacobi iterations. With the V-cycle, the number of iterations to reach a fixed tolerance is bounded by a constant independent of $n$. The cost per V-cycle is $O(n)$ (geometric series over levels), making the total cost $O(n)$, which is the optimal asymptotic complexity for this class of problems.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: $O(n)$ Complexity of the V-Cycle
+For $L$-level multigrid on a problem with $n = n_L$ unknowns at the finest level, each V-cycle requires $O(n)$ floating-point operations, independent of the number of levels $L$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $W_\ell$ denote the work at level $\ell$ per V-cycle. At each level, the smoother and residual computation cost $O(n_\ell)$, and $n_\ell = n_{L}/2^{L-\ell}$. The total work is
+$$
+\begin{align}
+W = \sum_{\ell=1}^{L} O(n_\ell) = O\!\left(\sum_{\ell=1}^{L} \frac{n}{2^{L-\ell}}\right) = O(n)\sum_{j=0}^{L-1}\frac{1}{2^j} < O(2n) = O(n).
+\end{align}
+$$
+The geometric series converges regardless of $L$, giving $O(n)$ total.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**Multigrid vs.\ classical iterations on the 2D Poisson problem.**
+
+Discretize $-\Delta u = f$ on the unit square with an $n \times n$ grid ($h = 1/(n+1)$), giving $N = n^2$ unknowns. Approximate iteration counts to reduce the residual by $10^{-8}$, and total work in units of $N$ multiplications:
+
+
+\begin{tabular}{lrcc}
+  \hline
+  Method & Iterations & Work/iter & Total work \\
+  \hline
+  Jacobi            & $O(n^2)$ & $O(N)$ & $O(N^2)$ \\
+  Gauss-Seidel      & $O(n^2)$ & $O(N)$ & $O(N^2)$ \\
+  Optimal SOR       & $O(n)$   & $O(N)$ & $O(N^{3/2})$ \\
+  Multigrid V-cycle & $O(1)$   & $O(N)$ & $O(N)$ \\
+  \hline
+\end{tabular}
+
+
+For $n = 100$ ($N = 10^4$): multigrid requires $\approx 10$ V-cycles while Gauss-Seidel requires $\approx 4000$ iterations. At $n = 1000$ ($N = 10^6$): multigrid still requires $\approx 10$ V-cycles, demonstrating mesh-independence, while Gauss-Seidel requires $\approx 400{,}000$ iterations.
+:::
+
+::: {.callout-warning icon=false}
+## Exercise
+**Compute.**
+**(Smoothing property)** For the $n = 15$ 1D model problem:
+
+1. Compute the eigenvalues $\mu_k$ of the standard Jacobi ($\omega = 1$) and weighted Jacobi ($\omega = 2/3$) iteration matrices. Plot $|\mu_k|$ as a function of $k$ on a single figure.
+
+1. Starting from a random initial error $\be^{(0)} \in \fR^{15}$, apply 3 steps of each method. Plot the initial and final errors, and describe qualitatively how each method reshapes the error.
+
+1. Identify the ``worst-case'' mode (largest $|\mu_k|$) for each method over the high-frequency range $k > 7$. Why is the standard Jacobi smoother inadequate for multigrid?
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**Compute.**
+**(Two-grid implementation)** Implement the two-grid correction scheme for the 1D model problem with $n = 2^m - 1$ interior points.
+
+1. Write `restrict(r)` using the full-weighting formula and `prolongate(e)` using linear interpolation for transferring between a fine grid and the next coarser grid.
+
+1. Implement `two\_grid(A, b, x0, nu1, nu2)` with $\nu_1$ pre-smoothing and $\nu_2$ post-smoothing steps of weighted Jacobi ($\omega = 2/3$) and an exact coarse-grid solve via `np.linalg.solve`.
+
+1. For $m = 6$ ($n = 63$), plot residual norm versus iteration count for: (a) weighted Jacobi alone, (b) repeated two-grid cycling. Use a semi-log scale. Estimate the per-cycle convergence factor $\rho$ for the two-grid method.
+
+:::
+
+
+::: {.callout-warning icon=false}
+## Exercise
+**Compute.**
+**(Multigrid V-cycle)** Extend the two-grid implementation to a full V-cycle.
+
+1. Implement `vcycle(x, b, A\_list, level, nu1, nu2)` recursively. At level 1 (a single unknown), solve exactly. Test first on the two-grid case to verify it matches your Part 2 implementation.
+
+1. Run the V-cycle on the 1D Poisson problem with $n = 2^{10} - 1 = 1023$ and $\nu_1 = \nu_2 = 1$. Measure the empirical convergence factor $\rho_k = \|\br^{(k)}\| / \|\br^{(k-1)}\|$ for $k = 1, ..., 15$. Is it approximately constant (mesh-independent)?
+
+1. Repeat for $n = 2^{12} - 1 = 4095$. Compare the convergence factors. Then vary $\nu_1 = \nu_2 \in \{1, 2, 3\}$ and report the convergence factor versus the extra cost per cycle.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Saad and Greenbaum give complementary treatments of Krylov methods and preconditioning [@saad2003; @greenbaum1997]. The original conjugate-gradient and GMRES papers remain readable [@hestenesstiefel1952; @saadschultz1986]. For multigrid, the tutorial by Briggs, Henson, and McCormick is a natural next step [@briggshensonmccormick2000].
+:::

@@ -1,9 +1,13 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
 \subsection{Linear Operators and the Poisson Equation}
 \label{sub:operators}
+
+\textBox{%
+\textbf{(Running example: Poisson matrix)}\enspace The matrix constructed here is the model sparse system for the rest of this part. The following sections solve it by stationary iteration, conjugate gradients, and multigrid, and each method uses a different property of the same matrix. Its eigenvectors are discrete sine modes (Thm~\ref{thm:laplacian-eigenvalues}), and its eigenvalues explain the convergence rate of each method.
+}
 
 \textBox{%
 Differential equations become matrix problems after discretization. The finite matrix should preserve the main structure of the operator: sparsity, symmetry, definiteness, spectrum, and conditioning.
@@ -16,7 +20,7 @@ Map $\mathcal{A}: X \to Y$ between function spaces satisfying:
 \begin{align*}
     \mathcal{A}(\alpha u + v) = \alpha \mathcal{A}u + \mathcal{A}v.
 \end{align*}
-Matrices are finite-dimensional operators; $\frac{d}{dx}$ and $\nabla^2$ are infinite-dimensional.
+Matrices are finite-dimensional operators, whereas $\frac{d}{dx}$ and $\nabla^2$ are infinite-dimensional.
 }
 \label{def:linear-operator}
 
@@ -48,6 +52,7 @@ Approximating $u''(x)$ on a grid with spacing $h$:
 \label{def:finite-difference-stencil}
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Taylor expand $u(x+h)$ and $u(x-h)$ about $x$.
     \item Add the two expansions.
@@ -76,6 +81,7 @@ As $n \to \infty$, $\lambda_k \to k^2 \pi^2$ (eigenvalues of continuous $-d^2/dx
 \label{thm:laplacian-eigenvalues}
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Let $(\bv_k)_j=\sin(jk\pi h)$ with $h=1/(n+1)$.
     \item Compute the $j$-th entry of $\bT\bv_k$.
@@ -96,16 +102,28 @@ The matrix $\bT$ in Def~\ref{def:discrete-laplacian-1d} is sparse, symmetric pos
 \label{thm:poisson-structure}
 
 \addPrf{%
-Sparsity and symmetry are immediate from the tridiagonal stencil. By Thm~\ref{thm:laplacian-eigenvalues}, all eigenvalues are positive because $1\leq k\leq n$ and $0<k\pi/(2(n+1))<\pi/2$. Thus $\bT$ is SPD. Also
+Sparsity and symmetry follow directly from the tridiagonal stencil $\bT = \frac{1}{h^2}\operatorname{tridiag}(-1, 2, -1)$. For any grid vector $\bu \in \fR^n$ with boundary conditions $u_0 = u_{n+1} = 0$, the quadratic form expands as a sum of squared forward differences:
 \begin{align*}
-    \lambda_{\min}\sim \pi^2,
-    \qquad
-    \lambda_{\max}\sim \frac{4}{h^2},
+    \bu^T \bT \bu
+    &= \frac{1}{h^2} \sum_{i=1}^n u_i (2u_i - u_{i-1} - u_{i+1}) \\
+    &= \frac{1}{h^2} \sum_{i=1}^n (u_i^2 - u_i u_{i-1} + u_i^2 - u_i u_{i+1}) \\
+    &= \frac{1}{h^2} \sum_{i=0}^n (u_{i+1} - u_i)^2.
 \end{align*}
-so $\kappa_2(\bT)=\lambda_{\max}/\lambda_{\min}=O(h^{-2})$.
+Because $u_0 = 0$, if $\bu^T\bT\bu = 0$, then $u_{i+1} - u_i = 0$ for all $i$, forcing $u_1 = \dots = u_n = 0$. Hence $\bu^T\bT\bu > 0$ for all $\bu \neq \bzero$, proving that $\bT$ is SPD.
+
+By Thm~\ref{thm:laplacian-eigenvalues}, the extremal eigenvalues are
+\begin{align*}
+    \lambda_{\min} &= \lambda_1 = \frac{4}{h^2}\sin^2\left(\frac{\pi h}{2}\right) = \frac{4}{h^2}\left(\frac{\pi h}{2} + O(h^3)\right)^2 = \pi^2 + O(h^2), \\
+    \lambda_{\max} &= \lambda_n = \frac{4}{h^2}\sin^2\left(\frac{n\pi h}{2}\right) = \frac{4}{h^2}\cos^2\left(\frac{\pi h}{2}\right) = \frac{4}{h^2}(1 - O(h^2)).
+\end{align*}
+The 2-norm condition number is therefore
+\begin{align*}
+    \kappa_2(\bT) = \frac{\lambda_{\max}}{\lambda_{\min}} = \frac{4/h^2 + O(1)}{\pi^2 + O(h^2)} = \frac{4}{\pi^2 h^2} + O(1) = O(h^{-2}).
+\end{align*}
 }
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Use the stencil to count the number of nonzeros in $\bT$.
     \item Use the quadratic form $\bu^T\bT\bu$ to show positive definiteness for nonzero interior grid functions.
@@ -126,7 +144,8 @@ An operator is \textbf{bounded} if $\|\mathcal{A}u\|_Y \leq C \|u\|_X$ for some 
 }
 
 \addRemark{%
-\textbf{Numerical Consequence:}\enspace Because the continuous Laplacian is unbounded, its discretization $\bT$ becomes increasingly ill-conditioned as $h \to 0$:
+\textbf{(Ill-Conditioning from Unboundedness)}\enspace
+Because the continuous Laplacian is unbounded, its discretization $\bT$ becomes increasingly ill-conditioned as $h \to 0$:
 \begin{align*}
     \kappa(\bT) = \frac{\lambda_{\max}}{\lambda_{\min}} \approx \frac{4/h^2}{\pi^2} = O(h^{-2}).
 \end{align*}
@@ -141,11 +160,15 @@ Refining the grid $2\times$ quadruples the condition number.
 
 \addExcr{%
 \begin{enumerate}
-    \item Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$ using Thm~\ref{thm:laplacian-eigenvalues}.
-    \item Show that $\kappa(\bT) \to \infty$ as $n \to \infty$ using Thm~\ref{thm:poisson-structure}.
-    \item Implement a 2-D Poisson solver on a unit square. Verify $O(N^{3/2})$ cost for direct sparse solve.
-    \item Prove the differentiation operator is unbounded on $L^2[0,1]$ using $u_k(x) = \sin(k\pi x)$.
+    \item \exCompute Build $\bT$ for $n=50$ and plot its eigenvalues vs.\ $k^2 \pi^2$ using Thm~\ref{thm:laplacian-eigenvalues}.
+    \item \exDerive Show that $\kappa(\bT) \to \infty$ as $n \to \infty$ using Thm~\ref{thm:poisson-structure}.
+    \item \exCompute Implement a 2-D Poisson solver on a unit square. Verify $O(N^{3/2})$ cost for direct sparse solve.
+    \item \exDerive Prove the differentiation operator is unbounded on $L^2[0,1]$ using $u_k(x) = \sin(k\pi x)$.
 \end{enumerate}
+}
+
+\addReading{%
+LeVeque develops finite differences with close attention to consistency, stability, and boundary conditions \citep{leveque2007}. Strang connects the same model problems to broader ideas in applied mathematics and computation \citep{strang2007}.
 }
 
 \end{document}

@@ -1,310 +1,270 @@
-# Linearity
+# Linearity and Fundamental Subspaces
 
 
-Linear systems are the basic computational problem in scientific computing. Even when the original problem is nonlinear, algorithms often reduce it to a sequence of linear systems by linearizing the problem near the current estimate.
+Linear systems recur throughout scientific computing. Methods for nonlinear equations, optimization, differential equations, and physical simulation routinely reduce a larger problem to a sequence of linear solves. Their reliable solution begins with the existence, uniqueness, and geometric structure encoded by the coefficient matrix.
 
 
-A matrix equation $\bA\bx=\bb$ asks whether the data vector $\bb$ can be produced by combining the columns of $\bA$. The unknown vector $\bx$ contains the weights in that combination. Existence, uniqueness, and numerical difficulty are all controlled by the geometry of those columns.
+## Linear Systems and Geometric Interpretations
 
 
-## Linear Systems
-
-
-A linear system is a collection of linear equations involving the same set of variables. In matrix-vector notation, we package these equations into a single compact form that is amenable to both theoretical analysis and high-performance computation.
+A matrix equation $\bA\bx = \bb$ expresses the requirement that a data vector $\bb$ be produced by a linear combination of the columns of $\bA$, weighted by the unknown coordinates $\bx$.
 
 
 ::: {.callout-note icon=false}
 ## Definition: Linear System
-The matrix-vector form of a linear system is **$\bA\bx = \bb$**, where:
-
-- $\bA \in \fR^{m \times n}$ is the coefficient matrix representing the system's structure.
-  
-- $\bx \in \fR^n$ is the vector of unknown variables we wish to determine.
-  
-- $\bb \in \fR^m$ is the right-hand side vector, often representing observed data or a source term.
-
+A linear system of $m$ equations in $n$ unknowns is written in matrix-vector form as
+$$
+\begin{align}
+\bA\bx = \bb,
+\end{align}
+$$
+where $\bA \in \fR^{m \times n}$ is the coefficient matrix, $\bx \in \fR^n$ is the unknown solution vector, and $\bb \in \fR^m$ is the right-hand side vector.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Shape discipline)**  If $\bA \in \fR^{m\times n}$, then $\bx$ must have $n$ entries and $\bb$ must have $m$ entries. The number of columns is the number of unknowns. The number of rows is the number of equations or measurements.
-:::
+**(Row versus column perspectives)**
+There are two complementary geometric interpretations of $\bA\bx = \bb$:
 
+1. **Row view:**  Each row $\ba_i^T\bx = b_i$ defines an affine hyperplane in $\fR^n$. Solving the system means locating the mutual intersection of these $m$ hyperplanes.
 
-::: {.callout-note icon=false}
-## Example
-**(Two equations)**  The system
-$$
-\begin{align}
-x + 2y = 3, \qquad 3x-y = 1
-\end{align}
-$$
-can be written as
-$$
-\begin{align}
-\begin{pmatrix}1&2\\3&-1\end{pmatrix}
-    \begin{pmatrix}x\\y\end{pmatrix}
-    =
-    \begin{pmatrix}3\\1\end{pmatrix}.
-\end{align}
-$$
-The first row encodes the first equation; the second row encodes the second equation.
-:::
+1. **Column view:**  Partitioning $\bA = [\ba_1, ..., \ba_n]$ into its columns, the product evaluates to $\bA\bx = \sum_{j=1}^n x_j \ba_j$. Solving the system means expressing the vector $\bb$ as a linear combination of the column vectors of $\bA$.
 
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Convert $\{x + 2y = 3,\; 3x - y = 1\}$ to the form in the result above.
-    
-1. Check the dimensions of $\bA$, $\bx$, and $\bb$ before solving. Which part of the result above determines each shape?
-    
-1. Solve in NumPy via `np.linalg.solve(A, b)`. Verify with the residual from the result above.
-
-:::
-
-
-## Rows, Columns, and Geometry
-
-
-There are two complementary ways to read $\bA\bx=\bb$.
-
-- **Row view:**  Each row is one linear equation. In two or three dimensions, each equation describes a line, plane, or hyperplane. Solving the system means finding their intersection.
-    
-- **Column view:**  The product $\bA\bx$ is a weighted sum of the columns of $\bA$. Solving the system means expressing $\bb$ as a linear combination of those columns.
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(The Column Perspective)** 
-If $\bA=[\ba_1,\ba_2,...,\ba_n]$, then
-$$
-\begin{align}
-\bA\bx = x_1 \ba_1 + x_2 \ba_2 + ... + x_n \ba_n.
-\end{align}
-$$
-The system $\bA\bx = \bb$ is consistent exactly when $\bb$ lies in the span of the columns of $\bA$.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Theorem: Superposition Principle
-If $\bA\bx_1 = \bb_1$ and $\bA\bx_2 = \bb_2$, then for any scalars $\alpha, \beta$:
+Let $\bA \in \fR^{m \times n}$ define a linear operator. If $\bA\bx_1 = \bb_1$ and $\bA\bx_2 = \bb_2$, then for any scalars $\alpha, \beta \in \fR$,
 $$
 \begin{align}
 \bA(\alpha\bx_1 + \beta\bx_2) = \alpha\bb_1 + \beta\bb_2.
 \end{align}
 $$
-**Implication:**  Solutions to $\bA\bx = \bb$ can be decomposed and recombined linearly.
+Consequently, the solution to a linear system with a composite source term decomposes into a linear combination of individual response vectors.
 :::
 
 
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the result above to solve $\bA\bx = 3\bb_1 - 2\bb_2$ given only the solutions $\bx_1, \bx_2$ for $\bb_1, \bb_2$.
-    
-1. How does `np.linalg.solve(A, B)` for a matrix $\bB$ exploit this?
-
-:::
-
-
-## Invertibility and Existence
-
-
-For square systems ($\bA \in \fR^{n \times n}$), the most critical question is whether a unique solution exists for any given right-hand side. This property is known as invertibility or nonsingularity.
-
-
-For rectangular systems, the same questions still matter but the answer changes.
-
-- **Square:**  $m=n$. A unique solution may exist.
-    
-- **Overdetermined:**  $m>n$. There are more equations than unknowns; usually no exact solution exists, so we solve a least squares problem.
-    
-- **Underdetermined:**  $m<n$. There are fewer equations than unknowns; if a solution exists, it is usually not unique.
-
-
-::: {.callout-note icon=false}
-## Theorem: Equivalences for Invertibility
-The following are equivalent for $\bA \in \fR^{n \times n}$:
-
-1. $\bA$ is **invertible** ($\det(\bA) \neq 0$).
-    
-1. $\bA\bx = \bb$ has a **unique solution** for every $\bb$.
-    
-1. $\bA\bx = \bzero$ has only the **trivial solution** ($\bx = \bzero$).
-    
-1. $\text{rank}(\bA) = n$ (Full Rank).
-    
-1. Columns of $\bA$ are **linearly independent**.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Determinants are not algorithms)**  The determinant is useful theoretically, but numerical codes do not test invertibility by computing $\det(\bA)$. Rank, singular values, and condition numbers are more informative and more stable.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Determine invertibility using the result above: $\bA = \begin{pmatrix} 2 & -1 \\ 4 & -2 \end{pmatrix}$, $\bB = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{pmatrix}$.
-    
-1. Check consistency of $\bA = \begin{pmatrix}1&2\\3&6\end{pmatrix}, \bb = \begin{pmatrix}1\\4\end{pmatrix}$ using the column perspective in the result above and `np.linalg.matrix\_rank`.
-
-:::
-
-
-## Residuals and Approximate Solutions
-
-
-::: {.callout-note icon=false}
-## Definition: Residual
-For an approximate solution $\hat{\bx}$ to $\bA\bx=\bb$, the residual is
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Using the distributivity and scalar associativity of matrix multiplication,
 $$
 \begin{align}
-\br = \bb-\bA\hat{\bx}.
+\bA(\alpha\bx_1 + \beta\bx_2) = \bA(\alpha\bx_1) + \bA(\beta\bx_2) = \alpha(\bA\bx_1) + \beta(\bA\bx_2) = \alpha\bb_1 + \beta\bb_2.
 \end{align}
 $$
-It measures how well $\hat{\bx}$ satisfies the equations.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Residual vs.\ error)**  The error is $\hat{\bx}-\bx^*$, where $\bx^*$ is the exact solution. The residual is computable; the error usually is not. A small residual means the equations are nearly satisfied, but it does not always mean the solution is accurate. Ill-conditioned matrices can turn small residuals into large errors.
+## Invertibility and the Four Fundamental Subspaces
+
+
+The solvability and uniqueness of solutions are governed by four fundamental subspaces associated with $\bA$.
+
+
+::: {.callout-note icon=false}
+## Definition: The Four Fundamental Subspaces
+Let $\bA \in \fR^{m \times n}$.
+
+1. The **Column Space (Range)** $\mathcal{R}(\bA) = \{ \bA\bx : \bx \in \fR^n \} \subseteq \fR^m$.
+
+1. The **Null Space (Kernel)** $\mathcal{N}(\bA) = \{ \bx \in \fR^n : \bA\bx = \bzero \} \subseteq \fR^n$.
+
+1. The **Row Space** $\mathcal{R}(\bA^T) = \{ \bA^T\by : \by \in \fR^m \} \subseteq \fR^n$.
+
+1. The **Left Null Space** $\mathcal{N}(\bA^T) = \{ \by \in \fR^m : \bA^T\by = \bzero \} \subseteq \fR^m$.
+
+The rank $r = \operatorname{rank}(\bA)$ is the dimension of the column space $\mathcal{R}(\bA)$.
 :::
 
 
 ::: {.callout-note icon=false}
-## Example
-**(Inconsistent system)**  The equations
+## Theorem: The Rank-Nullity Theorem
+Let $\bA \in \fR^{m \times n}$ with rank $r = \dim \mathcal{R}(\bA)$. Then
 $$
 \begin{align}
-x+y=1, \qquad x+y=3
+\operatorname{rank}(\bA) + \dim \mathcal{N}(\bA) = n.
 \end{align}
 $$
-cannot both be true. In matrix form, $\bb$ is not in the column space of $\bA$. The best we can do is choose $\hat{\bx}$ so that the residual $\bb-\bA\hat{\bx}$ is small in a chosen norm. This is the least squares problem.
-:::
-## Linear Combinations and Bases
-
-
-::: {.callout-note icon=false}
-## Definition: Linear Independence
-Vectors $\{\bx_1, ..., \bx_k\}$ are independent if $\sum \alpha_i \bx_i = \bzero \Rightarrow \alpha_i = 0$ for all $i$.
 :::
 
 
-::: {.callout-note icon=false}
-## Definition: Basis
-A linearly independent set that spans the space. The number of vectors in any basis is the **dimension**.
-:::
-
-
-## Rank
-
-
-The rank of a matrix is the number of independent directions its columns span. It measures how many genuinely different constraints or directions are present after removing redundancy.
-
-
-::: {.callout-note icon=false}
-## Definition: Rank
-The rank, $\text{rank}(\bA)$, is the dimension of the column space. It is always true that $\text{rank}(\bA) \leq \min(m, n)$.
-
-- **Full Rank:** The matrix has the maximum possible rank, $\text{rank}(\bA) = \min(m, n)$.
-    
-- **Rank Deficient (Singular):** A square matrix with $\text{rank}(\bA) < n$. Such systems do not have unique solutions.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Rank and solution structure)**  For $\bA\in\fR^{m\times n}$:
-
-- Full column rank ($\text{rank}(\bA)=n$) means the columns are independent.
-    
-- Full row rank ($\text{rank}(\bA)=m$) means the rows are independent.
-    
-- Rank deficiency means there is redundancy: some row or column information can be produced from the rest.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Numerical Rank)**  In code, do not use exact row-reduction to find rank; it is numerically unstable. Use `np.linalg.matrix\_rank`, which estimates rank from the singular values. A matrix can be mathematically full rank but numerically rank deficient if one singular value is tiny compared to the others.
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $k = \dim \mathcal{N}(\bA)$, and choose a basis $\{\bv_1, ..., \bv_k\}$ for the null space. Extend this list to a basis $\{\bv_1, ..., \bv_n\}$ of $\fR^n$.
+For any $\bx \in \fR^n$, expand $\bx = \sum_{i=1}^n c_i \bv_i$. Linearity gives
+$$
+\begin{align}
+\bA\bx = \sum_{i=1}^k c_i \bA\bv_i + \sum_{i=k+1}^n c_i \bA\bv_i = \bzero + \sum_{i=k+1}^n c_i \bA\bv_i = \sum_{i=k+1}^n c_i \bA\bv_i.
+\end{align}
+$$
+Thus the vectors $\{\bA\bv_{k+1}, ..., \bA\bv_n\}$ span $\mathcal{R}(\bA)$.
+To establish linear independence, suppose $\sum_{i=k+1}^n d_i \bA\bv_i = \bzero$. Linearity yields
+$$
+\begin{align}
+\bA\left(\sum_{i=k+1}^n d_i \bv_i\right) = \bzero \quad \Longrightarrow \quad \bw = \sum_{i=k+1}^n d_i \bv_i \in \mathcal{N}(\bA).
+\end{align}
+$$
+Because $\{\bv_1, ..., \bv_k\}$ is a basis for $\mathcal{N}(\bA)$, there exist coefficients $a_1, ..., a_k$ such that $\bw = \sum_{j=1}^k a_j \bv_j$. Equating the two expressions gives
+$$
+\begin{align}
+\sum_{j=1}^k a_j \bv_j - \sum_{i=k+1}^n d_i \bv_i = \bzero.
+\end{align}
+$$
+Since the full set $\{\bv_1, ..., \bv_n\}$ is linearly independent, every coefficient vanishes:
+$$
+\begin{align}
+a_1 = ... = a_k = d_{k+1} = ... = d_n = 0.
+\end{align}
+$$
+Therefore $\{\bA\bv_{k+1}, ..., \bA\bv_n\}$ is a basis for $\mathcal{R}(\bA)$, containing exactly $n - k$ vectors. Hence
+$$
+\begin{align}
+r = n - k = n - \dim\mathcal{N}(\bA) \quad \Longrightarrow \quad \operatorname{rank}(\bA) + \dim \mathcal{N}(\bA) = n.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Rank-Nullity
-For $\bA \in \fR^{m \times n}$: $\text{rank}(\bA) + \text{nullity}(\bA) = n$.
+## Theorem: Fundamental Theorem of Linear Algebra and Orthogonal Decompositions
+For any matrix $\bA \in \fR^{m \times n}$:
 
-- **Nullity:** Dimension of the null space $\{\bx : \bA\bx = \bzero\}$.
+1. The row space and null space are orthogonal complements in $\fR^n$:
+        $$
+    \begin{align}
+    \mathcal{R}(\bA^T) \perp \mathcal{N}(\bA) \qquad \text{and} \qquad \fR^n = \mathcal{R}(\bA^T) \oplus \mathcal{N}(\bA).
+    \end{align}
+    $$
 
+1. The column space and left null space are orthogonal complements in $\fR^m$:
+        $$
+    \begin{align}
+    \mathcal{R}(\bA) \perp \mathcal{N}(\bA^T) \qquad \text{and} \qquad \fR^m = \mathcal{R}(\bA) \oplus \mathcal{N}(\bA^T).
+    \end{align}
+    $$
+
+Consequently, $\dim \mathcal{R}(\bA^T) = \dim \mathcal{R}(\bA) = \operatorname{rank}(\bA)$.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(General solution form)**  If $\bA\bx=\bb$ is consistent and $\bx_p$ is one particular solution, then every solution has the form
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For any $\bx\in\fR^n$, the condition $\bA\bx=\bzero$ says that every row of $\bA$ has zero inner product with $\bx$. Since those rows span $\mathcal{R}(\bA^T)$,
+$$
+\begin{align}
+\bx\in\mathcal{N}(\bA)
+    \quad\Longleftrightarrow\quad
+    \bx\in\mathcal{R}(\bA^T)^\perp.
+\end{align}
+$$
+Taking orthogonal complements in finite-dimensional space gives
+$$
+\begin{align}
+\mathcal{R}(\bA^T)=\mathcal{N}(\bA)^\perp.
+\end{align}
+$$
+The identical argument with $\bA^T$ gives $\mathcal{R}(\bA)=\mathcal{N}(\bA^T)^\perp$. Each space therefore decomposes into one of these subspaces and its orthogonal complement. Finally, rank--nullity gives
+$$
+\begin{align}
+\dim\mathcal{R}(\bA^T)
+    =n-\dim\mathcal{N}(\bA)
+    =\operatorname{rank}(\bA),
+\end{align}
+$$
+so row rank equals column rank.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Solvability and the Left Null Space
+The linear system $\bA\bx = \bb$ has a solution if and only if $\bb \in \mathcal{R}(\bA)$.
+Equivalently, $\bA\bx = \bb$ is solvable if and only if $\bb$ is orthogonal to every vector in the left null space of $\bA$:
+$$
+\begin{align}
+\bA\bx = \bb \text{ has a solution} \iff \by^T\bb = 0 \quad \text{for all } \by \text{ such that } \bA^T\by = \bzero.
+\end{align}
+$$
+If a solution exists and $\bx_p$ is one particular solution, the complete set of solutions is the affine space
 $$
 \begin{align}
 \bx = \bx_p + \bz, \qquad \bz \in \mathcal{N}(\bA).
 \end{align}
 $$
-The null space contains the directions you can add without changing $\bA\bx$.
 :::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+By the referenced result, $\fR^m = \mathcal{R}(\bA) \oplus \mathcal{N}(\bA^T)$. Therefore $\bb \in \mathcal{R}(\bA)$ if and only if $\bb \perp \mathcal{N}(\bA^T)$, which means
+$$
+\begin{align}
+\langle \by, \bb \rangle = \by^T\bb = 0 \qquad \text{for all } \by \in \mathcal{N}(\bA^T).
+\end{align}
+$$
+If $\bA\bx_p = \bb$, then for any $\bz \in \mathcal{N}(\bA)$,
+$$
+\begin{align}
+\bA(\bx_p + \bz) = \bA\bx_p + \bA\bz = \bb + \bzero = \bb.
+\end{align}
+$$
+Conversely, if $\bA\bx = \bb$, then
+$$
+\begin{align}
+\bA(\bx - \bx_p) = \bA\bx - \bA\bx_p = \bb - \bb = \bzero,
+\end{align}
+$$
+which implies $\bx - \bx_p \in \mathcal{N}(\bA)$, so $\bx = \bx_p + \bz$ with $\bz \in \mathcal{N}(\bA)$.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+This compatibility condition is often called the finite-dimensional Fredholm alternative. Each left-null vector describes one obstruction that a solvable right-hand side must avoid.
+:::
+
+
+## Exercises
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Use the result above to explain why a ``wide'' matrix ($m<n$) must have a non-trivial null space.
-    
-1. Find the general solution to a consistent $2 \times 3$ system in the form $\bx=\bx_p+\bz$, where $\bz\in\mathcal{N}(\bA)$.
-    
-1. Check directly that adding a null-space vector leaves $\bA\bx$ unchanged.
+1. **Compute.**  **Dimensions and bases for the four fundamental subspaces.**  Let
+        $$
+    \begin{align}
+    \bA = \begin{pmatrix} 1 & 2 & 1 & 3 \\ 2 & 4 & 1 & 4 \\ 3 & 6 & 2 & 7 \end{pmatrix}.
+    \end{align}
+    $$
 
-:::
+    1. Compute the row reduced echelon form of $\bA$. Determine the rank $r = \operatorname{rank}(\bA)$.
 
+    1. Find bases for $\mathcal{R}(\bA)$, $\mathcal{N}(\bA)$, $\mathcal{R}(\bA^T)$, and $\mathcal{N}(\bA^T)$. After studying QR factorization, return and replace them by orthonormal bases.
 
-## The Four Fundamental Subspaces
+    1. Confirm that $\dim \mathcal{R}(\bA) + \dim \mathcal{N}(\bA^T) = 3$ and $\dim \mathcal{R}(\bA^T) + \dim \mathcal{N}(\bA) = 4$.
 
+    1. Verify numerically that every vector in your basis of $\mathcal{R}(\bA^T)$ is orthogonal to every vector in your basis of $\mathcal{N}(\bA)$.
 
-The structure of any linear operator $\bA \in \fR^{m \times n}$ with rank $r$ is completely characterized by four subspaces. Understanding these spaces is essential for solving least squares problems and understanding the behavior of iterative solvers.
+1. **Derive.**  **Decomposition into row space and null space components.**  Let $\bA \in \fR^{m \times n}$.
 
+    1. Prove that every vector $\bx \in \fR^n$ has a unique orthogonal decomposition $\bx = \bx_{\text{row}} + \bx_{\text{null}}$ with $\bx_{\text{row}} \in \mathcal{R}(\bA^T)$ and $\bx_{\text{null}} \in \mathcal{N}(\bA)$.
 
-1. \textbf{Column Space ($\mathcal{R}(\bA)$):} $\fR^m, \dim=r$. Span of columns.
-    
-1. \textbf{Null Space ($\mathcal{N}(\bA)$):} $\fR^n, \dim=n-r$. Solutions to $\bA\bx = \bzero$.
-    
-1. \textbf{Row Space ($\mathcal{R}(\bA^T)$):} $\fR^n, \dim=r$. Span of rows.
-    
-1. \textbf{Left Null Space ($\mathcal{N}(\bA^T)$):} $\fR^m, \dim=m-r$. Solutions to $\bA^T\by = \bzero$.
+    1. Show that $\bA\bx = \bA\bx_{\text{row}}$, demonstrating that the null-space component contributes nothing to the output.
 
+    1. Prove that among all solutions to a consistent underdetermined system $\bA\bx = \bb$, the unique solution of minimal Euclidean norm $\|\bx\|_2$ lies strictly in the row space: $\bx_{\text{min}} \in \mathcal{R}(\bA^T)$.
 
-::: {.callout-note icon=false}
-## Theorem: Orthogonal Complements
+1. **Derive.**  **The Fredholm alternative and inconsistent systems.**  Consider the $3 \times 2$ system
+        $$
+    \begin{align}
+    \bA = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 2 & 3 \end{pmatrix}, \qquad \bb = \begin{pmatrix} 1 \\ 2 \\ b_3 \end{pmatrix}.
+    \end{align}
+    $$
 
-- $\mathcal{R}(\bA^T) \perp \mathcal{N}(\bA)$ in $\fR^n$.
-    
-- $\mathcal{R}(\bA) \perp \mathcal{N}(\bA^T)$ in $\fR^m$.
+    1. Compute a basis for the left null space $\mathcal{N}(\bA^T)$.
 
-**Solvability:**  $\bA\bx = \bb$ has a solution iff $\bb \in \mathcal{R}(\bA)$, i.e., $\bb \perp \mathcal{N}(\bA^T)$.
-:::
+    1. Apply the referenced result to find the exact value of $b_3$ that makes the system consistent.
 
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. For $\bA = \begin{pmatrix}1&2&3\\2&4&6\end{pmatrix}$, use the result above and the result above to find dimensions and bases for all four spaces.
-    
-1. Verify the two orthogonality statements in the result above.
-    
-1. Verify $\bb = (1, 3)^T$ is not in the column space. What is the projection of $\bb$ onto $\mathcal{R}(\bA)$?
+    1. For $b_3 = 5$, find the orthogonal projection of $\bb$ onto $\mathcal{R}(\bA)$ and compute the minimum residual norm $\min_{\bx} \|\bA\bx - \bb\|_2$.
 
 :::

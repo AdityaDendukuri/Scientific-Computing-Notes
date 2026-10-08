@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>24&nbsp; GMRES – Scientific Computing</title>
+<title>24&nbsp; The Generalized Minimal Residual (GMRES) Method – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,7 +52,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../numerical-analysis/interpolation.html" rel="next">
+<link href="../iterative/multigrid.html" rel="next">
 <link href="../iterative/conjugate-gradient.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/gmres.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/gmres.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,11 +729,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#residual-minimization-and-krylov-subspaces" id="toc-residual-minimization-and-krylov-subspaces" class="nav-link active" data-scroll-target="#residual-minimization-and-krylov-subspaces"><span class="header-section-number">24.1</span> Residual Minimization and Krylov Subspaces</a></li>
-  <li><a href="#the-arnoldi-process" id="toc-the-arnoldi-process" class="nav-link" data-scroll-target="#the-arnoldi-process"><span class="header-section-number">24.2</span> The Arnoldi Process</a></li>
-  <li><a href="#reduction-to-hessenberg-least-squares" id="toc-reduction-to-hessenberg-least-squares" class="nav-link" data-scroll-target="#reduction-to-hessenberg-least-squares"><span class="header-section-number">24.3</span> Reduction to Hessenberg Least Squares</a></li>
-  <li><a href="#restarted-gmresm" id="toc-restarted-gmresm" class="nav-link" data-scroll-target="#restarted-gmresm"><span class="header-section-number">24.4</span> Restarted GMRES(<span class="math inline">\(m\)</span>)</a></li>
-  <li><a href="#convergence-and-preconditioning" id="toc-convergence-and-preconditioning" class="nav-link" data-scroll-target="#convergence-and-preconditioning"><span class="header-section-number">24.5</span> Convergence and Preconditioning</a></li>
+  <li><a href="#the-arnoldi-process" id="toc-the-arnoldi-process" class="nav-link active" data-scroll-target="#the-arnoldi-process"><span class="header-section-number">24.1</span> The Arnoldi Process</a></li>
+  <li><a href="#reduction-to-hessenberg-least-squares" id="toc-reduction-to-hessenberg-least-squares" class="nav-link" data-scroll-target="#reduction-to-hessenberg-least-squares"><span class="header-section-number">24.2</span> Reduction to Hessenberg Least Squares</a></li>
+  <li><a href="#solution-via-givens-rotations" id="toc-solution-via-givens-rotations" class="nav-link" data-scroll-target="#solution-via-givens-rotations"><span class="header-section-number">24.3</span> Solution via Givens Rotations</a></li>
+  <li><a href="#restarted-gmres-and-practical-considerations" id="toc-restarted-gmres-and-practical-considerations" class="nav-link" data-scroll-target="#restarted-gmres-and-practical-considerations"><span class="header-section-number">24.4</span> Restarted GMRES and Practical Considerations</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">24.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/gmres.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -683,9 +741,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/gmres.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/gmres.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></h1>
+<h1 class="title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></h1>
 </div>
 
 
@@ -702,101 +760,52 @@ window.Quarto = {
 </header>
 
 
-<p>The Generalized Minimal Residual (GMRES) method is the standard Krylov subspace solver for general (non-symmetric) linear systems <span class="math inline">\(\bA\bx = \bb\)</span>. Unlike CG, it does not require <span class="math inline">\(\bA\)</span> to be symmetric or positive definite.</p>
-<p>CG relies on symmetry to get a short recurrence. GMRES works without symmetry by explicitly building an orthonormal Krylov basis and choosing the vector in that subspace with smallest residual. This makes GMRES broadly applicable, but more expensive in memory.</p>
-<section id="residual-minimization-and-krylov-subspaces" class="level2" data-number="24.1">
-<h2 data-number="24.1" class="anchored" data-anchor-id="residual-minimization-and-krylov-subspaces"><span class="header-section-number">24.1</span> Residual Minimization and Krylov Subspaces</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>The Minimization Problem:</strong> At each step <span class="math inline">\(k\)</span>, GMRES finds the approximate solution <span class="math inline">\(\bx_k\)</span> in the affine space <span class="math inline">\(\bx_0 + \mathcal{K}_k(\bA, \br_0)\)</span> that minimizes the <strong>Euclidean norm of the residual</strong>: <span class="math display">\[
-\begin{align}
-\bx_k = \arg\min_{\bx \in \bx_0 + \mathcal{K}_k} \|\bb - \bA\bx\|_2.
-\end{align}
-\]</span> Because the residual norm is minimized explicitly, it is guaranteed to be non-increasing with <span class="math inline">\(k\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(CG vs.&nbsp;GMRES)</strong></p>
-<ul>
-<li><p><strong>CG:</strong> SPD systems only; short recurrence; <span class="math inline">\(O(n)\)</span> memory.</p></li>
-<li><p><strong>GMRES:</strong> General square systems; stores a growing basis; <span class="math inline">\(O(kn)\)</span> memory after <span class="math inline">\(k\)</span> steps.</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section id="the-arnoldi-process" class="level2" data-number="24.2">
-<h2 data-number="24.2" class="anchored" data-anchor-id="the-arnoldi-process"><span class="header-section-number">24.2</span> The Arnoldi Process</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Basis Construction:</strong> To compute this minimum efficiently, GMRES uses the <strong>Arnoldi process</strong> to build an orthonormal basis <span class="math inline">\(V_k = [\bv_1, \bv_2, ..., \bv_k]\)</span> for <span class="math inline">\(\mathcal{K}_k\)</span>. This process is essentially a Gram-Schmidt orthogonalization of the Krylov sequence.</p>
-</div>
-</div>
-<p>Arnoldi is the nonsymmetric analog of the Lanczos process. Each step applies <span class="math inline">\(\bA\)</span> to the newest basis vector, then orthogonalizes the result against all previous basis vectors. The need to remember all previous basis vectors is the source of GMRES memory growth.</p>
+<p>When a linear system <span class="math inline">\(\bA\bx = \bb\)</span> is nonsymmetric or indefinite, the quadratic energy minimization framework of the Conjugate Gradient method ceases to apply. The Faber–Manteuffel theorem characterizes the exceptional matrix classes that admit an optimal Krylov method with a fixed short recurrence. No such recurrence gives optimal residuals for arbitrary nonsymmetric matrices, so GMRES retains the full Arnoldi basis.</p>
+<p>The Generalized Minimal Residual (GMRES) method of Saad and Schultz chooses, at every step <span class="math inline">\(k\)</span>, a vector <span class="math inline">\(\bx^{(k)}\)</span> in the affine Krylov subspace <span class="math inline">\(\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})\)</span> that minimizes the Euclidean residual norm <span class="math inline">\(\|\bb - \bA\bx\|_2\)</span> <span class="citation" data-cites="saadschultz1986">(<a href="../references.html#ref-saadschultz1986" role="doc-biblioref">Saad and Schultz 1986</a>)</span>. GMRES constructs an orthonormal basis for the growing Krylov subspace by the Arnoldi process <span class="citation" data-cites="arnoldi1951">(<a href="../references.html#ref-arnoldi1951" role="doc-biblioref">Arnoldi 1951</a>)</span> and reduces the original problem to a small upper-Hessenberg least-squares problem. The minimizing residual is unique, and the iterate is unique when the reduced least-squares problem has full column rank.</p>
+<section id="the-arnoldi-process" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="the-arnoldi-process"><span class="header-section-number">24.1</span> The Arnoldi Process</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Arnoldi Relation
+<span class="screen-reader-only">Note</span>Definition: The Arnoldi Iteration
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <span class="math inline">\(k\)</span> steps of the Arnoldi process yield the fundamental relation: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> and let <span class="math inline">\(\br^{(0)} = \bb - \bA\bx^{(0)}\)</span> be a nonzero initial residual with norm <span class="math inline">\(\beta = \|\br^{(0)}\|_2\)</span>. Set the first basis vector to <span class="math inline">\(\bv_1 = \br^{(0)} / \beta\)</span>. For <span class="math inline">\(j = 1, 2, ..., k\)</span>:</p>
+<ol type="1">
+<li><p>Compute the matrix–vector product: <span class="math inline">\(\bw = \bA \bv_j\)</span>.</p></li>
+<li><p>For <span class="math inline">\(i = 1, 2, ..., j\)</span>, compute the projection coefficients and orthogonalize: <span class="math display">\[
 \begin{align}
-\bA V_k = V_{k+1} \bar{H}_k,
+h_{ij} = \bv_i^T \bw, \qquad \bw \leftarrow \bw - h_{ij} \bv_i.
 \end{align}
-\]</span> where <span class="math inline">\(\bar{H}_k\)</span> is an <span class="math inline">\((k+1) \times k\)</span> upper Hessenberg matrix. This relation expresses the action of <span class="math inline">\(\bA\)</span> on the basis <span class="math inline">\(V_k\)</span> in terms of the expanded basis <span class="math inline">\(V_{k+1}\)</span>.</p>
+\]</span></p></li>
+<li><p>Compute the subdiagonal entry: <span class="math inline">\(h_{j+1,j} = \|\bw\|_2\)</span>.</p></li>
+<li><p>If <span class="math inline">\(h_{j+1,j} = 0\)</span>, terminate (happy breakdown). Otherwise, set <span class="math inline">\(\bv_{j+1} = \bw / h_{j+1,j}\)</span>.</p></li>
+</ol>
 </div>
 </div>
-</section>
-<section id="reduction-to-hessenberg-least-squares" class="level2" data-number="24.3">
-<h2 data-number="24.3" class="anchored" data-anchor-id="reduction-to-hessenberg-least-squares"><span class="header-section-number">24.3</span> Reduction to Hessenberg Least Squares</h2>
-<p>The critical insight of GMRES is that the <span class="math inline">\(n\)</span>-dimensional residual minimization problem can be projected onto the <span class="math inline">\(k\)</span>-dimensional Krylov subspace, resulting in a much smaller problem.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Projected Least Squares
+<span class="screen-reader-only">Note</span>Theorem: The Fundamental Arnoldi Relation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\bx_k = \bx_0 + V_k \by\)</span> for some <span class="math inline">\(\by \in \fR^k\)</span>. The residual norm satisfies: <span class="math display">\[
+<p>After <span class="math inline">\(k\)</span> steps of the Arnoldi iteration, the matrix <span class="math inline">\(\bV_k = [\bv_1, ..., \bv_k] \in \fR^{n \times k}\)</span> has orthonormal columns spanning <span class="math inline">\(\mathcal{K}_k(\bA, \br^{(0)})\)</span>, and satisfies the algebraic relation <span class="math display">\[
 \begin{align}
-\|\br_k\|_2 = \|\beta \be_1 - \bar{H}_k \by\|_2,
+\bA \bV_k = \bV_{k+1} \bar{\bH}_k,
 \end{align}
-\]</span> where <span class="math inline">\(\beta = \|\br_0\|_2\)</span> and <span class="math inline">\(\be_1\)</span> is the first canonical basis vector. Solving the original problem thus reduces to solving a <span class="math inline">\((k+1) \times k\)</span> least-squares problem for <span class="math inline">\(\by\)</span> using the small matrix <span class="math inline">\(\bar{H}_k\)</span>.</p>
+\]</span> where <span class="math inline">\(\bar{\bH}_k \in \fR^{(k+1) \times k}\)</span> is an upper Hessenberg matrix whose entries are the orthogonalization coefficients <span class="math inline">\(h_{ij}\)</span>. Furthermore, <span class="math inline">\(\bH_k = \bV_k^T \bA \bV_k \in \fR^{k \times k}\)</span> is the square upper Hessenberg matrix formed by omitting the final row of <span class="math inline">\(\bar{\bH}_k\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -805,96 +814,83 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\br_0=\bb-\bA\bx_0\)</span> and choose <span class="math inline">\(\bv_1=\br_0/\|\br_0\|_2\)</span>, so <span class="math inline">\(\br_0=\beta V_{k+1}\be_1\)</span>. If <span class="math inline">\(\bx_k=\bx_0+V_k\by\)</span>, then <span class="math display">\[
+<p>At step <span class="math inline">\(j\)</span> of the Arnoldi iteration, the orthogonalized vector <span class="math inline">\(\bw\)</span> satisfies <span class="math display">\[
 \begin{align}
-\br_k
-    &amp;= \bb-\bA(\bx_0+V_k\by) \\
-    &amp;= \br_0-\bA V_k\by \\
-    &amp;= V_{k+1}\left(\beta\be_1-\bar{H}_k\by\right),
+\bw = \bA \bv_j - \sum_{i=1}^j h_{ij} \bv_i.
 \end{align}
-\]</span> using the Arnoldi relation <span class="math inline">\(\bA V_k=V_{k+1}\bar{H}_k\)</span>. Since <span class="math inline">\(V_{k+1}\)</span> has orthonormal columns, it preserves the Euclidean norm, giving <span class="math display">\[
+\]</span> Because <span class="math inline">\(\bv_{j+1} = \bw / h_{j+1,j}\)</span>, we rearrange this expression into <span class="math display">\[
 \begin{align}
-\|\br_k\|_2=\|\beta\be_1-\bar{H}_k\by\|_2.
+\bA \bv_j = \sum_{i=1}^{j+1} h_{ij} \bv_i.
 \end{align}
-\]</span></p>
+\]</span> Stacking these column equations for <span class="math inline">\(j = 1, ..., k\)</span> yields the matrix identity <span class="math display">\[
+\begin{align}
+\bA [\bv_1, ..., \bv_k] = [\bv_1, ..., \bv_{k+1}] \bar{\bH}_k,
+\end{align}
+\]</span> which establishes <span class="math inline">\(\bA \bV_k = \bV_{k+1} \bar{\bH}_k\)</span>. Orthonormality follows inductively from the Gram–Schmidt subtraction <span class="math inline">\(\bv_i^T \bv_{j+1} = 0\)</span> for all <span class="math inline">\(i \leq j\)</span> and the normalization <span class="math inline">\(\|\bv_{j+1}\|_2 = 1\)</span>.</p>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Optimality:</strong> By definition, GMRES finds the absolute best solution available in the growing Krylov subspace. The residual norm is non-increasing.</p>
 </div>
 </div>
 </section>
-<section id="restarted-gmresm" class="level2" data-number="24.4">
-<h2 data-number="24.4" class="anchored" data-anchor-id="restarted-gmresm"><span class="header-section-number">24.4</span> Restarted GMRES(<span class="math inline">\(m\)</span>)</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>The Memory Wall:</strong> Full GMRES storage costs <span class="math inline">\(O(kn)\)</span> and work grows quadratically with <span class="math inline">\(k\)</span> (due to orthogonalization). <strong>Restarting</strong> after <span class="math inline">\(m\)</span> steps prevents memory explosion but can lead to stagnation.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Restart trade-off)</strong> GMRES(<span class="math inline">\(m\)</span>) discards the Krylov basis every <span class="math inline">\(m\)</span> steps and starts again from the current residual. This controls memory, but it also discards spectral information. Small restart values can cause long plateaus in convergence.</p>
-</div>
-</div>
-</section>
-<section id="convergence-and-preconditioning" class="level2" data-number="24.5">
-<h2 data-number="24.5" class="anchored" data-anchor-id="convergence-and-preconditioning"><span class="header-section-number">24.5</span> Convergence and Preconditioning</h2>
+<section id="reduction-to-hessenberg-least-squares" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="reduction-to-hessenberg-least-squares"><span class="header-section-number">24.2</span> Reduction to Hessenberg Least Squares</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Approximation Bound
+<span class="screen-reader-only">Note</span>Theorem: The GMRES Projected Least-Squares Problem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>Let any vector in the affine space <span class="math inline">\(\bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})\)</span> be parameterized as <span class="math inline">\(\bx = \bx^{(0)} + \bV_k \by\)</span> for some vector <span class="math inline">\(\by \in \fR^k\)</span>. The residual vector satisfies <span class="math display">\[
 \begin{align}
-\frac{\|\br_k\|_2}{\|\br_0\|_2} \leq \min_{p \in \mathcal{P}_k, p(0)=1} \max_{\lambda \in \sigma(\bA)} |p(\lambda)|.
+\br(\bx) = \bb - \bA(\bx^{(0)} + \bV_k \by) = \br^{(0)} - \bA \bV_k \by = \beta \bv_1 - \bV_{k+1} \bar{\bH}_k \by = \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by).
+\end{align}
+\]</span> Because the columns of <span class="math inline">\(\bV_{k+1}\)</span> are orthonormal, <span class="math inline">\(\bV_{k+1}\)</span> is an isometry in the Euclidean norm: <span class="math display">\[
+\begin{align}
+\|\bb - \bA\bx\|_2 = \|\beta \be_1 - \bar{\bH}_k \by\|_2,
+\end{align}
+\]</span> where <span class="math inline">\(\be_1 = (1, 0, ..., 0)^T \in \fR^{k+1}\)</span>. The GMRES iterate is <span class="math inline">\(\bx^{(k)} = \bx^{(0)} + \bV_k \by_k\)</span>, where <span class="math inline">\(\by_k\)</span> uniquely solves the <span class="math inline">\((k+1) \times k\)</span> upper Hessenberg least-squares problem <span class="math display">\[
+\begin{align}
+\by_k = \arg\min_{\by \in \fR^k} \|\beta \be_1 - \bar{\bH}_k \by\|_2.
 \end{align}
 \]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Tip</span>Proof
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><strong>(Convergence is less predictable than CG)</strong> For nonnormal matrices, eigenvalues alone may not explain GMRES behavior. The geometry of eigenvectors and transient growth can matter. In practice, preconditioning is usually essential.</p>
+<p>Express any <span class="math inline">\(\bx \in \bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})\)</span> as <span class="math inline">\(\bx = \bx^{(0)} + \bV_k \by\)</span> for <span class="math inline">\(\by \in \fR^k\)</span>. The residual vector is <span class="math display">\[
+\begin{align}
+\br(\bx)
+    &amp;= \bb - \bA(\bx^{(0)} + \bV_k \by) \\
+    &amp;= (\bb - \bA\bx^{(0)}) - \bA \bV_k \by \\
+    &amp;= \br^{(0)} - \bV_{k+1} \bar{\bH}_k \by.
+\end{align}
+\]</span> Since <span class="math inline">\(\bv_1 = \br^{(0)} / \beta\)</span>, we have <span class="math inline">\(\br^{(0)} = \beta \bv_1 = \bV_{k+1}(\beta \be_1)\)</span>, where <span class="math inline">\(\be_1 = (1, 0, ..., 0)^T \in \fR^{k+1}\)</span>. Factoring <span class="math inline">\(\bV_{k+1}\)</span> gives <span class="math display">\[
+\begin{align}
+\br(\bx) = \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by).
+\end{align}
+\]</span> Because the columns of <span class="math inline">\(\bV_{k+1}\)</span> are orthonormal, <span class="math inline">\(\bV_{k+1}^T \bV_{k+1} = \bI_{k+1}\)</span>, and the Euclidean norm satisfies <span class="math display">\[
+\begin{align}
+\|\br(\bx)\|_2^2
+    &amp;= (\beta \be_1 - \bar{\bH}_k \by)^T \bV_{k+1}^T \bV_{k+1} (\beta \be_1 - \bar{\bH}_k \by) \\
+    &amp;= \|\beta \be_1 - \bar{\bH}_k \by\|_2^2.
+\end{align}
+\]</span> Thus <span class="math inline">\(\|\br(\bx)\|_2 = \|\beta \be_1 - \bar{\bH}_k \by\|_2\)</span>, reducing the <span class="math inline">\(n\)</span>-dimensional optimization to the stated <span class="math inline">\((k+1) \times k\)</span> Hessenberg least-squares problem.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -903,14 +899,96 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Preconditioning
+<span class="screen-reader-only">Note</span>Theorem: Polynomial Residual Characterization and Spectral Bound
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><p><strong>Left:</strong> <span class="math inline">\(\bM^{-1}\bA\bx = \bM^{-1}\bb\)</span>. (Minimizes preconditioned residual).</p></li>
-<li><p><strong>Right:</strong> <span class="math inline">\(\bA\bM^{-1}(\bM\bx) = \bb\)</span>. (Minimizes true residual; standard choice).</p></li>
-</ul>
+<p>The <span class="math inline">\(k\)</span>-th GMRES residual satisfies the polynomial minimization property <span class="math display">\[
+\begin{align}
+\|\br^{(k)}\|_2 = \min_{p \in \mathcal{P}_k,\, p(0)=1} \|p(\bA)\br^{(0)}\|_2.
+\end{align}
+\]</span> If <span class="math inline">\(\bA\)</span> is diagonalizable with <span class="math inline">\(\bA = \bX \boldsymbol{\Lambda} \bX^{-1}\)</span>, where <span class="math inline">\(\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, ..., \lambda_n)\)</span>, then the relative residual is bounded by <span class="math display">\[
+\begin{align}
+\frac{\|\br^{(k)}\|_2}{\|\br^{(0)}\|_2} \leq \kappa_2(\bX) \min_{p \in \mathcal{P}_k,\, p(0)=1} \max_{\lambda \in \sigma(\bA)} |p(\lambda)|.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Any vector <span class="math inline">\(\bx \in \bx^{(0)} + \mathcal{K}_k(\bA, \br^{(0)})\)</span> takes the form <span class="math inline">\(\bx = \bx^{(0)} + q(\bA)\br^{(0)}\)</span> for some polynomial <span class="math inline">\(q \in \mathcal{P}_{k-1}\)</span>. The resulting residual is <span class="math display">\[
+\begin{align}
+\br(\bx) = \bb - \bA\bx = \br^{(0)} - \bA q(\bA)\br^{(0)} = (\bI - \bA q(\bA))\br^{(0)}.
+\end{align}
+\]</span> Define <span class="math inline">\(p(z) = 1 - z q(z)\)</span>. Then <span class="math inline">\(p \in \mathcal{P}_k\)</span> and <span class="math inline">\(p(0) = 1\)</span>. Conversely, any polynomial <span class="math inline">\(p \in \mathcal{P}_k\)</span> satisfying <span class="math inline">\(p(0) = 1\)</span> can be written as <span class="math inline">\(p(z) = 1 - z q(z)\)</span> for some <span class="math inline">\(q \in \mathcal{P}_{k-1}\)</span>. Because GMRES minimizes <span class="math inline">\(\|\br(\bx)\|_2\)</span> over all such vectors, the first equality holds.</p>
+<p>If <span class="math inline">\(\bA = \bX \boldsymbol{\Lambda} \bX^{-1}\)</span>, then <span class="math inline">\(p(\bA) = \bX p(\boldsymbol{\Lambda}) \bX^{-1}\)</span>. Taking norms gives <span class="math display">\[
+\begin{align}
+\|p(\bA)\br^{(0)}\|_2 \leq \|\bX\|_2 \|p(\boldsymbol{\Lambda})\|_2 \|\bX^{-1}\|_2 \|\br^{(0)}\|_2 = \kappa_2(\bX) \left(\max_{\lambda \in \sigma(\bA)} |p(\lambda)|\right) \|\br^{(0)}\|_2,
+\end{align}
+\]</span> which yields the spectral bound upon taking the minimum over all normalized polynomials <span class="math inline">\(p \in \mathcal{P}_k\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="solution-via-givens-rotations" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="solution-via-givens-rotations"><span class="header-section-number">24.3</span> Solution via Givens Rotations</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Incremental QR Factorization of the Hessenberg Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At step <span class="math inline">\(k\)</span>, applying the previously accumulated Givens rotations <span class="math inline">\(\bG_1, ..., \bG_{k-1}\)</span> transforms the first <span class="math inline">\(k-1\)</span> entries of the new column of <span class="math inline">\(\bar{\bH}_k\)</span>. The subdiagonal entry at position <span class="math inline">\((k+1, k)\)</span> is then eliminated using a new Givens rotation <span class="math inline">\(\bG_k\)</span> defined by <span class="math display">\[
+\begin{align}
+\bG_k = \begin{pmatrix} c_k &amp; s_k \\ -s_k &amp; c_k \end{pmatrix}, \qquad c_k = \frac{h_{kk}^{(k-1)}}{\sqrt{(h_{kk}^{(k-1)})^2 + h_{k+1,k}^2}}, \quad s_k = \frac{h_{k+1,k}}{\sqrt{(h_{kk}^{(k-1)})^2 + h_{k+1,k}^2}}.
+\end{align}
+\]</span> Applying <span class="math inline">\(\bG_k ... \bG_1\)</span> transforms <span class="math inline">\(\bar{\bH}_k\)</span> into an upper triangular matrix <span class="math inline">\(\bR_k\)</span> with a zero final row, and transforms the right-hand side vector <span class="math inline">\(\beta \be_1\)</span> into <span class="math inline">\(\bg_{k+1} = (\gamma_1, ..., \gamma_k, \gamma_{k+1})^T\)</span>. The residual norm at iteration <span class="math inline">\(k\)</span> is obtained without forming <span class="math inline">\(\bx^{(k)}\)</span>: <span class="math display">\[
+\begin{align}
+\|\br^{(k)}\|_2 = |\gamma_{k+1}|.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bQ_k = \bG_k ... \bG_1 \in \fR^{(k+1) \times (k+1)}\)</span> denote the product of Givens rotations. Because each Givens rotation is an orthogonal transformation on <span class="math inline">\(\fR^{k+1}\)</span>, <span class="math inline">\(\bQ_k\)</span> is orthogonal. The least-squares problem satisfies <span class="math display">\[
+\begin{align}
+\min_{\by \in \fR^k} \|\beta \be_1 - \bar{\bH}_k \by\|_2^2
+    =
+    \min_{\by \in \fR^k} \|\bQ_k(\beta \be_1 - \bar{\bH}_k \by)\|_2^2
+    =
+    \min_{\by \in \fR^k} \left\| \begin{pmatrix} \gamma_{1:k} \\ \gamma_{k+1} \end{pmatrix} - \begin{pmatrix} \bR_k \\ \bzero^T \end{pmatrix} \by \right\|_2^2.
+\end{align}
+\]</span> Expanding the squared Euclidean norm: <span class="math display">\[
+\begin{align}
+\min_{\by \in \fR^k} \left( \|\gamma_{1:k} - \bR_k \by\|_2^2 + |\gamma_{k+1}|^2 \right).
+\end{align}
+\]</span> Because <span class="math inline">\(\bR_k \in \fR^{k \times k}\)</span> is upper triangular and nonsingular (assuming no earlier breakdown), we can choose <span class="math inline">\(\by_k = \bR_k^{-1} \gamma_{1:k}\)</span> to make the first term identically zero. The remaining squared residual is exactly <span class="math inline">\(|\gamma_{k+1}|^2\)</span>, proving that <span class="math inline">\(\|\br^{(k)}\|_2 = |\gamma_{k+1}|\)</span>.</p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -923,9 +1001,46 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Breakdown and stagnation)</strong> Arnoldi breakdown can be good: if the Krylov subspace becomes invariant and the residual reaches zero, GMRES has found the exact solution. Stagnation is different: the method keeps iterating but the residual barely decreases, often because the restart length or preconditioner is poor.</p>
+<p><strong>(Happy breakdown vs.&nbsp;stagnation)</strong> If the subdiagonal entry <span class="math inline">\(h_{k+1,k}\)</span> vanishes during the Arnoldi process, the Krylov subspace has become invariant under <span class="math inline">\(\bA\)</span>. When <span class="math inline">\(\bA\)</span> is nonsingular, its restriction to this invariant subspace is nonsingular, so the GMRES least-squares problem has residual zero and <span class="math inline">\(\bx^{(k)}\)</span> is the exact solution. This event is termed happy breakdown. Stagnation is different: the Krylov space may continue to grow while its image under <span class="math inline">\(\bA\)</span> supplies no useful new residual correction. Non-normality, an unfavorable polynomial approximation problem, or a poor preconditioner can all cause this behavior: the residual history alone does not identify the cause.</p>
 </div>
 </div>
+</section>
+<section id="restarted-gmres-and-practical-considerations" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="restarted-gmres-and-practical-considerations"><span class="header-section-number">24.4</span> Restarted GMRES and Practical Considerations</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Restarted GMRES(<span class="math inline">\(m\)</span>)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Full GMRES requires storing <span class="math inline">\(k\)</span> basis vectors of length <span class="math inline">\(n\)</span>, incurring <span class="math inline">\(O(kn)\)</span> memory storage and <span class="math inline">\(O(k^2 n)\)</span> orthogonalization flops. To avoid memory exhaustion on large systems, the algorithm is restarted every <span class="math inline">\(m\)</span> steps:</p>
+<ol type="1">
+<li><p>Run <span class="math inline">\(m\)</span> steps of GMRES starting from <span class="math inline">\(\bx^{(0)}\)</span> to produce <span class="math inline">\(\bx^{(m)}\)</span>.</p></li>
+<li><p>Compute the residual <span class="math inline">\(\br^{(m)} = \bb - \bA\bx^{(m)}\)</span>.</p></li>
+<li><p>Clear the Krylov basis vectors, set <span class="math inline">\(\bx^{(0)} \leftarrow \bx^{(m)}\)</span>, and repeat.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The trade-off of restarting)</strong> Restarted GMRES(<span class="math inline">\(m\)</span>) bounds memory usage to <span class="math inline">\(O(mn)\)</span> and bounds orthogonalization cost per cycle. However, restarting discards the accumulated Krylov subspace and destroys the global optimality property. If <span class="math inline">\(m\)</span> is chosen too small, the algorithm may stagnate completely.</p>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">24.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -937,14 +1052,68 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p><strong>GMRES vs.&nbsp;CG:</strong> Compare residual plots for a symmetric system. Why is CG usually faster?</p></li>
-<li><p><strong>Restarting:</strong> Test GMRES(<span class="math inline">\(m\)</span>) on a non-symmetric system for <span class="math inline">\(m=5, 20, 50\)</span>. Observe how small <span class="math inline">\(m\)</span> can cause ``plateaus’’ in convergence.</p></li>
-<li><p><strong>Arnoldi:</strong> Implement the Arnoldi process via Modified Gram-Schmidt. Verify the Hessenberg structure of <span class="math inline">\(H_k = V_k^T \bA V_k\)</span>.</p></li>
+<li><p><strong>Compute.</strong> <strong>(Arnoldi factorization by hand)</strong> For the matrix and initial residual <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} 1 &amp; 1 &amp; 0 \\ 0 &amp; 2 &amp; 1 \\ 0 &amp; 0 &amp; 3 \end{pmatrix}, \qquad \br^{(0)} = \begin{pmatrix} 1 \\ 0 \\ 1 \end{pmatrix},
+\end{align}
+\]</span> perform two steps of the Arnoldi iteration by hand.</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(\bv_1\)</span> and <span class="math inline">\(\bw_1 = \bA\bv_1\)</span>. Find <span class="math inline">\(h_{11}, h_{21}\)</span> and <span class="math inline">\(\bv_2\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(\bw_2 = \bA\bv_2\)</span>. Find <span class="math inline">\(h_{12}, h_{22}, h_{32}\)</span> and <span class="math inline">\(\bv_3\)</span>.</p></li>
+<li><p>Explicitly assemble the matrices <span class="math inline">\(\bV_2\)</span> and the <span class="math inline">\(3 \times 2\)</span> upper Hessenberg matrix <span class="math inline">\(\bar{\bH}_2\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>(Hessenberg QR and residual norm via Givens)</strong> Using the <span class="math inline">\(3 \times 2\)</span> matrix <span class="math inline">\(\bar{\bH}_2\)</span> from Exercise 1:</p>
+<ol type="1">
+<li><p>Form the Givens rotation <span class="math inline">\(\bG_1\)</span> that eliminates <span class="math inline">\(h_{21}\)</span>, and the rotation <span class="math inline">\(\bG_2\)</span> that eliminates <span class="math inline">\(h_{32}\)</span>.</p></li>
+<li><p>Apply these rotations to the right-hand side vector <span class="math inline">\(\beta \be_1 = (\sqrt{2}, 0, 0)^T\)</span>.</p></li>
+<li><p>Read off the residual norm <span class="math inline">\(\|\br^{(2)}\|_2\)</span> from the transformed vector without computing <span class="math inline">\(\bx^{(2)}\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>(GMRES polynomial minimax on an ellipse)</strong> Suppose the eigenvalues of <span class="math inline">\(\bA\)</span> are enclosed within an ellipse in the complex plane centered at <span class="math inline">\(c &gt; 0\)</span> with focal distance <span class="math inline">\(d &lt; c\)</span> that does not contain the origin.</p>
+<ol type="1">
+<li><p>Using the scaled Chebyshev polynomial <span class="math inline">\(p(z) = T_k((c - z)/d) / T_k(c/d)\)</span>, show that <span class="math inline">\(p(0) = 1\)</span>.</p></li>
+<li><p>Apply the result above to derive an explicit upper bound for <span class="math inline">\(\|\br^{(k)}\|_2 / \|\br^{(0)}\|_2\)</span> in terms of the semi-axes of the ellipse.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>(Exact stagnation for a cyclic permutation)</strong> Let <span class="math inline">\(\bA\)</span> be the cyclic permutation matrix defined by <span class="math inline">\(\bA\be_j=\be_{j+1}\)</span> for <span class="math inline">\(j&lt;n\)</span> and <span class="math inline">\(\bA\be_n=\be_1\)</span>. Take <span class="math inline">\(\bx^{(0)}=\bzero\)</span> and <span class="math inline">\(\bb=\be_1\)</span>.</p>
+<ol type="1">
+<li><p>Prove that <span class="math inline">\(\mathcal{K}_k(\bA,\bb)=\operatorname{span}\{\be_1,...,\be_k\}\)</span> for <span class="math inline">\(k&lt;n\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\bA\mathcal{K}_k=\operatorname{span}\{\be_2,...,\be_{k+1}\}\)</span> is orthogonal to <span class="math inline">\(\bb\)</span>. Conclude that <span class="math inline">\(\|\br^{(k)}\|_2=1\)</span> for every <span class="math inline">\(k&lt;n\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\bx=\be_n\)</span> becomes available at step <span class="math inline">\(n\)</span> and gives zero residual. Construct the degree-<span class="math inline">\(n\)</span> residual polynomial that vanishes on the spectrum of <span class="math inline">\(\bA\)</span>, and explain why no polynomial of smaller degree can do so.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>(Left versus right preconditioning)</strong> Compare left preconditioning (<span class="math inline">\(\bM^{-1}\bA\bx = \bM^{-1}\bb\)</span>) and right preconditioning (<span class="math inline">\(\bA\bM^{-1}\by = \bb\)</span>, <span class="math inline">\(\bx = \bM^{-1}\by\)</span>). Show that right-preconditioned GMRES minimizes the true residual <span class="math inline">\(\|\bb-\bA\bx\|_2\)</span>, whereas left-preconditioned GMRES minimizes <span class="math inline">\(\|\bM^{-1}(\bb-\bA\bx)\|_2\)</span>. Explain why a code that uses left preconditioning may need to monitor both quantities.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Literature trail: The paper that introduced GMRES
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read Yousef Saad and Martin H.~Schultz’s 1986 paper, <em>GMRES: A Generalized Minimal Residual Algorithm for Solving Nonsymmetric Linear Systems</em> <span class="citation" data-cites="saadschultz1986">(<a href="../references.html#ref-saadschultz1986" role="doc-biblioref">Saad and Schultz 1986</a>)</span>.</p>
+<p><strong>Search hint.</strong> The title is distinctive and the original SIAM paper is readily available through most university libraries.</p>
+<p><strong>Mathematical hint.</strong> Begin with the Arnoldi relation. The large residual minimization becomes a small least-squares problem only after orthonormality is used in exactly the right place.</p>
+<ol type="1">
+<li><p>Give a complete citation and locate the statement that defines the GMRES iterate.</p></li>
+<li><p>Translate the paper’s symbols for the Arnoldi basis, Hessenberg matrix, and residual into the notation of this chapter.</p></li>
+<li><p>List the assumptions used in the derivation and distinguish exact-arithmetic statements from implementation advice.</p></li>
+<li><p>Reconstruct the reduction from residual minimization in <span class="math inline">\(\fR^n\)</span> to the Hessenberg least-squares problem. Then identify one practical issue in the paper (storage, restarting, or stagnation) that the theorem alone does not reveal.</p></li>
 </ol>
 </div>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-arnoldi1951" class="csl-entry" role="listitem">
+Arnoldi, Walter E. 1951. <span>“The Principle of Minimized Iterations in the Solution of the Matrix Eigenvalue Problem.”</span> <em>Quarterly of Applied Mathematics</em> 9 (1): 17–29. <a href="https://doi.org/10.1090/qam/42792">https://doi.org/10.1090/qam/42792</a>.
+</div>
+<div id="ref-saadschultz1986" class="csl-entry" role="listitem">
+Saad, Yousef, and Martin H. Schultz. 1986. <span>“<span>GMRES</span>: A Generalized Minimal Residual Algorithm for Solving Nonsymmetric Linear Systems.”</span> <em>SIAM Journal on Scientific and Statistical Computing</em> 7 (3): 856–69. <a href="https://doi.org/10.1137/0907058">https://doi.org/10.1137/0907058</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1363,13 +1532,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../iterative/conjugate-gradient.html" class="pagination-link" aria-label="Conjugate Gradient Method">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span>
+      <a href="../iterative/conjugate-gradient.html" class="pagination-link" aria-label="The Conjugate Gradient Method">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../numerical-analysis/interpolation.html" class="pagination-link" aria-label="Polynomial Interpolation">
-        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../iterative/multigrid.html" class="pagination-link" aria-label="Multigrid Methods">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

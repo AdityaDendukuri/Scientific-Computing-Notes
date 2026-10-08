@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>29&nbsp; Principal Component Analysis (PCA) – Scientific Computing</title>
+<title>30&nbsp; Principal Component Analysis (PCA) – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/pca.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/pca.html"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,11 +729,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#definitions-and-preprocessing" id="toc-definitions-and-preprocessing" class="nav-link active" data-scroll-target="#definitions-and-preprocessing"><span class="header-section-number">29.1</span> Definitions and Preprocessing</a></li>
-  <li><a href="#pca-via-svd" id="toc-pca-via-svd" class="nav-link" data-scroll-target="#pca-via-svd"><span class="header-section-number">29.2</span> PCA via SVD</a></li>
-  <li><a href="#variance-and-dimensionality-reduction" id="toc-variance-and-dimensionality-reduction" class="nav-link" data-scroll-target="#variance-and-dimensionality-reduction"><span class="header-section-number">29.3</span> Variance and Dimensionality Reduction</a></li>
-  <li><a href="#implementation-details" id="toc-implementation-details" class="nav-link" data-scroll-target="#implementation-details"><span class="header-section-number">29.4</span> Implementation Details</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">29.5</span> Exercises</a></li>
+  <li><a href="#definitions-and-preprocessing" id="toc-definitions-and-preprocessing" class="nav-link active" data-scroll-target="#definitions-and-preprocessing"><span class="header-section-number">30.1</span> Definitions and Preprocessing</a></li>
+  <li><a href="#pca-via-svd" id="toc-pca-via-svd" class="nav-link" data-scroll-target="#pca-via-svd"><span class="header-section-number">30.2</span> PCA via SVD</a></li>
+  <li><a href="#variance-and-dimensionality-reduction" id="toc-variance-and-dimensionality-reduction" class="nav-link" data-scroll-target="#variance-and-dimensionality-reduction"><span class="header-section-number">30.3</span> Variance and Dimensionality Reduction</a></li>
+  <li><a href="#implementation-details" id="toc-implementation-details" class="nav-link" data-scroll-target="#implementation-details"><span class="header-section-number">30.4</span> Implementation Details</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">30.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/pca.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -683,9 +741,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/pca.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/pca.html"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></h1>
+<h1 class="title"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></h1>
 </div>
 
 
@@ -702,9 +760,9 @@ window.Quarto = {
 </header>
 
 
-<p>Optimal linear dimensionality reduction via variance maximization.</p>
-<section id="definitions-and-preprocessing" class="level2" data-number="29.1">
-<h2 data-number="29.1" class="anchored" data-anchor-id="definitions-and-preprocessing"><span class="header-section-number">29.1</span> Definitions and Preprocessing</h2>
+<p><strong>(Data thread)</strong> This is the same rectangular data matrix viewed from a different question. Least squares asked which coefficients predict a response: PCA asks which orthogonal directions describe the observations themselves. The SVD answers both questions.</p>
+<section id="definitions-and-preprocessing" class="level2" data-number="30.1">
+<h2 data-number="30.1" class="anchored" data-anchor-id="definitions-and-preprocessing"><span class="header-section-number">30.1</span> Definitions and Preprocessing</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -750,6 +808,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Derive.</strong></p>
 <ol type="1">
 <li><p>Show that centering makes each column of <span class="math inline">\(\bX\)</span> have mean zero.</p></li>
 <li><p>Prove that the diagonal entries of <span class="math inline">\(\bS\)</span> are sample variances.</p></li>
@@ -758,8 +817,8 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 </section>
-<section id="pca-via-svd" class="level2" data-number="29.2">
-<h2 data-number="29.2" class="anchored" data-anchor-id="pca-via-svd"><span class="header-section-number">29.2</span> PCA via SVD</h2>
+<section id="pca-via-svd" class="level2" data-number="30.2">
+<h2 data-number="30.2" class="anchored" data-anchor-id="pca-via-svd"><span class="header-section-number">30.2</span> PCA via SVD</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -790,15 +849,22 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Since <span class="math inline">\(\bX=\bU\bsigma\bV^T\)</span>, <span class="math display">\[
+<p>Substituting the SVD <span class="math inline">\(\bX = \bU\bsigma\bV^T\)</span> into the sample covariance matrix <span class="math inline">\(\bS\)</span>: <span class="math display">\[
 \begin{align}
-\bS
-    =
-    \frac{1}{n-1}\bX^T\bX
-    =
-    \bV\left(\frac{\bsigma^2}{n-1}\right)\bV^T.
+\bS &amp;= \frac{1}{n-1} \bX^T\bX \\
+    &amp;= \frac{1}{n-1} \left( \bV\bsigma^T\bU^T \right) \left( \bU\bsigma\bV^T \right) \\
+    &amp;= \frac{1}{n-1} \bV \bsigma^T (\bU^T\bU) \bsigma \bV^T \\
+    &amp;= \bV \left( \frac{\bsigma^2}{n-1} \right) \bV^T.
 \end{align}
-\]</span> Thus the columns of <span class="math inline">\(\bV\)</span> diagonalize the covariance matrix. The scores satisfy <span class="math inline">\(\bZ=\bX\bV=\bU\bsigma\)</span>, so their sample covariance is diagonal with entries <span class="math inline">\(\sigma_i^2/(n-1)\)</span>.</p>
+\]</span> Because <span class="math inline">\(\bV\)</span> is orthogonal and <span class="math inline">\(\frac{\bsigma^2}{n-1}\)</span> is diagonal with non-negative entries <span class="math inline">\(\frac{\sigma_i^2}{n-1}\)</span>, this is the spectral decomposition of <span class="math inline">\(\bS\)</span>. The columns <span class="math inline">\(\bv_i\)</span> are eigenvectors of <span class="math inline">\(\bS\)</span> with eigenvalues <span class="math inline">\(\lambda_i = \sigma_i^2 / (n-1)\)</span>. The principal component score matrix is <span class="math display">\[
+\begin{align}
+\bZ = \bX\bV = \left( \bU\bsigma\bV^T \right) \bV = \bU\bsigma (\bV^T\bV) = \bU\bsigma.
+\end{align}
+\]</span> The sample covariance matrix of the scores is <span class="math display">\[
+\begin{align}
+\bS_{\bZ} = \frac{1}{n-1} \bZ^T\bZ = \frac{1}{n-1} (\bsigma\bU^T)(\bU\bsigma) = \frac{\bsigma^2}{n-1} = \operatorname{diag}(\lambda_1, ..., \lambda_p),
+\end{align}
+\]</span> confirming that distinct score columns <span class="math inline">\(\bz_i, \bz_j\)</span> have sample covariance zero for <span class="math inline">\(i \neq j\)</span>.</p>
 </div>
 </div>
 </div>
@@ -812,7 +878,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(PCA stability)</strong> Never form <span class="math inline">\(\bX^T\bX\)</span> explicitly for PCA. Squaring the data matrix doubles the condition number (<span class="math inline">\(\kappa(\bS) = \kappa(\bX)^2\)</span>). Compute PCA directly via the SVD of <span class="math inline">\(\bX\)</span>.</p>
+<p><strong>(PCA stability)</strong> Forming <span class="math inline">\(\bX^T\bX\)</span> squares the 2-norm condition number: <span class="math inline">\(\kappa_2(\bX^T\bX)=\kappa_2(\bX)^2\)</span> when <span class="math inline">\(\bX\)</span> has full column rank. Compute the singular vectors directly from an SVD when small singular values or numerical rank matter.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -825,6 +891,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Derive.</strong></p>
 <ol type="1">
 <li><p>Starting from <span class="math inline">\(\bX=\bU\bsigma\bV^T\)</span>, compute <span class="math inline">\(\bS=(n-1)^{-1}\bX^T\bX\)</span>.</p></li>
 <li><p>Show that the columns of <span class="math inline">\(\bV\)</span> are eigenvectors of <span class="math inline">\(\bS\)</span>.</p></li>
@@ -835,8 +902,8 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 </section>
-<section id="variance-and-dimensionality-reduction" class="level2" data-number="29.3">
-<h2 data-number="29.3" class="anchored" data-anchor-id="variance-and-dimensionality-reduction"><span class="header-section-number">29.3</span> Variance and Dimensionality Reduction</h2>
+<section id="variance-and-dimensionality-reduction" class="level2" data-number="30.3">
+<h2 data-number="30.3" class="anchored" data-anchor-id="variance-and-dimensionality-reduction"><span class="header-section-number">30.3</span> Variance and Dimensionality Reduction</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -868,7 +935,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 \begin{align}
 \bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T
 \end{align}
-\]</span> is the optimal <span class="math inline">\(k\)</span>-dimensional linear approximation of the data in the Frobenius norm, by the Eckart-Young theorem.</p>
+\]</span> is the optimal <span class="math inline">\(k\)</span>-dimensional linear approximation of the data in the Frobenius norm, by the Eckart–Young theorem.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -881,6 +948,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Derive.</strong></p>
 <ol type="1">
 <li><p>Use the result above to prove the result above.</p></li>
 <li><p>Show that <span class="math inline">\(\|\bX-\bX_k\|_F^2=\sum_{i&gt;k}\sigma_i^2\)</span>.</p></li>
@@ -890,8 +958,8 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 </section>
-<section id="implementation-details" class="level2" data-number="29.4">
-<h2 data-number="29.4" class="anchored" data-anchor-id="implementation-details"><span class="header-section-number">29.4</span> Implementation Details</h2>
+<section id="implementation-details" class="level2" data-number="30.4">
+<h2 data-number="30.4" class="anchored" data-anchor-id="implementation-details"><span class="header-section-number">30.4</span> Implementation Details</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -915,7 +983,7 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Interpretation)</strong> Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix; it does not by itself explain why that variation occurs.</p>
+<p><strong>(Interpretation)</strong> Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix. It does not by itself explain why that variation occurs.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -924,16 +992,16 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Kernel PCA (High-Dimensional Case)
+<span class="screen-reader-only">Note</span>Definition: Dual PCA for <span class="math inline">\(p \gg n\)</span>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>When <span class="math inline">\(p \gg n\)</span>, work with the <span class="math inline">\(n \times n\)</span> Gram matrix <span class="math inline">\(\mathbf{K} = \bX\bX^T\)</span>. Principal directions are recovered via <span class="math inline">\(\bv_i = \bX^T \bu_i / \sigma_i\)</span>.</p>
+<p>When the number of features greatly exceeds the number of samples, we may diagonalize the <span class="math inline">\(n\times n\)</span> Gram matrix <span class="math inline">\(\mathbf{K}=\bX\bX^T\)</span> instead of the <span class="math inline">\(p\times p\)</span> covariance matrix. For each nonzero singular value, the feature-space principal direction is recovered from <span class="math inline">\(\bv_i=\bX^T\bu_i/\sigma_i\)</span>. Kernel PCA replaces this linear Gram matrix by a centered nonlinear kernel matrix.</p>
 </div>
 </div>
 </section>
-<section id="exercises" class="level2" data-number="29.5">
-<h2 data-number="29.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">29.5</span> Exercises</h2>
+<section id="exercises" class="level2" data-number="30.5">
+<h2 data-number="30.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">30.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -945,15 +1013,36 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Center <span class="math inline">\(\bX = \begin{pmatrix} 2 &amp; 1 \\ -1 &amp; 3 \\ -1 &amp; -4 \end{pmatrix}\)</span> and compute <span class="math inline">\(\bS\)</span>. Find the PVE for <span class="math inline">\(k=1\)</span>.</p></li>
-<li><p>Prove that PC scores <span class="math inline">\(\bz_i, \bz_j\)</span> are uncorrelated for <span class="math inline">\(i \neq j\)</span> using the result above.</p></li>
-<li><p>Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?</p></li>
-<li><p>Verify that the sum of variances <span class="math inline">\(\sum \lambda_i\)</span> equals the total variance <span class="math inline">\(\text{Tr}(\bS)\)</span>.</p></li>
+<li><p><strong>Compute.</strong> Center <span class="math inline">\(\bX = \begin{pmatrix} 2 &amp; 1 \\ -1 &amp; 3 \\ -1 &amp; -4 \end{pmatrix}\)</span> and compute <span class="math inline">\(\bS\)</span>. Find the PVE for <span class="math inline">\(k=1\)</span>.</p></li>
+<li><p><strong>Derive.</strong> Prove that PC scores <span class="math inline">\(\bz_i, \bz_j\)</span> are uncorrelated for <span class="math inline">\(i \neq j\)</span> using the result above.</p></li>
+<li><p><strong>Compute.</strong> Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?</p></li>
+<li><p><strong>Check.</strong> Verify that the sum of variances <span class="math inline">\(\sum \lambda_i\)</span> equals the total variance <span class="math inline">\(\text{Tr}(\bS)\)</span>.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Jolliffe is a standard statistical reference for principal component analysis <span class="citation" data-cites="jolliffe2002">(<a href="../references.html#ref-jolliffe2002" role="doc-biblioref">Jolliffe 2002</a>)</span>. The Golub–Kahan paper gives the bidiagonalization behind modern large-scale SVD calculations <span class="citation" data-cites="golubkahan1965">(<a href="../references.html#ref-golubkahan1965" role="doc-biblioref">Golub and Kahan 1965</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-golubkahan1965" class="csl-entry" role="listitem">
+Golub, Gene H., and William Kahan. 1965. <span>“Calculating the Singular Values and Pseudo-Inverse of a Matrix.”</span> <em>Journal of the Society for Industrial and Applied Mathematics, Series B: Numerical Analysis</em> 2 (2): 205–24. <a href="https://doi.org/10.1137/0702016">https://doi.org/10.1137/0702016</a>.
+</div>
+<div id="ref-jolliffe2002" class="csl-entry" role="listitem">
+Jolliffe, Ian T. 2002. <em>Principal Component Analysis</em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/b98835">https://doi.org/10.1007/b98835</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1372,13 +1461,13 @@ X_{ij} \leftarrow X_{ij} - \bar{x}_j, \quad \bar{x}_j = \frac{1}{n}\sum_{i=1}^n 
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../odes/ode-methods.html" class="pagination-link" aria-label="Numerical Methods for ODEs">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span>
+      <a href="../odes/ode-methods.html" class="pagination-link" aria-label="Numerical Methods for Ordinary Differential Equations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../applications/graphs.html" class="pagination-link" aria-label="Spectral Graph Theory and PageRank">
-        <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../applications/graphs.html" class="pagination-link" aria-label="Spectral Graph Theory, Diffusion Maps, and Graph Laplacians">
+        <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

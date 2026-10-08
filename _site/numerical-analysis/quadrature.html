@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>26&nbsp; Numerical Quadrature – Scientific Computing</title>
+<title>28&nbsp; Numerical Quadrature – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../numerical-analysis/root-finding.html" rel="next">
-<link href="../numerical-analysis/interpolation.html" rel="prev">
+<link href="../odes/ode-methods.html" rel="next">
+<link href="../numerical-analysis/chebyshev.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Numerical Analysis</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,12 +729,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#newton-cotes-rules" id="toc-newton-cotes-rules" class="nav-link active" data-scroll-target="#newton-cotes-rules"><span class="header-section-number">26.1</span> Newton-Cotes Rules</a></li>
-  <li><a href="#gaussian-quadrature" id="toc-gaussian-quadrature" class="nav-link" data-scroll-target="#gaussian-quadrature"><span class="header-section-number">26.2</span> Gaussian Quadrature</a></li>
-  <li><a href="#richardson-extrapolation-and-romberg-integration" id="toc-richardson-extrapolation-and-romberg-integration" class="nav-link" data-scroll-target="#richardson-extrapolation-and-romberg-integration"><span class="header-section-number">26.3</span> Richardson Extrapolation and Romberg Integration</a></li>
-  <li><a href="#adaptive-quadrature" id="toc-adaptive-quadrature" class="nav-link" data-scroll-target="#adaptive-quadrature"><span class="header-section-number">26.4</span> Adaptive Quadrature</a></li>
-  <li><a href="#periodic-functions-and-spectral-accuracy" id="toc-periodic-functions-and-spectral-accuracy" class="nav-link" data-scroll-target="#periodic-functions-and-spectral-accuracy"><span class="header-section-number">26.5</span> Periodic Functions and Spectral Accuracy</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">26.6</span> Exercises</a></li>
+  <li><a href="#degree-of-exactness-and-interpolatory-quadrature" id="toc-degree-of-exactness-and-interpolatory-quadrature" class="nav-link active" data-scroll-target="#degree-of-exactness-and-interpolatory-quadrature"><span class="header-section-number">28.1</span> Degree of Exactness and Interpolatory Quadrature</a></li>
+  <li><a href="#newtoncotes-formulas-and-composite-rules" id="toc-newtoncotes-formulas-and-composite-rules" class="nav-link" data-scroll-target="#newtoncotes-formulas-and-composite-rules"><span class="header-section-number">28.2</span> Newton–Cotes Formulas and Composite Rules</a></li>
+  <li><a href="#peano-kernel-error-representation" id="toc-peano-kernel-error-representation" class="nav-link" data-scroll-target="#peano-kernel-error-representation"><span class="header-section-number">28.3</span> Peano Kernel Error Representation</a></li>
+  <li><a href="#gausslegendre-quadrature" id="toc-gausslegendre-quadrature" class="nav-link" data-scroll-target="#gausslegendre-quadrature"><span class="header-section-number">28.4</span> Gauss–Legendre Quadrature</a></li>
+  <li><a href="#richardson-extrapolation-and-romberg-integration" id="toc-richardson-extrapolation-and-romberg-integration" class="nav-link" data-scroll-target="#richardson-extrapolation-and-romberg-integration"><span class="header-section-number">28.5</span> Richardson Extrapolation and Romberg Integration</a></li>
+  <li><a href="#periodic-functions-and-spectral-convergence" id="toc-periodic-functions-and-spectral-convergence" class="nav-link" data-scroll-target="#periodic-functions-and-spectral-convergence"><span class="header-section-number">28.6</span> Periodic Functions and Spectral Convergence</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">28.7</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/numerical-analysis/quadrature.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -684,9 +743,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Numerical Analysis</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></h1>
+<h1 class="title"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></h1>
 </div>
 
 
@@ -703,24 +762,29 @@ window.Quarto = {
 </header>
 
 
-<p>Approximating <span class="math inline">\(I = \int_a^b f(x)\,dx\)</span> via weighted sums: <span class="math inline">\(\sum_{i=1}^n w_i f(x_i)\)</span>.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Quadrature Rule
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A quadrature rule approximates an integral by function values: <span class="math display">\[
+<p>Numerical quadrature approximates the definite integral of a continuous function <span class="math inline">\(f : [a, b] \to \fR\)</span> by a finite linear combination of sampled function values: <span class="math display">\[
 \begin{align}
-\int_a^b f(x)\,dx
-    \approx
-    \sum_{i=1}^p w_i f(x_i).
+I(f) = \int_a^b f(x)\,dx \approx Q_n(f) = \sum_{i=0}^n w_i f(x_i).
 \end{align}
-\]</span> The nodes <span class="math inline">\(x_i\)</span> choose where <span class="math inline">\(f\)</span> is sampled, and the weights <span class="math inline">\(w_i\)</span> choose how those samples are averaged.</p>
+\]</span> The points <span class="math inline">\(x_i \in [a, b]\)</span> are the quadrature nodes, and the scalar coefficients <span class="math inline">\(w_i \in \fR\)</span> are the quadrature weights. The design of quadrature rules balances algebraic precision, computational cost, and numerical stability.</p>
+<section id="degree-of-exactness-and-interpolatory-quadrature" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="degree-of-exactness-and-interpolatory-quadrature"><span class="header-section-number">28.1</span> Degree of Exactness and Interpolatory Quadrature</h2>
+<p>The standard criterion for evaluating a quadrature rule is its algebraic precision, defined by the highest degree of polynomials it integrates without error.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Degree of Exactness (Algebraic Precision)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A quadrature rule <span class="math inline">\(Q_n\)</span> has degree of exactness <span class="math inline">\(m\)</span> if <span class="math display">\[
+\begin{align}
+Q_n(p) = \int_a^b p(x)\,dx \qquad \text{for all } p \in \mathcal{P}_m,
+\end{align}
+\]</span> and there exists at least one polynomial <span class="math inline">\(q \in \mathcal{P}_{m+1}\)</span> for which <span class="math inline">\(Q_n(q) \neq \int_a^b q(x)\,dx\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -729,44 +793,64 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Degree of Exactness
+<span class="screen-reader-only">Note</span>Theorem: Interpolatory Quadrature Rules
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A quadrature rule has degree of exactness <span class="math inline">\(m\)</span> if it integrates every polynomial of degree at most <span class="math inline">\(m\)</span> exactly, and fails for at least one polynomial of degree <span class="math inline">\(m+1\)</span>.</p>
+<p>Let <span class="math inline">\(x_0, x_1, ..., x_n\)</span> be <span class="math inline">\(n+1\)</span> distinct nodes in <span class="math inline">\([a, b]\)</span>. The interpolatory quadrature rule approximates <span class="math inline">\(I(f)\)</span> by integrating the polynomial interpolant <span class="math inline">\(P_n(x) = \sum_{i=0}^n f(x_i) L_i(x)\)</span> in Lagrange form: <span class="math display">\[
+\begin{align}
+Q_n(f) = \int_a^b P_n(x)\,dx = \sum_{i=0}^n w_i f(x_i), \qquad w_i = \int_a^b L_i(x)\,dx.
+\end{align}
+\]</span> Every interpolatory quadrature rule with <span class="math inline">\(n+1\)</span> distinct nodes has degree of exactness at least <span class="math inline">\(n\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Tip</span>Proof
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><strong>(Interpolation view)</strong> Newton-Cotes rules interpolate <span class="math inline">\(f\)</span> at selected nodes and integrate the interpolating polynomial. The quadrature error is therefore controlled by interpolation error and smoothness of <span class="math inline">\(f\)</span>.</p>
-</div>
-</div>
-<section id="newton-cotes-rules" class="level2" data-number="26.1">
-<h2 data-number="26.1" class="anchored" data-anchor-id="newton-cotes-rules"><span class="header-section-number">26.1</span> Newton-Cotes Rules</h2>
-<p>Uses equally-spaced nodes. Higher-order rules are prone to Runge’s phenomenon.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Trapezoidal Rule
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>On <span class="math inline">\(n\)</span> panels of width <span class="math inline">\(h = (b-a)/n\)</span>: <span class="math display">\[
+<p>Let <span class="math inline">\(p \in \mathcal{P}_n\)</span>. By the uniqueness of polynomial interpolation (the result above), the interpolant of <span class="math inline">\(p\)</span> is identical to <span class="math inline">\(p\)</span> itself: <span class="math inline">\(P_n(x) \equiv p(x)\)</span>. Integrating this identity yields <span class="math display">\[
 \begin{align}
-T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
+\int_a^b p(x)\,dx = \int_a^b P_n(x)\,dx = \int_a^b \left( \sum_{i=0}^n p(x_i) L_i(x) \right) dx = \sum_{i=0}^n p(x_i) \int_a^b L_i(x)\,dx = \sum_{i=0}^n w_i p(x_i) = Q_n(p).
 \end{align}
-\]</span></p>
+\]</span> Therefore, <span class="math inline">\(Q_n\)</span> integrates all polynomials of degree at most <span class="math inline">\(n\)</span> exactly.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="newtoncotes-formulas-and-composite-rules" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="newtoncotes-formulas-and-composite-rules"><span class="header-section-number">28.2</span> Newton–Cotes Formulas and Composite Rules</h2>
+<p>Newton–Cotes rules are interpolatory quadrature formulas built on equally spaced nodes. Because high-order single-panel Newton–Cotes rules suffer from negative weights and Runge’s phenomenon, practical computations use composite rules on small subintervals of uniform width <span class="math inline">\(h = (b - a)/N\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Composite Trapezoidal and Simpson’s Rules
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dividing <span class="math inline">\([a, b]\)</span> into <span class="math inline">\(N\)</span> subintervals with uniform width <span class="math inline">\(h = (b - a)/N\)</span> and grid points <span class="math inline">\(x_j = a + jh\)</span>:</p>
+<ol type="1">
+<li><p>The <strong>Composite Trapezoidal Rule</strong> is <span class="math display">\[
+\begin{align}
+T_N(f) = h \left[ \frac{f(a) + f(b)}{2} + \sum_{j=1}^{N-1} f(x_j) \right].
+\end{align}
+\]</span></p></li>
+<li><p>For an even number of panels <span class="math inline">\(N\)</span>, the <strong>Composite Simpson’s Rule</strong> is <span class="math display">\[
+\begin{align}
+S_N(f) = \frac{h}{3} \left[ f(x_0) + 4\sum_{\substack{j=1 \\ j \text{ odd}}}^{N-1} f(x_j) + 2\sum_{\substack{j=2 \\ j \text{ even}}}^{N-2} f(x_j) + f(x_N) \right].
+\end{align}
+\]</span></p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -775,11 +859,23 @@ T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Proposition: Trapezoid Exactness
+<span class="screen-reader-only">Note</span>Theorem: Composite Error Formulas
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The one-panel trapezoidal rule is exact for polynomials of degree at most <span class="math inline">\(1\)</span>.</p>
+<p>Let <span class="math inline">\(f \in C^2[a, b]\)</span> for the trapezoidal rule, and let <span class="math inline">\(f \in C^4[a, b]\)</span> for Simpson’s rule.</p>
+<ol type="1">
+<li><p>The composite trapezoidal error satisfies <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -\frac{b - a}{12} h^2 f''(\xi_T), \qquad \xi_T \in (a, b).
+\end{align}
+\]</span></p></li>
+<li><p>The composite Simpson error satisfies <span class="math display">\[
+\begin{align}
+I(f) - S_N(f) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S), \qquad \xi_S \in (a, b).
+\end{align}
+\]</span></p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -794,179 +890,75 @@ T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>On <span class="math inline">\([a,b]\)</span>, the trapezoidal rule integrates the line through <span class="math inline">\((a,f(a))\)</span> and <span class="math inline">\((b,f(b))\)</span>. If <span class="math inline">\(f\)</span> itself is constant or linear, this interpolant equals <span class="math inline">\(f\)</span>, so the integral is exact.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Trapezoidal Error
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(f\)</span> has two continuous derivatives on <span class="math inline">\([a,b]\)</span>, then the composite trapezoidal rule satisfies <span class="math display">\[
+<p>For the trapezoidal rule on panel <span class="math inline">\([x_j, x_{j+1}]\)</span>, the Cauchy interpolation error formula (the result above) gives <span class="math display">\[
 \begin{align}
-I-T_n = O(h^2).
+f(x) - P_1(x) = \frac{f''(\xi_j(x))}{2}(x - x_j)(x - x_{j+1}).
 \end{align}
-\]</span> Thus doubling <span class="math inline">\(n\)</span> reduces the leading error by a factor of about <span class="math inline">\(4\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Derive the one-panel trapezoidal rule by integrating the linear interpolant through <span class="math inline">\((a,f(a))\)</span> and <span class="math inline">\((b,f(b))\)</span>.</p></li>
-<li><p>Use Taylor expansion on one panel to show the local error is <span class="math inline">\(O(h^3)\)</span>.</p></li>
-<li><p>Sum over <span class="math inline">\(O(1/h)\)</span> panels to prove the global <span class="math inline">\(O(h^2)\)</span> statement in the result above.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Simpson’s Rule
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Requires <span class="math inline">\(n\)</span> to be even. Uses piecewise quadratic interpolation: <span class="math display">\[
+\]</span> Because <span class="math inline">\((x - x_j)(x - x_{j+1}) \leq 0\)</span> on this panel, the Mean Value Theorem for Integrals implies there exists <span class="math inline">\(\mu_j \in (x_j, x_{j+1})\)</span> such that <span class="math display">\[
 \begin{align}
-S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\text{even}\;i} f(x_i) \right].
+\int_{x_j}^{x_{j+1}} [f(x) - P_1(x)]\,dx = \frac{f''(\mu_j)}{2} \int_{x_j}^{x_{j+1}} (x - x_j)(x - x_{j+1})\,dx = -\frac{h^3}{12} f''(\mu_j).
+\end{align}
+\]</span> Summing across all <span class="math inline">\(N\)</span> panels and applying the Intermediate Value Theorem to the average <span class="math inline">\(\frac{1}{N}\sum_{j=0}^{N-1} f''(\mu_j) = f''(\xi_T)\)</span> yields the trapezoidal error formula: <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -\frac{h^3}{12} \sum_{j=0}^{N-1} f''(\mu_j) = -\frac{N h^3}{12} f''(\xi_T) = -\frac{b - a}{12} h^2 f''(\xi_T).
+\end{align}
+\]</span> For Simpson’s rule, expand <span class="math inline">\(f(x_{2j+1} + t)\)</span> about the midpoint <span class="math inline">\(c_j = x_{2j+1}\)</span> through fourth order for <span class="math inline">\(t \in [-h, h]\)</span>: <span class="math display">\[
+\begin{align}
+f(c_j + t) = f(c_j) + t f'(c_j) + \frac{t^2}{2} f''(c_j) + \frac{t^3}{6} f'''(c_j) + \frac{t^4}{24} f^{(4)}(c_j) + O(t^5).
+\end{align}
+\]</span> Integrating over <span class="math inline">\([-h, h]\)</span>, odd powers vanish by symmetry: <span class="math display">\[
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx = \int_{-h}^h f(c_j + t)\,dt = 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{60} f^{(4)}(c_j) + O(h^7).
+\end{align}
+\]</span> The Simpson rule on this double-panel evaluates to <span class="math display">\[
+\begin{align}
+S_{\text{panel}} &amp;= \frac{h}{3} \left[ f(c_j - h) + 4 f(c_j) + f(c_j + h) \right] \\
+    &amp;= \frac{h}{3} \left[ 6 f(c_j) + h^2 f''(c_j) + \frac{h^4}{12} f^{(4)}(c_j) + O(h^6) \right] \\
+    &amp;= 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{36} f^{(4)}(c_j) + O(h^7).
+\end{align}
+\]</span> Subtracting gives the single-panel error: <span class="math display">\[
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx - S_{\text{panel}} = \left( \frac{1}{60} - \frac{1}{36} \right) h^5 f^{(4)}(\mu_j) = -\frac{h^5}{90} f^{(4)}(\mu_j).
+\end{align}
+\]</span> Summing over all <span class="math inline">\(N/2\)</span> double panels and applying the Intermediate Value Theorem gives <span class="math display">\[
+\begin{align}
+I(f) - S_N(f) = -\frac{h^5}{90} \sum_{j=0}^{N/2 - 1} f^{(4)}(\mu_j) = -\frac{N h^5}{180} f^{(4)}(\xi_S) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S).
 \end{align}
 \]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Simpson Exactness and Error
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Simpson’s rule is exact for polynomials of degree at most <span class="math inline">\(3\)</span>. For sufficiently smooth <span class="math inline">\(f\)</span>, the composite Simpson rule has global error <span class="math inline">\(O(h^4)\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Degree effect)</strong> Simpson’s rule uses a quadratic interpolant, but symmetry cancels the cubic error term. This is why its exactness degree is <span class="math inline">\(3\)</span>, not merely <span class="math inline">\(2\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Integrate the quadratic interpolant through <span class="math inline">\(x_0,x_1,x_2\)</span> to derive the Simpson weights <span class="math inline">\(1,4,1\)</span>.</p></li>
-<li><p>Verify exactness for <span class="math inline">\(1,x,x^2,x^3\)</span> on a symmetric panel.</p></li>
-<li><p>Use the exactness degree to explain why the leading error involves the fourth derivative.</p></li>
-<li><p>Compare the observed error reduction after halving <span class="math inline">\(h\)</span> with the result above.</p></li>
-</ol>
-</div>
 </div>
 </section>
-<section id="gaussian-quadrature" class="level2" data-number="26.2">
-<h2 data-number="26.2" class="anchored" data-anchor-id="gaussian-quadrature"><span class="header-section-number">26.2</span> Gaussian Quadrature</h2>
-<p>Optimizes <strong>both</strong> nodes and weights to achieve the highest possible degree of exactness.</p>
+<section id="peano-kernel-error-representation" class="level2" data-number="28.3">
+<h2 data-number="28.3" class="anchored" data-anchor-id="peano-kernel-error-representation"><span class="header-section-number">28.3</span> Peano Kernel Error Representation</h2>
+<p>The Peano kernel theorem provides a unified framework for representing the error of any quadrature rule with algebraic degree of exactness <span class="math inline">\(m\)</span>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Gauss-Legendre Quadrature
+<span class="screen-reader-only">Note</span>Theorem: Peano Kernel Theorem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Integrating over <span class="math inline">\([-1, 1]\)</span> with <span class="math inline">\(p\)</span> points: <span class="math display">\[
+<p>Let <span class="math inline">\(Q\)</span> be a quadrature rule on <span class="math inline">\([a, b]\)</span> with error functional <span class="math inline">\(E(f) = \int_a^b f(x)\,dx - Q(f)\)</span>. If <span class="math inline">\(E(p) = 0\)</span> for all <span class="math inline">\(p \in \mathcal{P}_m\)</span>, then for every <span class="math inline">\(f \in C^{m+1}[a, b]\)</span>, <span class="math display">\[
 \begin{align}
-\int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i).
+E(f) = \int_a^b f^{(m+1)}(t) K(t)\,dt,
 \end{align}
-\]</span> The nodes are the roots of the degree-<span class="math inline">\(p\)</span> Legendre polynomial <span class="math inline">\(P_p(x)\)</span>, and the rule is exact for all polynomials of degree at most <span class="math inline">\(2p-1\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Gauss efficiency)</strong> Gaussian quadrature spends nodes where orthogonality says they are most useful. For smooth, non-periodic integrands, a small number of Gauss points often beats many equally spaced Newton-Cotes points.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For <span class="math inline">\(p=2\)</span>, use the roots of <span class="math inline">\(P_2(x)=(3x^2-1)/2\)</span> to find the nodes.</p></li>
-<li><p>Solve for weights that integrate <span class="math inline">\(1\)</span> and <span class="math inline">\(x^2\)</span> exactly on <span class="math inline">\([-1,1]\)</span>.</p></li>
-<li><p>Verify that the resulting rule also integrates <span class="math inline">\(x\)</span> and <span class="math inline">\(x^3\)</span> exactly by symmetry.</p></li>
-<li><p>Explain why exactness through degree <span class="math inline">\(2p-1\)</span> is the maximum possible with <span class="math inline">\(2p\)</span> free parameters.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="richardson-extrapolation-and-romberg-integration" class="level2" data-number="26.3">
-<h2 data-number="26.3" class="anchored" data-anchor-id="richardson-extrapolation-and-romberg-integration"><span class="header-section-number">26.3</span> Richardson Extrapolation and Romberg Integration</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Richardson Extrapolation
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Given an <span class="math inline">\(O(h^2)\)</span> estimate <span class="math inline">\(A(h)\)</span>, build an <span class="math inline">\(O(h^4)\)</span> estimate by: <span class="math display">\[
+\]</span> where the Peano kernel <span class="math inline">\(K(t)\)</span> is defined by applying the error functional to the truncated power function: <span class="math display">\[
 \begin{align}
-A_{new} = \frac{4A(h/2) - A(h)}{3}.
+K(t) = \frac{1}{m!} E_x \left( (x - t)_+^m \right), \qquad (x - t)_+ = \max(0, x - t).
+\end{align}
+\]</span> If <span class="math inline">\(K(t)\)</span> does not change sign on <span class="math inline">\([a, b]\)</span>, then there exists <span class="math inline">\(\xi \in (a, b)\)</span> such that <span class="math display">\[
+\begin{align}
+E(f) = \frac{f^{(m+1)}(\xi)}{(m+1)!} E(x^{m+1}).
 \end{align}
 \]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -975,114 +967,247 @@ A_{new} = \frac{4A(h/2) - A(h)}{3}.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(A(h)\)</span> be an <span class="math inline">\(O(h^2)\)</span> approximation of the true value <span class="math inline">\(I\)</span>. Using a Taylor expansion in <span class="math inline">\(h\)</span>: <span class="math display">\[
+<p>By Taylor’s theorem with integral remainder expanded about <span class="math inline">\(a\)</span>: <span class="math display">\[
 \begin{align}
-A(h) = I + C_1 h^2 + C_2 h^4 + O(h^6).
+f(x) = \sum_{k=0}^m \frac{f^{(k)}(a)}{k!} (x - a)^k + \frac{1}{m!} \int_a^x f^{(m+1)}(t) (x - t)^m\,dt.
 \end{align}
-\]</span> Halving the step size gives: <span class="math display">\[
+\]</span> Extending the upper integration limit using the truncated power notation <span class="math inline">\((x - t)_+^m\)</span> allows writing the remainder as <span class="math inline">\(\frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt\)</span>. Applying the linear functional <span class="math inline">\(E\)</span> to both sides, the polynomial terms vanish because <span class="math inline">\(E(p) = 0\)</span> for all <span class="math inline">\(p \in \mathcal{P}_m\)</span>. Exchanging the order of integration and the functional gives <span class="math display">\[
 \begin{align}
-A(h/2) &amp;= I + C_1 (h/2)^2 + C_2 (h/2)^4 + O(h^6) \\
-    &amp;= I + \frac{1}{4} C_1 h^2 + \frac{1}{16} C_2 h^4 + O(h^6).
+E(f) = E_x \left( \frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt \right) = \int_a^b f^{(m+1)}(t) \left[ \frac{1}{m!} E_x\left( (x - t)_+^m \right) \right] dt = \int_a^b f^{(m+1)}(t) K(t)\,dt.
 \end{align}
-\]</span> To eliminate the <span class="math inline">\(O(h^2)\)</span> error term, multiply <span class="math inline">\(A(h/2)\)</span> by 4 and subtract <span class="math inline">\(A(h)\)</span>: <span class="math display">\[
+\]</span> If <span class="math inline">\(K(t)\)</span> is of constant sign, the Mean Value Theorem for Integrals implies <span class="math inline">\(E(f) = f^{(m+1)}(\xi) \int_a^b K(t)\,dt\)</span>. Testing the identity with <span class="math inline">\(f(x) = x^{m+1}\)</span>, we have <span class="math inline">\(f^{(m+1)}(x) = (m+1)!\)</span>, which yields <span class="math inline">\(E(x^{m+1}) = (m+1)! \int_a^b K(t)\,dt\)</span>. Substituting this integral proves the claim.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="gausslegendre-quadrature" class="level2" data-number="28.4">
+<h2 data-number="28.4" class="anchored" data-anchor-id="gausslegendre-quadrature"><span class="header-section-number">28.4</span> Gauss–Legendre Quadrature</h2>
+<p>Newton–Cotes rules fix equispaced nodes and optimize only the weights. Gaussian quadrature optimizes both the nodes <span class="math inline">\(x_1, ..., x_p\)</span> and the weights <span class="math inline">\(w_1, ..., w_p\)</span>, providing <span class="math inline">\(2p\)</span> degrees of freedom to maximize the degree of exactness.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Roots of Orthogonal Polynomials
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(P_p(x)\)</span> be the degree-<span class="math inline">\(p\)</span> Legendre polynomial orthogonal on <span class="math inline">\([-1, 1]\)</span> with respect to weight <span class="math inline">\(w(x) \equiv 1\)</span>: <span class="math display">\[
 \begin{align}
-4A(h/2) - A(h) &amp;= (4I + C_1 h^2 + \frac{1}{4} C_2 h^4) - (I + C_1 h^2 + C_2 h^4) + O(h^6) \\
-    &amp;= 3I - \frac{3}{4} C_2 h^4 + O(h^6).
+\int_{-1}^1 P_p(x) q(x)\,dx = 0 \qquad \text{for all } q \in \mathcal{P}_{p-1}.
 \end{align}
-\]</span> Dividing by 3 yields the <span class="math inline">\(O(h^4)\)</span> estimate: <span class="math display">\[
+\]</span> Then <span class="math inline">\(P_p(x)\)</span> has exactly <span class="math inline">\(p\)</span> distinct, real roots, and all roots lie in the open interval <span class="math inline">\((-1, 1)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x_1, ..., x_k\)</span> denote the points in <span class="math inline">\((-1, 1)\)</span> where <span class="math inline">\(P_p(x)\)</span> changes sign. Because <span class="math inline">\(P_p\)</span> is continuous and orthogonal to the constant polynomial <span class="math inline">\(q(x) = 1\)</span>, we have <span class="math inline">\(\int_{-1}^1 P_p(x)\,dx = 0\)</span>, so <span class="math inline">\(P_p\)</span> must change sign at least once in <span class="math inline">\((-1, 1)\)</span>, meaning <span class="math inline">\(k \geq 1\)</span>. Suppose for contradiction that <span class="math inline">\(k &lt; p\)</span>. Construct the polynomial <span class="math inline">\(q(x) = \prod_{j=1}^k (x - x_j) \in \mathcal{P}_k\)</span>. By construction, <span class="math inline">\(P_p(x)\)</span> and <span class="math inline">\(q(x)\)</span> change sign at identical points in <span class="math inline">\((-1, 1)\)</span>, so their product <span class="math inline">\(P_p(x) q(x)\)</span> has constant sign on <span class="math inline">\([-1, 1]\)</span> and is not identically zero. Consequently, <span class="math display">\[
 \begin{align}
-I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
+\int_{-1}^1 P_p(x) q(x)\,dx \neq 0.
+\end{align}
+\]</span> However, because <span class="math inline">\(\deg(q) = k &lt; p\)</span>, orthogonality requires <span class="math inline">\(\int_{-1}^1 P_p(x) q(x)\,dx = 0\)</span>, producing a contradiction. Therefore, <span class="math inline">\(k = p\)</span>, proving that <span class="math inline">\(P_p\)</span> has <span class="math inline">\(p\)</span> distinct real roots in <span class="math inline">\((-1, 1)\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Fundamental Theorem of Gaussian Quadrature
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x_1, ..., x_p\)</span> be the roots of the degree-<span class="math inline">\(p\)</span> Legendre polynomial <span class="math inline">\(P_p(x)\)</span> on <span class="math inline">\([-1, 1]\)</span>, and let <span class="math inline">\(w_i = \int_{-1}^1 L_i(x)\,dx\)</span>. The <span class="math inline">\(p\)</span>-point Gauss–Legendre quadrature rule <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i)
+\end{align}
+\]</span> has degree of exactness <span class="math inline">\(2p - 1\)</span>. No <span class="math inline">\(p\)</span>-point quadrature rule can achieve a degree of exactness higher than <span class="math inline">\(2p - 1\)</span>. Furthermore, all weights are strictly positive: <span class="math inline">\(w_i &gt; 0\)</span> for all <span class="math inline">\(i = 1, ..., p\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f \in \mathcal{P}_{2p-1}\)</span>. Polynomial long division of <span class="math inline">\(f(x)\)</span> by <span class="math inline">\(P_p(x)\)</span> yields <span class="math display">\[
+\begin{align}
+f(x) = q(x) P_p(x) + r(x), \qquad \deg(q) \leq p - 1, \quad \deg(r) \leq p - 1.
+\end{align}
+\]</span> Integrating both sides over <span class="math inline">\([-1, 1]\)</span>: <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 q(x) P_p(x)\,dx + \int_{-1}^1 r(x)\,dx.
+\end{align}
+\]</span> Because <span class="math inline">\(\deg(q) \leq p - 1\)</span>, orthogonality of <span class="math inline">\(P_p\)</span> against <span class="math inline">\(\mathcal{P}_{p-1}\)</span> implies <span class="math inline">\(\int_{-1}^1 q(x) P_p(x)\,dx = 0\)</span>, giving <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 r(x)\,dx.
+\end{align}
+\]</span> Applying the <span class="math inline">\(p\)</span>-point quadrature sum at the Legendre roots <span class="math inline">\(\{x_i\}_{i=1}^p\)</span> where <span class="math inline">\(P_p(x_i) = 0\)</span>: <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i f(x_i) &amp;= \sum_{i=1}^p w_i \left[ q(x_i) P_p(x_i) + r(x_i) \right] \\
+    &amp;= \sum_{i=1}^p w_i \left[ 0 + r(x_i) \right] = \sum_{i=1}^p w_i r(x_i).
+\end{align}
+\]</span> Because <span class="math inline">\(\deg(r) \leq p - 1\)</span>, interpolatory quadrature on <span class="math inline">\(p\)</span> distinct nodes integrates <span class="math inline">\(r(x)\)</span> exactly by the result above: <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i r(x_i) = \int_{-1}^1 r(x)\,dx = \int_{-1}^1 f(x)\,dx.
+\end{align}
+\]</span> Thus <span class="math inline">\(\sum_{i=1}^p w_i f(x_i) = \int_{-1}^1 f(x)\,dx\)</span> for all <span class="math inline">\(f \in \mathcal{P}_{2p-1}\)</span>. To prove that <span class="math inline">\(2p - 1\)</span> is the maximal degree, define the nodal polynomial <span class="math display">\[
+\begin{align}
+g(x) = \prod_{i=1}^p (x - x_i)^2 \in \mathcal{P}_{2p}.
+\end{align}
+\]</span> Because <span class="math inline">\(g(x) \geq 0\)</span> and vanishes only at isolated points, its integral is strictly positive: <span class="math display">\[
+\begin{align}
+\int_{-1}^1 g(x)\,dx &gt; 0.
+\end{align}
+\]</span> However, evaluating the quadrature sum yields <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i g(x_i) = \sum_{i=1}^p w_i \cdot 0 = 0 \neq \int_{-1}^1 g(x)\,dx.
+\end{align}
+\]</span> Therefore no <span class="math inline">\(p\)</span>-point quadrature rule can integrate all degree-<span class="math inline">\(2p\)</span> polynomials. For weight positivity, let <span class="math inline">\(L_i \in \mathcal{P}_{p-1}\)</span> be the <span class="math inline">\(i\)</span>-th Lagrange basis polynomial. The square satisfies <span class="math inline">\(\deg(L_i^2) = 2p - 2 \leq 2p - 1\)</span>. The rule integrates <span class="math inline">\(L_i^2\)</span> exactly: <span class="math display">\[
+\begin{align}
+0 &lt; \int_{-1}^1 L_i^2(x)\,dx = \sum_{j=1}^p w_j L_i^2(x_j) = \sum_{j=1}^p w_j \delta_{ij} = w_i.
+\end{align}
+\]</span> Every weight <span class="math inline">\(w_i\)</span> is strictly positive.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="richardson-extrapolation-and-romberg-integration" class="level2" data-number="28.5">
+<h2 data-number="28.5" class="anchored" data-anchor-id="richardson-extrapolation-and-romberg-integration"><span class="header-section-number">28.5</span> Richardson Extrapolation and Romberg Integration</h2>
+<p>When the error of a numerical method admits an asymptotic expansion in powers of <span class="math inline">\(h\)</span>, Richardson extrapolation algebraically cancels the leading error terms.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Euler–Maclaurin Summation and Romberg Integration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f \in C^{2m+2}[a, b]\)</span>. The composite trapezoidal rule satisfies the asymptotic expansion <span class="math display">\[
+\begin{align}
+T(h) = I(f) + c_2 h^2 + c_4 h^4 + c_6 h^6 + ... + c_{2m} h^{2m} + O(h^{2m+2}),
+\end{align}
+\]</span> where <span class="math inline">\(c_{2k} = \frac{B_{2k}}{(2k)!}[f^{(2k-1)}(b) - f^{(2k-1)}(a)]\)</span> depend on the Bernoulli numbers <span class="math inline">\(B_{2k}\)</span>. Romberg integration systematically eliminates powers of <span class="math inline">\(h^2\)</span> via the tableau recurrence <span class="math display">\[
+\begin{align}
+R(k, 0) = T(h_k), \qquad R(k, j) = \frac{4^j R(k, j-1) - R(k-1, j-1)}{4^j - 1} \quad (1 \leq j \leq k),
+\end{align}
+\]</span> where <span class="math inline">\(h_k = (b - a)/2^k\)</span>. Column <span class="math inline">\(j\)</span> achieves order <span class="math inline">\(O(h^{2j+2})\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>At column 1, <span class="math inline">\(R(k, 0) = I(f) + c_2 h_k^2 + O(h_k^4)\)</span> and <span class="math inline">\(R(k-1, 0) = I(f) + c_2 (2h_k)^2 + O(h_k^4) = I(f) + 4 c_2 h_k^2 + O(h_k^4)\)</span>. Forming the linear combination <span class="math display">\[
+\begin{align}
+\frac{4 R(k, 0) - R(k-1, 0)}{3} = \frac{4(I(f) + c_2 h_k^2) - (I(f) + 4 c_2 h_k^2)}{3} + O(h_k^4) = I(f) + O(h_k^4)
+\end{align}
+\]</span> cancels the <span class="math inline">\(h^2\)</span> error term. Induction on <span class="math inline">\(j\)</span> shows that combining step sizes differing by a factor of 2 cancels the leading <span class="math inline">\(h^{2j}\)</span> error term with weights <span class="math inline">\(\frac{4^j}{4^j - 1}\)</span> and <span class="math inline">\(-\frac{1}{4^j - 1}\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="periodic-functions-and-spectral-convergence" class="level2" data-number="28.6">
+<h2 data-number="28.6" class="anchored" data-anchor-id="periodic-functions-and-spectral-convergence"><span class="header-section-number">28.6</span> Periodic Functions and Spectral Convergence</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Accuracy of the Trapezoidal Rule on Periodic Domains
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f\)</span> be a smooth, <span class="math inline">\(2\pi\)</span>-periodic function on <span class="math inline">\(\fR\)</span>. All endpoint derivatives in the Euler–Maclaurin expansion cancel identically: <span class="math display">\[
+\begin{align}
+f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0 \qquad \text{for all } k \geq 1.
+\end{align}
+\]</span> Consequently, all algebraic error coefficients <span class="math inline">\(c_2, c_4, c_6, ...\)</span> vanish. If <span class="math inline">\(f\)</span> is analytic in a strip <span class="math inline">\(\{z \in \fC : |\operatorname{Im}(z)| &lt; d\}\)</span>, the composite trapezoidal rule converges exponentially fast: <span class="math display">\[
+\begin{align}
+|I(f) - T_N(f)| \leq C e^{-d N}.
+\end{align}
+\]</span> On smooth periodic domains, the composite trapezoidal rule achieves spectral accuracy.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(f\)</span> is periodic and smooth, <span class="math inline">\(f^{(m)}(2\pi) = f^{(m)}(0)\)</span> for all <span class="math inline">\(m \geq 0\)</span>. Every term <span class="math inline">\(c_{2k}\)</span> in the Euler–Maclaurin formula is proportional to <span class="math inline">\(f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0\)</span>, so the error decays faster than any power of <span class="math inline">\(h = 2\pi / N\)</span>. To quantify the exponential rate, expand <span class="math inline">\(f(x)\)</span> in its Fourier series: <span class="math display">\[
+\begin{align}
+f(x) = \sum_{k=-\infty}^\infty \hat{f}_k e^{ikx}, \qquad \hat{f}_k = \frac{1}{2\pi} \int_0^{2\pi} f(x) e^{-ikx}\,dx.
+\end{align}
+\]</span> The exact integral is <span class="math inline">\(I(f) = \int_0^{2\pi} f(x)\,dx = 2\pi \hat{f}_0\)</span>. The composite trapezoidal rule with <span class="math inline">\(h = 2\pi / N\)</span> and nodes <span class="math inline">\(x_j = 2\pi j / N\)</span> for <span class="math inline">\(j = 0, ..., N - 1\)</span> gives <span class="math display">\[
+\begin{align}
+T_N(f) = \frac{2\pi}{N} \sum_{j=0}^{N-1} f(x_j) &amp;= \frac{2\pi}{N} \sum_{j=0}^{N-1} \sum_{k=-\infty}^\infty \hat{f}_k e^{2\pi i j k / N} \\
+    &amp;= 2\pi \sum_{k=-\infty}^\infty \hat{f}_k \left( \frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} \right).
+\end{align}
+\]</span> The inner sum satisfies discrete orthogonality: <span class="math display">\[
+\begin{align}
+\frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} = \begin{cases}
+        1, &amp; k = mN \text{ for some } m \in \fZ, \\
+        0, &amp; k \not\equiv 0 \pmod N.
+    \end{cases}
+\end{align}
+\]</span> Substituting this indicator isolates the aliased modes: <span class="math display">\[
+\begin{align}
+T_N(f) = 2\pi \sum_{m=-\infty}^\infty \hat{f}_{mN} = 2\pi \hat{f}_0 + 2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+\]</span> The quadrature error is therefore the tail sum: <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+\]</span> Because <span class="math inline">\(f\)</span> is analytic and bounded by <span class="math inline">\(M_0\)</span> in the strip <span class="math inline">\(|\operatorname{Im}(z)| &lt; d\)</span>, shifting the integration path in the definition of <span class="math inline">\(\hat{f}_k\)</span> gives the geometric decay <span class="math inline">\(|\hat{f}_k| \leq M e^{-d|k|}\)</span>. Applying this bound: <span class="math display">\[
+\begin{align}
+|I(f) - T_N(f)| \leq 2\pi M \sum_{m \neq 0} e^{-d|m|N} = 4\pi M \sum_{m=1}^\infty (e^{-dN})^m = 4\pi M \frac{e^{-dN}}{1 - e^{-dN}} = O(e^{-dN}).
 \end{align}
 \]</span></p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Romberg Integration
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Iterative application of Richardson extrapolation to the trapezoidal rule.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Romberg idea)</strong> Romberg integration repeatedly cancels the leading even powers in the trapezoidal error expansion. It is effective when <span class="math inline">\(f\)</span> is smooth enough for that expansion to be accurate.</p>
-</div>
-</div>
 </section>
-<section id="adaptive-quadrature" class="level2" data-number="26.4">
-<h2 data-number="26.4" class="anchored" data-anchor-id="adaptive-quadrature"><span class="header-section-number">26.4</span> Adaptive Quadrature</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Adaptive quadrature)</strong> Adaptive quadrature focuses function evaluations where <span class="math inline">\(f\)</span> is difficult and uses large panels where <span class="math inline">\(f\)</span> is smooth. The usual mechanism compares one large panel with two smaller panels; if the difference is above tolerance <span class="math inline">\(\varepsilon\)</span>, the method recurses.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Nonsmooth integrands)</strong> Algebraic error rates assume enough derivatives. Corners, jumps, and endpoint singularities reduce the observed order. Adaptive quadrature helps by isolating nonsmooth regions, but it cannot restore smoothness.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Monte Carlo contrast)</strong> Deterministic quadrature is efficient in low dimension for smooth functions. Monte Carlo convergence is only <span class="math inline">\(O(N^{-1/2})\)</span>, but its rate is largely dimension-independent, which makes it useful for high-dimensional integrals.</p>
-</div>
-</div>
-</section>
-<section id="periodic-functions-and-spectral-accuracy" class="level2" data-number="26.5">
-<h2 data-number="26.5" class="anchored" data-anchor-id="periodic-functions-and-spectral-accuracy"><span class="header-section-number">26.5</span> Periodic Functions and Spectral Accuracy</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Periodic Trapezoidal Spectral Accuracy
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For smooth periodic functions on <span class="math inline">\([0,2\pi]\)</span>, the trapezoidal rule can converge faster than any algebraic power of <span class="math inline">\(h\)</span>. For analytic periodic functions, the convergence is exponential.</p>
-</div>
-</div>
+<section id="exercises" class="level2" data-number="28.7">
+<h2 data-number="28.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">28.7</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1094,36 +1219,69 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Apply the trapezoidal rule to <span class="math inline">\(e^{ikx}\)</span> on <span class="math inline">\([0,2\pi]\)</span> and determine when the discrete sum is exactly zero.</p></li>
-<li><p>Use a Fourier series argument to explain why smooth periodic functions are integrated unusually well.</p></li>
-<li><p>Compare errors for <span class="math inline">\(\sin(x)\)</span>, <span class="math inline">\(\exp(\cos x)\)</span>, and <span class="math inline">\(|x-\pi|\)</span> as <span class="math inline">\(n\)</span> increases.</p></li>
+<li><p><strong>Derive.</strong> <strong>Method of undetermined coefficients.</strong> Find the nodes and weights for a symmetric 3-point rule on <span class="math inline">\([-1, 1]\)</span> of the form <span class="math inline">\(\int_{-1}^1 f(x)\,dx \approx w_0 f(-\alpha) + w_1 f(0) + w_2 f(\alpha)\)</span>.</p>
+<ol type="1">
+<li><p>For fixed <span class="math inline">\(\alpha = 1\)</span>, enforce exactness for <span class="math inline">\(f(x) = 1, x, x^2\)</span> to derive the weights of Simpson’s rule: <span class="math inline">\(w_0 = 1/3, w_1 = 4/3, w_2 = 1/3\)</span>.</p></li>
+<li><p>Let <span class="math inline">\(\alpha\)</span> be a free parameter. Enforce exactness for <span class="math inline">\(f(x) = 1, x^2, x^4\)</span> to derive the Gauss–Legendre parameter <span class="math inline">\(\alpha = 1/\sqrt{3}\)</span> and weights <span class="math inline">\(w_0 = w_2 = 1, w_1 = 0\)</span>.</p></li>
+<li><p>Compare the degree of exactness of both rules.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Romberg tableau construction.</strong> Approximate the integral <span class="math inline">\(I = \int_0^1 e^{-x^2}\,dx\)</span>.</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(T(h)\)</span> for <span class="math inline">\(h = 1, 1/2, 1/4\)</span> using the composite trapezoidal rule.</p></li>
+<li><p>Construct the first three rows of the Romberg tableau to evaluate <span class="math inline">\(R(1, 1), R(2, 1)\)</span>, and <span class="math inline">\(R(2, 2)\)</span>.</p></li>
+<li><p>Confirm that <span class="math inline">\(R(1, 1)\)</span> matches composite Simpson’s rule with <span class="math inline">\(N = 2\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Change of interval and Gaussian quadrature.</strong> Let <span class="math inline">\(\int_a^b f(t)\,dt\)</span> be an integral on an arbitrary interval <span class="math inline">\([a, b]\)</span>.</p>
+<ol type="1">
+<li><p>Derive the affine substitution <span class="math inline">\(t(x) = \frac{b - a}{2}x + \frac{a + b}{2}\)</span> mapping <span class="math inline">\(x \in [-1, 1]\)</span> to <span class="math inline">\(t \in [a, b]\)</span>.</p></li>
+<li><p>Transform the 2-point Gauss–Legendre rule to <span class="math inline">\([0, 3]\)</span> and approximate <span class="math inline">\(\int_0^3 \sqrt{1 + t^3}\,dt\)</span>.</p></li>
+<li><p>Compare the result with Simpson’s rule using the same number of function evaluations.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Peano kernel of the trapezoidal rule.</strong> Consider the single-panel trapezoidal rule on <span class="math inline">\([0, h]\)</span> with error functional <span class="math inline">\(E(f) = \int_0^h f(x)\,dx - \frac{h}{2}[f(0) + f(h)]\)</span>.</p>
+<ol type="1">
+<li><p>Show that <span class="math inline">\(E(1) = 0\)</span> and <span class="math inline">\(E(x) = 0\)</span>, so <span class="math inline">\(m = 1\)</span>.</p></li>
+<li><p>Evaluate the Peano kernel <span class="math inline">\(K(t) = E_x((x - t)_+) = \int_0^h (x - t)_+\,dx - \frac{h}{2}[(0 - t)_+ + (h - t)_+]\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(K(t) = \frac{1}{2}t(t - h) \leq 0\)</span> for all <span class="math inline">\(t \in [0, h]\)</span>.</p></li>
+<li><p>Apply the result above to compute <span class="math inline">\(\int_0^h K(t)\,dt = -\frac{h^3}{12}\)</span> and recover the exact error term <span class="math inline">\(-\frac{h^3}{12} f''(\xi)\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Spectral accuracy on periodic integrals.</strong> Consider the integral <span class="math inline">\(I = \int_0^{2\pi} \frac{dx}{2 + \cos x} = \frac{2\pi}{\sqrt{3}}\)</span>.</p>
+<ol type="1">
+<li><p>Identify the complex poles of <span class="math inline">\(f(z) = \frac{1}{2 + \cos z}\)</span> by solving <span class="math inline">\(\cos z = -2\)</span>.</p></li>
+<li><p>Determine the half-width <span class="math inline">\(d\)</span> of the strip of analyticity around the real axis.</p></li>
+<li><p>Evaluate <span class="math inline">\(T_N(f)\)</span> for <span class="math inline">\(N = 4, 8, 16\)</span>. Confirm that <span class="math inline">\(|I - T_N(f)|\)</span> decays as <span class="math inline">\(e^{-d N}\)</span>.</p></li>
+</ol></li>
 </ol>
 </div>
 </div>
-</section>
-<section id="exercises" class="level2" data-number="26.6">
-<h2 data-number="26.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">26.6</span> Exercises</h2>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Note</span>Further reading
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Doubling nodes in Trapezoidal rule reduces error by <span class="math inline">\(4\times\)</span>. Use the result above to predict Simpson’s reduction factor.</p></li>
-<li><p>Derive the <span class="math inline">\(p=2\)</span> Gauss points for <span class="math inline">\([-1, 1]\)</span> using the result above.</p></li>
-<li><p>Use Richardson extrapolation from the result above to improve <span class="math inline">\(T(h)\)</span> and <span class="math inline">\(T(h/2)\)</span> to get Simpson’s rule.</p></li>
-<li><p>Integration of <span class="math inline">\(\sin(x)\)</span> on <span class="math inline">\([0, 2\pi]\)</span> with <span class="math inline">\(n=4\)</span> nodes. Is the error <span class="math inline">\(0\)</span>? Why?</p></li>
-<li><p>Compare composite Simpson on <span class="math inline">\(f(x)=|x-1/2|\)</span> with a smooth quartic. Estimate the observed order.</p></li>
-</ol>
+<p>Stoer and Bulirsch give a classical numerical-analysis treatment of interpolation and quadrature <span class="citation" data-cites="stoerbulirsch2002">(<a href="../references.html#ref-stoerbulirsch2002" role="doc-biblioref">Stoer and Bulirsch 2002</a>)</span>. Trefethen is especially useful for polynomial approximation, and de Boor for splines <span class="citation" data-cites="trefethen2013 deboor2001">(<a href="../references.html#ref-trefethen2013" role="doc-biblioref">Trefethen 2013</a>; <a href="../references.html#ref-deboor2001" role="doc-biblioref">Boor 2001</a>)</span>. The short paper by Clenshaw and Curtis is a good example of an algorithmic quadrature paper that remains approachable <span class="citation" data-cites="clenshawcurtis1960">(<a href="../references.html#ref-clenshawcurtis1960" role="doc-biblioref">Clenshaw and Curtis 1960</a>)</span>.</p>
 </div>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-deboor2001" class="csl-entry" role="listitem">
+Boor, Carl de. 2001. <em>A Practical Guide to Splines</em>. Revised. Springer. <a href="https://doi.org/10.1007/978-1-4612-6333-3">https://doi.org/10.1007/978-1-4612-6333-3</a>.
+</div>
+<div id="ref-clenshawcurtis1960" class="csl-entry" role="listitem">
+Clenshaw, C. W., and A. R. Curtis. 1960. <span>“A Method for Numerical Integration on an Automatic Computer.”</span> <em>Numerische Mathematik</em> 2: 197–205. <a href="https://doi.org/10.1007/BF01386223">https://doi.org/10.1007/BF01386223</a>.
+</div>
+<div id="ref-stoerbulirsch2002" class="csl-entry" role="listitem">
+Stoer, Josef, and Roland Bulirsch. 2002. <em>Introduction to Numerical Analysis</em>. 3rd ed. Springer. <a href="https://doi.org/10.1007/978-0-387-21738-3">https://doi.org/10.1007/978-0-387-21738-3</a>.
+</div>
+<div id="ref-trefethen2013" class="csl-entry" role="listitem">
+Trefethen, Lloyd N. 2013. <em>Approximation Theory and Approximation Practice</em>. <span>Society for Industrial and Applied Mathematics</span>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1542,13 +1700,13 @@ I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../numerical-analysis/interpolation.html" class="pagination-link" aria-label="Polynomial Interpolation">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span>
+      <a href="../numerical-analysis/chebyshev.html" class="pagination-link" aria-label="Chebyshev Polynomials and Minimax Approximation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../numerical-analysis/root-finding.html" class="pagination-link" aria-label="Root Finding">
-        <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../odes/ode-methods.html" class="pagination-link" aria-label="Numerical Methods for Ordinary Differential Equations">
+        <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,257 +1,420 @@
 # Numerical Quadrature
 
 
-Approximating $I = \int_a^b f(x)\,dx$ via weighted sums: $\sum_{i=1}^n w_i f(x_i)$.
-
-
-::: {.callout-note icon=false}
-## Definition: Quadrature Rule
-A quadrature rule approximates an integral by function values:
+Numerical quadrature approximates the definite integral of a continuous function $f : [a, b] \to \fR$ by a finite linear combination of sampled function values:
 $$
 \begin{align}
-\int_a^b f(x)\,dx
-    \approx
-    \sum_{i=1}^p w_i f(x_i).
+I(f) = \int_a^b f(x)\,dx \approx Q_n(f) = \sum_{i=0}^n w_i f(x_i).
 \end{align}
 $$
-The nodes $x_i$ choose where $f$ is sampled, and the weights $w_i$ choose how those samples are averaged.
-:::
+The points $x_i \in [a, b]$ are the quadrature nodes, and the scalar coefficients $w_i \in \fR$ are the quadrature weights. The design of quadrature rules balances algebraic precision, computational cost, and numerical stability.
+
+
+## Degree of Exactness and Interpolatory Quadrature
+
+
+The standard criterion for evaluating a quadrature rule is its algebraic precision, defined by the highest degree of polynomials it integrates without error.
 
 
 ::: {.callout-note icon=false}
-## Definition: Degree of Exactness
-A quadrature rule has degree of exactness $m$ if it integrates every polynomial of degree at most $m$ exactly, and fails for at least one polynomial of degree $m+1$.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Interpolation view)**  Newton-Cotes rules interpolate $f$ at selected nodes and integrate the interpolating polynomial. The quadrature error is therefore controlled by interpolation error and smoothness of $f$.
-:::
-
-
-## Newton-Cotes Rules
-
-Uses equally-spaced nodes. Higher-order rules are prone to Runge's phenomenon.
-
-
-::: {.callout-note icon=false}
-## Definition: Trapezoidal Rule
-On $n$ panels of width $h = (b-a)/n$:
+## Definition: Degree of Exactness (Algebraic Precision)
+A quadrature rule $Q_n$ has degree of exactness $m$ if
 $$
 \begin{align}
-T_n = h \left[ \frac{f(a) + f(b)}{2} + \sum_{i=1}^{n-1} f(a + ih) \right].
+Q_n(p) = \int_a^b p(x)\,dx \qquad \text{for all } p \in \mathcal{P}_m,
 \end{align}
 $$
+and there exists at least one polynomial $q \in \mathcal{P}_{m+1}$ for which $Q_n(q) \neq \int_a^b q(x)\,dx$.
 :::
 
 
 ::: {.callout-note icon=false}
-## Proposition: Trapezoid Exactness
-The one-panel trapezoidal rule is exact for polynomials of degree at most $1$.
+## Theorem: Interpolatory Quadrature Rules
+Let $x_0, x_1, ..., x_n$ be $n+1$ distinct nodes in $[a, b]$. The interpolatory quadrature rule approximates $I(f)$ by integrating the polynomial interpolant $P_n(x) = \sum_{i=0}^n f(x_i) L_i(x)$ in Lagrange form:
+$$
+\begin{align}
+Q_n(f) = \int_a^b P_n(x)\,dx = \sum_{i=0}^n w_i f(x_i), \qquad w_i = \int_a^b L_i(x)\,dx.
+\end{align}
+$$
+Every interpolatory quadrature rule with $n+1$ distinct nodes has degree of exactness at least $n$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-On $[a,b]$, the trapezoidal rule integrates the line through $(a,f(a))$ and $(b,f(b))$. If $f$ itself is constant or linear, this interpolant equals $f$, so the integral is exact.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Trapezoidal Error
-If $f$ has two continuous derivatives on $[a,b]$, then the composite trapezoidal rule satisfies
+Let $p \in \mathcal{P}_n$. By the uniqueness of polynomial interpolation (the referenced result), the interpolant of $p$ is identical to $p$ itself: $P_n(x) \equiv p(x)$. Integrating this identity yields
 $$
 \begin{align}
-I-T_n = O(h^2).
+\int_a^b p(x)\,dx = \int_a^b P_n(x)\,dx = \int_a^b \left( \sum_{i=0}^n p(x_i) L_i(x) \right) dx = \sum_{i=0}^n p(x_i) \int_a^b L_i(x)\,dx = \sum_{i=0}^n w_i p(x_i) = Q_n(p).
 \end{align}
 $$
-Thus doubling $n$ reduces the leading error by a factor of about $4$.
+Therefore, $Q_n$ integrates all polynomials of degree at most $n$ exactly.
 :::
 
 
-::: {.callout-warning icon=false}
-## Exercise
+## Newton--Cotes Formulas and Composite Rules
 
-1. Derive the one-panel trapezoidal rule by integrating the linear interpolant through $(a,f(a))$ and $(b,f(b))$.
-    
-1. Use Taylor expansion on one panel to show the local error is $O(h^3)$.
-    
-1. Sum over $O(1/h)$ panels to prove the global $O(h^2)$ statement in the result above.
+
+Newton--Cotes rules are interpolatory quadrature formulas built on equally spaced nodes. Because high-order single-panel Newton--Cotes rules suffer from negative weights and Runge's phenomenon, practical computations use composite rules on small subintervals of uniform width $h = (b - a)/N$.
+
+
+::: {.callout-note icon=false}
+## Definition: Composite Trapezoidal and Simpson's Rules
+Dividing $[a, b]$ into $N$ subintervals with uniform width $h = (b - a)/N$ and grid points $x_j = a + jh$:
+
+1. The **Composite Trapezoidal Rule** is
+        $$
+    \begin{align}
+    T_N(f) = h \left[ \frac{f(a) + f(b)}{2} + \sum_{j=1}^{N-1} f(x_j) \right].
+    \end{align}
+    $$
+
+1. For an even number of panels $N$, the **Composite Simpson's Rule** is
+        $$
+    \begin{align}
+    S_N(f) = \frac{h}{3} \left[ f(x_0) + 4\sum_{\substack{j=1 \\ j \text{ odd}}}^{N-1} f(x_j) + 2\sum_{\substack{j=2 \\ j \text{ even}}}^{N-2} f(x_j) + f(x_N) \right].
+    \end{align}
+    $$
 
 :::
 
 
 ::: {.callout-note icon=false}
-## Definition: Simpson's Rule
-Requires $n$ to be even. Uses piecewise quadratic interpolation:
+## Theorem: Composite Error Formulas
+Let $f \in C^2[a, b]$ for the trapezoidal rule, and let $f \in C^4[a, b]$ for Simpson's rule.
+
+1. The composite trapezoidal error satisfies
+        $$
+    \begin{align}
+    I(f) - T_N(f) = -\frac{b - a}{12} h^2 f''(\xi_T), \qquad \xi_T \in (a, b).
+    \end{align}
+    $$
+
+1. The composite Simpson error satisfies
+        $$
+    \begin{align}
+    I(f) - S_N(f) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S), \qquad \xi_S \in (a, b).
+    \end{align}
+    $$
+
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For the trapezoidal rule on panel $[x_j, x_{j+1}]$, the Cauchy interpolation error formula (the referenced result) gives
 $$
 \begin{align}
-S_n = \frac{h}{3} \left[ f(a) + f(b) + 4\sum_{\text{odd}\;i} f(x_i) + 2\sum_{\text{even}\;i} f(x_i) \right].
+f(x) - P_1(x) = \frac{f''(\xi_j(x))}{2}(x - x_j)(x - x_{j+1}).
 \end{align}
 $$
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Simpson Exactness and Error
-Simpson's rule is exact for polynomials of degree at most $3$. For sufficiently smooth $f$, the composite Simpson rule has global error $O(h^4)$.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Degree effect)**  Simpson's rule uses a quadratic interpolant, but symmetry cancels the cubic error term. This is why its exactness degree is $3$, not merely $2$.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Integrate the quadratic interpolant through $x_0,x_1,x_2$ to derive the Simpson weights $1,4,1$.
-    
-1. Verify exactness for $1,x,x^2,x^3$ on a symmetric panel.
-    
-1. Use the exactness degree to explain why the leading error involves the fourth derivative.
-    
-1. Compare the observed error reduction after halving $h$ with the result above.
-
-:::
-
-
-## Gaussian Quadrature
-
-Optimizes **both** nodes and weights to achieve the highest possible degree of exactness.
-
-
-::: {.callout-note icon=false}
-## Theorem: Gauss-Legendre Quadrature
-Integrating over $[-1, 1]$ with $p$ points:
+Because $(x - x_j)(x - x_{j+1}) \leq 0$ on this panel, the Mean Value Theorem for Integrals implies there exists $\mu_j \in (x_j, x_{j+1})$ such that
 $$
 \begin{align}
-\int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i).
+\int_{x_j}^{x_{j+1}} [f(x) - P_1(x)]\,dx = \frac{f''(\mu_j)}{2} \int_{x_j}^{x_{j+1}} (x - x_j)(x - x_{j+1})\,dx = -\frac{h^3}{12} f''(\mu_j).
 \end{align}
 $$
-The nodes are the roots of the degree-$p$ Legendre polynomial $P_p(x)$, and the rule is exact for all polynomials of degree at most $2p-1$.
+Summing across all $N$ panels and applying the Intermediate Value Theorem to the average $\frac{1}{N}\sum_{j=0}^{N-1} f''(\mu_j) = f''(\xi_T)$ yields the trapezoidal error formula:
+$$
+\begin{align}
+I(f) - T_N(f) = -\frac{h^3}{12} \sum_{j=0}^{N-1} f''(\mu_j) = -\frac{N h^3}{12} f''(\xi_T) = -\frac{b - a}{12} h^2 f''(\xi_T).
+\end{align}
+$$
+For Simpson's rule, expand $f(x_{2j+1} + t)$ about the midpoint $c_j = x_{2j+1}$ through fourth order for $t \in [-h, h]$:
+$$
+\begin{align}
+f(c_j + t) = f(c_j) + t f'(c_j) + \frac{t^2}{2} f''(c_j) + \frac{t^3}{6} f'''(c_j) + \frac{t^4}{24} f^{(4)}(c_j) + O(t^5).
+\end{align}
+$$
+Integrating over $[-h, h]$, odd powers vanish by symmetry:
+$$
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx = \int_{-h}^h f(c_j + t)\,dt = 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{60} f^{(4)}(c_j) + O(h^7).
+\end{align}
+$$
+The Simpson rule on this double-panel evaluates to
+$$
+\begin{align}
+S_{\text{panel}} &= \frac{h}{3} \left[ f(c_j - h) + 4 f(c_j) + f(c_j + h) \right] \\
+    &= \frac{h}{3} \left[ 6 f(c_j) + h^2 f''(c_j) + \frac{h^4}{12} f^{(4)}(c_j) + O(h^6) \right] \\
+    &= 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{36} f^{(4)}(c_j) + O(h^7).
+\end{align}
+$$
+Subtracting gives the single-panel error:
+$$
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx - S_{\text{panel}} = \left( \frac{1}{60} - \frac{1}{36} \right) h^5 f^{(4)}(\mu_j) = -\frac{h^5}{90} f^{(4)}(\mu_j).
+\end{align}
+$$
+Summing over all $N/2$ double panels and applying the Intermediate Value Theorem gives
+$$
+\begin{align}
+I(f) - S_N(f) = -\frac{h^5}{90} \sum_{j=0}^{N/2 - 1} f^{(4)}(\mu_j) = -\frac{N h^5}{180} f^{(4)}(\xi_S) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S).
+\end{align}
+$$
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Gauss efficiency)**  Gaussian quadrature spends nodes where orthogonality says they are most useful. For smooth, non-periodic integrands, a small number of Gauss points often beats many equally spaced Newton-Cotes points.
+## Peano Kernel Error Representation
+
+
+The Peano kernel theorem provides a unified framework for representing the error of any quadrature rule with algebraic degree of exactness $m$.
+
+
+::: {.callout-note icon=false}
+## Theorem: Peano Kernel Theorem
+Let $Q$ be a quadrature rule on $[a, b]$ with error functional $E(f) = \int_a^b f(x)\,dx - Q(f)$. If $E(p) = 0$ for all $p \in \mathcal{P}_m$, then for every $f \in C^{m+1}[a, b]$,
+$$
+\begin{align}
+E(f) = \int_a^b f^{(m+1)}(t) K(t)\,dt,
+\end{align}
+$$
+where the Peano kernel $K(t)$ is defined by applying the error functional to the truncated power function:
+$$
+\begin{align}
+K(t) = \frac{1}{m!} E_x \left( (x - t)_+^m \right), \qquad (x - t)_+ = \max(0, x - t).
+\end{align}
+$$
+If $K(t)$ does not change sign on $[a, b]$, then there exists $\xi \in (a, b)$ such that
+$$
+\begin{align}
+E(f) = \frac{f^{(m+1)}(\xi)}{(m+1)!} E(x^{m+1}).
+\end{align}
+$$
 :::
 
 
-::: {.callout-warning icon=false}
-## Exercise
+::: {.callout-tip icon=false collapse=true}
+## Proof
+By Taylor's theorem with integral remainder expanded about $a$:
+$$
+\begin{align}
+f(x) = \sum_{k=0}^m \frac{f^{(k)}(a)}{k!} (x - a)^k + \frac{1}{m!} \int_a^x f^{(m+1)}(t) (x - t)^m\,dt.
+\end{align}
+$$
+Extending the upper integration limit using the truncated power notation $(x - t)_+^m$ allows writing the remainder as $\frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt$.
+Applying the linear functional $E$ to both sides, the polynomial terms vanish because $E(p) = 0$ for all $p \in \mathcal{P}_m$. Exchanging the order of integration and the functional gives
+$$
+\begin{align}
+E(f) = E_x \left( \frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt \right) = \int_a^b f^{(m+1)}(t) \left[ \frac{1}{m!} E_x\left( (x - t)_+^m \right) \right] dt = \int_a^b f^{(m+1)}(t) K(t)\,dt.
+\end{align}
+$$
+If $K(t)$ is of constant sign, the Mean Value Theorem for Integrals implies $E(f) = f^{(m+1)}(\xi) \int_a^b K(t)\,dt$.
+Testing the identity with $f(x) = x^{m+1}$, we have $f^{(m+1)}(x) = (m+1)!$, which yields $E(x^{m+1}) = (m+1)! \int_a^b K(t)\,dt$. Substituting this integral proves the claim.
+:::
 
-1. For $p=2$, use the roots of $P_2(x)=(3x^2-1)/2$ to find the nodes.
-    
-1. Solve for weights that integrate $1$ and $x^2$ exactly on $[-1,1]$.
-    
-1. Verify that the resulting rule also integrates $x$ and $x^3$ exactly by symmetry.
-    
-1. Explain why exactness through degree $2p-1$ is the maximum possible with $2p$ free parameters.
 
+## Gauss--Legendre Quadrature
+
+
+Newton--Cotes rules fix equispaced nodes and optimize only the weights. Gaussian quadrature optimizes both the nodes $x_1, ..., x_p$ and the weights $w_1, ..., w_p$, providing $2p$ degrees of freedom to maximize the degree of exactness.
+
+
+::: {.callout-note icon=false}
+## Lemma: Roots of Orthogonal Polynomials
+Let $P_p(x)$ be the degree-$p$ Legendre polynomial orthogonal on $[-1, 1]$ with respect to weight $w(x) \equiv 1$:
+$$
+\begin{align}
+\int_{-1}^1 P_p(x) q(x)\,dx = 0 \qquad \text{for all } q \in \mathcal{P}_{p-1}.
+\end{align}
+$$
+Then $P_p(x)$ has exactly $p$ distinct, real roots, and all roots lie in the open interval $(-1, 1)$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $x_1, ..., x_k$ denote the points in $(-1, 1)$ where $P_p(x)$ changes sign. Because $P_p$ is continuous and orthogonal to the constant polynomial $q(x) = 1$, we have $\int_{-1}^1 P_p(x)\,dx = 0$, so $P_p$ must change sign at least once in $(-1, 1)$, meaning $k \geq 1$.
+Suppose for contradiction that $k < p$. Construct the polynomial $q(x) = \prod_{j=1}^k (x - x_j) \in \mathcal{P}_k$.
+By construction, $P_p(x)$ and $q(x)$ change sign at identical points in $(-1, 1)$, so their product $P_p(x) q(x)$ has constant sign on $[-1, 1]$ and is not identically zero. Consequently,
+$$
+\begin{align}
+\int_{-1}^1 P_p(x) q(x)\,dx \neq 0.
+\end{align}
+$$
+However, because $\deg(q) = k < p$, orthogonality requires $\int_{-1}^1 P_p(x) q(x)\,dx = 0$, producing a contradiction. Therefore, $k = p$, proving that $P_p$ has $p$ distinct real roots in $(-1, 1)$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Fundamental Theorem of Gaussian Quadrature
+Let $x_1, ..., x_p$ be the roots of the degree-$p$ Legendre polynomial $P_p(x)$ on $[-1, 1]$, and let $w_i = \int_{-1}^1 L_i(x)\,dx$. The $p$-point Gauss--Legendre quadrature rule
+$$
+\begin{align}
+\int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i)
+\end{align}
+$$
+has degree of exactness $2p - 1$. No $p$-point quadrature rule can achieve a degree of exactness higher than $2p - 1$.
+Furthermore, all weights are strictly positive: $w_i > 0$ for all $i = 1, ..., p$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $f \in \mathcal{P}_{2p-1}$. Polynomial long division of $f(x)$ by $P_p(x)$ yields
+$$
+\begin{align}
+f(x) = q(x) P_p(x) + r(x), \qquad \deg(q) \leq p - 1, \quad \deg(r) \leq p - 1.
+\end{align}
+$$
+Integrating both sides over $[-1, 1]$:
+$$
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 q(x) P_p(x)\,dx + \int_{-1}^1 r(x)\,dx.
+\end{align}
+$$
+Because $\deg(q) \leq p - 1$, orthogonality of $P_p$ against $\mathcal{P}_{p-1}$ implies $\int_{-1}^1 q(x) P_p(x)\,dx = 0$, giving
+$$
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 r(x)\,dx.
+\end{align}
+$$
+Applying the $p$-point quadrature sum at the Legendre roots $\{x_i\}_{i=1}^p$ where $P_p(x_i) = 0$:
+$$
+\begin{align}
+\sum_{i=1}^p w_i f(x_i) &= \sum_{i=1}^p w_i \left[ q(x_i) P_p(x_i) + r(x_i) \right] \\
+    &= \sum_{i=1}^p w_i \left[ 0 + r(x_i) \right] = \sum_{i=1}^p w_i r(x_i).
+\end{align}
+$$
+Because $\deg(r) \leq p - 1$, interpolatory quadrature on $p$ distinct nodes integrates $r(x)$ exactly by the referenced result:
+$$
+\begin{align}
+\sum_{i=1}^p w_i r(x_i) = \int_{-1}^1 r(x)\,dx = \int_{-1}^1 f(x)\,dx.
+\end{align}
+$$
+Thus $\sum_{i=1}^p w_i f(x_i) = \int_{-1}^1 f(x)\,dx$ for all $f \in \mathcal{P}_{2p-1}$.
+To prove that $2p - 1$ is the maximal degree, define the nodal polynomial
+$$
+\begin{align}
+g(x) = \prod_{i=1}^p (x - x_i)^2 \in \mathcal{P}_{2p}.
+\end{align}
+$$
+Because $g(x) \geq 0$ and vanishes only at isolated points, its integral is strictly positive:
+$$
+\begin{align}
+\int_{-1}^1 g(x)\,dx > 0.
+\end{align}
+$$
+However, evaluating the quadrature sum yields
+$$
+\begin{align}
+\sum_{i=1}^p w_i g(x_i) = \sum_{i=1}^p w_i \cdot 0 = 0 \neq \int_{-1}^1 g(x)\,dx.
+\end{align}
+$$
+Therefore no $p$-point quadrature rule can integrate all degree-$2p$ polynomials.
+For weight positivity, let $L_i \in \mathcal{P}_{p-1}$ be the $i$-th Lagrange basis polynomial. The square satisfies $\deg(L_i^2) = 2p - 2 \leq 2p - 1$. The rule integrates $L_i^2$ exactly:
+$$
+\begin{align}
+0 < \int_{-1}^1 L_i^2(x)\,dx = \sum_{j=1}^p w_j L_i^2(x_j) = \sum_{j=1}^p w_j \delta_{ij} = w_i.
+\end{align}
+$$
+Every weight $w_i$ is strictly positive.
 :::
 
 
 ## Richardson Extrapolation and Romberg Integration
 
 
+When the error of a numerical method admits an asymptotic expansion in powers of $h$, Richardson extrapolation algebraically cancels the leading error terms.
+
+
 ::: {.callout-note icon=false}
-## Theorem: Richardson Extrapolation
-Given an $O(h^2)$ estimate $A(h)$, build an $O(h^4)$ estimate by:
+## Theorem: Euler--Maclaurin Summation and Romberg Integration
+Let $f \in C^{2m+2}[a, b]$. The composite trapezoidal rule satisfies the asymptotic expansion
 $$
 \begin{align}
-A_{new} = \frac{4A(h/2) - A(h)}{3}.
+T(h) = I(f) + c_2 h^2 + c_4 h^4 + c_6 h^6 + ... + c_{2m} h^{2m} + O(h^{2m+2}),
 \end{align}
 $$
+where $c_{2k} = \frac{B_{2k}}{(2k)!}[f^{(2k-1)}(b) - f^{(2k-1)}(a)]$ depend on the Bernoulli numbers $B_{2k}$.
+Romberg integration systematically eliminates powers of $h^2$ via the tableau recurrence
+$$
+\begin{align}
+R(k, 0) = T(h_k), \qquad R(k, j) = \frac{4^j R(k, j-1) - R(k-1, j-1)}{4^j - 1} \quad (1 \leq j \leq k),
+\end{align}
+$$
+where $h_k = (b - a)/2^k$. Column $j$ achieves order $O(h^{2j+2})$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Let $A(h)$ be an $O(h^2)$ approximation of the true value $I$. Using a Taylor expansion in $h$:
+At column 1, $R(k, 0) = I(f) + c_2 h_k^2 + O(h_k^4)$ and $R(k-1, 0) = I(f) + c_2 (2h_k)^2 + O(h_k^4) = I(f) + 4 c_2 h_k^2 + O(h_k^4)$. Forming the linear combination
 $$
 \begin{align}
-A(h) = I + C_1 h^2 + C_2 h^4 + O(h^6).
+\frac{4 R(k, 0) - R(k-1, 0)}{3} = \frac{4(I(f) + c_2 h_k^2) - (I(f) + 4 c_2 h_k^2)}{3} + O(h_k^4) = I(f) + O(h_k^4)
 \end{align}
 $$
-Halving the step size gives:
-$$
-\begin{align}
-A(h/2) &= I + C_1 (h/2)^2 + C_2 (h/2)^4 + O(h^6) \\
-    &= I + \frac{1}{4} C_1 h^2 + \frac{1}{16} C_2 h^4 + O(h^6).
-\end{align}
-$$
-To eliminate the $O(h^2)$ error term, multiply $A(h/2)$ by 4 and subtract $A(h)$:
-$$
-\begin{align}
-4A(h/2) - A(h) &= (4I + C_1 h^2 + \frac{1}{4} C_2 h^4) - (I + C_1 h^2 + C_2 h^4) + O(h^6) \\
-    &= 3I - \frac{3}{4} C_2 h^4 + O(h^6).
-\end{align}
-$$
-Dividing by 3 yields the $O(h^4)$ estimate:
-$$
-\begin{align}
-I = \frac{4A(h/2) - A(h)}{3} + O(h^4).
-\end{align}
-$$
+cancels the $h^2$ error term. Induction on $j$ shows that combining step sizes differing by a factor of 2 cancels the leading $h^{2j}$ error term with weights $\frac{4^j}{4^j - 1}$ and $-\frac{1}{4^j - 1}$.
 :::
+
+
+## Periodic Functions and Spectral Convergence
 
 
 ::: {.callout-note icon=false}
-## Definition: Romberg Integration
-Iterative application of Richardson extrapolation to the trapezoidal rule.
+## Theorem: Spectral Accuracy of the Trapezoidal Rule on Periodic Domains
+Let $f$ be a smooth, $2\pi$-periodic function on $\fR$. All endpoint derivatives in the Euler--Maclaurin expansion cancel identically:
+$$
+\begin{align}
+f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0 \qquad \text{for all } k \geq 1.
+\end{align}
+$$
+Consequently, all algebraic error coefficients $c_2, c_4, c_6, ...$ vanish.
+If $f$ is analytic in a strip $\{z \in \fC : |\operatorname{Im}(z)| < d\}$, the composite trapezoidal rule converges exponentially fast:
+$$
+\begin{align}
+|I(f) - T_N(f)| \leq C e^{-d N}.
+\end{align}
+$$
+On smooth periodic domains, the composite trapezoidal rule achieves spectral accuracy.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Romberg idea)**  Romberg integration repeatedly cancels the leading even powers in the trapezoidal error expansion. It is effective when $f$ is smooth enough for that expansion to be accurate.
-:::
-
-
-## Adaptive Quadrature
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Adaptive quadrature)**  Adaptive quadrature focuses function evaluations where $f$ is difficult and uses large panels where $f$ is smooth. The usual mechanism compares one large panel with two smaller panels; if the difference is above tolerance $\varepsilon$, the method recurses.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Nonsmooth integrands)**  Algebraic error rates assume enough derivatives. Corners, jumps, and endpoint singularities reduce the observed order. Adaptive quadrature helps by isolating nonsmooth regions, but it cannot restore smoothness.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Monte Carlo contrast)**  Deterministic quadrature is efficient in low dimension for smooth functions. Monte Carlo convergence is only $O(N^{-1/2})$, but its rate is largely dimension-independent, which makes it useful for high-dimensional integrals.
-:::
-
-
-## Periodic Functions and Spectral Accuracy
-
-
-::: {.callout-note icon=false}
-## Theorem: Periodic Trapezoidal Spectral Accuracy
-For smooth periodic functions on $[0,2\pi]$, the trapezoidal rule can converge faster than any algebraic power of $h$. For analytic periodic functions, the convergence is exponential.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Apply the trapezoidal rule to $e^{ikx}$ on $[0,2\pi]$ and determine when the discrete sum is exactly zero.
-    
-1. Use a Fourier series argument to explain why smooth periodic functions are integrated unusually well.
-    
-1. Compare errors for $\sin(x)$, $\exp(\cos x)$, and $|x-\pi|$ as $n$ increases.
-
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Because $f$ is periodic and smooth, $f^{(m)}(2\pi) = f^{(m)}(0)$ for all $m \geq 0$. Every term $c_{2k}$ in the Euler--Maclaurin formula is proportional to $f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0$, so the error decays faster than any power of $h = 2\pi / N$.
+To quantify the exponential rate, expand $f(x)$ in its Fourier series:
+$$
+\begin{align}
+f(x) = \sum_{k=-\infty}^\infty \hat{f}_k e^{ikx}, \qquad \hat{f}_k = \frac{1}{2\pi} \int_0^{2\pi} f(x) e^{-ikx}\,dx.
+\end{align}
+$$
+The exact integral is $I(f) = \int_0^{2\pi} f(x)\,dx = 2\pi \hat{f}_0$.
+The composite trapezoidal rule with $h = 2\pi / N$ and nodes $x_j = 2\pi j / N$ for $j = 0, ..., N - 1$ gives
+$$
+\begin{align}
+T_N(f) = \frac{2\pi}{N} \sum_{j=0}^{N-1} f(x_j) &= \frac{2\pi}{N} \sum_{j=0}^{N-1} \sum_{k=-\infty}^\infty \hat{f}_k e^{2\pi i j k / N} \\
+    &= 2\pi \sum_{k=-\infty}^\infty \hat{f}_k \left( \frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} \right).
+\end{align}
+$$
+The inner sum satisfies discrete orthogonality:
+$$
+\begin{align}
+\frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} = \begin{cases}
+        1, & k = mN \text{ for some } m \in \fZ, \\
+        0, & k \not\equiv 0 \pmod N.
+    \end{cases}
+\end{align}
+$$
+Substituting this indicator isolates the aliased modes:
+$$
+\begin{align}
+T_N(f) = 2\pi \sum_{m=-\infty}^\infty \hat{f}_{mN} = 2\pi \hat{f}_0 + 2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+$$
+The quadrature error is therefore the tail sum:
+$$
+\begin{align}
+I(f) - T_N(f) = -2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+$$
+Because $f$ is analytic and bounded by $M_0$ in the strip $|\operatorname{Im}(z)| < d$, shifting the integration path in the definition of $\hat{f}_k$ gives the geometric decay $|\hat{f}_k| \leq M e^{-d|k|}$. Applying this bound:
+$$
+\begin{align}
+|I(f) - T_N(f)| \leq 2\pi M \sum_{m \neq 0} e^{-d|m|N} = 4\pi M \sum_{m=1}^\infty (e^{-dN})^m = 4\pi M \frac{e^{-dN}}{1 - e^{-dN}} = O(e^{-dN}).
+\end{align}
+$$
 :::
 
 
@@ -261,14 +424,52 @@ For smooth periodic functions on $[0,2\pi]$, the trapezoidal rule can converge f
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Doubling nodes in Trapezoidal rule reduces error by $4\times$. Use the result above to predict Simpson's reduction factor.
-    
-1. Derive the $p=2$ Gauss points for $[-1, 1]$ using the result above.
-    
-1. Use Richardson extrapolation from the result above to improve $T(h)$ and $T(h/2)$ to get Simpson's rule.
-    
-1. Integration of $\sin(x)$ on $[0, 2\pi]$ with $n=4$ nodes. Is the error $0$? Why?
-    
-1. Compare composite Simpson on $f(x)=|x-1/2|$ with a smooth quartic. Estimate the observed order.
+1. **Derive.**  **Method of undetermined coefficients.**  Find the nodes and weights for a symmetric 3-point rule on $[-1, 1]$ of the form $\int_{-1}^1 f(x)\,dx \approx w_0 f(-\alpha) + w_1 f(0) + w_2 f(\alpha)$.
 
+    1. For fixed $\alpha = 1$, enforce exactness for $f(x) = 1, x, x^2$ to derive the weights of Simpson's rule: $w_0 = 1/3, w_1 = 4/3, w_2 = 1/3$.
+
+    1. Let $\alpha$ be a free parameter. Enforce exactness for $f(x) = 1, x^2, x^4$ to derive the Gauss--Legendre parameter $\alpha = 1/\sqrt{3}$ and weights $w_0 = w_2 = 1, w_1 = 0$.
+
+    1. Compare the degree of exactness of both rules.
+
+1. **Compute.**  **Romberg tableau construction.**  Approximate the integral $I = \int_0^1 e^{-x^2}\,dx$.
+
+    1. Compute $T(h)$ for $h = 1, 1/2, 1/4$ using the composite trapezoidal rule.
+
+    1. Construct the first three rows of the Romberg tableau to evaluate $R(1, 1), R(2, 1)$, and $R(2, 2)$.
+
+    1. Confirm that $R(1, 1)$ matches composite Simpson's rule with $N = 2$.
+
+1. **Compute.**  **Change of interval and Gaussian quadrature.**  Let $\int_a^b f(t)\,dt$ be an integral on an arbitrary interval $[a, b]$.
+
+    1. Derive the affine substitution $t(x) = \frac{b - a}{2}x + \frac{a + b}{2}$ mapping $x \in [-1, 1]$ to $t \in [a, b]$.
+
+    1. Transform the 2-point Gauss--Legendre rule to $[0, 3]$ and approximate $\int_0^3 \sqrt{1 + t^3}\,dt$.
+
+    1. Compare the result with Simpson's rule using the same number of function evaluations.
+
+1. **Derive.**  **Peano kernel of the trapezoidal rule.**  Consider the single-panel trapezoidal rule on $[0, h]$ with error functional $E(f) = \int_0^h f(x)\,dx - \frac{h}{2}[f(0) + f(h)]$.
+
+    1. Show that $E(1) = 0$ and $E(x) = 0$, so $m = 1$.
+
+    1. Evaluate the Peano kernel $K(t) = E_x((x - t)_+) = \int_0^h (x - t)_+\,dx - \frac{h}{2}[(0 - t)_+ + (h - t)_+]$.
+
+    1. Show that $K(t) = \frac{1}{2}t(t - h) \leq 0$ for all $t \in [0, h]$.
+
+    1. Apply the referenced result to compute $\int_0^h K(t)\,dt = -\frac{h^3}{12}$ and recover the exact error term $-\frac{h^3}{12} f''(\xi)$.
+
+1. **Compute.**  **Spectral accuracy on periodic integrals.**  Consider the integral $I = \int_0^{2\pi} \frac{dx}{2 + \cos x} = \frac{2\pi}{\sqrt{3}}$.
+
+    1. Identify the complex poles of $f(z) = \frac{1}{2 + \cos z}$ by solving $\cos z = -2$.
+
+    1. Determine the half-width $d$ of the strip of analyticity around the real axis.
+
+    1. Evaluate $T_N(f)$ for $N = 4, 8, 16$. Confirm that $|I - T_N(f)|$ decays as $e^{-d N}$.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Stoer and Bulirsch give a classical numerical-analysis treatment of interpolation and quadrature [@stoerbulirsch2002]. Trefethen is especially useful for polynomial approximation, and de Boor for splines [@trefethen2013; @deboor2001]. The short paper by Clenshaw and Curtis is a good example of an algorithmic quadrature paper that remains approachable [@clenshawcurtis1960].
 :::

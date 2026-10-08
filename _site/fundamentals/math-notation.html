@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Mathematical Notation and Proof Techniques – Scientific Computing</title>
+<title>1&nbsp; Mathematical Notation and Proof Techniques – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +710,9 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#logic-and-set-notation" id="toc-logic-and-set-notation" class="nav-link active" data-scroll-target="#logic-and-set-notation"><span class="header-section-number">2.1</span> Logic and Set Notation</a></li>
-  <li><a href="#proof-techniques" id="toc-proof-techniques" class="nav-link" data-scroll-target="#proof-techniques"><span class="header-section-number">2.2</span> Proof Techniques</a></li>
-  <li><a href="#notation-conventions" id="toc-notation-conventions" class="nav-link" data-scroll-target="#notation-conventions"><span class="header-section-number">2.3</span> Notation Conventions</a></li>
+  <li><a href="#logic-and-set-notation" id="toc-logic-and-set-notation" class="nav-link active" data-scroll-target="#logic-and-set-notation"><span class="header-section-number">1.1</span> Logic and Set Notation</a></li>
+  <li><a href="#proof-techniques" id="toc-proof-techniques" class="nav-link" data-scroll-target="#proof-techniques"><span class="header-section-number">1.2</span> Proof Techniques</a></li>
+  <li><a href="#notation-conventions" id="toc-notation-conventions" class="nav-link" data-scroll-target="#notation-conventions"><span class="header-section-number">1.3</span> Notation Conventions</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/math-notation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +720,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></h1>
 </div>
 
 
@@ -700,9 +739,9 @@ window.Quarto = {
 </header>
 
 
-<p>Standard vocabulary for proofs and algorithms.</p>
-<section id="logic-and-set-notation" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="logic-and-set-notation"><span class="header-section-number">2.1</span> Logic and Set Notation</h2>
+<p>This section establishes the logical, set-theoretic, and matrix notation used throughout these notes, together with the standard proof structures.</p>
+<section id="logic-and-set-notation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="logic-and-set-notation"><span class="header-section-number">1.1</span> Logic and Set Notation</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -750,7 +789,7 @@ window.Quarto = {
 <ul>
 <li><p><span class="math inline">\(x \in S\)</span>: <span class="math inline">\(x\)</span> is an element of <span class="math inline">\(S\)</span>.</p></li>
 <li><p><span class="math inline">\(S \subseteq T\)</span>: <span class="math inline">\(S\)</span> is a subset of <span class="math inline">\(T\)</span>.</p></li>
-<li><p><span class="math inline">\(S \cup T\)</span>: Union; <span class="math inline">\(S \cap T\)</span>: Intersection; <span class="math inline">\(S \setminus T\)</span>: Set difference.</p></li>
+<li><p><span class="math inline">\(S \cup T\)</span> (union), <span class="math inline">\(S \cap T\)</span> (intersection), and <span class="math inline">\(S \setminus T\)</span> (set difference).</p></li>
 <li><p><span class="math inline">\(\{x \in S : P(x)\}\)</span>: Set builder notation.</p></li>
 <li><p><strong>Number Sets:</strong> <span class="math inline">\(\fZ\)</span> (integers), <span class="math inline">\(\fR\)</span> (reals), <span class="math inline">\(\fC\)</span> (complex), <span class="math inline">\(\fR^n\)</span> (vectors), <span class="math inline">\(\fR^{m \times n}\)</span> (matrices).</p></li>
 </ul>
@@ -766,6 +805,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Check.</strong></p>
 <ol type="1">
 <li><p>Write ``every invertible matrix has a nonzero determinant’’ using quantifiers and implication.</p></li>
 <li><p>State the contrapositive of: ``if <span class="math inline">\(\bA\)</span> is invertible, then <span class="math inline">\(\bA\bx = \bzero \Rightarrow \bx = \bzero\)</span>.’’</p></li>
@@ -774,8 +814,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="proof-techniques" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="proof-techniques"><span class="header-section-number">2.2</span> Proof Techniques</h2>
+<section id="proof-techniques" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="proof-techniques"><span class="header-section-number">1.2</span> Proof Techniques</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -829,7 +869,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Numerical Proofs:</strong> Often validate that an approximation is stable or that an error term converges. Frequently involves showing <span class="math inline">\(|f(x) - \hat{f}(x)| \leq \varepsilon\)</span> for small <span class="math inline">\(\varepsilon\)</span>.</p>
+<p><strong>(Numerical proofs)</strong> Often validate that an approximation is stable or that an error term converges. Frequently involves showing <span class="math inline">\(|f(x) - \hat{f}(x)| \leq \varepsilon\)</span> for small <span class="math inline">\(\varepsilon\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -842,6 +882,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Derive.</strong></p>
 <ol type="1">
 <li><p>Prove: if <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span> are symmetric, then <span class="math inline">\(\bA + \bB\)</span> is symmetric.</p></li>
 <li><p>Prove by contradiction: if <span class="math inline">\(\bA\bx = \bzero \Rightarrow \bx = \bzero\)</span>, then <span class="math inline">\(\bA\)</span> has no zero eigenvalue.</p></li>
@@ -850,8 +891,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="notation-conventions" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="notation-conventions"><span class="header-section-number">2.3</span> Notation Conventions</h2>
+<section id="notation-conventions" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="notation-conventions"><span class="header-section-number">1.3</span> Notation Conventions</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -867,7 +908,7 @@ window.Quarto = {
 <li><p><strong>Scalars:</strong> Lowercase italic (<span class="math inline">\(a, b, x\)</span>).</p></li>
 <li><p><strong>Vectors:</strong> Lowercase bold (<span class="math inline">\(\bx, \by, \ba\)</span>). Default is column vector.</p></li>
 <li><p><strong>Matrices:</strong> Uppercase bold (<span class="math inline">\(\bA, \bB, \bQ\)</span>).</p></li>
-<li><p><strong>Indexing:</strong> 1-based (unlike Python). <span class="math inline">\(x_i\)</span> is <span class="math inline">\(i\)</span>-th entry; <span class="math inline">\(a_{ij}\)</span> is <span class="math inline">\((i,j)\)</span> entry.</p></li>
+<li><p><strong>Indexing:</strong> 1-based (unlike Python). Here <span class="math inline">\(x_i\)</span> is the <span class="math inline">\(i\)</span>-th entry, and <span class="math inline">\(a_{ij}\)</span> is the <span class="math inline">\((i,j)\)</span> entry.</p></li>
 </ul>
 </div>
 </div>
@@ -1359,12 +1400,12 @@ window.Quarto = {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../index.html" class="pagination-link" aria-label="Preface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../fundamentals/vectors-matrices.html" class="pagination-link" aria-label="Vectors and Matrices">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../fundamentals/vectors-matrices.html" class="pagination-link" aria-label="Vectors, Coordinates, and Linear Maps">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

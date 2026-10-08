@@ -1,239 +1,378 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Eigenvalues and Eigenvectors}
+\subsection{Eigenvalues, Invariant Subspaces, and Their Sensitivity}
 \label{sub:eigen-theory}
 
 \textBox{%
-Reveals the scaling directions of a linear transformation. Essential for stability analysis, PCA, and spectral methods.
+The eigenvalue problem $\bA\bv = \lambda\bv$ identifies the invariant one-dimensional subspaces of a linear operator. Along an eigenvector $\bv$, the action of the matrix $\bA$ reduces to scalar scaling by $\lambda$. Eigenvalues govern the asymptotic stability of dynamical systems, the resonant frequencies of mechanical and electrical systems, the convergence rates of iterative solvers, and the dominant invariant coordinates in spectral graph theory and data science.
 }
 
 \textBox{%
-Eigenvectors are directions preserved by a linear map. Along an eigenvector, the matrix acts like multiplication by a scalar. This reduces a matrix transformation to independent one-dimensional actions, when enough eigenvectors exist.
+The characteristic equation $\det(\bA-\lambda\bI)=0$ is useful for definitions and small examples, but forming its coefficients is not a sound numerical algorithm. Forming the coefficients discards the matrix structure and replaces one problem by a polynomial root problem that may be far more sensitive. Practical methods work with the matrix directly and use orthogonal or unitary transformations whenever possible.
 }
 
-\subsubsection{Definitions and Basic Properties}
+\textBox{%
+We first define eigenvalues and invariant subspaces and relate them to changes of basis. We then prove the Schur and spectral theorems, characterize the eigenvalues of a symmetric matrix by Rayleigh quotients, and use that characterization to bound how far eigenvalues move when the matrix is perturbed. Algorithms for computing eigenvalues are the subject of Section~\ref{sub:eigen-algorithms}.
+}
+
+\subsubsection{Invariant Directions and Change of Basis}
 
 \addDef{Eigenvalues and Eigenvectors}{%
-For $\bA \in \fR^{n \times n}$, a scalar $\lambda \in \fC$ is an \textbf{eigenvalue} if $\exists$ nonzero $\bv \in \fC^n$ such that:
+Let $\bA \in \fR^{n \times n}$. A nonzero vector $\bv \in \fC^n$ is an eigenvector of $\bA$ associated with eigenvalue $\lambda \in \fC$ if
 \begin{align*}
     \bA\bv = \lambda\bv.
 \end{align*}
-\begin{itemize}
-    \item \textbf{Spectrum $\sigma(\bA)$:}\enspace The set of all eigenvalues.
-    \item \textbf{Invariance:}\enspace Multiplying $\bv$ by $\bA$ only scales its length; its direction remains fixed.
-\end{itemize}
+The set of eigenvalues is the spectrum $\sigma(\bA)$. When eigenvalues are listed as $\lambda_1,\dots,\lambda_n$, repetitions are included according to algebraic multiplicity.
 }
 \label{def:eigenvalue}
 
-\addDef{Characteristic Polynomial}{%
-$p_{\bA}(\lambda) = \det(\bA - \lambda \bI)$. Eigenvalues are the roots of $p_{\bA}(\lambda) = 0$.
+\addDef{Invariant Subspace}{%
+A subspace $S\subseteq\fC^n$ is \textbf{invariant} under $\bA$ if $\bA\bx\in S$ whenever $\bx\in S$. An eigenvector spans a one-dimensional invariant subspace. Higher-dimensional invariant subspaces remain meaningful even when no basis of eigenvectors exists.
 }
-\label{def:char-poly}
-
-\addRemark{%
-\textbf{(Characteristic polynomial as theory)}\enspace The characteristic polynomial is useful for proofs and small hand examples. Numerical algorithms do not compute eigenvalues by forming $p_{\bA}$ and finding its roots; polynomial coefficients are extremely sensitive to perturbations.
-}
-
-\addExcr{%
-\begin{enumerate}
-    \item Verify $\bv = (1, 1)^T$ is an eigenvector of $\bA = \begin{pmatrix}3&1\\1&3\end{pmatrix}$ and find $\lambda$.
-    \item Why is the zero vector excluded from the definition of an eigenvector?
-\end{enumerate}
-}
-
-\addThm{Similar Matrices}{%
-If $\bB = \bV^{-1}\bA\bV$ (Similarity Transform), then $\sigma(\bB) = \sigma(\bA)$.
-Eigenvalues are invariant under change of basis.
-}
-\label{thm:similar-matrices}
-
-\addDef{Diagonalization}{%
-A matrix $\bA$ is diagonalizable if there exists an invertible matrix $\bV$ such that
-\begin{align*}
-    \bA=\bV\bD\bV^{-1},
-\end{align*}
-where $\bD$ is diagonal. The columns of $\bV$ are eigenvectors and the diagonal entries of $\bD$ are eigenvalues.
-}
-\label{def:diagonalization}
-
-\addRemark{%
-\textbf{(Multiplicity and defectiveness)}\enspace Repeated eigenvalues do not guarantee enough eigenvectors. A matrix can have an eigenvalue of algebraic multiplicity $2$ but only one independent eigenvector; such a matrix is \textbf{defective} and cannot be diagonalized.
-}
+\label{def:invariant-subspace}
 
 \addExmpl{%
-\textbf{(Defective matrix)}\enspace
+Three two-dimensional examples show what the definition can and cannot promise.
+\begin{enumerate}
+    \item A diagonal matrix scales the coordinate axes, leaving both axes invariant.
+    \item The shear $\begin{pmatrix}1&1\\0&1\end{pmatrix}$ has only one independent eigenvector. Repeated application keeps sliding vectors in the same direction, so a repeated eigenvalue need not supply a full eigenbasis.
+    \item A nontrivial planar rotation has no real invariant line, but it has complex eigenvectors. The complex eigenvalues encode the rotation as multiplication by a complex phase.
+\end{enumerate}
+}
+
+\addDef{Similarity and a Change of Basis}{%
+Matrices $\bA$ and $\bB$ are \textbf{similar} if
 \begin{align*}
-    \bA=
-    \begin{pmatrix}
-    1&1\\
-    0&1
-    \end{pmatrix}
+    \bB=\bS^{-1}\bA\bS
 \end{align*}
-has characteristic polynomial $(1-\lambda)^2$. Solving $(\bA-\bI)\bv=\bzero$ gives only one independent eigenvector, so $\bA$ is not diagonalizable.
+for some nonsingular $\bS$. They represent the same linear map in different bases: the columns of $\bS$ are the new basis vectors written in the old coordinates.
 }
+\label{def:similarity}
 
-\addThm{Key Properties}{%
-\begin{enumerate}
-    \item \textbf{Trace:}\enspace $\sum \lambda_i = \text{tr}(\bA)$.
-    \item \textbf{Determinant:}\enspace $\prod \lambda_i = \det(\bA)$.
-    \item \textbf{Singularity:}\enspace $0 \in \sigma(\bA) \iff \bA$ is singular.
-    \item \textbf{Inversion:}\enspace If $\bA$ is invertible, eigenvalues of $\bA^{-1}$ are $1/\lambda_i$.
-\end{enumerate}
+\addThm{Similarity Preserves Eigenvalues}{%
+If $\bB=\bS^{-1}\bA\bS$, then $\bA$ and $\bB$ have the same eigenvalues. More precisely, $\bA\bv=\lambda\bv$ if and only if
+\begin{align*}
+    \bB(\bS^{-1}\bv)=\lambda(\bS^{-1}\bv).
+\end{align*}
 }
-\label{thm:eigen-props}
-
-\subsubsection{Symmetric and Hermitian Matrices}
-
-Symmetric and Hermitian matrices possess special spectral properties that simplify analysis and computation.
-
-\textBox{%
-The symmetric case is the cleanest eigenvalue theory. Orthogonal eigenvectors mean that diagonalization is also a numerically safe change of basis: $\bQ^{-1}=\bQ^T$, so the transformation does not amplify Euclidean errors.
-}
-
-\addThm{Spectral Theorem (Real Symmetric)}{%
-If $\bA = \bA^T$:
-\begin{enumerate}
-    \item All eigenvalues $\lambda_i$ are \textbf{real}.
-    \item Eigenvectors for distinct $\lambda$ are \textbf{orthogonal}.
-    \item $\bA$ is \textbf{orthogonally diagonalizable}: $\bA = \bQ\bD\bQ^T$.
-\end{enumerate}
-}
-\label{thm:spectral-symmetric}
-
-\addDef{Hermitian Matrix}{%
-$\bA = \bA^*$ (conjugate transpose). The complex analog of symmetric matrices.
-\begin{itemize}
-    \item \textbf{Spectral Theorem (Hermitian):}\enspace Unitarily diagonalizable ($\bA = \bQ\bD\bQ^*$) with real eigenvalues.
-\end{itemize}
-}
-\label{def:hermitian}
-
-\addExcr{%
-\begin{enumerate}
-    \item Prove eigenvalues of $\bA^2$ are $\lambda_i^2$.
-    \item Diagonalize $\bA = \begin{pmatrix}4&1\\1&4\end{pmatrix}$ by finding an orthonormal eigenbasis.
-\end{enumerate}
-}
-
-\subsubsection{Iterative Algorithms}
-
-\textBox{%
-In practice, we compute eigenvalues via iteration, not by finding roots of the characteristic polynomial.
-}
-
-\textBox{%
-Most large eigenvalue computations do not compute the full spectrum. They target a few eigenvalues: the largest, smallest, or those closest to a shift. Matrix-vector products and linear solves are the basic primitives.
-}
-
-\addDef{Power Iteration}{%
-Repeatedly apply $\bA$ to a unit vector: $\bv^{(k)} = \frac{\bA\bv^{(k-1)}}{\|\bA\bv^{(k-1)}\|}$.
-\begin{itemize}
-    \item \textbf{Convergence:}\enspace $\bv^{(k)} \to$ dominant eigenvector (for $|\lambda_1| > |\lambda_2|$).
-    \item \textbf{Rate:}\enspace $O(|\lambda_2/\lambda_1|^k)$.
-\end{itemize}
-}
-\label{def:power-iteration}
-
-\addRemark{%
-\textbf{(Power iteration failure modes)}\enspace Power iteration can fail or converge slowly if $|\lambda_1|\approx|\lambda_2|$, if the starting vector has tiny component in the dominant eigenvector direction, or if the dominant eigenvalue is not unique in magnitude.
-}
+\label{thm:similarity-eigenvalues}
 
 \addPrf{%
-Assume $\bA$ is diagonalizable with eigenvectors $\{\bu_1, \dots, \bu_n\}$ and eigenvalues $|\lambda_1| > |\lambda_2| \geq \dots$. Let $\bx^{(0)} = \sum_{i=1}^n c_i \bu_i$ with $c_1 \neq 0$. Applying $\bA$ $k$ times:
+Multiplying $\bA\bv=\lambda\bv$ by $\bS^{-1}$ and inserting $\bS\bS^{-1}=\bI$ gives
 \begin{align*}
-    \bA^k \bx^{(0)} &= \sum_{i=1}^n c_i \lambda_i^k \bu_i \\
-    &= c_1 \lambda_1^k \left( \bu_1 + \sum_{i=2}^n \frac{c_i}{c_1} \left(\frac{\lambda_i}{\lambda_1}\right)^k \bu_i \right).
+    (\bS^{-1}\bA\bS)(\bS^{-1}\bv)
+    =\lambda(\bS^{-1}\bv).
 \end{align*}
-Since $|\lambda_i/\lambda_1| < 1$ for all $i > 1$, the summation term decays to zero as $k \to \infty$. Thus $\bA^k \bx^{(0)}$ aligns with $\bu_1$. The normalization at each step prevents overflow while preserving this alignment.
+The reverse implication follows by multiplying by $\bS$.
 }
 
-\addDef{Inverse Iteration}{%
-Apply power iteration to $(\bA - \sigma\bI)^{-1}$.
-\begin{itemize}
-    \item \textbf{Use:}\enspace Finds the eigenvalue closest to the shift $\sigma$.
-    \item \textbf{Efficiency:}\enspace Factorize $(\bA - \sigma\bI)$ once, then solve at each step ($O(n^2)$).
-\end{itemize}
+\addThm{Diagonalization Means an Eigenvector Basis}{%
+A matrix $\bA\in\fC^{n\times n}$ is similar to a diagonal matrix if and only if it has a basis of eigenvectors. If $\bS=(\bv_1\ \cdots\ \bv_n)$ contains such a basis, then
+\begin{align*}
+    \bA\bS=\bS\boldsymbol{\Lambda},
+    \qquad
+    \bA=\bS\boldsymbol{\Lambda}\bS^{-1}.
+\end{align*}
 }
-\label{def:inverse-iteration}
+\label{thm:diagonalization-basis}
 
-\addRemark{%
-\textbf{(Shifted inverse iteration)}\enspace If $\lambda_i$ is an eigenvalue of $\bA$, then $(\lambda_i-\sigma)^{-1}$ is an eigenvalue of $(\bA-\sigma\bI)^{-1}$. The eigenvalue closest to $\sigma$ becomes largest in magnitude after inversion.
+\addPrf{%
+If the columns of $\bS$ are eigenvectors, the $j$th columns of $\bA\bS$ and $\bS\boldsymbol{\Lambda}$ are both $\lambda_j\bv_j$, which proves the factorization. Conversely, if $\bA=\bS\boldsymbol{\Lambda}\bS^{-1}$, then $\bA\bS=\bS\boldsymbol{\Lambda}$, so each column of the nonsingular matrix $\bS$ is an eigenvector.
 }
 
-\addDef{Rayleigh Quotient Iteration (RQI)}{%
-Update the shift $\sigma_k$ to the current Rayleigh quotient $(\bv^{(k)})^T\bA\bv^{(k)}$ at each step.
-\begin{itemize}
-    \item \textbf{Convergence:}\enspace \textbf{Cubic} for symmetric matrices (digits triple each step).
-\end{itemize}
-}
-\label{def:rqi}
+\subsubsection{Multiplicity and Schur Form}
 
-\addDef{Eigenvalue Method Selection}{%
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Goal} & \textbf{Typical method} \\ \hline
-Largest eigenvalue of large matrix & Power iteration \\
-Eigenvalue near a shift & Inverse iteration \\
-Fast local refinement, symmetric case & Rayleigh quotient iteration \\
-Full dense spectrum & QR algorithm \\
-Few extreme eigenvalues, symmetric sparse matrix & Lanczos \\
-\end{tabular}
-\end{center}
-}
-\label{def:eigen-method-selection}
-
-\addExcr{%
+\addDef{Algebraic and Geometric Multiplicity}{%
+Let $\lambda$ be an eigenvalue of $\bA$.
 \begin{enumerate}
-    \item Implement power iteration to find $\lambda_{\max}$ of a tridiagonal matrix.
-    \item Use RQI on a random $4 \times 4$ symmetric matrix. Observe the rate of convergence.
+    \item The algebraic multiplicity $\mu_a(\lambda)$ is the multiplicity of $\lambda$ as a root of $\det(\bA - z\bI) = 0$.
+    \item The geometric multiplicity $\mu_g(\lambda) = \dim \mathcal{N}(\bA - \lambda\bI)$ is the dimension of the corresponding eigenspace.
 \end{enumerate}
+Every eigenvalue satisfies $1 \leq \mu_g(\lambda) \leq \mu_a(\lambda)$. When $\mu_g(\lambda) < \mu_a(\lambda)$ for any eigenvalue, $\bA$ is defective and does not possess a complete basis of eigenvectors.
 }
+\label{def:multiplicity}
 
-\subsubsection{Schur Decomposition and the QR Algorithm}
-
-\textBox{%
-The Schur decomposition provides the theoretical basis for the QR algorithm, the standard iterative method for computing the eigenvalues and eigenvectors of dense, general matrices.
-}
-
-\textBox{%
-Diagonalization may fail for defective matrices, but Schur decomposition always exists over $\fC$. This is why practical dense eigensolvers target Schur form rather than diagonal form.
-}
-
-\addThm{Schur Decomposition}{%
-Every square $\bA$ satisfies $\bA = \bQ\bT\bQ^*$, where $\bQ$ is unitary and $\bT$ is upper triangular.
-\begin{itemize}
-    \item \textbf{Schur Vectors:}\enspace Columns of $\bQ$ provide an orthonormal basis for nested invariant subspaces.
-\end{itemize}
+\addThm{Schur Triangularization Decomposition}{%
+Every square matrix $\bA \in \fC^{n \times n}$ is unitarily similar to an upper triangular matrix:
+\begin{align*}
+    \bA = \bQ\bT\bQ^*,
+\end{align*}
+where $\bQ \in \fC^{n \times n}$ is unitary ($\bQ^*\bQ = \bI$) and $\bT \in \fC^{n \times n}$ is upper triangular. The diagonal entries of $\bT$ are the eigenvalues of $\bA$.
 }
 \label{thm:schur}
 
-\addDef{QR Iteration}{%
-Iteratively compute QR factorizations and swap the factors. The goal is to transform $\bA$ into an upper triangular (Schur) form, where the eigenvalues appear on the diagonal.
-\begin{enumerate}
-    \item $\bA_k = \bQ_k \bR_k$
-    \item $\bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k$
-\end{enumerate}
-\textbf{Convergence:}\enspace $\bA_k$ converges to the Schur form $\bT$.
-}
-\label{def:qr-iteration}
+\addPrf{%
+We proceed by induction on the matrix dimension $n$. For $n = 1$, the statement holds trivially with $\bQ = [1]$ and $\bT = \bA$.
 
-\addRemark{%
-\textbf{(QR iteration performance)}\enspace
-Raw QR iteration requires $O(n^3)$ operations per step. Practical implementations, such as those in standard numerical libraries, typically use:
+Assume the theorem holds for all square matrices of order $n - 1$. By the Fundamental Theorem of Algebra, the characteristic polynomial $\det(\bA - z\bI) = 0$ possesses at least one complex root $\lambda_1$. Let $\bv_1 \in \fC^n$ be an eigenvector associated with $\lambda_1$, normalized so that $\|\bv_1\|_2 = 1$. Using the Gram--Schmidt process or Householder reflectors, construct an orthonormal basis for $\fC^n$ whose first column is $\bv_1$, forming a unitary matrix $\bU_1 = [\bv_1, \bW] \in \fC^{n \times n}$ with $\bW \in \fC^{n \times (n-1)}$.
+
+Applying this unitary similarity transformation to $\bA$ gives
+\begin{align*}
+    \bU_1^* \bA \bU_1
+    =
+    \begin{pmatrix} \bv_1^* \\ \bW^* \end{pmatrix} \bA \begin{pmatrix} \bv_1 & \bW \end{pmatrix}
+    =
+    \begin{pmatrix} \bv_1^* \bA \bv_1 & \bv_1^* \bA \bW \\ \bW^* \bA \bv_1 & \bW^* \bA \bW \end{pmatrix}.
+\end{align*}
+Because $\bA\bv_1 = \lambda_1 \bv_1$, the leading entry is $\bv_1^*(\lambda_1\bv_1) = \lambda_1 \|\bv_1\|_2^2 = \lambda_1$. The lower-left block is $\bW^*(\lambda_1\bv_1) = \lambda_1(\bW^*\bv_1) = \bzero$, because the columns of $\bW$ are orthogonal to $\bv_1$. Thus
+\begin{align*}
+    \bU_1^* \bA \bU_1 = \begin{pmatrix} \lambda_1 & \bw^* \\ \bzero & \bA_1 \end{pmatrix},
+\end{align*}
+where $\bA_1 = \bW^* \bA \bW \in \fC^{(n-1) \times (n-1)}$ and $\bw^* = \bv_1^* \bA \bW$.
+
+By the induction hypothesis, there exists a unitary matrix $\bQ_1 \in \fC^{(n-1) \times (n-1)}$ such that $\bQ_1^* \bA_1 \bQ_1 = \bT_1$ is upper triangular. Define the $n \times n$ block-diagonal unitary matrix
+\begin{align*}
+    \bV = \begin{pmatrix} 1 & \bzero \\ \bzero & \bQ_1 \end{pmatrix}.
+\end{align*}
+Setting $\bQ = \bU_1 \bV$, which is unitary as the product of unitary matrices, we obtain
+\begin{align*}
+    \bQ^* \bA \bQ
+    =
+    \bV^* (\bU_1^* \bA \bU_1) \bV
+    =
+    \begin{pmatrix} 1 & \bzero \\ \bzero & \bQ_1^* \end{pmatrix}
+    \begin{pmatrix} \lambda_1 & \bw^* \\ \bzero & \bA_1 \end{pmatrix}
+    \begin{pmatrix} 1 & \bzero \\ \bzero & \bQ_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 & \bw^* \bQ_1 \\ \bzero & \bQ_1^* \bA_1 \bQ_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 & \bw^* \bQ_1 \\ \bzero & \bT_1 \end{pmatrix}.
+\end{align*}
+Because $\bT_1$ is upper triangular, the entire block matrix $\bT = \bQ^*\bA\bQ$ is upper triangular. The diagonal entries of $\bT$ are $\lambda_1$ and the eigenvalues of $\bA_1$, which collectively form the eigenvalues of $\bA$.
+}
+
+\addThm{Spectral Theorem for Real Symmetric Matrices}{%
+If $\bA \in \fR^{n \times n}$ is real symmetric ($\bA = \bA^T$), then all eigenvalues of $\bA$ are real, and $\bA$ is orthogonally diagonalizable:
+\begin{align*}
+    \bA = \bQ \boldsymbol{\Lambda} \bQ^T = \sum_{i=1}^n \lambda_i \bq_i \bq_i^T,
+\end{align*}
+where $\bQ \in \fR^{n \times n}$ is real orthogonal ($\bQ^T\bQ = \bI$) and $\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$ is real diagonal.
+}
+\label{thm:spectral-symmetric}
+
+\addPrf{%
+First, let $\lambda \in \fC$ and $\bv \in \fC^n \setminus \{\bzero\}$ satisfy $\bA\bv = \lambda\bv$. Taking the inner product with $\bv$,
+\begin{align*}
+    \bv^*\bA\bv = \bv^*(\lambda\bv) = \lambda\|\bv\|_2^2.
+\end{align*}
+Taking the conjugate transpose of this scalar and using $\bA = \bA^T = \bA^*$,
+\begin{align*}
+    \bv^*\bA\bv = (\bv^*\bA\bv)^* = (\lambda\|\bv\|_2^2)^* = \bar{\lambda}\|\bv\|_2^2.
+\end{align*}
+Subtracting these two scalar expressions gives
+\begin{align*}
+    (\lambda - \bar{\lambda})\|\bv\|_2^2 = 0.
+\end{align*}
+Because $\bv \neq \bzero$, $\|\bv\|_2^2 > 0$, forcing $\lambda = \bar{\lambda} \in \fR$. Thus all eigenvalues are real.
+
+Because $\lambda_1 \in \fR$ and $\bA$ is real, writing $\bv = \bx + i\by$ gives $\bA\bx = \lambda_1\bx$ and $\bA\by = \lambda_1\by$. At least one of $\bx,\by$ is nonzero, yielding a real unit eigenvector $\bq_1$. Extend $\bq_1$ to an orthogonal matrix $\bQ_1 = [\bq_1, \bW] \in \fR^{n \times n}$ with $\bW \in \fR^{n \times (n-1)}$. Because $\bA\bq_1 = \lambda_1\bq_1$ and $\bW^T\bq_1 = \bzero$:
+\begin{align*}
+    \bQ_1^T\bA\bQ_1
+    =
+    \begin{pmatrix} \bq_1^T \\ \bW^T \end{pmatrix} \bA \begin{pmatrix} \bq_1 & \bW \end{pmatrix}
+    =
+    \begin{pmatrix} \bq_1^T\bA\bq_1 & \bq_1^T\bA\bW \\ \bW^T\bA\bq_1 & \bW^T\bA\bW \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 & (\bW^T\bA\bq_1)^T \\ \bzero & \bA_1 \end{pmatrix}
+    =
+    \begin{pmatrix} \lambda_1 & \bzero^T \\ \bzero & \bA_1 \end{pmatrix},
+\end{align*}
+where $\bA_1 = \bW^T\bA\bW \in \fR^{(n-1)\times(n-1)}$ is symmetric. By induction on dimension, there exists an orthogonal $\bQ_2 \in \fR^{(n-1)\times(n-1)}$ such that $\bQ_2^T\bA_1\bQ_2 = \operatorname{diag}(\lambda_2, \dots, \lambda_n)$. The matrix
+\begin{align*}
+    \bQ = \bQ_1 \begin{pmatrix} 1 & \bzero \\ \bzero & \bQ_2 \end{pmatrix}
+\end{align*}
+is orthogonal and satisfies $\bQ^T\bA\bQ = \boldsymbol{\Lambda}$, so $\bA = \bQ\boldsymbol{\Lambda}\bQ^T$.
+}
+
+\addThm{Courant--Fischer Minimax Theorem}{%
+Let $\bA \in \fR^{n \times n}$ be real symmetric with eigenvalues ordered as $\lambda_1 \leq \lambda_2 \leq \dots \leq \lambda_n$. Then for each $k \in \{1, \dots, n\}$,
+\begin{align*}
+    \lambda_k = \min_{\dim(S) = k} \max_{\bx \in S,\, \bx \neq \bzero} \frac{\bx^T \bA \bx}{\bx^T \bx}
+    =
+    \max_{\dim(S) = n - k + 1} \min_{\bx \in S,\, \bx \neq \bzero} \frac{\bx^T \bA \bx}{\bx^T \bx}.
+\end{align*}
+}
+\label{thm:courant-fischer}
+
+\addPrf{%
+Let $\bq_1, \dots, \bq_n$ be an orthonormal basis of eigenvectors of $\bA$ with $\bA\bq_i = \lambda_i \bq_i$. For any nonzero $\bx = \sum_{i=1}^n c_i \bq_i$, the Rayleigh quotient satisfies
+\begin{align*}
+    R(\bx) = \frac{\bx^T\bA\bx}{\bx^T\bx} = \frac{\sum_{i=1}^n \lambda_i c_i^2}{\sum_{i=1}^n c_i^2}.
+\end{align*}
+Define the subspace $V_k = \operatorname{span}\{\bq_1, \dots, \bq_k\}$, which has dimension $k$. For any nonzero $\bx \in V_k$, $c_i = 0$ for all $i > k$, so
+\begin{align*}
+    R(\bx) = \frac{\sum_{i=1}^k \lambda_i c_i^2}{\sum_{i=1}^k c_i^2} \leq \lambda_k \frac{\sum_{i=1}^k c_i^2}{\sum_{i=1}^k c_i^2} = \lambda_k.
+\end{align*}
+Because $\bq_k \in V_k$ achieves $R(\bq_k) = \lambda_k$, we have $\max_{\bx \in V_k,\, \bx \neq \bzero} R(\bx) = \lambda_k$.
+
+Now let $S$ be any arbitrary subspace of $\fR^n$ with $\dim(S) = k$. Define $W_{k-1} = \operatorname{span}\{\bq_k, \dots, \bq_n\}$, which has dimension $n - k + 1$. By the dimension formula,
+\begin{align*}
+    \dim(S \cap W_{k-1}) = \dim(S) + \dim(W_{k-1}) - \dim(S + W_{k-1}) \geq k + (n - k + 1) - n = 1.
+\end{align*}
+Therefore, there exists a nonzero vector $\by \in S \cap W_{k-1}$. Because $\by \in W_{k-1}$, its expansion $\by = \sum_{i=k}^n d_i \bq_i$ contains only modes $i \geq k$, so
+\begin{align*}
+    R(\by) = \frac{\sum_{i=k}^n \lambda_i d_i^2}{\sum_{i=k}^n d_i^2} \geq \lambda_k \frac{\sum_{i=k}^n d_i^2}{\sum_{i=k}^n d_i^2} = \lambda_k.
+\end{align*}
+Because $\by \in S$, the maximum over $S$ satisfies $\max_{\bx \in S,\, \bx \neq \bzero} R(\bx) \geq R(\by) \geq \lambda_k$. Taking the minimum over all $k$-dimensional subspaces $S$ proves the first equality. The dual maximum-minimum characterization follows similarly by replacing $\bA$ with $-\bA$.
+}
+
+\addThm{Cauchy Interlacing Theorem}{%
+Let $\bA\in\fR^{n\times n}$ be symmetric, and let $\bB\in\fR^{(n-1)\times(n-1)}$ be a principal submatrix. If
+\begin{align*}
+    \lambda_1\leq\cdots\leq\lambda_n,
+    \qquad
+    \mu_1\leq\cdots\leq\mu_{n-1}
+\end{align*}
+are the eigenvalues of $\bA$ and $\bB$, respectively, then
+\begin{align*}
+    \lambda_k\leq\mu_k\leq\lambda_{k+1},
+    \qquad k=1,\dots,n-1.
+\end{align*}
+}
+\label{thm:cauchy-interlacing}
+
+\addPrf{%
+After a simultaneous permutation of rows and columns, we may assume that $\bB$ is obtained by deleting the last row and column. Identify $\fR^{n-1}$ with the coordinate hyperplane
+\begin{align*}
+    H=\{\bx\in\fR^n:x_n=0\}.
+\end{align*}
+For every nonzero $\bx\in H$, the Rayleigh quotients of $\bA$ and $\bB$ agree.
+
+Apply the first Courant--Fischer characterization from Thm~\ref{thm:courant-fischer}. The minimization defining $\mu_k$ ranges only over $k$-dimensional subspaces of $H$, whereas the minimization defining $\lambda_k$ ranges over all $k$-dimensional subspaces of $\fR^n$. Restricting the admissible set cannot decrease the minimum, so $\lambda_k\leq\mu_k$.
+
+For the other inequality, use the dual characterization. Since $\dim(H)=n-1$,
+\begin{align*}
+    \mu_k
+    &=\max_{\substack{S\subset H\\ \dim(S)=n-k}}
+      \min_{\bx\in S,\,\bx\neq\bzero}R_{\bA}(\bx)
+    \leq\max_{\substack{S\subset\fR^n\\ \dim(S)=n-k}}
+      \min_{\bx\in S,\,\bx\neq\bzero}R_{\bA}(\bx)
+      =\lambda_{k+1}.
+\end{align*}
+Together the two bounds give the interlacing inequalities.
+}
+
+\subsubsection{Sensitivity of Eigenvalues}
+
+\textBox{%
+Every eigenvalue algorithm computes the eigenvalues of a matrix that differs from $\bA$ by rounding errors, and every iterative eigensolver stops with an approximate eigenpair whose residual is small but nonzero. We therefore need to know how far eigenvalues move when the matrix is perturbed. For symmetric matrices the answer follows from Thm~\ref{thm:courant-fischer}, and eigenvalues move no farther than the norm of the perturbation. For a general diagonalizable matrix the answer also depends on the condition number of the eigenvector basis.
+}
+
+\addThm{Weyl's Perturbation Theorem}{%
+Let $\bA$ and $\bE$ be real symmetric $n\times n$ matrices. Let $\lambda_1\leq\cdots\leq\lambda_n$ be the eigenvalues of $\bA$ and $\mu_1\leq\cdots\leq\mu_n$ the eigenvalues of $\bA+\bE$. Then
+\begin{align*}
+    |\mu_k-\lambda_k|\leq\|\bE\|_2,\qquad k=1,\dots,n.
+\end{align*}
+}
+\label{thm:weyl}
+
+\addPrf{%
+For every nonzero $\bx$, the Rayleigh quotients of the two matrices satisfy
+\begin{align*}
+    \frac{\bx^T(\bA+\bE)\bx}{\bx^T\bx}=\frac{\bx^T\bA\bx}{\bx^T\bx}+\frac{\bx^T\bE\bx}{\bx^T\bx},
+    \qquad
+    \frac{|\bx^T\bE\bx|}{\bx^T\bx}\leq\frac{\|\bx\|_2\|\bE\bx\|_2}{\|\bx\|_2^2}\leq\|\bE\|_2,
+\end{align*}
+where the second relation uses Cauchy--Schwarz and the definition of the induced norm. The Rayleigh quotient of $\bA+\bE$ therefore lies within $\|\bE\|_2$ of that of $\bA$ for every $\bx$. Taking the maximum over a $k$-dimensional subspace and then the minimum over all such subspaces preserves this relation, so the first characterization in Thm~\ref{thm:courant-fischer} gives $\lambda_k-\|\bE\|_2\leq\mu_k\leq\lambda_k+\|\bE\|_2$.
+}
+
+\addCor{Residual Bounds for Symmetric Matrices}{%
+Let $\bA$ be real symmetric, let $\bx$ be a unit vector, let $\theta$ be real, and let $\br=\bA\bx-\theta\bx$.
 \begin{enumerate}
-    \item \textbf{Hessenberg Reduction:}\enspace Pre-process $\bA$ to upper Hessenberg form in $O(n^3)$ operations.
-    \item \textbf{Triangularization:}\enspace Subsequent QR steps on a Hessenberg matrix cost only $O(n^2)$.
-    \item \textbf{Shifts:}\enspace Techniques to accelerate convergence to quadratic or cubic rates.
+    \item Some eigenvalue $\lambda$ of $\bA$ satisfies $|\lambda-\theta|\leq\|\br\|_2$.
+    \item Suppose $\theta=\bx^T\bA\bx$, let $\lambda$ be an eigenvalue of $\bA$ nearest to $\theta$, and let $\delta>0$ be the distance from $\theta$ to the remaining eigenvalues. Then
+    \begin{align*}
+        |\lambda-\theta|\leq\frac{\|\br\|_2^2}{\delta}.
+    \end{align*}
 \end{enumerate}
 }
+\label{cor:symmetric-residual}
+
+\addPrf{%
+Expand $\bx=\sum_ic_i\bq_i$ in an orthonormal eigenvector basis, so that $\sum_ic_i^2=1$ and $\br=\sum_i(\lambda_i-\theta)c_i\bq_i$. Then
+\begin{align*}
+    \|\br\|_2^2=\sum_{i=1}^n(\lambda_i-\theta)^2c_i^2\geq\min_i(\lambda_i-\theta)^2,
+\end{align*}
+which proves the first claim.
+
+For the second claim, the Rayleigh quotient condition is $\sum_i(\lambda_i-\theta)c_i^2=0$. Suppose $\lambda\leq\theta$, since the case $\lambda\geq\theta$ follows by applying the argument to $-\bA$. Let $\beta=\theta+\delta$. An eigenvalue $\lambda_i\neq\lambda$ cannot lie in $(\lambda,\theta]$, because it would then be closer to $\theta$ than $\lambda$. Such an eigenvalue also cannot lie in $(\theta,\beta)$, by the definition of $\delta$. Hence every such eigenvalue satisfies $\lambda_i<\lambda$ or $\lambda_i\geq\beta$, and in both cases $(\lambda_i-\lambda)(\lambda_i-\beta)\geq0$. The product vanishes when $\lambda_i=\lambda$. Writing $\lambda_i-\lambda=(\lambda_i-\theta)+(\theta-\lambda)$ and $\lambda_i-\beta=(\lambda_i-\theta)-\delta$ and expanding gives
+\begin{align*}
+    0\leq\sum_{i=1}^n(\lambda_i-\lambda)(\lambda_i-\beta)c_i^2
+    =\|\br\|_2^2+(\theta-\lambda-\delta)\sum_{i=1}^n(\lambda_i-\theta)c_i^2-(\theta-\lambda)\delta
+    =\|\br\|_2^2-(\theta-\lambda)\delta.
+\end{align*}
+Therefore $(\theta-\lambda)\delta\leq\|\br\|_2^2$.
+}
+
+\textBox{%
+The first bound states that a small residual locates an eigenvalue of a symmetric matrix to within the residual norm. The second bound shows that the Rayleigh quotient is much more accurate than its residual when the eigenvalue is well separated from the rest of the spectrum. An eigenvector residual of $10^{-4}$ and a gap of order one, for example, give an eigenvalue error of order $10^{-8}$.
+}
+
+\addThm{Bauer--Fike Theorem}{%
+Let $\bA=\bX\boldsymbol{\Lambda}\bX^{-1}$ be diagonalizable with eigenvalues $\lambda_1,\dots,\lambda_n$, and let $\bE$ be any $n\times n$ matrix. Every eigenvalue $\mu$ of $\bA+\bE$ satisfies
+\begin{align*}
+    \min_{1\leq i\leq n}|\lambda_i-\mu|\leq\kappa_2(\bX)\|\bE\|_2,
+\end{align*}
+where $\kappa_2(\bX)=\|\bX\|_2\|\bX^{-1}\|_2$ is computed in the Euclidean norm on $\fC^n$.
+}
+\label{thm:bauer-fike}
+
+\addPrf{%
+If $\mu$ is an eigenvalue of $\bA$, there is nothing to prove. Otherwise $\boldsymbol{\Lambda}-\mu\bI$ is nonsingular. Because $\bA+\bE-\mu\bI$ is singular, so is
+\begin{align*}
+    \bX^{-1}(\bA+\bE-\mu\bI)\bX
+    =(\boldsymbol{\Lambda}-\mu\bI)\big(\bI+(\boldsymbol{\Lambda}-\mu\bI)^{-1}\bX^{-1}\bE\bX\big).
+\end{align*}
+The second factor is singular, so Lem~\ref{lem:neumann}, whose proof applies without change on $\fC^n$, shows that $\|(\boldsymbol{\Lambda}-\mu\bI)^{-1}\bX^{-1}\bE\bX\|_2\geq1$. The norm of the diagonal matrix $(\boldsymbol{\Lambda}-\mu\bI)^{-1}$ is $1/\min_i|\lambda_i-\mu|$. Submultiplicativity therefore gives
+\begin{align*}
+    1\leq\frac{\|\bX^{-1}\|_2\|\bE\|_2\|\bX\|_2}{\min_i|\lambda_i-\mu|},
+\end{align*}
+which is the stated bound.
+}
+
+\addCor{Residual Bound for Diagonalizable Matrices}{%
+Let $\bA=\bX\boldsymbol{\Lambda}\bX^{-1}$, let $\bx$ be a unit vector, let $\theta\in\fC$, and let $\br=\bA\bx-\theta\bx$. Then some eigenvalue $\lambda$ of $\bA$ satisfies $|\lambda-\theta|\leq\kappa_2(\bX)\|\br\|_2$.
+}
+\label{cor:nonnormal-residual}
+
+\addPrf{%
+The matrix $\bE=-\br\bx^*$ satisfies $(\bA+\bE)\bx=\bA\bx-\br=\theta\bx$, so $\theta$ is an eigenvalue of $\bA+\bE$. Since $\|\bE\|_2=\|\br\|_2\|\bx\|_2=\|\br\|_2$, Thm~\ref{thm:bauer-fike} gives the bound.
+}
+
+\textBox{%
+For a symmetric matrix, Thm~\ref{thm:spectral-symmetric} provides an orthogonal $\bX$ with $\kappa_2(\bX)=1$, and Cor~\ref{cor:nonnormal-residual} reduces to the first part of Cor~\ref{cor:symmetric-residual}. For a nonnormal matrix, $\kappa_2(\bX)$ can be large, and a small residual then locates an eigenvalue only loosely. Near a defective matrix the eigenvalues can move much farther than the perturbation, as the following example shows.
+}
+
+\addExmpl{%
+\textbf{(Eigenvalues of a nearly defective matrix)}\enspace
+The matrix
+\begin{align*}
+    \bA_\varepsilon=\begin{pmatrix}0&1\\ \varepsilon&0\end{pmatrix}
+\end{align*}
+differs from the defective matrix $\bA_0$ by a perturbation of norm $\varepsilon$, but its eigenvalues are $\pm\sqrt{\varepsilon}$. For $\varepsilon=10^{-10}$, a perturbation at the level of $10^{-10}$ moves the double eigenvalue zero by $10^{-5}$. The eigenvectors $(1,\pm\sqrt{\varepsilon})^T$ of $\bA_\varepsilon$ become parallel as $\varepsilon\to0$, so $\kappa_2(\bX)$ grows without bound, in agreement with Thm~\ref{thm:bauer-fike}.
+}
+
+\subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item For $\bA = \begin{pmatrix}3&1&0\\0&2&1\\0&0&2\end{pmatrix}$, identify the Schur vectors and eigenvalues by inspection.
-    \item Implement 50 steps of basic QR iteration on a random $3 \times 3$ symmetric matrix. Check the off-diagonals.
+    \item \exDerive \textbf{(Rayleigh quotient stationary points)}\enspace For a real symmetric matrix $\bA$, define the Rayleigh quotient $R(\bx) = \frac{\bx^T\bA\bx}{\bx^T\bx}$ on $\fR^n \setminus \{\bzero\}$.
+    \begin{enumerate}
+        \item Compute the gradient $\nabla R(\bx)$ directly.
+        \item Prove that $\nabla R(\bx) = \bzero$ if and only if $\bx$ is an eigenvector of $\bA$.
+        \item Restrict the Hessian $\nabla^2R(\bq_i)$ to directions orthogonal to $\bq_i$. Show that its eigenvalues on this tangent space are $\frac{2}{\|\bq_i\|_2^2}(\lambda_j-\lambda_i)$ for $j\neq i$. Explain why the radial direction has zero curvature, and conclude that the smallest and largest eigenvalues are the global extrema of $R$.
+    \end{enumerate}
+    \item \exDerive \textbf{(Similarity is a coordinate change)}\enspace Choose a nonorthogonal basis of $\fR^2$, form its basis matrix $\bS$, and compute $\bS^{-1}\bA\bS$ for a simple diagonal matrix $\bA$. Verify directly that eigenvalues are preserved although lengths and angles generally are not.
+    \item \exExplore \textbf{(A defective shear)}\enspace For $\bA=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, find the algebraic and geometric multiplicities of the eigenvalue. Compute $\bA^k$ and explain how its growth is invisible if one records only the eigenvalue $1$.
+    \item \exCompute \textbf{(Cauchy interlacing on a concrete matrix)}\enspace For
+    \begin{align*}
+        \bA=\begin{pmatrix}2&1&0\\1&2&1\\0&1&2\end{pmatrix},
+    \end{align*}
+    compute the eigenvalues of $\bA$ and of the leading $2\times2$ principal submatrix. Verify each inequality in Thm~\ref{thm:cauchy-interlacing}. Repeat after deleting the middle row and column.
 \end{enumerate}
 }
+\label{ex:eigen-comprehensive-exercises}
 
 \end{document}

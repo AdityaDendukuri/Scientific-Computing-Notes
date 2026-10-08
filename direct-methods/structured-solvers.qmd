@@ -1,0 +1,543 @@
+# Reusing Factorizations after Structured Changes
+
+
+Many scientific calculations solve sequences of related linear systems where the coefficient matrix changes by a low-rank perturbation or exhibits localized block-tridiagonal couplings. Rather than computing fresh factorizations from scratch, we update the existing matrix factors using the Sherman--Morrison and Woodbury identities, and exploit chain connectivity through block sweeps.
+
+
+## Rank-One Changes and the Sherman--Morrison Formula
+
+
+Let a factorization of a nonsingular matrix $\bA$ already be available. Suppose the matrix changes to $\bA+\bu\bv^T$. A fresh dense factorization costs $O(n^3)$ operations. The rank-one formula replaces it by solves with the old factors and a few inner products.
+
+
+::: {.callout-note icon=false}
+## Theorem: Sherman--Morrison Formula
+Let $\bA\in\fR^{n\times n}$ be nonsingular, and let $\bu,\bv\in\fR^{n}$. The updated matrix $\bA+\bu\bv^T$ is nonsingular if and only if
+$$
+\begin{align}
+1+\bv^T\bA^{-1}\bu\neq 0.
+\end{align}
+$$
+When this condition holds,
+$$
+\begin{align}
+(\bA+\bu\bv^T)^{-1}
+    =\bA^{-1}-\frac{\bA^{-1}\bu\bv^T\bA^{-1}}
+    {1+\bv^T\bA^{-1}\bu}.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $\bz=\bA^{-1}\bu$ and $\alpha=1+\bv^T\bz$. If $\alpha=0$, then
+$$
+\begin{align}
+(\bA+\bu\bv^T)\bz
+    =\bu+\bu\bv^T\bz
+    =\alpha\bu
+    =\bzero.
+\end{align}
+$$
+The vector $\bz$ is nonzero because $\alpha=0$ implies $\bu\neq\bzero$. Thus the updated matrix is singular.
+
+Now suppose $\alpha\neq0$. Direct multiplication gives
+$$
+\begin{align}
+(\bA+\bu\bv^T)
+  \left(\bA^{-1}-\frac{\bz\bv^T\bA^{-1}}{\alpha}\right)
+  &=\bI+\bu\bv^T\bA^{-1}
+    -\frac{\bu\bv^T\bA^{-1}}{\alpha}
+    -\frac{\bu(\bv^T\bz)\bv^T\bA^{-1}}{\alpha} \\
+  &=\bI+\bu\bv^T\bA^{-1}
+    -\frac{1+\bv^T\bz}{\alpha}\bu\bv^T\bA^{-1}
+   =\bI.
+\end{align}
+$$
+The displayed matrix is therefore the inverse of $\bA+\bu\bv^T$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Sherman--Morrison Solve
+To solve $(\bA+\bu\bv^T)\bx=\bb$ from stored factors of $\bA$:
+
+1. Solve $\bA\bz=\bu$ once for the update.
+
+1. Compute $\alpha=1+\bv^T\bz$. Refactor the updated matrix if $\alpha$ is zero or so small that division by it would magnify roundoff.
+
+1. For each right-hand side, solve $\bA\by=\bb$.
+
+1. Compute
+        $$
+    \begin{align}
+    \bx=\by-\bz\frac{\bv^T\by}{\alpha}.
+    \end{align}
+    $$
+
+The algorithm never forms $\bA^{-1}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+Let
+$$
+\begin{align}
+\bA=\begin{pmatrix}2&0\\0&3\end{pmatrix},\qquad
+    \bu=\begin{pmatrix}1\\1\end{pmatrix},\qquad
+    \bv=\begin{pmatrix}1\\-1\end{pmatrix},\qquad
+    \bb=\begin{pmatrix}1\\0\end{pmatrix}.
+\end{align}
+$$
+The two solves with $\bA$ give $\bz=(1/2,1/3)^T$ and $\by=(1/2,0)^T$. Since $\alpha=1+1/2-1/3=7/6$,
+$$
+\begin{align}
+\bx=\by-\bz\frac{1/2}{7/6}
+       =\begin{pmatrix}2/7\\-1/7\end{pmatrix}.
+\end{align}
+$$
+Multiplication by $\bA+\bu\bv^T=\begin{pmatrix}3&-1\\1&2\end{pmatrix}$ verifies the solution.
+:::
+
+::: {.callout-tip icon=false}
+## Remark
+**(Cost of a rank-one change)**
+With a dense LU factorization, preparing the correction requires one $O(n^2)$ solve. Each new right-hand side requires one further solve and $O(n)$ correction work. A fresh $O(n^3)$ factorization is avoided. For a sparse factorization, the same comparison uses the measured cost of a triangular solve rather than the dense estimate.
+:::
+
+
+## Several Changes and the Woodbury Formula
+
+
+A change described by $r$ pairs of vectors has the form $\bA+\bU\bV^T$, where $\bU$ and $\bV$ have $r$ columns and $r\ll n$. The correction requires an $r\times r$ system. This small system determines both the cost and the reliability of the update.
+
+
+::: {.callout-note icon=false}
+## Theorem: Woodbury Formula
+Let $\bA\in\fR^{n\times n}$ be nonsingular, and let $\bU,\bV\in\fR^{n\times r}$. Define
+$$
+\begin{align}
+\bG=\bI_r+\bV^T\bA^{-1}\bU.
+\end{align}
+$$
+The matrix $\bA+\bU\bV^T$ is nonsingular if and only if $\bG$ is nonsingular. In that case,
+$$
+\begin{align}
+(\bA+\bU\bV^T)^{-1}
+    =\bA^{-1}-\bA^{-1}\bU\bG^{-1}\bV^T\bA^{-1}.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Suppose $\bG\bc=\bzero$ for some nonzero $\bc$. Then $\bU\bc\neq\bzero$, since otherwise $\bG\bc=\bc$. Consequently, $\bx=\bA^{-1}\bU\bc$ is nonzero and
+$$
+\begin{align}
+(\bA+\bU\bV^T)\bx
+    =\bU\bc+\bU\bV^T\bA^{-1}\bU\bc
+    =\bU\bG\bc
+    =\bzero.
+\end{align}
+$$
+Thus a singular $\bG$ makes the updated matrix singular.
+
+Conversely, suppose $(\bA+\bU\bV^T)\bx=\bzero$ for some nonzero $\bx$. Let $\bc=\bV^T\bx$. The vector $\bc$ cannot be zero, because that would imply $\bA\bx=\bzero$. From $\bx=-\bA^{-1}\bU\bc$, we obtain
+$$
+\begin{align}
+\bG\bc=\bc+\bV^T\bA^{-1}\bU\bc
+            =\bV^T\bx-\bV^T\bx
+            =\bzero.
+\end{align}
+$$
+Hence the two matrices are nonsingular together.
+
+When $\bG$ is nonsingular, direct multiplication verifies the inverse:
+$$
+\begin{align}
+(\bA+\bU\bV^T)&\left(\bA^{-1}-\bA^{-1}\bU\bG^{-1}\bV^T\bA^{-1}\right) \\
+    &= \bA\bA^{-1} - \bA\bA^{-1}\bU\bG^{-1}\bV^T\bA^{-1} + \bU\bV^T\bA^{-1} - \bU\bV^T\bA^{-1}\bU\bG^{-1}\bV^T\bA^{-1} \\
+    &= \bI_n - \bU\bG^{-1}\bV^T\bA^{-1} + \bU\bV^T\bA^{-1} - \bU(\bV^T\bA^{-1}\bU)\bG^{-1}\bV^T\bA^{-1} \\
+    &= \bI_n + \bU\left(\bI_r - (\bI_r + \bV^T\bA^{-1}\bU)\bG^{-1}\right)\bV^T\bA^{-1} \\
+    &= \bI_n + \bU\left(\bI_r - \bG\bG^{-1}\right)\bV^T\bA^{-1} \\
+    &= \bI_n + \bU(\bI_r - \bI_r)\bV^T\bA^{-1} = \bI_n.
+\end{align}
+$$
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Woodbury Solve
+Let stored factors of $\bA$ be available.
+
+1. Solve the block system $\bA\bW=\bU$.
+
+1. Form $\bG=\bI_r+\bV^T\bW$ and factor the small matrix $\bG$.
+
+1. For a right-hand side matrix $\bB$, solve $\bA\bY=\bB$.
+
+1. Solve $\bG\bC=\bV^T\bY$ and return
+        $$
+    \begin{align}
+    \bX=\bY-\bW\bC.
+    \end{align}
+    $$
+
+When several right-hand sides are available, solve them together. This is usually faster than solving one column at a time.
+:::
+
+
+The setup requires $r$ solves with the old factors, the product $\bV^T\bW$, and one factorization of order $r$. Each later right-hand side requires one old solve, two products involving an $n\times r$ matrix, and one small solve. For dense factors, the setup costs $O(rn^2+nr^2+r^3)$ rather than $O(n^3)$. This comparison favors Woodbury only when $r$ remains small.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Transpose solves)**
+The same retained factors also solve the transposed updated system. Compute $\bZ=\bA^{-T}\bV$ and use
+$$
+\begin{align}
+\bG^T=\bI_r+\bU^T\bZ.
+\end{align}
+$$
+The transpose solve then has the same four steps with $\bU$ and $\bV$ interchanged. No factorization of the full transpose is needed when the base factor already supports a transpose solve.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Updating only the inverse diagonal)**
+Suppose the diagonal of $\bA^{-1}$ is already known. The corrected diagonal follows from
+$$
+\begin{align}
+\operatorname{diag}\bigl((\bA+\bU\bV^T)^{-1}\bigr)
+    =\operatorname{diag}(\bA^{-1})
+    -\operatorname{diag}(\bW\bG^{-1}\bZ^T),
+\end{align}
+$$
+where $\bW=\bA^{-1}\bU$ and $\bZ=\bA^{-T}\bV$. Only the diagonal of the final product is needed. The full inverse should not be formed. When no diagonal is known in advance, the referenced section estimates the whole diagonal of $\bA^{-1}$ from a few random probes and one factorization.
+:::
+
+
+::: {.callout-note icon=false}
+## Proposition: Changes in a Few Rows and Columns
+Let $\bA$ and $\bB$ be square matrices that differ only in rows and columns indexed by a set of size $k$. Then $\bB-\bA$ has rank at most $2k$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $\bE\in\fR^{n\times k}$ contain the columns of the identity matrix that select the changed positions, and let $\bD=\bB-\bA$. Entries of $\bD$ outside the selected rows and columns are zero. Therefore
+$$
+\begin{align}
+\bD
+    =\bE(\bE^T\bD)+(\bI-\bE\bE^T)\bD\bE\bE^T.
+\end{align}
+$$
+The first term has rank at most $k$, and the second term has rank at most $k$. Their sum has rank at most $2k$.
+:::
+
+
+This rank bound is useful when a model changes by adding, removing, or modifying a few states. The changed rows are stored once, and the changed columns are stored after their overlap with those rows has been removed. Woodbury then corrects the retained factorization with rank at most $2k$.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(When to refactor)**
+The small matrix $\bG$ can be sensitive to roundoff. A reliable implementation estimates that sensitivity, checks the residual of the corrected solution, and computes a fresh factorization when either check fails. The implementation in `numerics` that motivated this section limits reuse to three changed positions. It also estimates the effect of roundoff in each entry of $\bG$ and refactors when the estimated relative error exceeds $10^{-8}$. The limit and threshold are choices made in that code, not mathematical rules.
+:::
+
+
+## Tridiagonal Systems
+
+
+Low rank describes how a matrix changes. Banded structure describes which unknowns interact. A tridiagonal matrix couples each unknown only to its two neighbors. Gaussian elimination preserves this pattern when no row interchange is required, so the solve takes linear rather than cubic work.
+
+
+::: {.callout-note icon=false}
+## Definition: Thomas Algorithm
+Consider the equations
+$$
+\begin{align}
+a_i x_{i-1}+d_i x_i+c_i x_{i+1}=r_i,
+\end{align}
+$$
+with the missing endpoint terms omitted. Let $\widetilde d_1=d_1$ and $\widetilde r_1=r_1$. For $i=2,...,n$, compute
+$$
+\begin{align}
+m_i&=\frac{a_i}{\widetilde d_{i-1}}, \\
+    \widetilde d_i&=d_i-m_i c_{i-1}, \\
+    \widetilde r_i&=r_i-m_i\widetilde r_{i-1}.
+\end{align}
+$$
+Backward substitution gives
+$$
+\begin{align}
+x_n=\frac{\widetilde r_n}{\widetilde d_n},\qquad
+    x_i=\frac{\widetilde r_i-c_i x_{i+1}}{\widetilde d_i},
+    \quad i=n-1,...,1.
+\end{align}
+$$
+:::
+
+
+::: {.callout-note icon=false}
+## Proposition: Cost of Tridiagonal Elimination
+If every modified pivot $\widetilde d_i$ is nonzero, the Thomas algorithm solves an $n\times n$ tridiagonal system in $O(n)$ operations and $O(n)$ storage. The diagonal and right-hand side may be overwritten, so the additional storage can be constant when the input need not be retained.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Each forward step uses a fixed number of arithmetic operations, and each backward step does the same. There are $n-1$ steps in each direction. The three matrix diagonals and the right-hand side contain $O(n)$ entries. Overwriting $d_i$ and $r_i$ by their modified values removes the need for separate work arrays.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Pivoting)**
+The Thomas algorithm is unpivoted elimination. It is safe for important classes such as symmetric positive definite tridiagonal matrices, but a general tridiagonal matrix can have a zero or dangerously small pivot. In that case, use a tridiagonal solver with pivoting or a general banded factorization, even though pivoting may enlarge the band.
+:::
+
+
+## Block-Tridiagonal Systems
+
+
+Many models place several unknowns at each location or time level. Grouping those unknowns produces a block-tridiagonal matrix. The scalar divisions in the Thomas algorithm become solves with dense diagonal blocks, and the scalar updates become matrix products.
+
+
+::: {.callout-note icon=false}
+## Definition: Block-Tridiagonal Matrix
+A block-tridiagonal matrix has the form
+$$
+\begin{align}
+\bA=
+\begin{pmatrix}
+\bD_1 & \bU_1 \\
+\bL_1 & \bD_2 & \bU_2 \\
+& \ddots & \ddots & \ddots \\
+&& \bL_{s-1} & \bD_s
+\end{pmatrix}.
+\end{align}
+$$
+The diagonal blocks $\bD_k$ are square. Neighboring blocks may have different sizes, so $\bU_k$ and $\bL_k$ may be rectangular.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Block-Tridiagonal LU Factorization
+Let $\bS_1=\bD_1$. For $k=1,...,s-1$, suppose $\bS_k$ is nonsingular and compute
+$$
+\begin{align}
+\bM_k\bS_k=\bL_k,\qquad
+    \bS_{k+1}=\bD_{k+1}-\bM_k\bU_k.
+\end{align}
+$$
+If the final block $\bS_s$ is also nonsingular, then $\bA=\mathcal{L}\mathcal{U}$, where $\mathcal{L}$ is block unit lower bidiagonal with blocks $\bM_k$, and $\mathcal{U}$ is block upper bidiagonal with diagonal blocks $\bS_k$ and upper blocks $\bU_k$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The upper block in position $(k,k+1)$ of $\mathcal{L}\mathcal{U}$ is $\bU_k$, and the lower block in position $(k+1,k)$ is $\bM_k\bS_k=\bL_k$. The first diagonal block is $\bS_1=\bD_1$. For $k>1$, the diagonal block of the product is
+$$
+\begin{align}
+\bS_k+\bM_{k-1}\bU_{k-1}=\bD_k
+\end{align}
+$$
+by the definition of $\bS_k$. All blocks farther from the diagonal vanish because both factors are block bidiagonal. Thus their product is $\bA$.
+:::
+
+
+The equation $\bM_k\bS_k=\bL_k$ should not be evaluated with an inverse. Instead, solve the transposed system
+$$
+\begin{align}
+\bS_k^T\bM_k^T=\bL_k^T
+\end{align}
+$$
+using the stored factorization of $\bS_k$. This is how the `numerics` implementation computes $\bM_k$.
+
+
+::: {.callout-note icon=false}
+## Definition: Block Forward and Backward Sweeps
+Partition the right-hand side into blocks $\bb_k$. First compute
+$$
+\begin{align}
+\by_1&=\bb_1, \\
+    \by_k&=\bb_k-\bM_{k-1}\by_{k-1},\qquad k=2,...,s.
+\end{align}
+$$
+Then solve backward:
+$$
+\begin{align}
+\bS_s\bx_s&=\by_s, \\
+    \bS_k\bx_k&=\by_k-\bU_k\bx_{k+1},\qquad k=s-1,...,1.
+\end{align}
+$$
+The same recurrences accept several right-hand sides at once.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Work and storage)**
+If there are $s$ blocks of comparable size $p$, the factorization costs $O(sp^3)$ operations and stores $O(sp^2)$ numbers. A solve with $q$ right-hand sides costs $O(sp^2q)$. Since the full order is $n=sp$, the factorization cost is $O(n^3/s^2)$. Unequal neighboring block sizes add rectangular products, so the largest block often controls the cost.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Transpose and multiple right-hand sides)**
+The factors also solve $\bA^T\bx=\bb$. The transpose reverses the order of the two sweeps and interchanges the stored upper and lower blocks. Keep several right-hand sides together throughout the sweeps. This reuses memory and is usually faster than processing the columns separately.
+:::
+
+
+## The Symmetric Positive Definite Case
+
+
+When the block-tridiagonal matrix is symmetric positive definite, block Cholesky removes the need for pivoting and stores only one off-diagonal side. The key fact is that every diagonal Schur complement remains positive definite.
+
+
+::: {.callout-note icon=false}
+## Theorem: Positive Definite Schur Complement
+Let
+$$
+\begin{align}
+\bA=\begin{pmatrix}\bD&\bB^T\\\bB&\bC\end{pmatrix}
+\end{align}
+$$
+be symmetric positive definite. Then $\bD$ is positive definite, and the Schur complement
+$$
+\begin{align}
+\bC-\bB\bD^{-1}\bB^T
+\end{align}
+$$
+is positive definite.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For every nonzero $\bx$, testing with $(\bx,\bzero)^T$ gives
+$$
+\begin{align}
+\begin{pmatrix}\bx\\\bzero\end{pmatrix}^T \bA \begin{pmatrix}\bx\\\bzero\end{pmatrix} = \bx^T\bD\bx > 0,
+\end{align}
+$$
+so $\bD$ is positive definite and $\bD^{-1}$ exists.
+Now let $\by \neq \bzero$, and choose $\bx = -\bD^{-1}\bB^T\by$. Expanding the block quadratic form:
+$$
+\begin{align}
+\begin{pmatrix}\bx\\\by\end{pmatrix}^T
+    \begin{pmatrix}\bD&\bB^T\\\bB&\bC\end{pmatrix}
+    \begin{pmatrix}\bx\\\by\end{pmatrix}
+    &= \bx^T\bD\bx + \bx^T\bB^T\by + \by^T\bB\bx + \by^T\bC\by \\
+    &= (-\bD^{-1}\bB^T\by)^T\bD(-\bD^{-1}\bB^T\by) + 2(-\bD^{-1}\bB^T\by)^T\bB^T\by + \by^T\bC\by \\
+    &= \by^T\bB\bD^{-1}\bB^T\by - 2\by^T\bB\bD^{-1}\bB^T\by + \by^T\bC\by \\
+    &= \by^T(\bC - \bB\bD^{-1}\bB^T)\by.
+\end{align}
+$$
+Because $\by \neq \bzero$, the compound vector $(\bx,\by)^T$ is nonzero. The positive definiteness of $\bA$ implies that this quadratic form is strictly positive:
+$$
+\begin{align}
+\by^T(\bC - \bB\bD^{-1}\bB^T)\by > 0.
+\end{align}
+$$
+The Schur complement $\bC - \bB\bD^{-1}\bB^T$ is therefore positive definite.
+:::
+
+
+Block Cholesky follows the same order as block LU. Factor $\bS_k=\bF_k\bF_k^T$, solve
+$$
+\begin{align}
+\bC_k\bF_k^T=\bL_k,
+\end{align}
+$$
+and update
+$$
+\begin{align}
+\bS_{k+1}=\bD_{k+1}-\bC_k\bC_k^T.
+\end{align}
+$$
+The theorem above shows that every $\bS_k$ remains positive definite. The stored factors form a block lower-bidiagonal Cholesky factor of $\bA$.
+
+
+## Finding the Blocks and Reusing a Prefix
+
+
+A block order need not be visible in the original row numbering. Make an undirected graph with one vertex for each row and one edge for each nonzero connection. Choose one or more starting vertices and label every vertex by its distance from them. The labels at the ends of an edge differ by at most one. Grouping equal labels therefore produces a block-tridiagonal matrix.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Block width)**
+The sizes of the levels matter as much as their number. A poor starting set can place many rows in one level and create an expensive dense block. A useful ordering keeps the largest level small and avoids abrupt changes between neighboring level sizes. Before factorization, check that every nonzero lies in a diagonal block or one of the two neighboring block bands.
+:::
+
+
+Local changes permit a second form of reuse. Suppose block $j$ is the first one that changes. The factors before it remain valid, but the connection between blocks $j-1$ and $j$ touches the changed part. Keep the earlier factors, recompute this connection, and factor blocks $j$ through the end. Keeping the old connection would give the wrong Schur complement.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Choosing the reuse method)**
+Use the stored factor directly when only the right-hand side changes. Use Sherman--Morrison or Woodbury when a few rows and columns change throughout the matrix. Recompute from the first changed block when the change begins late in the block order. Compute a fresh factorization when the change can no longer be described by a few vectors, the small Woodbury matrix becomes too sensitive to roundoff, or the block order no longer fits the matrix.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Implementation details)**
+A reusable solver should provide ordinary, transpose, and multiple-right-hand-side solves through the same interface. It should retain work arrays instead of allocating them inside every solve. It should compare the corrected solution with the original equations by a residual. Finally, it should report whether it reused a factorization or computed a new one. These details determine whether the algebraic shortcut reduces actual running time.
+:::
+
+
+## Exercises
+
+
+::: {.callout-warning icon=false}
+## Exercise
+
+1. **Check.**  **Sherman--Morrison by hand.**  Repeat the worked example with $\bb=(0,1)^T$. Compute the corrected solution from the referenced result, and verify it by multiplying with $\bA+\bu\bv^T$.
+
+1. **Derive.**  **Matrix determinant lemma.**  Under the hypotheses of the referenced result, prove
+        $$
+    \begin{align}
+    \det(\bA+\bU\bV^T)=\det(\bA)\det(\bI_r+\bV^T\bA^{-1}\bU).
+    \end{align}
+    $$
+        Begin with $\bA+\bU\bV^T=\bA(\bI+\bA^{-1}\bU\bV^T)$ and prove the needed identity $\det(\bI+\bX\bY)=\det(\bI+\bY\bX)$ using a block determinant in two different orders.
+
+1. **Derive.**  **Changed rows and columns.**  Work through the referenced result for two changed indices. Construct the two factors with at most four columns, show explicitly how the overlap of the changed rows and columns is counted once, and identify a case in which the actual rank is smaller than four.
+
+1. **Compute.**  **Low-rank solve versus refactorization.**  Let $\bA$ be a diagonally dominant dense matrix and change $k$ rows and columns. Compare a fresh LU factorization with a Woodbury correction for several values of $n$ and $k$. Report the initial cost, the time per right-hand side, the relative residual, and the difference from a fresh solve. Find how many right-hand sides are needed before reuse saves time overall.
+
+1. **Explore.**  **A nearly singular correction.**  Let $\bA=\bI$, $\bu=-(1-\delta)\be_1$, and $\bv=\be_1$. Compute the Sherman--Morrison denominator and the updated inverse. Explain why the correction amplifies roundoff as $\delta\to0$, even though solving with the base matrix is perfectly conditioned.
+
+1. **Derive.**  **Thomas as scalar block elimination.**  Take every block in the referenced result to have size one. Derive the three forward recurrences in the referenced result and the backward substitution formula. Identify the modified scalar pivot with the scalar Schur complement.
+
+1. **Compute.**  **A two-block Cholesky solve.**  Consider
+        $$
+    \begin{align}
+    \bD_1=\begin{pmatrix}4&1\\1&3\end{pmatrix},\qquad
+            \bL_1=\begin{pmatrix}-1&0\\0&-1\end{pmatrix},\qquad
+            \bD_2=\begin{pmatrix}3&1\\1&2\end{pmatrix},
+    \end{align}
+    $$
+        with upper block $\bL_1^T$. Compute the first Cholesky block, the scaled lower block, and the second Schur complement. Then solve the system with right-hand side $(1,0,0,1)^T$ and check the residual.
+
+1. **Derive.**  **Transpose block solve.**  Starting from $\bA=\mathcal{L}\mathcal{U}$ in the referenced result, derive the two sweeps for $\bA^T\bx=\bb$. State the direction of each sweep and identify which stored off-diagonal block it uses.
+
+1. **Compute.**  **Graph-distance blocks.**  For the five-point grid graph on a $3\times3$ lattice, label every vertex by its distance from a corner. List the block sizes and verify that every edge joins equal or adjacent levels. Repeat with the center vertex as the seed and compare the largest block.
+
+1. **Explore.**  **Woodbury or partial refactorization.**  Construct a sequence of block-tridiagonal matrices in which the final two blocks change at every step. Implement both a low-rank correction and a refactorization that begins at the first changed block. Compare their cost and residual as the block size and update rank vary. Use the operation counts in this chapter to explain when one method becomes faster than the other.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Golub and Van Loan give the standard dense matrix treatment, while Davis develops the sparse direct viewpoint [@golubvanloan2013; @davis2006]. Demmel and Higham are useful guides to deciding when an algebraically correct update may still be unsafe in floating-point arithmetic [@demmel1997; @higham2002].
+:::

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>11&nbsp; Symmetric Positive Definite (SPD) Matrices – Scientific Computing</title>
+<title>11&nbsp; Symmetric Positive Definite Matrices – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,7 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../orthogonality/orthogonal.html" rel="next">
+<link href="../direct-methods/structured-solvers.html" rel="next">
 <link href="../direct-methods/lu.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +710,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#definitions-and-properties" id="toc-definitions-and-properties" class="nav-link active" data-scroll-target="#definitions-and-properties"><span class="header-section-number">11.1</span> Definitions and Properties</a></li>
-  <li><a href="#geometry-and-metric" id="toc-geometry-and-metric" class="nav-link" data-scroll-target="#geometry-and-metric"><span class="header-section-number">11.2</span> Geometry and Metric</a></li>
-  <li><a href="#cholesky-decomposition" id="toc-cholesky-decomposition" class="nav-link" data-scroll-target="#cholesky-decomposition"><span class="header-section-number">11.3</span> Cholesky Decomposition</a></li>
+  <li><a href="#positive-quadratic-energy" id="toc-positive-quadratic-energy" class="nav-link active" data-scroll-target="#positive-quadratic-energy"><span class="header-section-number">11.1</span> Positive Quadratic Energy</a></li>
+  <li><a href="#cholesky-factorization" id="toc-cholesky-factorization" class="nav-link" data-scroll-target="#cholesky-factorization"><span class="header-section-number">11.2</span> Cholesky Factorization</a></li>
+  <li><a href="#the-cholesky-algorithm" id="toc-the-cholesky-algorithm" class="nav-link" data-scroll-target="#the-cholesky-algorithm"><span class="header-section-number">11.3</span> The Cholesky Algorithm</a></li>
+  <li><a href="#cost-and-stability" id="toc-cost-and-stability" class="nav-link" data-scroll-target="#cost-and-stability"><span class="header-section-number">11.4</span> Cost and Stability</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">11.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/direct-methods/spd.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +722,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></h1>
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></h1>
 </div>
 
 
@@ -700,44 +741,25 @@ window.Quarto = {
 </header>
 
 
-<p>Symmetric Positive Definite (SPD) matrices form one of the most important classes of matrices in scientific computing. They possess several remarkable properties that allow for algorithms that are twice as fast and significantly more stable than those for general matrices.</p>
-<p>An SPD matrix is the matrix version of positive curvature or positive energy. The quadratic form <span class="math inline">\(\bx^T\bA\bx\)</span> is always positive away from the origin, so it defines a geometry, a convex energy landscape, and a stable class of linear systems.</p>
-<section id="definitions-and-properties" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="definitions-and-properties"><span class="header-section-number">11.1</span> Definitions and Properties</h2>
-<p>SPD matrices arise naturally in a wide variety of engineering contexts, including optimization (as Hessian matrices of convex functions), statistics (as covariance matrices), and physical simulations (as stiffness matrices in structural mechanics).</p>
-<p>The expression <span class="math inline">\(\bx^T\bA\bx\)</span> is called a <strong>quadratic form</strong>. It converts a vector into a scalar. If <span class="math inline">\(\bA\)</span> is symmetric, then this scalar measures the energy of <span class="math inline">\(\bx\)</span> in the geometry defined by <span class="math inline">\(\bA\)</span>.</p>
+<p>Symmetric positive definite matrices occur whenever a nonzero displacement must have positive energy. Springs, diffusion operators, covariance models, and strictly convex quadratic objectives all lead to this structure. It is valuable because an algebraic condition, a geometry, and an efficient algorithm turn out to be different views of the same fact.</p>
+<section id="positive-quadratic-energy" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="positive-quadratic-energy"><span class="header-section-number">11.1</span> Positive Quadratic Energy</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Positive Definite
+<span class="screen-reader-only">Note</span>Definition: Symmetric Positive Definite Matrix
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A symmetric matrix <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> is <strong>positive definite</strong> (PD) if the quadratic form <span class="math inline">\(\bx^T\bA\bx\)</span> is strictly positive for every nonzero vector <span class="math inline">\(\bx \in \fR^n\)</span>: <span class="math display">\[
+<p>A real matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> is <strong>symmetric positive definite</strong>, abbreviated SPD, if <span class="math inline">\(\bA=\bA^T\)</span> and <span class="math display">\[
 \begin{align}
-\bx^T\bA\bx &gt; 0 \quad \text{for every nonzero } \bx \in \fR^n.
+\bx^T\bA\bx&gt;0
+    \qquad\text{for every }\bx\neq\bzero.
 \end{align}
-\]</span> If <span class="math inline">\(\bA\)</span> is both symmetric and PD, it is <strong>SPD</strong>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Positive Semidefinite
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A symmetric matrix <span class="math inline">\(\bA\)</span> is <strong>positive semidefinite</strong> (PSD) if <span class="math display">\[
-\begin{align}
-\bx^T\bA\bx \geq 0 \quad \text{for every } \bx \in \fR^n.
-\end{align}
-\]</span> Positive definite means strictly positive for every nonzero vector. Positive semidefinite allows flat directions where <span class="math inline">\(\bx^T\bA\bx=0\)</span>.</p>
+\]</span> It is <strong>symmetric positive semidefinite</strong> if the strict inequality is replaced by <span class="math inline">\(\bx^T\bA\bx\geq0\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -746,321 +768,15 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
+<span class="screen-reader-only">Note</span>Theorem: First Consequences of Positive Definiteness
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Definite vs.&nbsp;semidefinite)</strong> <span class="math display">\[
-\begin{align}
-\begin{pmatrix}2&amp;0\\0&amp;1\end{pmatrix}
-    \quad \text{is SPD, while} \quad
-    \begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}
-    \quad \text{is PSD but not PD.}
-\end{align}
-\]</span> The second matrix has a flat direction: <span class="math inline">\((0,1)^T\)</span> has zero quadratic energy.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Test <span class="math inline">\(\bA = \begin{pmatrix}2 &amp; 1 \\ 1 &amp; 2\end{pmatrix}\)</span> for PD property by expanding <span class="math inline">\(\bx^T\bA\bx\)</span>.</p></li>
-<li><p>Prove a diagonal matrix <span class="math inline">\(\bD\)</span> is PD iff all diagonal entries <span class="math inline">\(d_i &gt; 0\)</span>.</p></li>
-</ol>
+<p>If <span class="math inline">\(\bA\)</span> is SPD, then every diagonal entry is positive, every principal submatrix is SPD, and <span class="math inline">\(\bA\)</span> is nonsingular.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Spectral Characterization)</strong> A symmetric matrix is PD iff <strong>all its eigenvalues are strictly positive</strong>. Every SPD matrix is invertible (<span class="math inline">\(\det \bA = \prod \lambda_i &gt; 0\)</span>).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Equivalent tests for SPD)</strong> For a symmetric matrix <span class="math inline">\(\bA\)</span>, the following are equivalent:</p>
-<ol type="1">
-<li><p><span class="math inline">\(\bx^T\bA\bx&gt;0\)</span> for every nonzero <span class="math inline">\(\bx\)</span>.</p></li>
-<li><p>Every eigenvalue of <span class="math inline">\(\bA\)</span> is positive.</p></li>
-<li><p>Cholesky factorization succeeds with positive pivots.</p></li>
-<li><p>All leading principal minors are positive.</p></li>
-</ol>
-<p>The eigenvalue and Cholesky tests are the most useful computationally.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>If <span class="math inline">\(\bA\)</span> is SPD, show <span class="math inline">\(\bB = \bA + c\bI\)</span> for <span class="math inline">\(c &gt; 0\)</span> is also SPD.</p></li>
-<li><p>Use <code>np.linalg.eigvalsh</code> to verify SPD property for several test matrices.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="geometry-and-metric" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="geometry-and-metric"><span class="header-section-number">11.2</span> Geometry and Metric</h2>
-<p>An SPD matrix <span class="math inline">\(\bA\)</span> can be thought of as defining a new geometry or “metric” on <span class="math inline">\(\fR^n\)</span>, where the distance and angle between vectors are weighted by the entries of <span class="math inline">\(\bA\)</span>. This perspective is fundamental to understanding the behavior of iterative solvers like the Conjugate Gradient method.</p>
-<p>If <span class="math inline">\(\bA=\bQ\boldsymbol{\Lambda}\bQ^T\)</span>, then <span class="math display">\[
-\begin{align}
-\bx^T\bA\bx = \sum_{i=1}^n \lambda_i z_i^2,
-    \qquad \bz=\bQ^T\bx.
-\end{align}
-\]</span> The eigenvectors give the principal directions of the geometry, and the eigenvalues determine how expensive motion is in each direction.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: <span class="math inline">\(\bA\)</span>-Inner Product
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For SPD <span class="math inline">\(\bA\)</span>, the mapping <span class="math inline">\(\langle \bx, \by \rangle_\bA = \bx^T\bA\by\)</span> satisfies the axioms of an inner product.</p>
-<ul>
-<li><p><strong><span class="math inline">\(\bA\)</span>-Norm:</strong> The induced norm is <span class="math inline">\(\|\bx\|_\bA = \sqrt{\bx^T\bA\bx}\)</span>.</p></li>
-<li><p><strong>Ellipsoid:</strong> The unit ball in this norm, <span class="math inline">\(\{\bx : \|\bx\|_\bA = 1\}\)</span>, is an <span class="math inline">\(n\)</span>-dimensional ellipsoid whose principal axes are aligned with the eigenvectors of <span class="math inline">\(\bA\)</span>.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Physical Meaning:</strong> Directions with large eigenvalues are <code>stiff'' or</code>expensive’’ (small axes in the unit ellipsoid); small eigenvalues represent ``sensitive’’ directions.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Ellipse)</strong> For <span class="math display">\[
-\begin{align}
-\bA=\begin{pmatrix}4&amp;0\\0&amp;1\end{pmatrix},
-\end{align}
-\]</span> the unit <span class="math inline">\(\bA\)</span>-norm curve is <span class="math display">\[
-\begin{align}
-4x_1^2+x_2^2=1.
-\end{align}
-\]</span> The axis in the <span class="math inline">\(x_1\)</span> direction is shorter because that direction has larger eigenvalue. Moving in that direction costs more energy.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>For <span class="math inline">\(\bA = \begin{pmatrix} 4 &amp; 0 \\ 0 &amp; 1 \end{pmatrix}\)</span>, compute the distance between <span class="math inline">\((1,0)^T\)</span> and origin in both Euclidean and <span class="math inline">\(\bA\)</span>-metrics.</p></li>
-<li><p>Where does the <span class="math inline">\(\bA\)</span>-metric appear in statistics? (Mahalanobis distance).</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="cholesky-decomposition" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="cholesky-decomposition"><span class="header-section-number">11.3</span> Cholesky Decomposition</h2>
-<p>The symmetry and positive definiteness of <span class="math inline">\(\bA\)</span> allow for a specialized version of the LU factorization known as the <strong>Cholesky decomposition</strong>. The decomposition can be interpreted as a generalized square root for SPD matrices, where <span class="math inline">\(\bA = \bL\bL^T\)</span>.</p>
-<p>Cholesky is the natural direct solver for SPD systems. It stores only one triangular factor instead of two, avoids pivoting, and preserves the symmetry of the problem.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Cholesky Decomposition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Every SPD matrix <span class="math inline">\(\bA\)</span> admits a unique decomposition <span class="math inline">\(\bA = \bL\bL^T\)</span>, where <span class="math inline">\(\bL\)</span> is lower triangular with strictly positive diagonal entries.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(A <span class="math inline">\(2\times2\)</span> Cholesky factor)</strong> Let <span class="math display">\[
-\begin{align}
-\bA=\begin{pmatrix}4&amp;2\\2&amp;3\end{pmatrix}.
-\end{align}
-\]</span> Assume <span class="math display">\[
-\begin{align}
-\bL=\begin{pmatrix}\ell_{11}&amp;0\\\ell_{21}&amp;\ell_{22}\end{pmatrix}.
-\end{align}
-\]</span> Matching <span class="math inline">\(\bA=\bL\bL^T\)</span> gives <span class="math inline">\(\ell_{11}=2\)</span>, <span class="math inline">\(\ell_{21}=1\)</span>, and <span class="math inline">\(\ell_{22}=\sqrt{2}\)</span>, so <span class="math display">\[
-\begin{align}
-\bL=\begin{pmatrix}2&amp;0\\1&amp;\sqrt{2}\end{pmatrix}.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Flop Cost)</strong> The computational cost of the Cholesky decomposition is , approximately half that of a general LU factorization.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Stability Advantage:</strong> Unlike general LU, Cholesky is <strong>guaranteed to be stable without pivoting</strong>. In code, <code>np.linalg.cholesky</code> is the standard numerical test for positive definiteness; if it raises a <code>LinAlgError</code>, the matrix is not PD.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Solving with Cholesky)</strong> If <span class="math inline">\(\bA=\bL\bL^T\)</span>, then solving <span class="math inline">\(\bA\bx=\bb\)</span> requires two triangular solves:</p>
-<ol type="1">
-<li><p>Solve <span class="math inline">\(\bL\by=\bb\)</span>.</p></li>
-<li><p>Solve <span class="math inline">\(\bL^T\bx=\by\)</span>.</p></li>
-</ol>
-<p>The factorization costs <span class="math inline">\(O(n^3)\)</span>, but each solve costs only <span class="math inline">\(O(n^2)\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Factor <span class="math inline">\(\bA = \begin{pmatrix} 4 &amp; 2 \\ 2 &amp; 3 \end{pmatrix}\)</span> by hand.</p></li>
-<li><p>Why does Cholesky not require row swaps?</p></li>
-<li><p>Solve <span class="math inline">\(\bA\bx = \bb\)</span> using Cholesky for <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}\)</span>.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Applications)</strong></p>
-<ol type="1">
-<li><p><strong>Covariance:</strong> Generate <code>X = np.random.randn(100, 4)</code>. Verify <code>X.T @ X</code> is SPD via Cholesky.</p></li>
-<li><p><strong>Gram Matrix:</strong> Prove that <span class="math inline">\(\mathbf{G} = \bX^T\bX\)</span> is at least positive semidefinite for any <span class="math inline">\(\bX\)</span>, and PD if <span class="math inline">\(\bX\)</span> has full column rank.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Where SPD matrices appear)</strong></p>
-<ul>
-<li><p><strong>Optimization:</strong> Hessians of strictly convex quadratic functions.</p></li>
-<li><p><strong>Statistics:</strong> Covariance and Gram matrices, often PSD and SPD when data are full rank.</p></li>
-<li><p><strong>PDEs:</strong> Discrete Laplacians and stiffness matrices for elliptic problems.</p></li>
-<li><p><strong>Least squares:</strong> Normal equations <span class="math inline">\(\bA^T\bA\bx=\bA^T\bb\)</span> are SPD when <span class="math inline">\(\bA\)</span> has full column rank.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Connection to CG)</strong> Conjugate Gradient is designed for large sparse SPD systems. It minimizes the quadratic energy <span class="math display">\[
-\begin{align}
-\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx,
-\end{align}
-\]</span> whose unique minimizer satisfies <span class="math inline">\(\bA\bx=\bb\)</span> when <span class="math inline">\(\bA\)</span> is SPD.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -1069,18 +785,333 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>For any nonzero vector <span class="math inline">\(\bv \in \fR^n\)</span>, consider the quadratic form: <span class="math display">\[
+<p>Taking <span class="math inline">\(\bx=\be_i\)</span> gives <span class="math inline">\(a_{ii}=\be_i^T\bA\be_i&gt;0\)</span>. A vector supported only on an index set <span class="math inline">\(I\)</span> has quadratic energy equal to the quadratic form of the principal submatrix <span class="math inline">\(\bA[I,I]\)</span>, so that submatrix is positive definite. Finally, if <span class="math inline">\(\bA\bx=\bzero\)</span> for a nonzero <span class="math inline">\(\bx\)</span>, then <span class="math inline">\(\bx^T\bA\bx=0\)</span>, a contradiction. Thus the null space is trivial.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The <span class="math inline">\(\bA\)</span>-Inner Product and Energy Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bA\)</span> is SPD, then <span class="math display">\[
 \begin{align}
-\bv^T \mathbf{G} \bv &amp;= \bv^T (\bX^T \bX) \bv \\
-    &amp;= (\bX \bv)^T (\bX \bv) \\
-    &amp;= \|\bX \bv\|_2^2.
+\langle\bx,\by\rangle_{\bA}=\bx^T\bA\by,
+    \qquad
+    \|\bx\|_{\bA}=\sqrt{\bx^T\bA\bx}
 \end{align}
-\]</span> Since the squared Euclidean norm is always non-negative, <span class="math inline">\(\bv^T \mathbf{G} \bv \geq 0\)</span>, proving <span class="math inline">\(\mathbf{G}\)</span> is positive semidefinite. If <span class="math inline">\(\bX\)</span> has full column rank, then <span class="math inline">\(\bX \bv = \bzero\)</span> iff <span class="math inline">\(\bv = \bzero\)</span>. Thus <span class="math inline">\(\bv^T \mathbf{G} \bv &gt; 0\)</span> for all nonzero <span class="math inline">\(\bv\)</span>, making <span class="math inline">\(\mathbf{G}\)</span> positive definite.</p>
+\]</span> define an inner product and its induced norm. The scalar <span class="math inline">\(\bx^T\bA\bx\)</span> is often called the <strong>energy</strong> of <span class="math inline">\(\bx\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Linearity follows from matrix multiplication, symmetry from <span class="math inline">\(\bA^T=\bA\)</span>, and positive definiteness from the definition of SPD. The general inner-product results of Sec.~above then give Cauchy–Schwarz and the triangle inequality for <span class="math inline">\(\|\cdot\|_{\bA}\)</span>.</p>
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;0\\0&amp;1\end{pmatrix},
+\end{align}
+\]</span> the unit-energy curve is <span class="math inline">\(4x_1^2+x_2^2=1\)</span>. A displacement in the first coordinate costs four times as much energy as the same displacement in the second. A useful norm does more than assign a size: it expresses which errors matter in the model.</p>
+</div>
+</div>
+</section>
+<section id="cholesky-factorization" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="cholesky-factorization"><span class="header-section-number">11.2</span> Cholesky Factorization</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Cholesky Factorization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every SPD matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> has a unique factorization <span class="math display">\[
+\begin{align}
+\bA=\bL\bL^T,
+\end{align}
+\]</span> where <span class="math inline">\(\bL\)</span> is lower triangular with positive diagonal entries.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We proceed by induction on <span class="math inline">\(n\)</span>. For <span class="math inline">\(n=1\)</span>, <span class="math inline">\(\bA = (\alpha)\)</span> with <span class="math inline">\(\alpha &gt; 0\)</span>, so <span class="math inline">\(\bL = (\sqrt{\alpha})\)</span> is the unique positive square root. For the induction step, partition <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> as <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}.
+\end{align}
+\]</span> Since <span class="math inline">\(\bA\)</span> is SPD, <span class="math inline">\(\alpha = \be_1^T\bA\be_1 &gt; 0\)</span>. Set <span class="math inline">\(\ell_{11} = \sqrt{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\ell} = \br / \ell_{11}\)</span>. Form the Schur complement <span class="math display">\[
+\begin{align}
+\bS = \bB - \boldsymbol{\ell}\boldsymbol{\ell}^T = \bB - \frac{\br\br^T}{\alpha}.
+\end{align}
+\]</span> For any nonzero <span class="math inline">\(\by \in \fR^{n-1}\)</span>, choose <span class="math inline">\(\bx = (-\boldsymbol{\ell}^T\by / \ell_{11}, \by^T)^T \in \fR^n\)</span>. Expanding the quadratic form: <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx
+    &amp;= \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix}^T
+       \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}
+       \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix} \\
+    &amp;= \alpha\left(\frac{\boldsymbol{\ell}^T\by}{\ell_{11}}\right)^2 - 2\frac{(\boldsymbol{\ell}^T\by)(\br^T\by)}{\ell_{11}} + \by^T\bB\by \\
+    &amp;= (\boldsymbol{\ell}^T\by)^2 - 2(\boldsymbol{\ell}^T\by)^2 + \by^T\bB\by \\
+    &amp;= \by^T(\bB - \boldsymbol{\ell}\boldsymbol{\ell}^T)\by = \by^T\bS\by.
+\end{align}
+\]</span> Since <span class="math inline">\(\by \neq \bzero\)</span>, the vector <span class="math inline">\(\bx\)</span> is nonzero, so <span class="math inline">\(\by^T\bS\by = \bx^T\bA\bx &gt; 0\)</span>. Hence <span class="math inline">\(\bS\)</span> is SPD. By induction, <span class="math inline">\(\bS = \bK\bK^T\)</span> for a unique lower triangular <span class="math inline">\(\bK\)</span> with positive diagonal entries. Block multiplication gives <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \ell_{11} &amp; \bzero^T \\ \boldsymbol{\ell} &amp; \bK \end{pmatrix}
+          \begin{pmatrix} \ell_{11} &amp; \boldsymbol{\ell}^T \\ \bzero &amp; \bK^T \end{pmatrix}
+        = \begin{pmatrix} \ell_{11}^2 &amp; \ell_{11}\boldsymbol{\ell}^T \\ \ell_{11}\boldsymbol{\ell} &amp; \boldsymbol{\ell}\boldsymbol{\ell}^T + \bK\bK^T \end{pmatrix}
+        = \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}.
+\end{align}
+\]</span> The positivity of the diagonal requires <span class="math inline">\(\ell_{11} = \sqrt{\alpha}\)</span>, which uniquely fixes <span class="math inline">\(\boldsymbol{\ell} = \br / \ell_{11}\)</span>, and uniqueness of <span class="math inline">\(\bK\)</span> makes the entire factor <span class="math inline">\(\bL\)</span> unique.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Equivalent Characterizations of Positive Definiteness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a real symmetric matrix <span class="math inline">\(\bA\)</span>, the following statements are equivalent.</p>
+<ol type="1">
+<li><p><span class="math inline">\(\bx^T\bA\bx&gt;0\)</span> for every nonzero <span class="math inline">\(\bx\)</span>.</p></li>
+<li><p><span class="math inline">\(\bA=\bL\bL^T\)</span> for a lower triangular <span class="math inline">\(\bL\)</span> with positive diagonal.</p></li>
+<li><p><span class="math inline">\(\bA=\bW^T\bW\)</span> for a nonsingular matrix <span class="math inline">\(\bW\)</span>.</p></li>
+<li><p>Every leading principal minor is positive.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The implication from (1) to (2) is Thm.~above. Statement (2) implies (3) by taking <span class="math inline">\(\bW=\bL^T\)</span>. If (3) holds, then <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx=\|\bW\bx\|_2^2&gt;0
+\end{align}
+\]</span> for every nonzero <span class="math inline">\(\bx\)</span>, so (3) implies (1).</p>
+<p>If (2) holds, the leading <span class="math inline">\(k\)</span> by <span class="math inline">\(k\)</span> block satisfies <span class="math inline">\(\bA_k=\bL_k\bL_k^T\)</span>. Hence <span class="math display">\[
+\begin{align}
+\det(\bA_k)=\det(\bL_k)^2
+    =\prod_{j=1}^k\ell_{jj}^2&gt;0,
+\end{align}
+\]</span> which proves (4). Conversely, suppose every leading principal minor is positive. Apply the Cholesky formulas in order. At step <span class="math inline">\(k\)</span>, the next squared pivot <span class="math inline">\(v_k\)</span> satisfies <span class="math display">\[
+\begin{align}
+\det(\bA_k)=\left(\prod_{j=1}^{k-1}\ell_{jj}^2\right)v_k.
+\end{align}
+\]</span> The determinant on the left and the preceding factors are positive, so <span class="math inline">\(v_k&gt;0\)</span>. Thus every square root exists and the algorithm produces (2).</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After the spectral theorem is available, one more characterization becomes immediate: a real symmetric matrix is SPD exactly when all its eigenvalues are positive. That fact is important, but it is not needed to justify Cholesky, and delaying it keeps the present argument logically self-contained.</p>
+</div>
+</div>
+</section>
+<section id="the-cholesky-algorithm" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="the-cholesky-algorithm"><span class="header-section-number">11.3</span> The Cholesky Algorithm</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Cholesky Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The entries of the factor in <span class="math inline">\(\bA=\bL\bL^T\)</span> are computed column by column: <span class="math display">\[
+\begin{align}
+\ell_{jj}
+    &amp;=\sqrt{a_{jj}-\sum_{k=1}^{j-1}\ell_{jk}^2},\\
+    \ell_{ij}
+    &amp;=\frac{a_{ij}-\sum_{k=1}^{j-1}\ell_{ik}\ell_{jk}}{\ell_{jj}},
+    \qquad i=j+1,...,n.
+\end{align}
+\]</span> For an SPD matrix every expression under a square root is positive. A nonpositive pivot signals that the input is not positive definite, apart from the effects of rounding.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(i\geq j\)</span>, equating entry <span class="math inline">\((i,j)\)</span> in <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bL\bL^T\)</span> gives <span class="math display">\[
+\begin{align}
+a_{ij}=\sum_{k=1}^{j}\ell_{ik}\ell_{jk}.
+\end{align}
+\]</span> When <span class="math inline">\(i=j\)</span>, solve this identity for the positive diagonal entry. When <span class="math inline">\(i&gt;j\)</span>, solve it for <span class="math inline">\(\ell_{ij}\)</span>. The order of computation ensures that all earlier terms are already known.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;2&amp;-2\\2&amp;10&amp;2\\-2&amp;2&amp;6\end{pmatrix},
+\end{align}
+\]</span> the algorithm gives <span class="math display">\[
+\begin{align}
+\ell_{11}=2,&amp;\quad \ell_{21}=1,\quad \ell_{31}=-1,\\
+    \ell_{22}=3,&amp;\quad \ell_{32}=1,\quad \ell_{33}=2.
+\end{align}
+\]</span> Thus <span class="math display">\[
+\begin{align}
+\bL=\begin{pmatrix}2&amp;0&amp;0\\1&amp;3&amp;0\\-1&amp;1&amp;2\end{pmatrix},
+    \qquad \bL\bL^T=\bA.
+\end{align}
+\]</span> To solve <span class="math inline">\(\bA\bx=\bb\)</span>, first solve <span class="math inline">\(\bL\by=\bb\)</span> and then <span class="math inline">\(\bL^T\bx=\by\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="cost-and-stability" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="cost-and-stability"><span class="header-section-number">11.4</span> Cost and Stability</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Flop Count and Storage
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dense Cholesky factorization requires <span class="math inline">\(n^3/3+O(n^2)\)</span> floating-point operations. Only one triangular half of the matrix and factor need be stored. The two triangular solves for one right-hand side require <span class="math inline">\(2n^2+O(n)\)</span> further operations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Column <span class="math inline">\(j\)</span> updates <span class="math inline">\(n-j+1\)</span> entries using inner products of length about <span class="math inline">\(j\)</span>. Summing these costs gives <span class="math display">\[
+\begin{align}
+\sum_{j=1}^n 2(n-j)j=\frac{n^3}{3}+O(n^2).
+\end{align}
+\]</span> The leading cost is half that of dense LU factorization.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cholesky needs no pivoting for an SPD matrix. Moreover, the identity <span class="math display">\[
+\begin{align}
+a_{ii}=\sum_{k=1}^i\ell_{ik}^2
+\end{align}
+\]</span> implies <span class="math inline">\(|\ell_{ik}|\leq\sqrt{a_{ii}}\)</span>, so the factor cannot exhibit the element growth possible in general elimination. In standard floating-point arithmetic, and absent overflow or underflow, the computed factor is the exact Cholesky factor of a nearby symmetric matrix. This is the appropriate backward-stability statement. It does not say that an ill-conditioned system has an accurate forward solution.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After eigenvalues and singular values have been developed, we will obtain <span class="math display">\[
+\begin{align}
+\kappa_2(\bA)=\frac{\lambda_{\max}(\bA)}{\lambda_{\min}(\bA)},
+    \qquad
+    \kappa_2(\bL)=\sqrt{\kappa_2(\bA)}.
+\end{align}
+\]</span> These are spectral interpretations of structure already visible in the energy and the factorization.</p>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">11.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1091,10 +1122,17 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(SPD Condition Number)</strong> <span class="math inline">\(\kappa_2(\bA) = \lambda_{\max} / \lambda_{\min}\)</span>.</p>
 <ol type="1">
-<li><p>If <span class="math inline">\(\bA\)</span> is SPD with eigenvalues <span class="math inline">\(\{10, 0.01\}\)</span>, what is <span class="math inline">\(\kappa_2(\bA)\)</span>?</p></li>
-<li><p>Verify <span class="math inline">\(\kappa_2(\bL) = \sqrt{\kappa_2(\bA)}\)</span> where <span class="math inline">\(\bL\)</span> is the Cholesky factor.</p></li>
+<li><p><strong>Compute.</strong> Compute the Cholesky factor of <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}9&amp;3&amp;-6\\3&amp;26&amp;-7\\-6&amp;-7&amp;9\end{pmatrix}
+\end{align}
+\]</span> by hand, then use it to solve <span class="math inline">\(\bA\bx=(6,44,2)^T\)</span>.</p></li>
+<li><p><strong>Derive.</strong> Prove directly from the quadratic form that every principal submatrix of an SPD matrix is SPD. Explain why the same statement for an arbitrary submatrix is meaningless.</p></li>
+<li><p><strong>Derive.</strong> Complete the block calculation in the proof of Thm.~above: verify exactly that <span class="math inline">\(\bx^T\bA\bx=\by^T\bS\by\)</span>. Then prove the converse statement that if <span class="math inline">\(\alpha&gt;0\)</span> and <span class="math inline">\(\bS\)</span> is SPD, the block matrix <span class="math inline">\(\bA\)</span> is SPD.</p></li>
+<li><p><strong>Derive.</strong> Prove that the largest entry of an SPD matrix in absolute value lies on the main diagonal. Begin with a two by two principal submatrix and choose a useful vector, or use its positive determinant.</p></li>
+<li><p><strong>Derive.</strong> Let <span class="math inline">\(\bX\in\fR^{m\times n}\)</span> with <span class="math inline">\(m\geq n\)</span>. Prove that <span class="math inline">\(\bX^T\bX\)</span> is SPD exactly when the columns of <span class="math inline">\(\bX\)</span> are linearly independent. State what remains true when they are dependent.</p></li>
+<li><p><strong>Explore.</strong> Show that <span class="math inline">\(\|\bx\|_{\bA}=\|\bL^T\bx\|_2\)</span>. Use this identity to interpret the <span class="math inline">\(\bA\)</span>-unit sphere as the inverse image of the Euclidean unit sphere, without mentioning eigenvalues.</p></li>
 </ol>
 </div>
 </div>
@@ -1523,8 +1561,8 @@ window.Quarto = {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../orthogonality/orthogonal.html" class="pagination-link" aria-label="Orthogonal Matrices">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../direct-methods/structured-solvers.html" class="pagination-link" aria-label="Reusing Factorizations after Structured Changes">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

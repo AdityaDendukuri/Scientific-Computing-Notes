@@ -22,6 +22,11 @@
 %   \addRemark{Content}       — numbered (own counter)
 %   \addExmpl{Content}
 %   \addExcr{Content}         — numbered (own counter)
+%   \addTrail{Title}{Content} — numbered literature exercise
+%   \addRoute{Question}{Path} — unnumbered chapter route
+%   \addReading{Content}      — unnumbered further-reading note
+%   \proofMap{Content}        — unnumbered preview of a proof
+%   \exCheck, \exDerive, \exCompute, \exExplore
 %   \textBox{Content}         — unnumbered expository block
 %   \sectionend
 % ============================================================
@@ -98,7 +103,7 @@
 \newcommand{\addPrf}[1]{%
   \newentry
   \noindent\mLabel{ucsb_green}{Proof}%
-  \textit{Proof.}\enspace #1\hfill$\square$%
+  #1\hfill$\square$%
 }
 
 %% ── Remarks ──────────────────────────────────────────────────
@@ -123,6 +128,40 @@
   \noindent\mLabel{ucsb_coral}{Ex~\theexcrctr}%
   #1%
 }
+
+%% ── Literature trails ────────────────────────────────────────
+\newcommand{\addTrail}[2]{%
+  \refstepcounter{excrctr}%
+  \newentry
+  \noindent\mLabel{ucsb_coral}{Trail~\theexcrctr}%
+  \textbf{(#1)}\enspace #2%
+}
+
+%% ── Chapter and proof navigation ─────────────────────────────
+\newcommand{\addRoute}[2]{%
+  \newentry
+  \noindent\mLabel{ucsb_gold}{Route}%
+  \textbf{Problem.}\enspace #1\par
+  \textbf{Path.}\enspace #2%
+}
+
+\newcommand{\proofMap}[1]{%
+  \newentry
+  \noindent\mLabel{ucsb_green}{Proof map}%
+  #1%
+}
+
+\newcommand{\addReading}[1]{%
+  \newentry
+  \noindent\mLabel{ucsb_gold}{Read}%
+  \textbf{Further reading.}\enspace #1%
+}
+
+%% ── Exercise roles ───────────────────────────────────────────
+\newcommand{\exCheck}{\textbf{Check.}\enspace}
+\newcommand{\exDerive}{\textbf{Derive.}\enspace}
+\newcommand{\exCompute}{\textbf{Compute.}\enspace}
+\newcommand{\exExplore}{\textbf{Explore.}\enspace}
 
 %% ── Expository blocks (no margin label) ──────────────────────
 \newcommand{\textBox}[1]{%

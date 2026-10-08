@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>25&nbsp; Polynomial Interpolation – Scientific Computing</title>
+<title>26&nbsp; Polynomial and Spline Interpolation – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../numerical-analysis/quadrature.html" rel="next">
-<link href="../iterative/gmres.html" rel="prev">
+<link href="../numerical-analysis/chebyshev.html" rel="next">
+<link href="../iterative/multigrid.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Numerical Analysis</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,13 +710,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#existence-and-uniqueness" id="toc-existence-and-uniqueness" class="nav-link active" data-scroll-target="#existence-and-uniqueness"><span class="header-section-number">25.1</span> Existence and Uniqueness</a></li>
-  <li><a href="#lagrange-form" id="toc-lagrange-form" class="nav-link" data-scroll-target="#lagrange-form"><span class="header-section-number">25.2</span> Lagrange Form</a></li>
-  <li><a href="#barycentric-interpolation" id="toc-barycentric-interpolation" class="nav-link" data-scroll-target="#barycentric-interpolation"><span class="header-section-number">25.3</span> Barycentric Interpolation</a></li>
-  <li><a href="#interpolation-error" id="toc-interpolation-error" class="nav-link" data-scroll-target="#interpolation-error"><span class="header-section-number">25.4</span> Interpolation Error</a></li>
-  <li><a href="#runges-phenomenon" id="toc-runges-phenomenon" class="nav-link" data-scroll-target="#runges-phenomenon"><span class="header-section-number">25.5</span> Runge’s Phenomenon</a></li>
-  <li><a href="#cubic-splines" id="toc-cubic-splines" class="nav-link" data-scroll-target="#cubic-splines"><span class="header-section-number">25.6</span> Cubic Splines</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">25.7</span> Exercises</a></li>
+  <li><a href="#existence-uniqueness-and-the-vandermonde-matrix" id="toc-existence-uniqueness-and-the-vandermonde-matrix" class="nav-link active" data-scroll-target="#existence-uniqueness-and-the-vandermonde-matrix"><span class="header-section-number">26.1</span> Existence, Uniqueness, and the Vandermonde Matrix</a></li>
+  <li><a href="#the-lagrange-form" id="toc-the-lagrange-form" class="nav-link" data-scroll-target="#the-lagrange-form"><span class="header-section-number">26.2</span> The Lagrange Form</a></li>
+  <li><a href="#the-barycentric-interpolation-formula" id="toc-the-barycentric-interpolation-formula" class="nav-link" data-scroll-target="#the-barycentric-interpolation-formula"><span class="header-section-number">26.3</span> The Barycentric Interpolation Formula</a></li>
+  <li><a href="#the-interpolation-error-formula" id="toc-the-interpolation-error-formula" class="nav-link" data-scroll-target="#the-interpolation-error-formula"><span class="header-section-number">26.4</span> The Interpolation Error Formula</a></li>
+  <li><a href="#runges-phenomenon-and-chebyshev-nodes" id="toc-runges-phenomenon-and-chebyshev-nodes" class="nav-link" data-scroll-target="#runges-phenomenon-and-chebyshev-nodes"><span class="header-section-number">26.5</span> Runge’s Phenomenon and Chebyshev Nodes</a></li>
+  <li><a href="#piecewise-polynomials-cubic-splines" id="toc-piecewise-polynomials-cubic-splines" class="nav-link" data-scroll-target="#piecewise-polynomials-cubic-splines"><span class="header-section-number">26.6</span> Piecewise Polynomials: Cubic Splines</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">26.7</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/numerical-analysis/interpolation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -685,9 +724,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Numerical Analysis</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></h1>
+<h1 class="title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></h1>
 </div>
 
 
@@ -704,44 +743,91 @@ window.Quarto = {
 </header>
 
 
-<p>Constructing a polynomial that passes exactly through a given set of data points.</p>
-<section id="existence-and-uniqueness" class="level2" data-number="25.1">
-<h2 data-number="25.1" class="anchored" data-anchor-id="existence-and-uniqueness"><span class="header-section-number">25.1</span> Existence and Uniqueness</h2>
+<p>Interpolation is the process of constructing a continuous function that passes exactly through a discrete collection of given data points. Given <span class="math inline">\(n+1\)</span> distinct abscissas (or nodes) <span class="math inline">\(x_0, x_1, ..., x_n \in \fR\)</span> and corresponding values <span class="math inline">\(y_0, y_1, ..., y_n \in \fR\)</span>, polynomial interpolation seeks a polynomial <span class="math inline">\(P_n\)</span> of degree at most <span class="math inline">\(n\)</span> such that <span class="math display">\[
+\begin{align}
+P_n(x_i) = y_i, \qquad i = 0, 1, ..., n.
+\end{align}
+\]</span> Polynomials are useful local and global approximants because finite polynomial representations can be evaluated, differentiated, and integrated by finite algorithms.</p>
+<section id="existence-uniqueness-and-the-vandermonde-matrix" class="level2" data-number="26.1">
+<h2 data-number="26.1" class="anchored" data-anchor-id="existence-uniqueness-and-the-vandermonde-matrix"><span class="header-section-number">26.1</span> Existence, Uniqueness, and the Vandermonde Matrix</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Existence and Uniqueness
+<span class="screen-reader-only">Note</span>Theorem: Existence and Uniqueness of the Interpolating Polynomial
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Given <span class="math inline">\(n+1\)</span> distinct points <span class="math inline">\((x_i, y_i)\)</span>, there exists a unique polynomial <span class="math inline">\(P_n(x)\)</span> of degree at most <span class="math inline">\(n\)</span> such that <span class="math inline">\(P_n(x_i) = y_i\)</span> for all <span class="math inline">\(i = 0, ..., n\)</span>.</p>
+<p>Let <span class="math inline">\(x_0, x_1, ..., x_n\)</span> be <span class="math inline">\(n+1\)</span> pairwise distinct real numbers, and let <span class="math inline">\(y_0, y_1, ..., y_n\)</span> be arbitrary real numbers. There exists a unique polynomial <span class="math inline">\(P_n \in \mathcal{P}_n\)</span> of degree at most <span class="math inline">\(n\)</span> such that <span class="math inline">\(P_n(x_i) = y_i\)</span> for all <span class="math inline">\(i = 0, 1, ..., n\)</span>.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We establish existence and uniqueness using the fundamental properties of polynomials.</p>
+<ol type="1">
+<li><p><strong>Uniqueness:</strong> Suppose there exist two polynomials <span class="math inline">\(P_n, Q_n \in \mathcal{P}_n\)</span> that satisfy the interpolation conditions, so <span class="math inline">\(P_n(x_i) = Q_n(x_i) = y_i\)</span> for <span class="math inline">\(i = 0, ..., n\)</span>. Define the difference polynomial <span class="math inline">\(R(x) = P_n(x) - Q_n(x)\)</span>. Because <span class="math inline">\(\mathcal{P}_n\)</span> is a vector space, <span class="math inline">\(R\)</span> has degree at most <span class="math inline">\(n\)</span>. Furthermore, <span class="math display">\[
+\begin{align}
+R(x_i) = P_n(x_i) - Q_n(x_i) = y_i - y_i = 0, \qquad i = 0, ..., n.
+\end{align}
+\]</span> Thus <span class="math inline">\(R(x)\)</span> has at least <span class="math inline">\(n+1\)</span> distinct real roots. By the Fundamental Theorem of Algebra, a non-zero polynomial of degree at most <span class="math inline">\(n\)</span> can have at most <span class="math inline">\(n\)</span> roots. Therefore, <span class="math inline">\(R(x)\)</span> must be the zero polynomial, which implies <span class="math inline">\(P_n(x) \equiv Q_n(x)\)</span>.</p></li>
+<li><p><strong>Existence via Linear Algebra:</strong> Express <span class="math inline">\(P_n(x)\)</span> in the standard monomial basis: <span class="math display">\[
+\begin{align}
+P_n(x) = c_0 + c_1 x + c_2 x^2 + ... + c_n x^n = \sum_{j=0}^n c_j x^j.
+\end{align}
+\]</span> The interpolation conditions <span class="math inline">\(P_n(x_i) = y_i\)</span> form a square <span class="math inline">\((n+1) \times (n+1)\)</span> linear system <span class="math inline">\(\bV \bc = \by\)</span>: <span class="math display">\[
+\begin{align}
+\begin{pmatrix}
+             1 &amp; x_0 &amp; x_0^2 &amp; \cdots &amp; x_0^n \\
+             1 &amp; x_1 &amp; x_1^2 &amp; \cdots &amp; x_1^n \\
+             \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+             1 &amp; x_n &amp; x_n^2 &amp; \cdots &amp; x_n^n
+         \end{pmatrix}
+         \begin{pmatrix}
+             c_0 \\ c_1 \\ \vdots \\ c_n
+         \end{pmatrix}
+         =
+         \begin{pmatrix}
+             y_0 \\ y_1 \\ \vdots \\ y_n
+         \end{pmatrix}.
+\end{align}
+\]</span> The matrix <span class="math inline">\(\bV\)</span> is the Vandermonde matrix. Its determinant evaluates to <span class="math display">\[
+\begin{align}
+\det(\bV) = \prod_{0 \leq i &lt; j \leq n} (x_j - x_i).
+\end{align}
+\]</span> Because the nodes <span class="math inline">\(x_i\)</span> are pairwise distinct, <span class="math inline">\(x_j - x_i \neq 0\)</span> for all <span class="math inline">\(j &gt; i\)</span>, so <span class="math inline">\(\det(\bV) \neq 0\)</span>. Consequently, <span class="math inline">\(\bV\)</span> is invertible, and a unique coefficient vector <span class="math inline">\(\bc = \bV^{-1} \by\)</span> exists for any data vector <span class="math inline">\(\by\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Count the number of coefficients in a degree-<span class="math inline">\(n\)</span> polynomial.</p></li>
-<li><p>Write the interpolation equations as a Vandermonde linear system.</p></li>
-<li><p>Use distinctness of the nodes to explain why the Vandermonde matrix is nonsingular.</p></li>
-<li><p>Conclude the result above.</p></li>
-</ol>
+<p>Although the Vandermonde matrix provides a constructive proof of existence, solving <span class="math inline">\(\bV\bc=\by\)</span> in the monomial basis is often a poor numerical representation. Its condition number depends on the nodes and their scaling and can grow rapidly with degree. A large coefficient error does not imply that the interpolation problem itself is ill-posed: it may instead reflect an ill-conditioned choice of basis. The Lagrange and barycentric forms avoid solving for monomial coefficients.</p>
 </div>
 </div>
 </section>
-<section id="lagrange-form" class="level2" data-number="25.2">
-<h2 data-number="25.2" class="anchored" data-anchor-id="lagrange-form"><span class="header-section-number">25.2</span> Lagrange Form</h2>
-<p>Provides an explicit construction for the interpolating polynomial.</p>
+<section id="the-lagrange-form" class="level2" data-number="26.2">
+<h2 data-number="26.2" class="anchored" data-anchor-id="the-lagrange-form"><span class="header-section-number">26.2</span> The Lagrange Form</h2>
+<p>The Lagrange formulation circumvents the ill-conditioned Vandermonde linear system by constructing a basis of polynomials tailored to the specific nodes <span class="math inline">\(x_i\)</span>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -752,61 +838,44 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>Given <span class="math inline">\(n+1\)</span> distinct nodes <span class="math inline">\(x_0, x_1, ..., x_n\)</span>, the <span class="math inline">\(i\)</span>-th Lagrange basis polynomial <span class="math inline">\(L_i \in \mathcal{P}_n\)</span> is defined by <span class="math display">\[
 \begin{align}
-L_i(x) = \prod_{j=0, j \neq i}^n \frac{x - x_j}{x_i - x_j}.
+L_i(x) = \prod_{\substack{j=0 \\ j \neq i}}^n \frac{x - x_j}{x_i - x_j} = \frac{(x - x_0)\cdots(x - x_{i-1})(x - x_{i+1})\cdots(x - x_n)}{(x_i - x_0)\cdots(x_i - x_{i-1})(x_i - x_{i+1})\cdots(x_i - x_n)}.
 \end{align}
-\]</span> The interpolating polynomial is <span class="math inline">\(P_n(x) = \sum_{i=0}^n y_i L_i(x)\)</span>.</p>
+\]</span> The Lagrange basis polynomials satisfy the cardinal Kronecker delta property: <span class="math display">\[
+\begin{align}
+L_i(x_j) = \delta_{ij} =
+    \begin{cases}
+        1, &amp; \text{if } i = j, \\
+        0, &amp; \text{if } i \neq j.
+    \end{cases}
+\end{align}
+\]</span> The interpolating polynomial in Lagrange form is <span class="math display">\[
+\begin{align}
+P_n(x) = \sum_{i=0}^n y_i L_i(x).
+\end{align}
+\]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Show that <span class="math inline">\(L_i(x_j)=0\)</span> when <span class="math inline">\(i\neq j\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(L_i(x_i)=1\)</span>.</p></li>
-<li><p>Use the previous two steps to prove that <span class="math inline">\(P_n(x_j)=y_j\)</span> for every node.</p></li>
-<li><p>Explain why uniqueness follows from the result above.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Computational Cost:</strong> Evaluation of the Lagrange form costs <span class="math inline">\(O(n^2)\)</span> operations. Adding a new point requires recomputing all basis polynomials.</p>
-</div>
-</div>
-</section>
-<section id="barycentric-interpolation" class="level2" data-number="25.3">
-<h2 data-number="25.3" class="anchored" data-anchor-id="barycentric-interpolation"><span class="header-section-number">25.3</span> Barycentric Interpolation</h2>
-<p>A numerically stable and efficient refinement of the Lagrange form.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Barycentric Formula
+<span class="screen-reader-only">Note</span>Example
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math display">\[
+<p>To interpolate the three data points <span class="math inline">\((-1, 1)\)</span>, <span class="math inline">\((0, 0)\)</span>, and <span class="math inline">\((1, 1)\)</span>, we construct the degree-2 Lagrange basis polynomials on <span class="math inline">\(x_0 = -1, x_1 = 0, x_2 = 1\)</span>: <span class="math display">\[
 \begin{align}
-P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}, \quad \text{where } w_i = \frac{1}{\prod_{j \neq i} (x_i - x_j)}.
+L_0(x) &amp;= \frac{(x - 0)(x - 1)}{(-1 - 0)(-1 - 1)} = \frac{x(x - 1)}{2} = \frac{x^2 - x}{2}, \\
+    L_1(x) &amp;= \frac{(x - (-1))(x - 1)}{(0 - (-1))(0 - 1)} = \frac{(x + 1)(x - 1)}{-1} = 1 - x^2, \\
+    L_2(x) &amp;= \frac{(x - (-1))(x - 0)}{(1 - (-1))(1 - 0)} = \frac{x(x + 1)}{2} = \frac{x^2 + x}{2}.
+\end{align}
+\]</span> Multiplying by the data values <span class="math inline">\(y_0 = 1, y_1 = 0, y_2 = 1\)</span> gives <span class="math display">\[
+\begin{align}
+P_2(x) = 1 \cdot \left(\frac{x^2 - x}{2}\right) + 0 \cdot (1 - x^2) + 1 \cdot \left(\frac{x^2 + x}{2}\right) = \frac{x^2 - x + x^2 + x}{2} = x^2.
 \end{align}
 \]</span></p>
 </div>
@@ -821,55 +890,75 @@ P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x -
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Advantages:</strong> Evaluation costs only <span class="math inline">\(O(n)\)</span> once the weights <span class="math inline">\(w_i\)</span> are computed (<span class="math inline">\(O(n^2)\)</span>). This is the standard recommended approach for general polynomial interpolation.</p>
+<p>The standard Lagrange form has two practical shortcomings. First, evaluating <span class="math inline">\(P_n(x)\)</span> at a single point <span class="math inline">\(x\)</span> requires <span class="math inline">\(O(n^2)\)</span> floating-point operations. Second, adding a new node <span class="math inline">\((x_{n+1}, y_{n+1})\)</span> alters every single basis polynomial <span class="math inline">\(L_i(x)\)</span>, requiring a complete recomputation from scratch.</p>
 </div>
 </div>
 </section>
-<section id="interpolation-error" class="level2" data-number="25.4">
-<h2 data-number="25.4" class="anchored" data-anchor-id="interpolation-error"><span class="header-section-number">25.4</span> Interpolation Error</h2>
+<section id="the-barycentric-interpolation-formula" class="level2" data-number="26.3">
+<h2 data-number="26.3" class="anchored" data-anchor-id="the-barycentric-interpolation-formula"><span class="header-section-number">26.3</span> The Barycentric Interpolation Formula</h2>
+<p>Barycentric interpolation reorganizes the Lagrange formula into a stable, computationally optimal form requiring only <span class="math inline">\(O(n)\)</span> operations per evaluation.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Polynomial Interpolation Error
+<span class="screen-reader-only">Note</span>Theorem: Barycentric Interpolation Formulas
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(P_n\)</span> interpolate <span class="math inline">\(f\)</span> at distinct nodes <span class="math inline">\(x_0,...,x_n\)</span>. If <span class="math inline">\(f\)</span> has <span class="math inline">\(n+1\)</span> continuous derivatives, then for each <span class="math inline">\(x\)</span> there exists <span class="math inline">\(\xi_x\)</span> in the interval containing the nodes and <span class="math inline">\(x\)</span> such that <span class="math display">\[
+<p>Let <span class="math inline">\(\ell(x) = \prod_{j=0}^n (x - x_j)\)</span> denote the nodal polynomial. For each node <span class="math inline">\(x_i\)</span>, define the barycentric weights <span class="math display">\[
 \begin{align}
-f(x)-P_n(x)
-    =
-    \frac{f^{(n+1)}(\xi_x)}{(n+1)!}
-    \prod_{j=0}^n (x-x_j).
+w_i = \frac{1}{\prod_{j \neq i} (x_i - x_j)} = \frac{1}{\ell'(x_i)}, \qquad i = 0, 1, ..., n.
+\end{align}
+\]</span> Then the interpolating polynomial satisfies:</p>
+<ol type="1">
+<li><p><strong>First Barycentric Form:</strong> <span class="math display">\[
+\begin{align}
+P_n(x) = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i.
+\end{align}
+\]</span></p></li>
+<li><p><strong>Second (True) Barycentric Form:</strong> <span class="math display">\[
+\begin{align}
+P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}.
+\end{align}
+\]</span></p></li>
+</ol>
+<p>If <span class="math inline">\(x = x_j\)</span> for some node index <span class="math inline">\(j\)</span>, the formula evaluates to <span class="math inline">\(P_n(x_j) = y_j\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We express the Lagrange basis polynomials in terms of <span class="math inline">\(\ell(x)\)</span> and <span class="math inline">\(w_i\)</span>. By definition, <span class="math display">\[
+\begin{align}
+L_i(x) = \prod_{j \neq i} \frac{x - x_j}{x_i - x_j} = \left( \prod_{j \neq i} (x - x_j) \right) \left( \frac{1}{\prod_{j \neq i} (x_i - x_j)} \right) = \frac{\ell(x)}{x - x_i} w_i.
+\end{align}
+\]</span> Substituting this relation into <span class="math inline">\(P_n(x) = \sum_{i=0}^n y_i L_i(x)\)</span> yields the First Barycentric Formula: <span class="math display">\[
+\begin{align}
+P_n(x) = \sum_{i=0}^n y_i \left( \frac{\ell(x)}{x - x_i} w_i \right) = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i.
+\end{align}
+\]</span> To derive the Second Barycentric Formula, consider interpolating the constant function <span class="math inline">\(f(x) \equiv 1\)</span>, where <span class="math inline">\(y_i = 1\)</span> for all <span class="math inline">\(i\)</span>. Because the unique degree-<span class="math inline">\(n\)</span> interpolant of a constant is the constant itself, the First Barycentric Formula gives <span class="math display">\[
+\begin{align}
+1 = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i}.
+\end{align}
+\]</span> Dividing the expression for <span class="math inline">\(P_n(x)\)</span> by this identity cancels the nodal polynomial <span class="math inline">\(\ell(x)\)</span>, yielding <span class="math display">\[
+\begin{align}
+P_n(x) = \frac{P_n(x)}{1} = \frac{\ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i}} = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}.
 \end{align}
 \]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Define <span class="math inline">\(\omega(x)=\prod_{j=0}^n(x-x_j)\)</span>.</p></li>
-<li><p>For a fixed <span class="math inline">\(x\)</span>, construct <span class="math inline">\(g(t)=f(t)-P_n(t)-c\omega(t)\)</span> so that <span class="math inline">\(g(x)=0\)</span>.</p></li>
-<li><p>Count the zeros of <span class="math inline">\(g\)</span>.</p></li>
-<li><p>Apply Rolle’s theorem <span class="math inline">\(n+1\)</span> times.</p></li>
-<li><p>Solve for <span class="math inline">\(c\)</span> and derive the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="runges-phenomenon" class="level2" data-number="25.5">
-<h2 data-number="25.5" class="anchored" data-anchor-id="runges-phenomenon"><span class="header-section-number">25.5</span> Runge’s Phenomenon</h2>
-<p>Equally spaced points are often a poor choice for high-degree interpolation.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -880,59 +969,125 @@ f(x)-P_n(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>The Runge Phenomenon:</strong> For certain functions, such as <span class="math inline">\(f(x) = 1/(1+25x^2)\)</span> on <span class="math inline">\([-1, 1]\)</span>, the interpolation error near the boundaries increases exponentially as the degree <span class="math inline">\(n \to \infty\)</span>.</p>
+<p>The Second Barycentric Formula enjoys extraordinary numerical stability. As proven by Higham (2004), barycentric interpolation is backward stable: the computed value <span class="math inline">\(\hat{P}_n(x)\)</span> is the exact value of a polynomial interpolating slightly perturbed data <span class="math inline">\(y_i(1 + \varepsilon_i)\)</span>. Furthermore, common multiplicative factors in the weights <span class="math inline">\(w_i\)</span> cancel out in the numerator and denominator, allowing simple analytical expressions for standard node families (such as Chebyshev nodes).</p>
 </div>
 </div>
+</section>
+<section id="the-interpolation-error-formula" class="level2" data-number="26.4">
+<h2 data-number="26.4" class="anchored" data-anchor-id="the-interpolation-error-formula"><span class="header-section-number">26.4</span> The Interpolation Error Formula</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Nodes for Interpolation
+<span class="screen-reader-only">Note</span>Theorem: Cauchy Remainder Error Theorem
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The Chebyshev nodes from the result above, <span class="math display">\[
+<p>Let <span class="math inline">\(f \in C^{n+1}[a, b]\)</span>, and let <span class="math inline">\(P_n \in \mathcal{P}_n\)</span> interpolate <span class="math inline">\(f\)</span> at <span class="math inline">\(n+1\)</span> distinct nodes <span class="math inline">\(x_0, x_1, ..., x_n \in [a, b]\)</span>. For each point <span class="math inline">\(x \in [a, b]\)</span>, there exists a point <span class="math inline">\(\xi_x \in (a, b)\)</span> such that <span class="math display">\[
 \begin{align}
-x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
+f(x) - P_n(x) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \prod_{j=0}^n (x - x_j) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \omega_{n+1}(x),
 \end{align}
-\]</span> make the interpolation error polynomial small on <span class="math inline">\([-1,1]\)</span>. By the result above and the result above, this directly improves the worst-case interpolation error bound.</p>
+\]</span> where <span class="math inline">\(\omega_{n+1}(x) = \prod_{j=0}^n (x - x_j)\)</span> is the nodal error polynomial.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(x = x_i\)</span> for some node <span class="math inline">\(x_i\)</span>, both sides vanish and the formula holds trivially for any <span class="math inline">\(\xi_x\)</span>. Now fix <span class="math inline">\(x \in [a, b]\)</span> with <span class="math inline">\(x \neq x_i\)</span> for all <span class="math inline">\(i\)</span>. Define the constant <span class="math display">\[
+\begin{align}
+\lambda = \frac{f(x) - P_n(x)}{\omega_{n+1}(x)},
+\end{align}
+\]</span> and consider the auxiliary function <span class="math inline">\(g : [a, b] \to \fR\)</span> defined by <span class="math display">\[
+\begin{align}
+g(t) = f(t) - P_n(t) - \lambda \omega_{n+1}(t).
+\end{align}
+\]</span> Because <span class="math inline">\(f \in C^{n+1}[a, b]\)</span> and polynomials are infinitely differentiable, <span class="math inline">\(g \in C^{n+1}[a, b]\)</span>. We evaluate <span class="math inline">\(g\)</span> at the <span class="math inline">\(n+2\)</span> distinct points <span class="math inline">\(x_0, x_1, ..., x_n\)</span> and <span class="math inline">\(x\)</span>: <span class="math display">\[
+\begin{align}
+g(x_i) &amp;= f(x_i) - P_n(x_i) - \lambda \omega_{n+1}(x_i) = y_i - y_i - 0 = 0, \qquad i = 0, ..., n, \\
+    g(x) &amp;= f(x) - P_n(x) - \left( \frac{f(x) - P_n(x)}{\omega_{n+1}(x)} \right) \omega_{n+1}(x) = 0.
+\end{align}
+\]</span> Thus <span class="math inline">\(g(t)\)</span> vanishes at <span class="math inline">\(n+2\)</span> distinct points in <span class="math inline">\([a, b]\)</span>.</p>
+<p>By Rolle’s Theorem, between any two adjacent zeros of <span class="math inline">\(g(t)\)</span>, its derivative <span class="math inline">\(g'(t)\)</span> has at least one zero. Therefore, <span class="math inline">\(g'(t)\)</span> has at least <span class="math inline">\(n+1\)</span> distinct zeros in <span class="math inline">\((a, b)\)</span>. Applying Rolle’s Theorem successively:</p>
+<ul>
+<li><p><span class="math inline">\(g''(t)\)</span> has at least <span class="math inline">\(n\)</span> distinct zeros in <span class="math inline">\((a, b)\)</span>,</p></li>
+<li><p><span class="math inline">\(g'''(t)\)</span> has at least <span class="math inline">\(n-1\)</span> distinct zeros in <span class="math inline">\((a, b)\)</span>,</p></li>
+<li><p>Continuing inductively, <span class="math inline">\(g^{(n+1)}(t)\)</span> has at least one zero in <span class="math inline">\((a, b)\)</span>, which we denote by <span class="math inline">\(\xi_x\)</span>.</p></li>
+</ul>
+<p>We now differentiate <span class="math inline">\(g(t)\)</span> exactly <span class="math inline">\(n+1\)</span> times with respect to <span class="math inline">\(t\)</span>: <span class="math display">\[
+\begin{align}
+g^{(n+1)}(t) = f^{(n+1)}(t) - P_n^{(n+1)}(t) - \lambda \frac{d^{n+1}}{dt^{n+1}} [\omega_{n+1}(t)].
+\end{align}
+\]</span> Since <span class="math inline">\(P_n\)</span> has degree at most <span class="math inline">\(n\)</span>, its <span class="math inline">\((n+1)\)</span>-th derivative is identically zero: <span class="math inline">\(P_n^{(n+1)}(t) \equiv 0\)</span>. The nodal polynomial <span class="math inline">\(\omega_{n+1}(t) = t^{n+1} + ...\)</span> is a monic polynomial of degree <span class="math inline">\(n+1\)</span>, so its <span class="math inline">\((n+1)\)</span>-th derivative is <span class="math inline">\((n+1)!\)</span>. Evaluating at <span class="math inline">\(t = \xi_x\)</span> gives <span class="math display">\[
+\begin{align}
+0 = g^{(n+1)}(\xi_x) = f^{(n+1)}(\xi_x) - 0 - \lambda (n+1)!.
+\end{align}
+\]</span> Solving for <span class="math inline">\(\lambda\)</span> produces <span class="math display">\[
+\begin{align}
+\lambda = \frac{f^{(n+1)}(\xi_x)}{(n+1)!}.
+\end{align}
+\]</span> Equating this to our definition of <span class="math inline">\(\lambda = (f(x) - P_n(x)) / \omega_{n+1}(x)\)</span> completes the proof.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="runges-phenomenon-and-chebyshev-nodes" class="level2" data-number="26.5">
+<h2 data-number="26.5" class="anchored" data-anchor-id="runges-phenomenon-and-chebyshev-nodes"><span class="header-section-number">26.5</span> Runge’s Phenomenon and Chebyshev Nodes</h2>
+<p>The error bound contains two decoupled components: <span class="math display">\[
+\begin{align}
+\|f - P_n\|_\infty \leq \frac{\|f^{(n+1)}\|_\infty}{(n+1)!} \|\omega_{n+1}\|_\infty.
+\end{align}
+\]</span> The derivative term <span class="math inline">\(\|f^{(n+1)}\|_\infty\)</span> depends entirely on the analytical smoothness of <span class="math inline">\(f\)</span>, while <span class="math inline">\(\|\omega_{n+1}\|_\infty = \max_{x \in [a, b]} |\prod_{j=0}^n (x - x_j)|\)</span> depends exclusively on the geometric placement of the interpolation nodes.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Tip</span>Remark
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Translate the node formula above into the indexing convention of the result above.</p></li>
-<li><p>Use the result above to compute <span class="math inline">\(\|\omega_{n+1}\|_\infty\)</span> for these nodes.</p></li>
-<li><p>Compare this with the error polynomial for equally spaced nodes numerically for <span class="math inline">\(n=10,20,40\)</span>.</p></li>
-<li><p>Explain why Chebyshev nodes reduce Runge oscillations without claiming that every function converges uniformly under every interpolation scheme.</p></li>
-</ol>
+<p><strong>(Runge phenomenon)</strong> Analyticity alone does not make equally spaced interpolation converge. For Runge’s function <span class="math inline">\(f(x)=1/(1+25x^2)\)</span>, the interpolants on equally spaced nodes develop increasing endpoint oscillations and satisfy <span class="math display">\[
+\begin{align}
+\lim_{n \to \infty} \|f - P_n\|_\infty = \infty,
+\end{align}
+\]</span> even though <span class="math inline">\(f\)</span> is analytic on the real interval. The growing Lebesgue constant amplifies the approximation error, while the nearby complex poles at <span class="math inline">\(\pm i/5\)</span> limit the rate of polynomial approximation. The derivative remainder bound above warns that convergence is not automatic, but a divergent upper bound by itself would not prove divergence.</p>
 </div>
 </div>
-</section>
-<section id="cubic-splines" class="level2" data-number="25.6">
-<h2 data-number="25.6" class="anchored" data-anchor-id="cubic-splines"><span class="header-section-number">25.6</span> Cubic Splines</h2>
-<p>For large datasets, high-degree polynomial interpolation is avoided in favor of piecewise polynomials.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Cubic Spline
+<span class="screen-reader-only">Note</span>Theorem: Chebyshev Node Optimality
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A piecewise cubic function <span class="math inline">\(S(x)\)</span> that is <span class="math inline">\(C^2\)</span> continuous (continuous values, first, and second derivatives) at the internal nodes.</p>
+<p>The Chebyshev nodes on <span class="math inline">\([-1, 1]\)</span> are defined by <span class="math display">\[
+\begin{align}
+x_k = \cos\left( \frac{2k+1}{2n+2} \pi \right), \qquad k = 0, 1, ..., n.
+\end{align}
+\]</span> They are the roots of the degree-<span class="math inline">\((n+1)\)</span> Chebyshev polynomial <span class="math inline">\(T_{n+1}(x) = \cos((n+1)\arccos x)\)</span>. The associated nodal polynomial is <span class="math display">\[
+\begin{align}
+\omega_{n+1}(x) = \prod_{k=0}^n (x - x_k) = 2^{-n} T_{n+1}(x).
+\end{align}
+\]</span> Among all possible choices of <span class="math inline">\(n+1\)</span> nodes on <span class="math inline">\([-1, 1]\)</span>, Chebyshev nodes minimize the maximum absolute value of the nodal polynomial: <span class="math display">\[
+\begin{align}
+\|\omega_{n+1}\|_\infty = \max_{x \in [-1, 1]} |\omega_{n+1}(x)| = 2^{-n}.
+\end{align}
+\]</span> If <span class="math inline">\(f\)</span> extends analytically to a complex neighborhood of <span class="math inline">\([-1,1]\)</span>, polynomial interpolation at Chebyshev nodes converges geometrically, with the nearest complex singularity determining the rate.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -945,12 +1100,168 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Spline linear system)</strong> Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in <span class="math inline">\(O(n)\)</span> time.</p>
+<p>The Lebesgue constant <span class="math inline">\(\Lambda_n = \max_{x \in [a, b]} \sum_{i=0}^n |L_i(x)|\)</span> bounds the stability of polynomial interpolation: <span class="math inline">\(\|f - P_n\|_\infty \leq (1 + \Lambda_n) \min_{Q \in \mathcal{P}_n} \|f - Q\|_\infty\)</span>.</p>
+<ul>
+<li><p>For equally spaced nodes, <span class="math inline">\(\Lambda_n \sim O\left(\frac{2^n}{n \log n}\right)\)</span> grows exponentially.</p></li>
+<li><p>For Chebyshev nodes, <span class="math inline">\(\Lambda_n \sim \frac{2}{\pi} \log(n+1) + O(1)\)</span> grows only logarithmically, remaining near-optimal.</p></li>
+</ul>
 </div>
 </div>
 </section>
-<section id="exercises" class="level2" data-number="25.7">
-<h2 data-number="25.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">25.7</span> Exercises</h2>
+<section id="piecewise-polynomials-cubic-splines" class="level2" data-number="26.6">
+<h2 data-number="26.6" class="anchored" data-anchor-id="piecewise-polynomials-cubic-splines"><span class="header-section-number">26.6</span> Piecewise Polynomials: Cubic Splines</h2>
+<p>When interpolating large sets of experimental data without prior knowledge of analytical smoothness, high-degree global polynomials are abandoned in favor of piecewise low-degree polynomials. A spline is a piecewise polynomial that maintains global derivative continuity across all internal nodes.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Cubic Spline Interpolant
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given <span class="math inline">\(n+1\)</span> distinct points <span class="math inline">\(a = x_0 &lt; x_1 &lt; ... &lt; x_n = b\)</span> and values <span class="math inline">\(y_0, y_1, ..., y_n\)</span>, a cubic spline <span class="math inline">\(S(x)\)</span> is a function such that:</p>
+<ol type="1">
+<li><p>On each subinterval <span class="math inline">\([x_i, x_{i+1}]\)</span>, <span class="math inline">\(S(x) = S_i(x)\)</span> is a cubic polynomial: <span class="math display">\[
+\begin{align}
+S_i(x) = a_i + b_i(x - x_i) + c_i(x - x_i)^2 + d_i(x - x_i)^3, \qquad i = 0, ..., n-1.
+\end{align}
+\]</span></p></li>
+<li><p>Interpolation conditions: <span class="math inline">\(S(x_i) = y_i\)</span> for all <span class="math inline">\(i = 0, ..., n\)</span>.</p></li>
+<li><p><span class="math inline">\(C^2\)</span> continuity: <span class="math inline">\(S(x)\)</span>, <span class="math inline">\(S'(x)\)</span>, and <span class="math inline">\(S''(x)\)</span> are continuous on the entire interval <span class="math inline">\([a, b]\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Tridiagonal Spline System
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(h_i = x_{i+1} - x_i\)</span> and let <span class="math inline">\(M_i = S''(x_i)\)</span> denote the second derivative of the spline at node <span class="math inline">\(x_i\)</span>. The condition that <span class="math inline">\(S'(x)\)</span> is continuous at each interior node <span class="math inline">\(x_i\)</span> (<span class="math inline">\(i = 1, ..., n-1\)</span>) leads to the linear system <span class="math display">\[
+\begin{align}
+h_{i-1} M_{i-1} + 2(h_{i-1} + h_i) M_i + h_i M_{i+1} = 6 \left( \frac{y_{i+1} - y_i}{h_i} - \frac{y_i - y_{i-1}}{h_{i-1}} \right).
+\end{align}
+\]</span> To close the system of <span class="math inline">\(n-1\)</span> equations in <span class="math inline">\(n+1\)</span> unknowns, two boundary conditions are imposed:</p>
+<ol type="1">
+<li><p><strong>Natural (Free) Spline:</strong> <span class="math inline">\(M_0 = M_n = 0\)</span>.</p></li>
+<li><p><strong>Clamped (Complete) Spline:</strong> <span class="math inline">\(S'(x_0) = f'(a)\)</span> and <span class="math inline">\(S'(x_n) = f'(b)\)</span>.</p></li>
+<li><p><strong>Periodic Spline:</strong> <span class="math inline">\(S'(x_0) = S'(x_n)\)</span> and <span class="math inline">\(M_0 = M_n\)</span>.</p></li>
+</ol>
+<p>For natural and clamped boundary conditions, the resulting linear system is strictly diagonally dominant and symmetric positive definite. It can be solved in <span class="math inline">\(O(n)\)</span> time using the Thomas algorithm.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(S_i(x)\)</span> is a cubic polynomial on <span class="math inline">\([x_i, x_{i+1}]\)</span>, its second derivative <span class="math inline">\(S_i''(x)\)</span> is a linear function interpolating <span class="math inline">\(M_i = S''(x_i)\)</span> and <span class="math inline">\(M_{i+1} = S''(x_{i+1})\)</span>: <span class="math display">\[
+\begin{align}
+S_i''(x) = M_i \frac{x_{i+1} - x}{h_i} + M_{i+1} \frac{x - x_i}{h_i}.
+\end{align}
+\]</span> Integrating twice with respect to <span class="math inline">\(x\)</span> gives <span class="math display">\[
+\begin{align}
+S_i(x) = \frac{M_i (x_{i+1} - x)^3}{6 h_i} + \frac{M_{i+1} (x - x_i)^3}{6 h_i} + C_i (x_{i+1} - x) + D_i (x - x_i).
+\end{align}
+\]</span> Applying the interpolation conditions <span class="math inline">\(S_i(x_i) = y_i\)</span> and <span class="math inline">\(S_i(x_{i+1}) = y_{i+1}\)</span> determines the constants <span class="math inline">\(C_i\)</span> and <span class="math inline">\(D_i\)</span>: <span class="math display">\[
+\begin{align}
+C_i = \frac{y_i}{h_i} - \frac{M_i h_i}{6}, \qquad D_i = \frac{y_{i+1}}{h_i} - \frac{M_{i+1} h_i}{6}.
+\end{align}
+\]</span> Differentiating <span class="math inline">\(S_i(x)\)</span> to obtain <span class="math inline">\(S_i'(x)\)</span> and evaluating at the endpoints of <span class="math inline">\([x_i, x_{i+1}]\)</span> yields <span class="math display">\[
+\begin{align}
+S_i'(x_i) &amp;= -\frac{M_i h_i}{3} - \frac{M_{i+1} h_i}{6} + \frac{y_{i+1} - y_i}{h_i}, \\
+    S_{i-1}'(x_i) &amp;= \frac{M_{i-1} h_{i-1}}{6} + \frac{M_i h_{i-1}}{3} + \frac{y_i - y_{i-1}}{h_{i-1}}.
+\end{align}
+\]</span> Equating <span class="math inline">\(S_{i-1}'(x_i) = S_i'(x_i)\)</span> for continuity of the first derivative and gathering terms produces the stated tridiagonal equation. Strict diagonal dominance follows from <span class="math inline">\(2(h_{i-1} + h_i) &gt; h_{i-1} + h_i\)</span>, which guarantees non-singularity and unconditional stability of Gaussian elimination without pivoting.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Minimum Curvature (Energy Minimization) Property
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(S(x)\)</span> be the natural cubic spline interpolating <span class="math inline">\(f(x)\)</span> at <span class="math inline">\(x_0, x_1, ..., x_n\)</span>. Let <span class="math inline">\(g \in C^2[a, b]\)</span> be any other function satisfying <span class="math inline">\(g(x_i) = y_i\)</span> for all <span class="math inline">\(i = 0, ..., n\)</span>. Then <span class="math display">\[
+\begin{align}
+\int_a^b [S''(x)]^2\,dx \leq \int_a^b [g''(x)]^2\,dx.
+\end{align}
+\]</span> Natural cubic splines are the smoothest possible interpolants in the sense of minimizing total bending energy.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(h(x) = g(x) - S(x)\)</span>. Since both <span class="math inline">\(g\)</span> and <span class="math inline">\(S\)</span> interpolate <span class="math inline">\(f\)</span> at the knots <span class="math inline">\(x_0, x_1, ..., x_n\)</span>, we have <span class="math display">\[
+\begin{align}
+h(x_i) = g(x_i) - S(x_i) = y_i - y_i = 0, \qquad i = 0, 1, ..., n.
+\end{align}
+\]</span> Expanding the squared second derivative of <span class="math inline">\(g = S + h\)</span>: <span class="math display">\[
+\begin{align}
+\int_a^b [g''(x)]^2\,dx
+    &amp;= \int_a^b [S''(x) + h''(x)]^2\,dx \\
+    &amp;= \int_a^b [S''(x)]^2\,dx + 2\int_a^b S''(x)h''(x)\,dx + \int_a^b [h''(x)]^2\,dx.
+\end{align}
+\]</span> We evaluate the cross term by integrating by parts on each subinterval <span class="math inline">\([x_i, x_{i+1}]\)</span>: <span class="math display">\[
+\begin{align}
+\int_{x_i}^{x_{i+1}} S''(x)h''(x)\,dx
+    &amp;= \left[ S''(x) h'(x) \right]_{x_i}^{x_{i+1}} - \int_{x_i}^{x_{i+1}} S'''(x) h'(x)\,dx.
+\end{align}
+\]</span> Because <span class="math inline">\(S(x)\)</span> is a cubic polynomial on <span class="math inline">\([x_i, x_{i+1}]\)</span>, its third derivative <span class="math inline">\(S_i'''(x)\)</span> is constant on <span class="math inline">\((x_i, x_{i+1})\)</span>. Let <span class="math inline">\(S_i'''(x) = c_i\)</span>. Then <span class="math display">\[
+\begin{align}
+\int_{x_i}^{x_{i+1}} S'''(x) h'(x)\,dx
+    &amp;= c_i \int_{x_i}^{x_{i+1}} h'(x)\,dx
+    = c_i [h(x_{i+1}) - h(x_i)] = 0,
+\end{align}
+\]</span> since <span class="math inline">\(h(x_{i+1}) = h(x_i) = 0\)</span>. Summing the boundary terms over all subintervals: <span class="math display">\[
+\begin{align}
+\int_a^b S''(x)h''(x)\,dx
+    &amp;= \sum_{i=0}^{n-1} \left( S''(x_{i+1}^-) h'(x_{i+1}) - S''(x_i^+) h'(x_i) \right) \\
+    &amp;= S''(b) h'(b) - S''(a) h'(a) + \sum_{i=1}^{n-1} \left( S''(x_i^-) - S''(x_i^+) \right) h'(x_i).
+\end{align}
+\]</span> Because <span class="math inline">\(S \in C^2[a, b]\)</span>, the second derivative is continuous across interior knots: <span class="math inline">\(S''(x_i^-) - S''(x_i^+) = 0\)</span>. For a natural cubic spline, <span class="math inline">\(S''(a) = S''(b) = 0\)</span>, so the boundary terms vanish as well. Therefore <span class="math display">\[
+\begin{align}
+\int_a^b S''(x)h''(x)\,dx = 0.
+\end{align}
+\]</span> Substituting this back yields <span class="math display">\[
+\begin{align}
+\int_a^b [g''(x)]^2\,dx
+    &amp;= \int_a^b [S''(x)]^2\,dx + \int_a^b [h''(x)]^2\,dx
+    \geq \int_a^b [S''(x)]^2\,dx,
+\end{align}
+\]</span> with equality if and only if <span class="math inline">\(h''(x) \equiv 0\)</span>, meaning <span class="math inline">\(h\)</span> is linear and hence identically zero because <span class="math inline">\(h(x_0) = h(x_n) = 0\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="26.7">
+<h2 data-number="26.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">26.7</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -962,9 +1273,17 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Construct the Lagrange form for points <span class="math inline">\((-1, 1), (0, 0), (1, 1)\)</span>. Verify it is <span class="math inline">\(P_2(x) = x^2\)</span>.</p></li>
-<li><p>Use the barycentric formula to interpolate <span class="math inline">\(f(x) = \sin(x)\)</span> at 5 Chebyshev nodes.</p></li>
-<li><p>Compare the error plots for <span class="math inline">\(f(x) = 1/(1+25x^2)\)</span> using 15 equally spaced nodes vs.&nbsp;15 Chebyshev nodes.</p></li>
+<li><p><strong>Compute.</strong> Let <span class="math inline">\(x_0 = 0, x_1 = 1, x_2 = 3\)</span> and <span class="math inline">\(y_0 = 1, y_1 = 3, y_2 = 2\)</span>. Construct the interpolating polynomial <span class="math inline">\(P_2(x)\)</span> using:</p>
+<ol type="1">
+<li><p>The Vandermonde matrix system.</p></li>
+<li><p>The Lagrange basis form.</p></li>
+<li><p>The Barycentric formula.</p>
+<p>Verify that all three approaches yield identical polynomials.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> Compute the barycentric weights <span class="math inline">\(w_0, ..., w_n\)</span> explicitly for <span class="math inline">\(n+1\)</span> Chebyshev nodes on <span class="math inline">\([-1, 1]\)</span>. Show that <span class="math inline">\(w_k = (-1)^k \sin\left(\frac{2k+1}{2n+2}\pi\right)\)</span> (or <span class="math inline">\((-1)^k \delta_k\)</span> with <span class="math inline">\(\delta_k = 1/2\)</span> at boundary nodes for Chebyshev-Lobatto points).</p></li>
+<li><p><strong>Check.</strong> Use the result above to bound the maximum error when <span class="math inline">\(f(x) = \sin(x)\)</span> is interpolated by a polynomial of degree 4 on <span class="math inline">\([0, \pi/2]\)</span> using equally spaced nodes.</p></li>
+<li><p><strong>Compute.</strong> Set up the <span class="math inline">\(2 \times 2\)</span> tridiagonal linear system for the natural cubic spline interpolating <span class="math inline">\((0, 0), (1, 1), (2, 0), (3, 1)\)</span>. Solve for <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_2\)</span>, and write down the explicit cubic polynomial for each subinterval.</p></li>
+<li><p><strong>Explore.</strong> For the spline in the previous exercise, compute its bending energy <span class="math inline">\(\int_0^3(S'')^2\,dx\)</span> and compare it with the energy of one other twice-differentiable interpolant.</p></li>
 </ol>
 </div>
 </div>
@@ -1388,13 +1707,13 @@ x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, ..., n.
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../iterative/gmres.html" class="pagination-link" aria-label="GMRES">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span>
+      <a href="../iterative/multigrid.html" class="pagination-link" aria-label="Multigrid Methods">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../numerical-analysis/quadrature.html" class="pagination-link" aria-label="Numerical Quadrature">
-        <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../numerical-analysis/chebyshev.html" class="pagination-link" aria-label="Chebyshev Polynomials and Minimax Approximation">
+        <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

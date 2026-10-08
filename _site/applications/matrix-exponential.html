@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>16&nbsp; Chebyshev Polynomials – Scientific Computing</title>
+<title>33&nbsp; Matrix Exponentials and Krylov Subspace Actions – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../eigenvalues/eigenvalues.html" rel="next">
-<link href="../orthogonality/least-squares.html" rel="prev">
+<link href="../applications/markov.html" rel="next">
+<link href="../applications/fourier.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/chebyshev.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/matrix-exponential.html"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,21 +729,22 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#failure-of-the-monomial-basis" id="toc-failure-of-the-monomial-basis" class="nav-link active" data-scroll-target="#failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</a></li>
-  <li><a href="#chebyshev-polynomials-t_k" id="toc-chebyshev-polynomials-t_k" class="nav-link" data-scroll-target="#chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</a></li>
-  <li><a href="#zeros-and-nodes" id="toc-zeros-and-nodes" class="nav-link" data-scroll-target="#zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</a></li>
-  <li><a href="#the-minimax-property" id="toc-the-minimax-property" class="nav-link" data-scroll-target="#the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</a></li>
-  <li><a href="#chebyshev-series" id="toc-chebyshev-series" class="nav-link" data-scroll-target="#chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</a></li>
+  <li><a href="#definition-properties-and-the-sparse-bottleneck" id="toc-definition-properties-and-the-sparse-bottleneck" class="nav-link active" data-scroll-target="#definition-properties-and-the-sparse-bottleneck"><span class="header-section-number">33.1</span> Definition, Properties, and the Sparse Bottleneck</a></li>
+  <li><a href="#krylov-subspace-approximation-of-the-exponential-action" id="toc-krylov-subspace-approximation-of-the-exponential-action" class="nav-link" data-scroll-target="#krylov-subspace-approximation-of-the-exponential-action"><span class="header-section-number">33.2</span> Krylov Subspace Approximation of the Exponential Action</a></li>
+  <li><a href="#the-continuous-adjoint-sensitivity-formula" id="toc-the-continuous-adjoint-sensitivity-formula" class="nav-link" data-scroll-target="#the-continuous-adjoint-sensitivity-formula"><span class="header-section-number">33.3</span> The Continuous-Adjoint Sensitivity Formula</a></li>
+  <li><a href="#shared-krylov-spaces-and-quadrature" id="toc-shared-krylov-spaces-and-quadrature" class="nav-link" data-scroll-target="#shared-krylov-spaces-and-quadrature"><span class="header-section-number">33.4</span> Shared Krylov Spaces and Quadrature</a></li>
+  <li><a href="#generator-recovery-via-the-matrix-logarithm" id="toc-generator-recovery-via-the-matrix-logarithm" class="nav-link" data-scroll-target="#generator-recovery-via-the-matrix-logarithm"><span class="header-section-number">33.5</span> Generator Recovery via the Matrix Logarithm</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">33.6</span> Exercises</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/chebyshev.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/matrix-exponential.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/chebyshev.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/matrix-exponential.html"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></h1>
+<h1 class="title"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></h1>
 </div>
 
 
@@ -702,25 +761,33 @@ window.Quarto = {
 </header>
 
 
-<p>Chebyshev polynomials are the polynomial analogue of Fourier modes on <span class="math inline">\([-1,1]\)</span>. They oscillate evenly, stay bounded, and give node sets that control interpolation error. The central idea is minimax: among polynomials of a fixed degree, Chebyshev polynomials spread error as evenly as possible instead of allowing large boundary spikes.</p>
-<section id="failure-of-the-monomial-basis" class="level2" data-number="16.1">
-<h2 data-number="16.1" class="anchored" data-anchor-id="failure-of-the-monomial-basis"><span class="header-section-number">16.1</span> Failure of the Monomial Basis</h2>
-<p>Polynomial approximation has two separate failure modes. The first is numerical: the monomial basis <span class="math inline">\(1,x,x^2,...\)</span> leads to ill-conditioned Vandermonde matrices. The second is analytical: even exact interpolation at equally spaced nodes can oscillate badly near the interval endpoints.</p>
+<p><strong>(Markov thread)</strong> A probability vector governed by a finite-state generator satisfies <span class="math inline">\(\bp(t)=e^{t\bA}\bp_0\)</span>. The exponential action developed here advances that distribution without forming <span class="math inline">\(e^{t\bA}\)</span>. The next chapter adds positivity, conservation, and truncation structure.</p>
+<p>Linear evolution equations describe continuous physical and probabilistic processes throughout scientific computing. Consider the autonomous initial-value problem $$ <span class="math display">\[\begin{align}
+
+    \frac{d\bu}{dt} = \bA\bu(t), \qquad \bu(0) = \bv,
+\end{align}\]</span> <span class="math display">\[
+where $\bA \in \fR^{n \times n}$ or $\fC^{n \times n}$ is an infinitesimal generator or spatial discretization matrix, and $\bv$ is a prescribed initial state. The analytical solution is given by the matrix exponential action
+\]</span> <span class="math display">\[\begin{align}
+
+    \bu(t) = e^{t\bA}\bv.
+\end{align}\]</span> $$ When <span class="math inline">\(n\)</span> is large and <span class="math inline">\(\bA\)</span> is sparse, computing the full matrix <span class="math inline">\(e^{t\bA}\)</span> is computationally prohibitive. We evaluate the vector action <span class="math inline">\(e^{t\bA}\bv\)</span> directly through projection onto Krylov subspaces.</p>
+<section id="definition-properties-and-the-sparse-bottleneck" class="level2" data-number="33.1">
+<h2 data-number="33.1" class="anchored" data-anchor-id="definition-properties-and-the-sparse-bottleneck"><span class="header-section-number">33.1</span> Definition, Properties, and the Sparse Bottleneck</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Interpolation Error Polynomial
+<span class="screen-reader-only">Note</span>Definition: The Matrix Exponential
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Given distinct interpolation nodes <span class="math inline">\(x_1,...,x_n\)</span>, define <span class="math display">\[
+<p>For any square matrix <span class="math inline">\(\bA \in \fC^{n \times n}\)</span>, the matrix exponential is defined by the convergent power series <span class="math display">\[
 \begin{align}
-\omega_n(x)=\prod_{j=1}^n (x-x_j).
+e^{\bA} = \sum_{k=0}^\infty \frac{\bA^k}{k!} = \bI + \bA + \frac{1}{2}\bA^2 + \frac{1}{6}\bA^3 + ...
 \end{align}
-\]</span> This polynomial is zero at every node. Its size between the nodes controls how much interpolation can amplify the derivative of the target function.</p>
+\]</span> For any scalar <span class="math inline">\(t \in \fR\)</span>, the matrix function <span class="math inline">\(e^{t\bA}\)</span> satisfies <span class="math inline">\(\frac{d}{dt} e^{t\bA} = \bA e^{t\bA} = e^{t\bA}\bA\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -729,314 +796,33 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Interpolation Error Formula
+<span class="screen-reader-only">Note</span>Theorem: Algebraic Properties of the Matrix Exponential
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(p_{n-1}\)</span> interpolate a function <span class="math inline">\(f\)</span> at <span class="math inline">\(n\)</span> distinct nodes <span class="math inline">\(x_1,...,x_n\)</span>. If <span class="math inline">\(f\)</span> has <span class="math inline">\(n\)</span> continuous derivatives on <span class="math inline">\([-1,1]\)</span>, then for each <span class="math inline">\(x\in[-1,1]\)</span> there exists a point <span class="math inline">\(\xi_x\in[-1,1]\)</span> such that <span class="math display">\[
-\begin{align}
-f(x)-p_{n-1}(x)
-    =
-    \frac{f^{(n)}(\xi_x)}{n!}\omega_n(x).
-\end{align}
-\]</span> Therefore, <span class="math display">\[
-\begin{align}
-\|f-p_{n-1}\|_\infty
-    \leq
-    \frac{\|f^{(n)}\|_\infty}{n!}\|\omega_n\|_\infty.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA, \bB \in \fC^{n \times n}\)</span>.</p>
 <ol type="1">
-<li><p>For three nodes <span class="math inline">\(x_1,x_2,x_3\)</span>, write out <span class="math inline">\(\omega_3(x)\)</span> and verify that it vanishes at each node.</p></li>
-<li><p>Use the result above to explain why node choice matters even when <span class="math inline">\(f^{(n)}\)</span> is fixed.</p></li>
-<li><p>Build the degree-<span class="math inline">\(14\)</span> Vandermonde matrix on <span class="math inline">\(15\)</span> equally spaced nodes in <span class="math inline">\([-1,1]\)</span>. Compute <span class="math inline">\(\kappa_2(\bV)\)</span>.</p></li>
-<li><p>Plot Runge’s function <span class="math inline">\(f(x)=1/(1+25x^2)\)</span> and its degree-<span class="math inline">\(10\)</span> interpolant at equally spaced nodes. Compare the largest error in the middle of the interval with the largest error near the endpoints.</p></li>
+<li><p>If <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span> commute (<span class="math inline">\(\bA\bB = \bB\bA\)</span>), then <span class="math inline">\(e^{\bA+\bB} = e^\bA e^\bB\)</span>. If they do not commute, this equality fails in general.</p></li>
+<li><p>The matrix exponential is always nonsingular, with inverse <span class="math inline">\((e^\bA)^{-1} = e^{-\bA}\)</span>.</p></li>
+<li><p>For any nonsingular similarity transform <span class="math inline">\(\bS\)</span>, <span class="math inline">\(e^{\bS\bA\bS^{-1}} = \bS e^\bA \bS^{-1}\)</span>. In particular, if <span class="math inline">\(\bA = \bQ\boldsymbol{\Lambda}\bQ^{-1}\)</span> is diagonalizable, then <span class="math inline">\(e^\bA = \bQ \operatorname{diag}(e^{\lambda_1}, ..., e^{\lambda_n}) \bQ^{-1}\)</span>.</p></li>
+<li><p>The determinant satisfies Jacobi’s formula: <span class="math inline">\(\det(e^\bA) = e^{\operatorname{trace}(\bA)}\)</span>.</p></li>
 </ol>
 </div>
 </div>
-</section>
-<section id="chebyshev-polynomials-t_k" class="level2" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="chebyshev-polynomials-t_k"><span class="header-section-number">16.2</span> Chebyshev Polynomials (<span class="math inline">\(T_k\)</span>)</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Polynomial
+<span class="screen-reader-only">Tip</span>Proof
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(x\in[-1,1]\)</span>, the degree-<span class="math inline">\(k\)</span> Chebyshev polynomial is <span class="math display">\[
-\begin{align}
-T_k(x)=\cos(k\arccos x).
-\end{align}
-\]</span> Equivalently, if <span class="math inline">\(x=\cos\theta\)</span>, then <span class="math display">\[
-\begin{align}
-T_k(\cos\theta)=\cos(k\theta).
-\end{align}
-\]</span></p>
+<p>Property (1) follows by expanding the Cauchy product of the series for <span class="math inline">\(e^\bA\)</span> and <span class="math inline">\(e^\bB\)</span>, where commutativity permits the binomial theorem for <span class="math inline">\((\bA+\bB)^k\)</span>. Property (2) is a direct consequence of (1) with <span class="math inline">\(\bB = -\bA\)</span>, since <span class="math inline">\(\bA\)</span> commutes with <span class="math inline">\(-\bA\)</span> and <span class="math inline">\(e^{\bzero} = \bI\)</span>. Property (3) follows from <span class="math inline">\((\bS\bA\bS^{-1})^k = \bS\bA^k\bS^{-1}\)</span>. Property (4) follows from the Schur decomposition <span class="math inline">\(\bA = \bQ\bT\bQ^*\)</span>: the diagonal entries of <span class="math inline">\(\bT\)</span> are the eigenvalues <span class="math inline">\(\lambda_i\)</span>, the diagonal entries of <span class="math inline">\(e^\bT\)</span> are <span class="math inline">\(e^{\lambda_i}\)</span>, and the determinant of a triangular matrix is the product of its diagonal entries: <span class="math inline">\(\det(e^\bA) = \det(e^\bT) = \prod_{i=1}^n e^{\lambda_i} = e^{\sum \lambda_i} = e^{\operatorname{trace}(\bA)}\)</span>.</p>
 </div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Basic Chebyshev Identities
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The polynomials from the result above satisfy <span class="math display">\[
-\begin{align}
-T_0(x)=1,\qquad T_1(x)=x,\qquad
-    T_{k+1}(x)=2xT_k(x)-T_{k-1}(x).
-\end{align}
-\]</span> They are bounded by <span class="math inline">\(1\)</span> on <span class="math inline">\([-1,1]\)</span>: <span class="math display">\[
-\begin{align}
-|T_k(x)|\leq 1.
-\end{align}
-\]</span> They are orthogonal with respect to the weight <span class="math inline">\((1-x^2)^{-1/2}\)</span>: <span class="math display">\[
-\begin{align}
-\int_{-1}^1
-    T_j(x)T_k(x)\frac{dx}{\sqrt{1-x^2}}
-    =0,
-    \qquad j\neq k.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Use <span class="math inline">\(\cos((k+1)\theta)+\cos((k-1)\theta)=2\cos\theta\cos(k\theta)\)</span> to prove the three-term recurrence in the result above.</p></li>
-<li><p>Compute <span class="math inline">\(T_2\)</span>, <span class="math inline">\(T_3\)</span>, and <span class="math inline">\(T_4\)</span> from the recurrence.</p></li>
-<li><p>Prove <span class="math inline">\(|T_k(x)|\leq 1\)</span> on <span class="math inline">\([-1,1]\)</span> directly from the result above.</p></li>
-<li><p>Substitute <span class="math inline">\(x=\cos\theta\)</span> into the weighted integral and reduce the orthogonality statement to Fourier cosine orthogonality on <span class="math inline">\([0,\pi]\)</span>.</p></li>
-<li><p>Plot <span class="math inline">\(T_0,...,T_5\)</span>. Mark the points where each polynomial reaches <span class="math inline">\(\pm 1\)</span>.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="zeros-and-nodes" class="level2" data-number="16.3">
-<h2 data-number="16.3" class="anchored" data-anchor-id="zeros-and-nodes"><span class="header-section-number">16.3</span> Zeros and Nodes</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Zeros and Extrema
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The zeros of <span class="math inline">\(T_n\)</span> are <span class="math display">\[
-\begin{align}
-x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,...,n.
-\end{align}
-\]</span> The extrema of <span class="math inline">\(T_n\)</span> occur at <span class="math display">\[
-\begin{align}
-y_j=\cos\left(\frac{j\pi}{n}\right),
-    \qquad j=0,...,n,
-\end{align}
-\]</span> and satisfy <span class="math inline">\(T_n(y_j)=(-1)^j\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Nodes
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The Chebyshev interpolation nodes are the zeros of <span class="math inline">\(T_n\)</span>: <span class="math display">\[
-\begin{align}
-x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,...,n.
-\end{align}
-\]</span> These nodes cluster near <span class="math inline">\(\pm 1\)</span>. The clustering is not cosmetic; it reduces the size of the interpolation error polynomial from the result above.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Error Polynomial
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(x_1,...,x_n\)</span> are the Chebyshev nodes from the result above, then <span class="math display">\[
-\begin{align}
-\omega_n(x)=\prod_{j=1}^n (x-x_j)
-    =
-    2^{1-n}T_n(x).
-\end{align}
-\]</span> Consequently, <span class="math display">\[
-\begin{align}
-\|\omega_n\|_\infty=2^{1-n}.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Starting from <span class="math inline">\(T_n(\cos\theta)=\cos(n\theta)\)</span>, solve <span class="math inline">\(\cos(n\theta)=0\)</span> and prove the zero formula in the result above.</p></li>
-<li><p>Solve <span class="math inline">\(\cos(n\theta)=\pm 1\)</span> and prove the extrema formula in the result above.</p></li>
-<li><p>Explain why the Chebyshev nodes cluster near <span class="math inline">\(\pm 1\)</span> by comparing the spacing of equally spaced <span class="math inline">\(\theta\)</span> values under <span class="math inline">\(x=\cos\theta\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(T_n\)</span> has leading coefficient <span class="math inline">\(2^{n-1}\)</span> for <span class="math inline">\(n\geq 1\)</span>.</p></li>
-<li><p>Use the previous step and the fact that <span class="math inline">\(T_n\)</span> has zeros <span class="math inline">\(x_1,...,x_n\)</span> to prove the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="the-minimax-property" class="level2" data-number="16.4">
-<h2 data-number="16.4" class="anchored" data-anchor-id="the-minimax-property"><span class="header-section-number">16.4</span> The Minimax Property</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Chebyshev Minimax Polynomial
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Among all monic polynomials <span class="math inline">\(q\)</span> of degree <span class="math inline">\(n\)</span> on <span class="math inline">\([-1,1]\)</span>, <span class="math display">\[
-\begin{align}
-2^{1-n}T_n(x)
-\end{align}
-\]</span> has the smallest possible infinity norm: <span class="math display">\[
-\begin{align}
-\|2^{1-n}T_n\|_\infty
-    =
-    2^{1-n}
-    \leq
-    \|q\|_\infty.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Let <span class="math inline">\(m(x)=2^{1-n}T_n(x)\)</span>. Use the result above to show that <span class="math inline">\(m\)</span> is monic and <span class="math inline">\(\|m\|_\infty=2^{1-n}\)</span>.</p></li>
-<li><p>Suppose another monic polynomial <span class="math inline">\(q\)</span> satisfies <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span>. Define <span class="math inline">\(r=q-m\)</span>. What is the degree of <span class="math inline">\(r\)</span>?</p></li>
-<li><p>Evaluate the signs of <span class="math inline">\(m\)</span> at the <span class="math inline">\(n+1\)</span> extrema from the result above.</p></li>
-<li><p>Use the assumption <span class="math inline">\(\|q\|_\infty&lt;2^{1-n}\)</span> to show that <span class="math inline">\(r\)</span> changes sign between each pair of adjacent extrema.</p></li>
-<li><p>Conclude that <span class="math inline">\(r\)</span> has at least <span class="math inline">\(n\)</span> roots, contradicting its degree. This proves the result above.</p></li>
-<li><p>Combine the result above and the result above to explain why Chebyshev nodes are the natural interpolation nodes.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="chebyshev-series" class="level2" data-number="16.5">
-<h2 data-number="16.5" class="anchored" data-anchor-id="chebyshev-series"><span class="header-section-number">16.5</span> Chebyshev Series</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Chebyshev Series
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A Chebyshev expansion writes a function on <span class="math inline">\([-1,1]\)</span> as <span class="math display">\[
-\begin{align}
-f(x)\sim \sum_{k=0}^{\infty} c_kT_k(x).
-\end{align}
-\]</span> Using <span class="math inline">\(x=\cos\theta\)</span>, this is exactly a cosine series for the even function <span class="math inline">\(f(\cos\theta)\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Coefficient Formula
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(k\geq 1\)</span>, <span class="math display">\[
-\begin{align}
-c_k=\frac{2}{\pi}\int_0^\pi f(\cos\theta)\cos(k\theta)\,d\theta,
-\end{align}
-\]</span> and <span class="math display">\[
-\begin{align}
-c_0=\frac{1}{\pi}\int_0^\pi f(\cos\theta)\,d\theta.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Spectral Accuracy
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(f\)</span> is analytic on and near <span class="math inline">\([-1,1]\)</span>, then its Chebyshev coefficients decay geometrically: <span class="math display">\[
-\begin{align}
-|c_k|\leq C\rho^{-k}
-    \qquad \text{for some } \rho&gt;1.
-\end{align}
-\]</span> The truncated series <span class="math display">\[
-\begin{align}
-p_n(x)=\sum_{k=0}^n c_kT_k(x)
-\end{align}
-\]</span> therefore satisfies <span class="math display">\[
-\begin{align}
-\|f-p_n\|_\infty=O(\rho^{-n}).
-\end{align}
-\]</span> This is called spectral accuracy.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1049,7 +835,108 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Fourier connection)</strong> Chebyshev methods are Fourier cosine methods after the change of variables <span class="math inline">\(x=\cos\theta\)</span>. This is why fast cosine transforms can compute Chebyshev coefficients efficiently.</p>
+<p><strong>(Dense evaluation vs.&nbsp;the vector action bottleneck)</strong> Classical methods for computing the full <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(e^{\bA}\)</span> rely on scaling and squaring with rational Padé approximants. Evaluating an <span class="math inline">\([m/m]\)</span> Padé approximant requires computing matrix powers and solving matrix linear systems, incurring <span class="math inline">\(O(n^3)\)</span> operations. More critically, even when <span class="math inline">\(\bA\)</span> is sparse, the exponential <span class="math inline">\(e^{t\bA}\)</span> is typically dense. Storing <span class="math inline">\(e^{t\bA}\)</span> for <span class="math inline">\(n = 10^6\)</span> requires eight terabytes of memory in double precision. Many evolution calculations require only the action <span class="math inline">\(e^{t\bA}\bv\)</span>, which can be approximated without forming the full exponential.</p>
+</div>
+</div>
+</section>
+<section id="krylov-subspace-approximation-of-the-exponential-action" class="level2" data-number="33.2">
+<h2 data-number="33.2" class="anchored" data-anchor-id="krylov-subspace-approximation-of-the-exponential-action"><span class="header-section-number">33.2</span> Krylov Subspace Approximation of the Exponential Action</h2>
+<p>To compute the action <span class="math inline">\(e^{t\bA}\bv\)</span> for large sparse <span class="math inline">\(\bA\)</span>, we project the evolution onto an expanding Krylov subspace <span class="math inline">\(\mathcal{K}_m(\bA, \bv) = \operatorname{span}\{\bv, \bA\bv, ..., \bA^{m-1}\bv\}\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Arnoldi Approximation of <span class="math inline">\(e^{t\bA}\bv\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fC^{n \times n}\)</span> and let <span class="math inline">\(\bv \in \fC^n\)</span> be a nonzero vector with <span class="math inline">\(\beta = \|\bv\|_2\)</span>. After <span class="math inline">\(m\)</span> steps of the Arnoldi iteration starting from <span class="math inline">\(\bv_1 = \bv / \beta\)</span>, we obtain the Arnoldi relation <span class="math display">\[
+\begin{align}
+\bA \bV_m = \bV_m \bH_m + h_{m+1,m}\bv_{m+1}\be_m^T,
+\end{align}
+\]</span> where <span class="math inline">\(\bV_m \in \fC^{n \times m}\)</span> has orthonormal columns and <span class="math inline">\(\bH_m = \bV_m^* \bA \bV_m \in \fC^{m \times m}\)</span> is upper Hessenberg. The Arnoldi approximation to the exponential action is <span class="math display">\[
+\begin{align}
+e^{t\bA}\bv \approx \beta \bV_m e^{t\bH_m}\be_1.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We approximate the solution of <span class="math inline">\(\bu'(t) = \bA\bu(t)\)</span> with <span class="math inline">\(\bu(0) = \bv\)</span> within the subspace <span class="math inline">\(\mathcal{K}_m(\bA, \bv)\)</span> by setting <span class="math inline">\(\bu_m(t) = \bV_m \bz_m(t)\)</span>, where <span class="math inline">\(\bz_m(t) \in \fC^m\)</span>. The residual defect of the ODE is <span class="math inline">\(\br_m(t) = \bu_m'(t) - \bA\bu_m(t) = \bV_m \bz_m'(t) - \bA\bV_m\bz_m(t)\)</span>. Imposing the Galerkin orthogonality condition <span class="math inline">\(\bV_m^* \br_m(t) = \bzero\)</span> yields <span class="math display">\[
+\begin{align}
+\bV_m^* \bV_m \bz_m'(t) - \bV_m^* \bA \bV_m \bz_m(t) = \bzero \implies \bz_m'(t) = \bH_m \bz_m(t).
+\end{align}
+\]</span> The initial condition <span class="math inline">\(\bu_m(0) = \bv = \beta \bv_1 = \beta \bV_m \be_1\)</span> requires <span class="math inline">\(\bz_m(0) = \beta \be_1\)</span>. Solving the reduced <span class="math inline">\(m \times m\)</span> linear system gives <span class="math inline">\(\bz_m(t) = \beta e^{t\bH_m}\be_1\)</span>. Multiplying by <span class="math inline">\(\bV_m\)</span> recovers <span class="math inline">\(\bu_m(t) = \beta \bV_m e^{t\bH_m}\be_1\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Residual Representation and A Posteriori Error Bound
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The defect in the differential equation satisfies <span class="math display">\[
+\begin{align}
+\bu_m'(t) - \bA\bu_m(t) = -\beta h_{m+1,m} [\be_m^T e^{t\bH_m}\be_1] \bv_{m+1}.
+\end{align}
+\]</span> Integrating the defect via variation of constants yields the exact error identity <span class="math display">\[
+\begin{align}
+e^{t\bA}\bv - \beta \bV_m e^{t\bH_m}\be_1 = \beta h_{m+1,m} \int_0^t e^{(t-\tau)\bA} \bv_{m+1} [\be_m^T e^{\tau\bH_m}\be_1]\,d\tau.
+\end{align}
+\]</span> If the operator <span class="math inline">\(\bA\)</span> generates a contractive semigroup satisfying <span class="math inline">\(\|e^{\tau\bA}\| \leq 1\)</span> for all <span class="math inline">\(\tau \geq 0\)</span>, the error is bounded by <span class="math display">\[
+\begin{align}
+\|e^{t\bA}\bv - \beta \bV_m e^{t\bH_m}\be_1\| \leq \beta |h_{m+1,m}| \int_0^t |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Using the Arnoldi relation <span class="math inline">\(\bA\bV_m = \bV_m\bH_m + h_{m+1,m}\bv_{m+1}\be_m^T\)</span>, the ODE defect is <span class="math display">\[
+\begin{align}
+\bu_m'(t) - \bA\bu_m(t) &amp;= \bV_m \bz_m'(t) - \bA\bV_m \bz_m(t) \\
+    &amp;= \bV_m \bH_m \bz_m(t) - \left( \bV_m\bH_m + h_{m+1,m}\bv_{m+1}\be_m^T \right) \bz_m(t) \\
+    &amp;= -h_{m+1,m} \bv_{m+1} \be_m^T \bz_m(t) \\
+    &amp;= -\beta h_{m+1,m} [\be_m^T e^{t\bH_m}\be_1] \bv_{m+1}.
+\end{align}
+\]</span> The approximation error <span class="math inline">\(\be(t) = \bu(t) - \bu_m(t)\)</span> satisfies <span class="math inline">\(\be'(t) = \bA\be(t) - (\bu_m'(t) - \bA\bu_m(t))\)</span> with <span class="math inline">\(\be(0) = \bzero\)</span>. Integrating via variation of constants: <span class="math display">\[
+\begin{align}
+\be(t) = \int_0^t e^{(t-\tau)\bA} \left[ \bA\bu_m(\tau) - \bu_m'(\tau) \right] d\tau = \beta h_{m+1,m} \int_0^t e^{(t-\tau)\bA} \bv_{m+1} [\be_m^T e^{\tau\bH_m}\be_1]\,d\tau.
+\end{align}
+\]</span> Taking norms with <span class="math inline">\(\|e^{(t-\tau)\bA}\| \leq 1\)</span> and <span class="math inline">\(\|\bv_{m+1}\|_2 = 1\)</span> yields <span class="math display">\[
+\begin{align}
+\|\be(t)\| \leq \beta |h_{m+1,m}| \int_0^t \|e^{(t-\tau)\bA}\|_2 \|\bv_{m+1}\|_2 |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau \leq \beta |h_{m+1,m}| \int_0^t |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau.
+\end{align}
+\]</span></p>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1062,9 +949,156 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Interpolation vs.&nbsp;expansion)</strong> Chebyshev interpolation chooses values at Chebyshev nodes. Chebyshev series choose coefficients in the Chebyshev basis. Both work well for the same reason: the basis oscillates evenly and avoids the endpoint instability of monomials.</p>
+<p><strong>(Superlinear convergence of Krylov actions)</strong> For important classes of dissipative operators, Krylov error bounds enter a superlinear regime as the subspace dimension grows relative to the spectral scale. The projected approximation also adapts to the spectrum seen from the starting vector rather than to the full matrix norm alone. Grid-independent convergence requires additional spectral or semigroup assumptions and should be checked for the discretization at hand.</p>
 </div>
 </div>
+</section>
+<section id="the-continuous-adjoint-sensitivity-formula" class="level2" data-number="33.3">
+<h2 data-number="33.3" class="anchored" data-anchor-id="the-continuous-adjoint-sensitivity-formula"><span class="header-section-number">33.3</span> The Continuous-Adjoint Sensitivity Formula</h2>
+<p>In parameter inference, we estimate unknown coefficients in an evolution model from discrete observations. Consider an affine generator family $$ <span class="math display">\[\begin{align}
+
+    \bA(\btheta) = \bA_0 + \sum_{j=1}^{M_{\mathrm{lib}}} \theta_j \bA_j,
+\end{align}\]</span> $$ where <span class="math inline">\(\bA_0\)</span> is a baseline operator, the matrices <span class="math inline">\(\bA_j\)</span> represent candidate physical mechanisms, and <span class="math inline">\(\btheta = (\theta_1, ..., \theta_{M_{\mathrm{lib}}})^T\)</span> is a vector of unknown rate parameters.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Adjoint Gradient Formula for Exponential Actions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\by = e^{h\bA(\btheta)}\bv\)</span> denote the state propagated across an interval of length <span class="math inline">\(h\)</span>. Let <span class="math inline">\(\ell(\by)\)</span> be a differentiable scalar loss with endpoint gradient <span class="math inline">\(\nabla_{\by}\ell\)</span>. Then the derivative of the loss with respect to coefficient <span class="math inline">\(\theta_j\)</span> is <span class="math display">\[
+\begin{align}
+\frac{\partial \ell}{\partial \theta_j} = h \operatorname{Re} \int_0^1 \blambda(s)^* \bA_j \bm{f}(s)\,ds,
+\end{align}
+\]</span> where the forward path <span class="math inline">\(\bm{f}(s)\)</span> and adjoint path <span class="math inline">\(\blambda(s)\)</span> are defined by <span class="math display">\[
+\begin{align}
+\bm{f}(s) = e^{sh\bA}\bv, \qquad \blambda(s) = e^{(1-s)h\bA^*} \nabla_{\by}\ell, \qquad 0 \leq s \leq 1.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bm{f}(s)\)</span> satisfy the ODE <span class="math inline">\(\bm{f}'(s) = h\bA(\btheta)\bm{f}(s)\)</span> with <span class="math inline">\(\bm{f}(0) = \bv\)</span> and <span class="math inline">\(\by = \bm{f}(1)\)</span>. Differentiating this initial-value problem with respect to <span class="math inline">\(\theta_j\)</span> yields the tangent equation <span class="math display">\[
+\begin{align}
+\frac{d}{ds} \left( \frac{\partial \bm{f}}{\partial \theta_j} \right) = h\bA \left( \frac{\partial \bm{f}}{\partial \theta_j} \right) + h\bA_j \bm{f}(s), \qquad \frac{\partial \bm{f}(0)}{\partial \theta_j} = \bzero.
+\end{align}
+\]</span> Applying variation of constants at the endpoint <span class="math inline">\(s = 1\)</span> gives <span class="math display">\[
+\begin{align}
+\frac{\partial \by}{\partial \theta_j} = h \int_0^1 e^{(1-s)h\bA} \bA_j \bm{f}(s)\,ds.
+\end{align}
+\]</span> Applying the chain rule to the scalar loss <span class="math inline">\(\ell(\by)\)</span> and taking the real part produces <span class="math display">\[
+\begin{align}
+\frac{\partial \ell}{\partial \theta_j} &amp;= \operatorname{Re}\left( (\nabla_{\by}\ell)^* \frac{\partial \by}{\partial \theta_j} \right)
+    = h \operatorname{Re} \int_0^1 (\nabla_{\by}\ell)^* e^{(1-s)h\bA} \bA_j \bm{f}(s)\,ds \\
+    &amp;= h \operatorname{Re} \int_0^1 \left( e^{(1-s)h\bA^*} \nabla_{\by}\ell \right)^* \bA_j \bm{f}(s)\,ds
+    = h \operatorname{Re} \int_0^1 \blambda(s)^* \bA_j \bm{f}(s)\,ds.
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The adjoint sharing principle)</strong> Evaluating a separate directional Fréchet derivative <span class="math inline">\(L_{\exp}(h\bA, h\bA_j)\)</span> for each candidate matrix <span class="math inline">\(\bA_j\)</span> repeats the forward exponential propagation <span class="math inline">\(M_{\mathrm{lib}}\)</span> times. The adjoint identity decouples propagation from the candidate directions: we compute the forward path <span class="math inline">\(\bm{f}\)</span> and adjoint path <span class="math inline">\(\blambda\)</span> once per observation interval, and evaluate their contractions against <span class="math inline">\(\bA_j\)</span> via numerical quadrature.</p>
+</div>
+</div>
+</section>
+<section id="shared-krylov-spaces-and-quadrature" class="level2" data-number="33.4">
+<h2 data-number="33.4" class="anchored" data-anchor-id="shared-krylov-spaces-and-quadrature"><span class="header-section-number">33.4</span> Shared Krylov Spaces and Quadrature</h2>
+<p>To evaluate the bilinear integral numerically, we approximate both paths using independent forward and adjoint Krylov spaces, and integrate the contraction using Gauss–Legendre quadrature.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Bilinear Quadrature Evaluation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\mathcal{K}_{m_f}(\bA, \bv)\)</span> have basis <span class="math inline">\(\bV_f\)</span> and projected Hessenberg matrix <span class="math inline">\(\bH_f\)</span>, with <span class="math inline">\(\beta_f = \|\bv\|_2\)</span>. Let <span class="math inline">\(\mathcal{K}_{m_a}(\bA^*, \nabla_{\by}\ell)\)</span> have basis <span class="math inline">\(\bV_a\)</span> and projected matrix <span class="math inline">\(\bH_a\)</span>, with <span class="math inline">\(\beta_a = \|\nabla_{\by}\ell\|_2\)</span>. At any Gauss–Legendre node <span class="math inline">\(s_q \in [0, 1]\)</span> with quadrature weight <span class="math inline">\(w_q\)</span>, the path approximations are <span class="math display">\[
+\begin{align}
+\bm{f}^{(q)} = \beta_f \bV_f e^{s_q h \bH_f}\be_1, \qquad \blambda^{(q)} = \beta_a \bV_a e^{(1-s_q) h \bH_a}\be_1.
+\end{align}
+\]</span> The coefficient gradient evaluates to <span class="math display">\[
+\begin{align}
+\frac{\partial \ell}{\partial \theta_j} \approx h \sum_{q=1}^{n_q} w_q \operatorname{Re}\left[ (\blambda^{(q)})^* \bA_j \bm{f}^{(q)} \right].
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(One-sided termination in refinement heuristics)</strong> A common stopping diagnostic tests the product of forward and adjoint residuals <span class="math inline">\(\rho_f \rho_a\)</span>. If the forward path reaches an invariant subspace, <span class="math inline">\(\rho_f = 0\)</span>, causing the product to vanish even when the adjoint path is at depth <span class="math inline">\(m_a = 2\)</span> and completely unresolved. Reliable stopping criteria require monitoring forward and adjoint convergence separately.</p>
+</div>
+</div>
+</section>
+<section id="generator-recovery-via-the-matrix-logarithm" class="level2" data-number="33.5">
+<h2 data-number="33.5" class="anchored" data-anchor-id="generator-recovery-via-the-matrix-logarithm"><span class="header-section-number">33.5</span> Generator Recovery via the Matrix Logarithm</h2>
+<p>When discrete-time snapshot maps <span class="math inline">\(\bK_h \approx e^{h\calA}\)</span> are observed rather than continuous trajectories, we invert the exponential map using the principal matrix logarithm.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The Matrix Logarithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bK \in \fC^{n \times n}\)</span> have no eigenvalues on the closed negative real axis <span class="math inline">\((-\infty, 0]\)</span>. The principal matrix logarithm <span class="math inline">\(\log(\bK)\)</span> is the unique matrix <span class="math inline">\(\bA\)</span> such that <span class="math inline">\(e^\bA = \bK\)</span> and all eigenvalues of <span class="math inline">\(\bA\)</span> satisfy <span class="math inline">\(|\operatorname{Im}(\lambda)| &lt; \pi\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Projection and finite-time closure bias)</strong> If <span class="math inline">\(P\)</span> denotes the orthogonal projection onto a subspace of observables <span class="math inline">\(\calF\)</span>, the projected generator obtained from finite-time observations satisfies <span class="math display">\[
+\begin{align}
+\widehat{\bA}_h = h^{-1}\log\left( P e^{h\calA} |_{\calF} \right) \neq P\calA|_{\calF}.
+\end{align}
+\]</span> Unless <span class="math inline">\(\calF\)</span> is invariant under <span class="math inline">\(\calA\)</span>, projection and exponentiation do not commute. The resulting finite-time closure bias can be expanded in powers of <span class="math inline">\(h\)</span>, but its leading order depends on which terms leave the observable space. Any rate such as <span class="math inline">\(O(h^r)\)</span> therefore requires a separately defined closure depth and corresponding assumptions.</p>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="33.6">
+<h2 data-number="33.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">33.6</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1076,16 +1110,64 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Use the result above to rewrite a Chebyshev expansion as a cosine series in <span class="math inline">\(\theta\)</span>.</p></li>
-<li><p>Derive the coefficient formula in the result above from Fourier cosine orthogonality.</p></li>
-<li><p>Compute degree-<span class="math inline">\(n\)</span> Chebyshev fits to <span class="math inline">\(e^x\)</span> using <code>np.polynomial.chebyshev.chebfit</code>. Plot <span class="math inline">\(\|f-p_n\|_\infty\)</span> versus <span class="math inline">\(n\)</span> on a semilog scale.</p></li>
-<li><p>Repeat the previous experiment for <span class="math inline">\(f(x)=|x|\)</span>. Compare the coefficient decay with the analytic case in the result above.</p></li>
-<li><p>Use <code>chebder</code> to differentiate a Chebyshev approximation to <span class="math inline">\(f(x)=\sin(\pi x)\)</span>. Compare the derivative error with a finite-difference approximation using the same number of sample points.</p></li>
+<li><p><strong>Compute.</strong> <strong>Dense vs.&nbsp;Action Complexity:</strong> A sparse matrix <span class="math inline">\(\bA \in \fR^{10^6 \times 10^6}\)</span> has 10 nonzero entries per row. Compute the memory required to store <span class="math inline">\(e^{h\bA}\)</span> as a dense array. Compare this with storing <span class="math inline">\(m=30\)</span> Arnoldi basis vectors.</p></li>
+<li><p><strong>Compute.</strong> <strong>Adjoint Sharing:</strong> Let an overcomplete library contain <span class="math inline">\(M_{\mathrm{lib}} = 200\)</span> candidate directions. Calculate the number of sparse matrix–vector products needed to evaluate all 200 coefficient gradients using (a) directional Fréchet derivatives and (b) the adjoint Krylov formula with 5 quadrature nodes.</p></li>
+<li><p><strong>Check.</strong> <strong>Logarithm Branch Cuts:</strong> Let an evolution operator have oscillatory eigenvalue <span class="math inline">\(\lambda = -\gamma + i\omega\)</span> with <span class="math inline">\(\omega = 50\pi\)</span>. Determine the maximum observation interval <span class="math inline">\(h\)</span> that avoids branch-cut crossing in the principal matrix logarithm.</p></li>
+<li><p><strong>Explore.</strong> <strong>Taylor vs.&nbsp;Krylov Convergence:</strong> For the 1D discrete Laplacian <span class="math inline">\(\bA\)</span> with <span class="math inline">\(\|\bA\|_2 = 4 \times 10^4\)</span> and <span class="math inline">\(t = 10^{-2}\)</span>, compare the polynomial degrees suggested by a direct Taylor remainder bound and by Krylov projection. State every estimate you use: neither degree is determined by <span class="math inline">\(\|\bA\|_2\)</span> alone.</p></li>
+<li><p><strong>Explore.</strong> <strong>One-Sided Termination:</strong> Construct a <span class="math inline">\(3 \times 3\)</span> example where <span class="math inline">\(\bv\)</span> is an exact eigenvector of <span class="math inline">\(\bA\)</span>, yielding forward residual <span class="math inline">\(\rho_f = 0\)</span> at step 1, while the adjoint starting vector is not an eigenvector. Explain why product heuristics fail in this setting.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Literature trail: Why Krylov approximations to the exponential converge
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read Marlis Hochbruck and Christian Lubich’s 1997 paper, <em>On Krylov Subspace Approximations to the Matrix Exponential Operator</em> <span class="citation" data-cites="hochbrucklubich1997">(<a href="../references.html#ref-hochbrucklubich1997" role="doc-biblioref">Hochbruck and Lubich 1997</a>)</span>.</p>
+<p><strong>Search hint.</strong> Search by both authors and the exact title. The paper appeared in <em>SIAM Journal on Numerical Analysis</em>.</p>
+<p><strong>Mathematical hint.</strong> Separate the Hermitian and non-Hermitian cases. The location or numerical range of the matrix, the time scale, and the Krylov dimension all enter: a norm-only slogan is not a convergence theorem.</p>
+<ol type="1">
+<li><p>Give a complete citation and select one principal error bound from the paper.</p></li>
+<li><p>Translate the paper’s approximation, projected matrix, and error notation into the Arnoldi notation used here.</p></li>
+<li><p>State all assumptions of the selected bound, including the spectral or numerical-range geometry.</p></li>
+<li><p>Reconstruct one nontrivial estimate in its proof and explain which regime produces superlinear convergence. Finally, compare the paper’s result with the heuristic comparison in the exercise above.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Higham gives the general theory of matrix functions <span class="citation" data-cites="higham2008">(<a href="../references.html#ref-higham2008" role="doc-biblioref">Higham 2008</a>)</span>. Moler and Van Loan explain why apparently reasonable methods for the matrix exponential can fail, and Al-Mohy and Higham develop a modern action method that avoids forming the exponential <span class="citation" data-cites="molervanloan2003 almohyhigham2011">(<a href="../references.html#ref-molervanloan2003" role="doc-biblioref">Moler and Van Loan 2003</a>; <a href="../references.html#ref-almohyhigham2011" role="doc-biblioref">Al-Mohy and Higham 2011</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-almohyhigham2011" class="csl-entry" role="listitem">
+Al-Mohy, Awad H., and Nicholas J. Higham. 2011. <span>“Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators.”</span> <em>SIAM Journal on Scientific Computing</em> 33 (2): 488–511. <a href="https://doi.org/10.1137/100788860">https://doi.org/10.1137/100788860</a>.
+</div>
+<div id="ref-higham2008" class="csl-entry" role="listitem">
+Higham, Nicholas J. 2008. <em>Functions of Matrices: Theory and Computation</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898717778">https://doi.org/10.1137/1.9780898717778</a>.
+</div>
+<div id="ref-hochbrucklubich1997" class="csl-entry" role="listitem">
+Hochbruck, Marlis, and Christian Lubich. 1997. <span>“On <span>Krylov</span> Subspace Approximations to the Matrix Exponential Operator.”</span> <em>SIAM Journal on Numerical Analysis</em> 34 (5): 1911–25. <a href="https://doi.org/10.1137/S0036142995280572">https://doi.org/10.1137/S0036142995280572</a>.
+</div>
+<div id="ref-molervanloan2003" class="csl-entry" role="listitem">
+Moler, Cleve, and Charles F. Van Loan. 2003. <span>“Nineteen Dubious Ways to Compute the Exponential of a Matrix, Twenty-Five Years Later.”</span> <em>SIAM Review</em> 45 (1): 3–49. <a href="https://doi.org/10.1137/S00361445024180">https://doi.org/10.1137/S00361445024180</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1504,18 +1586,18 @@ p_n(x)=\sum_{k=0}^n c_kT_k(x)
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../orthogonality/least-squares.html" class="pagination-link" aria-label="Overdetermined Systems and Least Squares">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span>
+      <a href="../applications/fourier.html" class="pagination-link" aria-label="Fourier Analysis as Change of Basis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../eigenvalues/eigenvalues.html" class="pagination-link" aria-label="Eigenvalues and Eigenvectors">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../applications/markov.html" class="pagination-link" aria-label="Markov Chains, Continuous Generators, and the CME">
+        <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/chebyshev.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/matrix-exponential.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
           background:rgba(255,255,255,0.85);border:1px solid #ccc;
           border-radius:50%;width:2.4rem;height:2.4rem;
           display:flex;align-items:center;justify-content:center;

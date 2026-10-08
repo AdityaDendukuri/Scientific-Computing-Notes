@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>20&nbsp; Jacobi Eigenvalue Algorithm – Scientific Computing</title>
+<title>19&nbsp; The Jacobi Eigenvalue Algorithm – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,7 +52,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../iterative/iterative.html" rel="next">
+<link href="../applications/operators.html" rel="next">
 <link href="../eigenvalues/lanczos.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +729,8 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#givens-rotations" id="toc-givens-rotations" class="nav-link active" data-scroll-target="#givens-rotations"><span class="header-section-number">20.1</span> Givens Rotations</a></li>
-  <li><a href="#the-jacobi-algorithm" id="toc-the-jacobi-algorithm" class="nav-link" data-scroll-target="#the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</a></li>
-  <li><a href="#convergence-and-cost" id="toc-convergence-and-cost" class="nav-link" data-scroll-target="#convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</a></li>
+  <li><a href="#givens-plane-rotations-and-the-zeroing-angle" id="toc-givens-plane-rotations-and-the-zeroing-angle" class="nav-link active" data-scroll-target="#givens-plane-rotations-and-the-zeroing-angle"><span class="header-section-number">19.1</span> Givens Plane Rotations and the Zeroing Angle</a></li>
+  <li><a href="#monotone-convergence-of-the-off-diagonal-norm" id="toc-monotone-convergence-of-the-off-diagonal-norm" class="nav-link" data-scroll-target="#monotone-convergence-of-the-off-diagonal-norm"><span class="header-section-number">19.2</span> Monotone Convergence of the Off-Diagonal Norm</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/jacobi-eig.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +738,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/jacobi-eig.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></h1>
 </div>
 
 
@@ -700,24 +757,26 @@ window.Quarto = {
 </header>
 
 
-<p>Iterative algorithm for symmetric matrices using plane rotations to zero off-diagonal entries.</p>
-<section id="givens-rotations" class="level2" data-number="20.1">
-<h2 data-number="20.1" class="anchored" data-anchor-id="givens-rotations"><span class="header-section-number">20.1</span> Givens Rotations</h2>
+<p>The Jacobi eigenvalue algorithm, introduced by Carl Gustav Jacob Jacobi in 1846, is the oldest numerical method for computing the complete eigensystem of a real symmetric matrix <span class="math inline">\(\bA = \bA^T \in \fR^{n \times n}\)</span>. The method systematically drives the matrix toward diagonal form by applying a sequence of orthogonal similarity transformations based on elementary plane rotations.</p>
+<p>Although shifted QR is usually faster for a general dense matrix, Jacobi rotations remain useful when high relative accuracy for graded positive definite matrices or fine-grained parallelism matters. Their local structure also makes the convergence mechanism unusually visible.</p>
+<section id="givens-plane-rotations-and-the-zeroing-angle" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="givens-plane-rotations-and-the-zeroing-angle"><span class="header-section-number">19.1</span> Givens Plane Rotations and the Zeroing Angle</h2>
+<p>At each step, the algorithm chooses an off-diagonal target entry <span class="math inline">\(a_{pq}\)</span> with <span class="math inline">\(p &lt; q\)</span> and constructs a Givens plane rotation <span class="math inline">\(\bG(p, q, \theta)\)</span> that annihilates that entry while preserving the overall spectrum of <span class="math inline">\(\bA\)</span>.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Givens Rotation
+<span class="screen-reader-only">Note</span>Definition: Givens Plane Rotation Matrix
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(G(p, q, \theta)\)</span> is an identity matrix with a <span class="math inline">\(2 \times 2\)</span> rotation block at <span class="math inline">\((p, p), (p, q), (q, p), (q, q)\)</span>.</p>
-<ul>
-<li><p><strong>Similarity Transform:</strong> <span class="math inline">\(\bA' = G^T \bA G\)</span>.</p></li>
-<li><p><strong>Effect:</strong> Modifies only rows/columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. Preserves eigenvalues (<span class="math inline">\(\bA'\)</span> is orthogonally similar to <span class="math inline">\(\bA\)</span>).</p></li>
-</ul>
+<p>The matrix <span class="math inline">\(\bG(p, q, \theta) \in \fR^{n \times n}\)</span> is an identity matrix except for the four entries at the intersections of rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>: <span class="math display">\[
+\begin{align}
+g_{pp} = c, \qquad g_{pq} = s, \qquad g_{qp} = -s, \qquad g_{qq} = c,
+\end{align}
+\]</span> where <span class="math inline">\(c = \cos\theta\)</span> and <span class="math inline">\(s = \sin\theta\)</span>. The transformation <span class="math inline">\(\bA' = \bG^T \bA \bG\)</span> modifies only rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> of <span class="math inline">\(\bA\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -726,110 +785,42 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Optimal Rotation Angle
+<span class="screen-reader-only">Note</span>Theorem: Derivation of the Optimal Rotation Angle
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To set <span class="math inline">\(A'_{pq} = 0\)</span>, let <span class="math inline">\(\tau = (A_{qq} - A_{pp}) / (2A_{pq})\)</span>. The optimal tangent <span class="math inline">\(t = \tan\theta\)</span> is: <span class="math display">\[
+<p>To zero the transformed off-diagonal entry <span class="math inline">\(a'_{pq} = 0\)</span>, we consider the <span class="math inline">\(2 \times 2\)</span> orthogonal similarity transformation on the submatrix at indices <span class="math inline">\(\{p, q\}\)</span>: <span class="math display">\[
 \begin{align}
-t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sqrt{1+t^2}}, \quad s = ct.
+\begin{pmatrix} a'_{pp} &amp; a'_{pq} \\ a'_{pq} &amp; a'_{qq} \end{pmatrix}
+    &amp;=
+    \begin{pmatrix} c &amp; -s \\ s &amp; c \end{pmatrix}
+    \begin{pmatrix} a_{pp} &amp; a_{pq} \\ a_{pq} &amp; a_{qq} \end{pmatrix}
+    \begin{pmatrix} c &amp; s \\ -s &amp; c \end{pmatrix} \\
+    &amp;=
+    \begin{pmatrix}
+        c^2 a_{pp} - 2cs a_{pq} + s^2 a_{qq} &amp; (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) \\
+        (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) &amp; s^2 a_{pp} + 2cs a_{pq} + c^2 a_{qq}
+    \end{pmatrix}.
 \end{align}
-\]</span> Choosing the smaller root <span class="math inline">\(|t| \leq 1\)</span> ensures numerical stability and minimal perturbation.</p>
-</div>
-</div>
-</section>
-<section id="the-jacobi-algorithm" class="level2" data-number="20.2">
-<h2 data-number="20.2" class="anchored" data-anchor-id="the-jacobi-algorithm"><span class="header-section-number">20.2</span> The Jacobi Algorithm</h2>
-<p>The Jacobi eigenvalue algorithm repeatedly applies orthogonal similarity transformations <span class="math display">\[
+\]</span> Setting <span class="math inline">\(a'_{pq} = 0\)</span> yields the trigonometric condition <span class="math display">\[
 \begin{align}
-\bA^{(k+1)} = \bG_k^T \bA^{(k)} \bG_k
+(c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) = 0
+    \implies
+    \frac{\cos(2\theta)}{\sin(2\theta)} = \frac{a_{qq} - a_{pp}}{2a_{pq}}.
 \end{align}
-\]</span> to a symmetric matrix. Each rotation zeros one off-diagonal entry while preserving eigenvalues. As the off-diagonal entries converge to zero, <span class="math inline">\(\bA^{(k)}\)</span> converges to a diagonal matrix whose diagonal entries are the eigenvalues.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Jacobi Eigenvalue Algorithm
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Input:</strong> Symmetric matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> and tolerance <code>tol</code>.\ <strong>Initialize:</strong> <span class="math inline">\(\bA^{(0)}=\bA\)</span>, <span class="math inline">\(\bV^{(0)}=\bI\)</span>.\ <strong>Repeat:</strong></p>
-<ol type="1">
-<li><p>Choose an off-diagonal pivot <span class="math inline">\((p,q)\)</span> with <span class="math inline">\(p&lt;q\)</span>.</p></li>
-<li><p>Compute <span class="math inline">\(c=\cos\theta\)</span> and <span class="math inline">\(s=\sin\theta\)</span> using the stable tangent formula so that <span class="math inline">\((\bG^T\bA^{(k)}\bG)_{pq}=0\)</span>.</p></li>
-<li><p>Update the matrix by orthogonal similarity: <span class="math display">\[
+\]</span> Defining <span class="math inline">\(\tau = \cot(2\theta) = \frac{a_{qq} - a_{pp}}{2a_{pq}}\)</span> and using <span class="math inline">\(\cot(2\theta) = \frac{1 - \tan^2\theta}{2\tan\theta}\)</span>, setting <span class="math inline">\(t = \tan\theta\)</span> produces <span class="math display">\[
 \begin{align}
-\bA^{(k+1)}=\bG^T\bA^{(k)}\bG.
+t^2 + 2\tau t - 1 = 0.
 \end{align}
-\]</span></p></li>
-<li><p>Accumulate eigenvectors: <span class="math display">\[
+\]</span> To minimize the perturbation to <span class="math inline">\(\bA\)</span> and avoid cancellation, we select the root of smaller absolute value: <span class="math display">\[
 \begin{align}
-\bV^{(k+1)}=\bV^{(k)}\bG.
+t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \qquad c = \frac{1}{\sqrt{1 + t^2}}, \qquad s = ct.
 \end{align}
-\]</span></p></li>
-</ol>
-<p><strong>Stop:</strong> when <span class="math inline">\(\sigma_{\text{off}}(\bA^{(k)}) \leq `tol`\|\bA^{(k)}\|_F\)</span>.\ <strong>Output:</strong> Diagonal entries of <span class="math inline">\(\bA^{(k)}\)</span> approximate eigenvalues; columns of <span class="math inline">\(\bV^{(k)}\)</span> approximate eigenvectors.</p>
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Pivot choices)</strong></p>
-<ul>
-<li><p><strong>Classical Jacobi:</strong> choose the largest off-diagonal entry <span class="math inline">\(|A_{pq}|\)</span>.</p></li>
-<li><p><strong>Cyclic Jacobi:</strong> sweep through all pairs <span class="math inline">\((p,q)\)</span> in a fixed order.</p></li>
-</ul>
-<p>The largest-entry rule gives the clearest convergence proof. Cyclic sweeps are simpler to implement and often used in practice.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Why eigenvectors accumulate)</strong> After <span class="math inline">\(k\)</span> rotations, <span class="math display">\[
-\begin{align}
-\bA^{(k)} = (\bV^{(k)})^T \bA \bV^{(k)}.
-\end{align}
-\]</span> If <span class="math inline">\(\bA^{(k)}\)</span> is nearly diagonal, then <span class="math inline">\(\bA \bV^{(k)} \approx \bV^{(k)}\boldsymbol{\Lambda}\)</span>, so the columns of <span class="math inline">\(\bV^{(k)}\)</span> are approximate eigenvectors of the original matrix.</p>
-</div>
-</div>
-</section>
-<section id="convergence-and-cost" class="level2" data-number="20.3">
-<h2 data-number="20.3" class="anchored" data-anchor-id="convergence-and-cost"><span class="header-section-number">20.3</span> Convergence and Cost</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Monotone Convergence
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\sigma^2_{\text{off}}(\bA) = \sum_{p &lt; q} A_{pq}^2\)</span> be the Frobenius norm of the off-diagonal entries. Each rotation <span class="math inline">\(G(p, q, \theta)\)</span> reduces this norm: <span class="math display">\[
-\begin{align}
-\sigma^2_{\text{off}}(\bA') = \sigma^2_{\text{off}}(\bA) - A_{pq}^2.
-\end{align}
-\]</span> <strong>Convergence:</strong> Off-diagonals decrease monotonically. Convergence is ultimately <strong>quadratic</strong> (errors square each sweep).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -838,42 +829,88 @@ t = \frac{\text{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \quad c = \frac{1}{\sq
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The orthogonal transform <span class="math inline">\(\bA' = G^T\bA G\)</span> preserves the Frobenius norm: <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>. Let <span class="math inline">\(d(\bA) = \sum A_{ii}^2\)</span> be the sum of squares of diagonal entries. Then: <span class="math display">\[
+<p>The quadratic formula yields roots <span class="math inline">\(t = -\tau \pm \sqrt{1 + \tau^2}\)</span>. Multiplying the root of smaller magnitude by its algebraic conjugate yields <span class="math display">\[
 \begin{align}
-\|\bA\|_F^2 = d(\bA) + 2\sigma_{\text{off}}^2(\bA).
+t = \frac{(-\tau \pm \sqrt{1 + \tau^2})(\tau \pm \sqrt{1 + \tau^2})}{\tau \pm \sqrt{1 + \tau^2}} = \frac{1}{\tau + \operatorname{sign}(\tau)\sqrt{1 + \tau^2}} = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}.
 \end{align}
-\]</span> A Jacobi rotation <span class="math inline">\(G(p,q,\theta)\)</span> only affects rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. For the <span class="math inline">\(2 \times 2\)</span> submatrix at <span class="math inline">\(\{p,q\}\)</span>, the transformation is an eigendecomposition, so: <span class="math display">\[
-\begin{align}
-(A'_{pp})^2 + (A'_{qq})^2 &amp;= A_{pp}^2 + A_{qq}^2 + 2A_{pq}^2 \\
-    d(\bA') &amp;= d(\bA) + 2A_{pq}^2.
-\end{align}
-\]</span> Substituting this into the norm conservation <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>: <span class="math display">\[
-\begin{align}
-d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    (d(\bA) + 2A_{pq}^2) + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\bA) \\
-    \sigma_{\text{off}}^2(\bA') &amp;= \sigma_{\text{off}}^2(\bA) - A_{pq}^2.
-\end{align}
-\]</span> Thus each rotation reduces the off-diagonal mass by exactly <span class="math inline">\(A_{pq}^2\)</span>.</p>
+\]</span> This formula satisfies <span class="math inline">\(|t| \leq 1\)</span>, corresponding to a rotation angle <span class="math inline">\(|\theta| \leq \pi/4\)</span>, and avoids subtracting nearly equal floating-point numbers.</p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+</section>
+<section id="monotone-convergence-of-the-off-diagonal-norm" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="monotone-convergence-of-the-off-diagonal-norm"><span class="header-section-number">19.2</span> Monotone Convergence of the Off-Diagonal Norm</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Theorem: Monotone Decrease of the Off-Diagonal Frobenius Norm
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Performance vs.&nbsp;Accuracy:</strong></p>
-<ul>
-<li><p><strong>Cost:</strong> <span class="math inline">\(O(n^3)\)</span> per sweep. Typically 5–15 sweeps for convergence. More expensive than QR.</p></li>
-<li><p><strong>Accuracy:</strong> Unlike QR, Jacobi achieves <strong>high relative accuracy</strong> on small eigenvalues.</p></li>
-</ul>
+<p>Let the off-diagonal squared norm be defined by <span class="math display">\[
+\begin{align}
+\operatorname{off}(\bA)^2 = \sum_{i \neq j} a_{ij}^2 = \|\bA\|_F^2 - \sum_{i=1}^n a_{ii}^2.
+\end{align}
+\]</span> Applying the Jacobi rotation <span class="math inline">\(\bA' = \bG(p, q, \theta)^T \bA \bG(p, q, \theta)\)</span> with the optimal angle strictly reduces the off-diagonal norm: <span class="math display">\[
+\begin{align}
+\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(\bG\)</span> is orthogonal, the total Frobenius norm is preserved: <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>. The rotation affects only entries in rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. For the <span class="math inline">\(2 \times 2\)</span> submatrix, the sum of squares is invariant under orthogonal similarity: <span class="math display">\[
+\begin{align}
+(a'_{pp})^2 + (a'_{qq})^2 + 2(a'_{pq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align}
+\]</span> Because the rotation enforces <span class="math inline">\(a'_{pq} = 0\)</span>, the sum of squared diagonal entries increases: <span class="math display">\[
+\begin{align}
+(a'_{pp})^2 + (a'_{qq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align}
+\]</span> All other diagonal entries <span class="math inline">\(a_{ii}\)</span> (<span class="math inline">\(i \neq p, q\)</span>) are untouched. Substituting this into <span class="math inline">\(\operatorname{off}(\bA')^2 = \|\bA'\|_F^2 - \sum (a'_{ii})^2\)</span> proves that <span class="math inline">\(\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Cyclic Jacobi Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Cyclic Jacobi algorithm sweeps through all <span class="math inline">\(N = n(n-1)/2\)</span> off-diagonal index pairs <span class="math inline">\((p, q)\)</span> with <span class="math inline">\(1 \leq p &lt; q \leq n\)</span> in a fixed periodic order:</p>
+<ol type="1">
+<li><p>Initialize <span class="math inline">\(\bA^{(0)} = \bA\)</span> and eigenvector accumulator <span class="math inline">\(\bV^{(0)} = \bI_n\)</span>.</p></li>
+<li><p>While <span class="math inline">\(\operatorname{off}(\bA^{(k)}) &gt; `tol` \|\bA^{(0)}\|_F\)</span>:</p>
+<ol type="1">
+<li><p>For each pair <span class="math inline">\(1 \leq p &lt; q \leq n\)</span>:</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(\tau = \frac{a_{qq} - a_{pp}}{2a_{pq}}\)</span>, <span class="math inline">\(t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}\)</span>, <span class="math inline">\(c = \frac{1}{\sqrt{1+t^2}}\)</span>, and <span class="math inline">\(s = ct\)</span>.</p></li>
+<li><p>Apply the rotation to <span class="math inline">\(\bA\)</span>: <span class="math inline">\(\bA \leftarrow \bG(p, q, \theta)^T \bA \bG(p, q, \theta)\)</span>.</p></li>
+<li><p>Accumulate the eigenvectors: <span class="math inline">\(\bV \leftarrow \bV \bG(p, q, \theta)\)</span>.</p></li>
+</ol></li>
+</ol></li>
+</ol>
+<p>After a few initial sweeps, the off-diagonal entries converge to zero <strong>quadratically</strong>: <span class="math inline">\(\operatorname{off}(\bA^{(k+1)}) \leq C \cdot \operatorname{off}(\bA^{(k)})^2\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -887,14 +924,45 @@ d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\b
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Apply one Jacobi rotation to zero <span class="math inline">\(A_{12}\)</span> in <span class="math inline">\(\bA = \begin{pmatrix}2 &amp; 1 \\ 1 &amp; 3\end{pmatrix}\)</span>.</p></li>
-<li><p>Show that after zeroing <span class="math inline">\(A_{pq}\)</span>, the new diagonal entries <span class="math inline">\(A'_{pp}\)</span> and <span class="math inline">\(A'_{qq}\)</span> are the eigenvalues of the <span class="math inline">\(2 \times 2\)</span> submatrix at <span class="math inline">\(\{p, q\}\)</span>.</p></li>
-<li><p>Perform one full cyclic sweep on <span class="math inline">\(\bA = \begin{pmatrix}1&amp;1&amp;0\\1&amp;2&amp;1\\0&amp;1&amp;3\end{pmatrix}\)</span> by hand.</p></li>
+<li><p><strong>Compute.</strong> Perform one Jacobi rotation by hand to zero out the off-diagonal entry of <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} 3 &amp; 2 \\ 2 &amp; 6 \end{pmatrix}.
+\end{align}
+\]</span> Explicitly compute <span class="math inline">\(\tau, t, c, s\)</span>, and the resulting diagonal matrix <span class="math inline">\(\bA'\)</span>.</p></li>
+<li><p><strong>Compute.</strong> Verify that the eigenvalues computed on the diagonal of <span class="math inline">\(\bA'\)</span> match the exact roots of <span class="math inline">\(\det(\bA - \lambda\bI) = 0\)</span>.</p></li>
+<li><p><strong>Derive.</strong> Prove that for an <span class="math inline">\(n \times n\)</span> matrix, if the largest off-diagonal entry is selected at each step (Classical Jacobi), then <span class="math inline">\(\operatorname{off}(\bA^{(k+1)})^2 \leq \left( 1 - \frac{2}{n(n-1)} \right) \operatorname{off}(\bA^{(k)})^2\)</span>.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Horn and Johnson are a reference for the matrix structure behind the spectral results <span class="citation" data-cites="hornjohnson2012">(<a href="../references.html#ref-hornjohnson2012" role="doc-biblioref">Horn and Johnson 2012</a>)</span>. The computational treatment in Golub and Van Loan includes symmetric eigensolvers and the SVD <span class="citation" data-cites="golubvanloan2013">(<a href="../references.html#ref-golubvanloan2013" role="doc-biblioref">Golub and Van Loan 2013</a>)</span>. The original Lanczos and Golub–Kahan papers show how two algorithms in these chapters first appeared <span class="citation" data-cites="lanczos1950 golubkahan1965">(<a href="../references.html#ref-lanczos1950" role="doc-biblioref">Lanczos 1950</a>; <a href="../references.html#ref-golubkahan1965" role="doc-biblioref">Golub and Kahan 1965</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-golubkahan1965" class="csl-entry" role="listitem">
+Golub, Gene H., and William Kahan. 1965. <span>“Calculating the Singular Values and Pseudo-Inverse of a Matrix.”</span> <em>Journal of the Society for Industrial and Applied Mathematics, Series B: Numerical Analysis</em> 2 (2): 205–24. <a href="https://doi.org/10.1137/0702016">https://doi.org/10.1137/0702016</a>.
+</div>
+<div id="ref-golubvanloan2013" class="csl-entry" role="listitem">
+Golub, Gene H., and Charles F. Van Loan. 2013. <em>Matrix Computations</em>. 4th ed. Johns Hopkins University Press.
+</div>
+<div id="ref-hornjohnson2012" class="csl-entry" role="listitem">
+Horn, Roger A., and Charles R. Johnson. 2012. <em>Matrix Analysis</em>. 2nd ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139020411">https://doi.org/10.1017/CBO9781139020411</a>.
+</div>
+<div id="ref-lanczos1950" class="csl-entry" role="listitem">
+Lanczos, Cornelius. 1950. <span>“An Iteration Method for the Solution of the Eigenvalue Problem of Linear Differential and Integral Operators.”</span> <em>Journal of Research of the National Bureau of Standards</em> 45 (4): 255–82. <a href="https://doi.org/10.6028/jres.045.026">https://doi.org/10.6028/jres.045.026</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1313,13 +1381,13 @@ d(\bA') + 2\sigma_{\text{off}}^2(\bA') &amp;= d(\bA) + 2\sigma_{\text{off}}^2(\b
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../eigenvalues/lanczos.html" class="pagination-link" aria-label="Lanczos Algorithm">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span>
+      <a href="../eigenvalues/lanczos.html" class="pagination-link" aria-label="The Lanczos Algorithm">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../iterative/iterative.html" class="pagination-link" aria-label="Iterative Methods for Linear Systems">
-        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../applications/operators.html" class="pagination-link" aria-label="Linear Operators and the Poisson Equation">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

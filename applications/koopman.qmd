@@ -1,7 +1,10 @@
-# Koopman Theory, DMD, and SINDy
+# Koopman Theory, EDMD, and Continuous Generators
 
 
-Koopman analysis studies nonlinear dynamics through linear evolution of observables. DMD fits a finite-dimensional linear model from snapshots. SINDy fits sparse governing equations from a chosen function library.
+**(Running example: Markov chains)**  The chemical master equation evolves probability densities, while the Koopman generator evolves observables. They are adjoint descriptions of the same Markov dynamics. This duality connects the matrix exponential, sensitivity formulas, polynomial closure, and data-driven operator recovery.
+
+
+Koopman operator theory shifts the analysis of nonlinear dynamical systems from finite-dimensional nonlinear state updates to linear transformations on an infinite-dimensional space of observables. Dynamic Mode Decomposition (DMD) and Extended DMD (EDMD) compute finite-dimensional approximations of this operator from snapshot data. In continuous-time Markov jump processes and chemical kinetics, the Koopman generator is the formal adjoint of the Chemical Master Equation, exhibiting exact polynomial closure for unimolecular systems. Recovering continuous rate matrices from discrete Koopman operators requires the matrix logarithm, which suffers from modal noise explosion on fast decaying dynamics.
 
 
 ## Koopman Operator Theory
@@ -9,22 +12,111 @@ Koopman analysis studies nonlinear dynamics through linear evolution of observab
 
 ::: {.callout-note icon=false}
 ## Definition: Nonlinear Dynamics and Observables
-$\bx^{(k+1)} = \mathbf{F}(\bx^{(k)})$ on $\mathcal{M} \subseteq \fR^n$.
-
-- **Observable:**  Scalar function $g: \mathcal{M} \to \fR$.
-    
-- \textbf{Koopman Operator $\mathcal{K}$:}  Linear operator acting on observables: $(\mathcal{K}g)(\bx) = g(\mathbf{F}(\bx))$.
-
-**Lifting:**  $\mathcal{K}$ is linear even if $\mathbf{F}$ is nonlinear, at the cost of being infinite-dimensional.
+Consider a discrete-time dynamical system
+$$
+\begin{align}
+\bx^{(k+1)} = \mathbf{F}(\bx^{(k)}), \qquad \bx \in \mathcal{M} \subseteq \fR^n.
+\end{align}
+$$
+An observable is a scalar function $g: \mathcal{M} \to \fR$ belonging to a function space $\mathcal{F}$ (such as $L^2(\mathcal{M})$). The Koopman operator $\mathcal{K}: \mathcal{F} \to \mathcal{F}$ is defined by
+$$
+\begin{align}
+(\mathcal{K}g)(\bx) = g(\mathbf{F}(\bx)).
+\end{align}
+$$
+The operator $\mathcal{K}$ is linear on $\mathcal{F}$, even when the underlying map $\mathbf{F}$ is nonlinear.
 :::
 
 
 ::: {.callout-note icon=false}
-## Proposition: Koopman Linearity
-The Koopman operator in the result above is linear on observables:
+## Proposition: Linearity of the Koopman Operator
+The Koopman operator $\mathcal{K}$ satisfies
 $$
 \begin{align}
-\mathcal{K}(\alpha g+\beta h)=\alpha\mathcal{K}g+\beta\mathcal{K}h.
+\mathcal{K}(\alpha g_1 + \beta g_2) = \alpha \mathcal{K} g_1 + \beta \mathcal{K} g_2
+\end{align}
+$$
+for all scalars $\alpha, \beta \in \fR$ and observables $g_1, g_2 \in \mathcal{F}$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Evaluating the composition at any state $\bx \in \mathcal{M}$ gives
+$$
+\begin{align}
+[\mathcal{K}(\alpha g_1 + \beta g_2)](\bx)
+    &=
+    (\alpha g_1 + \beta g_2)(\mathbf{F}(\bx)) \\
+    &=
+    \alpha g_1(\mathbf{F}(\bx)) + \beta g_2(\mathbf{F}(\bx)) \\
+    &=
+    \alpha [\mathcal{K}g_1](\bx) + \beta [\mathcal{K}g_2](\bx) \\
+    &=
+    [\alpha \mathcal{K}g_1 + \beta \mathcal{K}g_2](\bx).
+\end{align}
+$$
+Because this equality holds for all $\bx \in \mathcal{M}$, the operators are identical.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Koopman Eigenfunctions and Eigenvalues
+A function $\varphi \in \mathcal{F}$ is a Koopman eigenfunction with eigenvalue $\mu \in \fC$ if
+$$
+\begin{align}
+\mathcal{K}\varphi = \mu \varphi.
+\end{align}
+$$
+Along system trajectories, Koopman eigenfunctions evolve linearly:
+$$
+\begin{align}
+\varphi(\bx^{(k)}) = \mu^k \varphi(\bx^{(0)}).
+\end{align}
+$$
+A sufficiently rich collection of Koopman eigenfunctions can provide coordinates in which part of the nonlinear dynamics evolves linearly. Such a collection need not exist globally, and finite dictionaries generally give only a projected approximation.
+:::
+
+
+## Dynamic Mode Decomposition (DMD) and EDMD
+
+
+::: {.callout-note icon=false}
+## Definition: Dynamic Mode Decomposition (DMD)
+Given snapshot matrices $\bX, \bY \in \fR^{n \times M}$ where $\bY$ advances $\bX$ by time step $h$:
+$$
+\begin{align}
+\bX = [\bx_1, \bx_2, ..., \bx_M], \qquad \bY = [\by_1, \by_2, ..., \by_M], \qquad \by_m = \mathbf{F}(\bx_m),
+\end{align}
+$$
+DMD seeks the best-fit linear map $\bA \approx \bY \bX^\dagger$ in the Frobenius norm.
+
+To compute the reduced model:
+
+1. Compute the rank-$r$ truncated SVD $\bX \approx \bU_r \boldsymbol{\Sigma}_r \bV_r^T$.
+
+1. Project onto the POD subspace: $\widetilde{\bA} = \bU_r^T \bY \bV_r \boldsymbol{\Sigma}_r^{-1} \in \fR^{r \times r}$.
+
+1. Compute eigendecomposition $\widetilde{\bA} \bw_i = \mu_i \bw_i$.
+
+1. The DMD modes are $\boldsymbol{\phi}_i = \bY \bV_r \boldsymbol{\Sigma}_r^{-1} \bw_i$.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Proposition: DMD as a Least-Squares Fit
+The minimum-Frobenius-norm solution of
+$$
+\begin{align}
+\min_{\bA}\|\bY-\bA\bX\|_F
+\end{align}
+$$
+is $\bA_*=\bY\bX^\dagger$. If $\bX=\bU_r\boldsymbol{\Sigma}_r\bV_r^T$ is a rank-$r$ SVD, the representation of this map on $\mathcal{R}(\bU_r)$ is
+$$
+\begin{align}
+\widetilde{\bA}=\bU_r^T\bA_*\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}.
 \end{align}
 $$
 :::
@@ -32,122 +124,144 @@ $$
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-For every state $\bx$,
+The rows of $\bA\bX$ are independent least-squares fits to the corresponding rows of $\bY$. The pseudoinverse therefore gives the minimum-norm minimizer $\bA_*=\bY\bX^\dagger$. Substituting $\bX^\dagger=\bV_r\boldsymbol{\Sigma}_r^{-1}\bU_r^T$ and projecting on both sides by $\bU_r$ gives
 $$
 \begin{align}
-[\mathcal{K}(\alpha g+\beta h)](\bx)
-    &=
-    (\alpha g+\beta h)(\mathbf{F}(\bx))\\
-    &=
-    \alpha g(\mathbf{F}(\bx))+\beta h(\mathbf{F}(\bx))\\
-    &=
-    [\alpha\mathcal{K}g+\beta\mathcal{K}h](\bx).
+\bU_r^T\bA_*\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}\bU_r^T\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}.
 \end{align}
 $$
-Since this holds for every $\bx$, the two observables are equal.
 :::
 
 
 ::: {.callout-note icon=false}
-## Example
-**(Nonlinear map)**  Let $x_{k+1}=x_k^2$. For observables $g_1(x)=x$ and $g_2(x)=x^2$,
+## Definition: Extended Dynamic Mode Decomposition (EDMD)
+Extended DMD [@williamsetal2015] generalizes DMD by lifting state data through a dictionary of nonlinear observables $\boldsymbol{\psi}(\bx) = (\psi_1(\bx), ..., \psi_K(\bx))^T \in \fR^K$.
+
+Form data matrices
 $$
 \begin{align}
-(\mathcal{K}g_1)(x)=x^2=g_2(x),
-    \qquad
-    (\mathcal{K}g_2)(x)=x^4.
+\boldsymbol{\Psi}_X = [\boldsymbol{\psi}(\bx_1), ..., \boldsymbol{\psi}(\bx_M)] \in \fR^{K \times M}, \qquad
+    \boldsymbol{\Psi}_Y = [\boldsymbol{\psi}(\by_1), ..., \boldsymbol{\psi}(\by_M)] \in \fR^{K \times M}.
 \end{align}
 $$
-The state map is nonlinear, but the operator $g\mapsto g\circ F$ is linear on the space of observables.
-:::
-
-::: {.callout-note icon=false}
-## Definition: Koopman Eigenfunctions
-Observable $\varphi$ satisfying $\mathcal{K}\varphi = \mu \varphi$.
-
-- **Temporal Evolution:**  $\varphi(\bx^{(k)}) = \mu^k \varphi(\bx^{(0)})$.
-    
-- **Significance:**  Provides a global linear coordinate system for nonlinear dynamics.
-
-:::
-
-
-## Dynamic Mode Decomposition (DMD)
-
-
-::: {.callout-note icon=false}
-## Definition: DMD Algorithm
-Finds the best linear fit $\bY \approx \bA\bX$ for snapshot matrices:
+The finite-dimensional representation $\widehat{\bK}_h \in \fR^{K \times K}$ of the Koopman operator minimizes $\|\boldsymbol{\Psi}_Y - \bK \boldsymbol{\Psi}_X\|_F^2$:
 $$
 \begin{align}
-\bX = [\bx^{(0)} ... \bx^{(m-1)}], \quad \bY = [\bx^{(1)} ... \bx^{(m)}].
+\widehat{\bK}_h = \boldsymbol{\Psi}_Y \boldsymbol{\Psi}_X^\dagger = (\boldsymbol{\Psi}_Y \boldsymbol{\Psi}_X^T)(\boldsymbol{\Psi}_X \boldsymbol{\Psi}_X^T)^\dagger.
 \end{align}
 $$
-
-1. Compute truncated SVD: $\bX \approx \bU_r \bsigma_r \bV_r^T$.
-    
-1. Construct $r \times r$ reduced operator: $\tilde{\bA} = \bU_r^T \bY \bV_r \bsigma_r^{-1}$.
-    
-1. DMD eigenvalues $\{\lambda_i\}$ and modes $\{\boldsymbol{\phi}_i\}$ are recovered from $\tilde{\bA}$.
-
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: DMD Least Squares Model
-The best-fit linear map in Frobenius norm is
-$$
-\begin{align}
-\bA_*=\bY\bX^\dagger.
-\end{align}
-$$
-The reduced operator in the result above is the projection of this map onto the rank-$r$ left singular subspace of $\bX$.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the least squares normal equations to derive $\bA_*=\bY\bX^\dagger$.
-    
-1. Substitute the truncated SVD $\bX\approx\bU_r\bsigma_r\bV_r^T$.
-    
-1. Show that $\bU_r^T\bA_*\bU_r=\bU_r^T\bY\bV_r\bsigma_r^{-1}$.
-    
-1. Interpret this as the small operator $\tilde{\bA}$ in the result above.
-
+Left eigenvectors of $\widehat{\bK}_h$ yield approximations to Koopman eigenfunctions.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Interpretation:**  DMD decomposes data into spatiotemporal modes $\boldsymbol{\phi}_i$ with associated frequencies and growth rates. It is the data-driven approximation of the Koopman operator using the identity dictionary.
+**(EDMD as a Galerkin method)**
+When the dictionary consists of the coordinate functions, $\boldsymbol{\psi}(\bx)=\bx$, the data matrices reduce to $\bX$ and $\bY$, and EDMD reduces to the least-squares map of the referenced result. For a richer dictionary, the matrices $\boldsymbol{\Psi}_Y\boldsymbol{\Psi}_X^T/M$ and $\boldsymbol{\Psi}_X\boldsymbol{\Psi}_X^T/M$ are sample averages of inner products between dictionary functions. As the number of samples drawn from a measure $\mu$ grows, they converge to the corresponding inner-product matrices in $L^2(\mu)$, and $\widehat{\bK}_h$ converges to the Galerkin projection of the Koopman operator onto the span of the dictionary [@williamsetal2015]. Enlarging the dictionary therefore raises a separate approximation question, namely how well that span represents the Koopman eigenfunctions of interest.
 :::
 
 
-## SINDy: Sparse Identification
+## CME Koopman Generator and Polynomial Closure
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Koopman generator for continuous Markov jump processes)**  For a continuous-time Markov process with master equation $\dot{\bp}(t) = \bA(\bc) \bp(t)$, the expectation of an observable $g(\bx)$ evolves according to $\frac{d}{dt}\mathbb{E}[g(\bx(t))] = \frac{d}{dt} \sum_{\bx} g(\bx) p(\bx, t) = \sum_{\bx} g(\bx) [\bA(\bc)\bp(t)]_{\bx} = \sum_{\bx} [\bA(\bc)^T g](\bx) p(\bx, t)$. The Koopman infinitesimal generator $\mathcal{A}$ is the formal adjoint of the master operator: $\mathcal{A} = \bA(\bc)^T$.
+:::
 
 
 ::: {.callout-note icon=false}
-## Definition: Sparse Regression for Dynamics
-Identifies governing equations $\dot{\bx} = \mathbf{\Xi}^T \boldsymbol{\Theta}(\bx)$ where $\boldsymbol{\Theta}$ is a library of candidate functions (monomials, sin, etc.).
+## Definition: CME Koopman Generator
+For a chemical reaction network with stoichiometry $\bnu_k$ and propensities $\alpha_k(\bx; \bc) = c_k h_k(\bx)$, the Koopman generator acts on observable $g$ by
+$$
+\begin{align}
+(\mathcal{A}g)(\bx) = \sum_{k=1}^R \alpha_k(\bx; \bc) \Big( g(\bx + \bnu_k) - g(\bx) \Big).
+\end{align}
+$$
+:::
 
-- **STLS Algorithm:**  Sequential Thresholded Least Squares. Iteratively solves least squares and thresholds small coefficients to promote sparsity.
-    
-- **Outcome:**  Parsimonious, interpretable models (e.g., recovering Lorenz equations).
+
+::: {.callout-note icon=false}
+## Theorem: Polynomial Closure in Chemical Kinetics
+Under mass-action kinetics, propensity functions are falling factorial polynomials:
+$$
+\begin{align}
+h_k(\bx) = \prod_{s=1}^S x_s^{(\nu_{ks}^-)}, \qquad x_s^{(m)} = x_s(x_s - 1)\cdots(x_s - m + 1).
+\end{align}
+$$
+Let $\mathcal{P}_d$ denote the space of polynomials in $\bx$ of degree at most $d$.
+
+1. **Unimolecular networks:**  If all reactions have reactant order at most 1 (reactions of form $\emptyset \to X_i$ or $X_i \to X_j$), then $\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_d$ for all $d \geq 0$. The subspace $\mathcal{P}_d$ is invariant under $\mathcal{A}$, yielding exact finite-dimensional closure.
+
+1. **Bimolecular networks:**  For reactions of reactant order at most 2, $\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_{d+1}$. A quadratic propensity can produce degree-$(d+1)$ terms, so the moment equations generally fail to close at degree $d$ unless additional cancellations, conservation laws, or invariant subspaces are present.
 
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(DMD vs.\ SINDy)**  DMD fits a linear time-advance map for snapshot data. SINDy fits a sparse differential equation in a chosen library. DMD returns modes and growth rates; SINDy returns equation coefficients.
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Let $g \in \mathcal{P}_d$ be a polynomial of degree $d$. For each stoichiometric change vector $\bnu_k$, the discrete difference operator expands via Taylor's formula on polynomials:
+$$
+\begin{align}
+g(\bx + \bnu_k) - g(\bx) = \sum_{j=1}^d \frac{1}{j!} (\bnu_k \cdot \nabla)^j g(\bx).
+\end{align}
+$$
+Because differentiation reduces polynomial degree by at least one, each term in the sum has degree at most $d - 1$, so $g(\bx + \bnu_k) - g(\bx) \in \mathcal{P}_{d-1}$.
+Applying the Koopman generator (the referenced result):
+$$
+\begin{align}
+(\mathcal{A}g)(\bx) = \sum_{k=1}^R \alpha_k(\bx; \bc) \big( g(\bx + \bnu_k) - g(\bx) \big).
+\end{align}
+$$
+For unimolecular reactions, each propensity $\alpha_k(\bx; \bc)$ has reactant order at most 1, so $\alpha_k \in \mathcal{P}_1$. The product of a degree-1 polynomial and a degree-$(d-1)$ polynomial has degree at most $1 + (d - 1) = d$, proving $\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_d$.
+For bimolecular reactions, reactant order is at most 2, so $\alpha_k \in \mathcal{P}_2$. The product has degree at most $2 + (d - 1) = d + 1$, giving $\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_{d+1}$.
 :::
 
 
+## Continuous Rate Recovery and Logarithmic Noise Explosion
+
+
 ::: {.callout-tip icon=false}
 ## Remark
-**(Noisy derivatives)**  SINDy is sensitive to derivative estimates. Smoothing, weak-form regression, or integral formulations are often needed when data are noisy.
+**(Discrete-to-continuous inversion)**  Given an EDMD estimate of the discrete Koopman operator $\widehat{\bK}_h \approx \exp(h\mathcal{A})$ over a sampling interval $h$, the continuous generator is recovered via the principal matrix logarithm:
+$$
+\begin{align}
+\widehat{\bA} = \frac{1}{h} \operatorname{logm}(\widehat{\bK}_h).
+\end{align}
+$$
+If $\widehat{\bK}_h$ is real and has no eigenvalues on the closed negative real axis $(-\infty,0]$, then its principal matrix logarithm exists and is real. A matrix with eigenvalues on this branch cut may possess other logarithms, but it does not possess the principal logarithm used here.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Logarithmic Noise Explosion on Fast Decay Modes
+Let $\lambda_i < 0$ be a continuous eigenvalue of the generator $\mathcal{A}$, corresponding to a discrete Koopman eigenvalue $\mu_i = \exp(h \lambda_i) \in (0, 1)$. The relation between discrete and continuous eigenvalues is
+$$
+\begin{align}
+\lambda_i = \frac{1}{h} \ln \mu_i.
+\end{align}
+$$
+The sensitivity of the continuous eigenvalue with respect to perturbations in the discrete eigenvalue is
+$$
+\begin{align}
+\left|\frac{d\lambda_i}{d\mu_i}\right| = \frac{1}{h \mu_i} = \frac{1}{h \exp(h \lambda_i)}.
+\end{align}
+$$
+For fast decaying modes where $-\lambda_i \gg 1$, $\mu_i \to 0$ exponentially fast. Consequently, the noise amplification factor diverges:
+$$
+\begin{align}
+\lim_{-\lambda_i \to \infty} \left|\frac{d\lambda_i}{d\mu_i}\right| = \infty.
+\end{align}
+$$
+A tiny statistical fluctuation $\Delta \mu_i$ in data-driven EDMD induces an exponentially magnified error $\Delta \lambda_i$ in the recovered rate.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Differentiating $\lambda_i = \frac{1}{h}\ln \mu_i$ directly with respect to $\mu_i$ yields $\frac{d\lambda_i}{d\mu_i} = \frac{1}{h\mu_i}$. Substituting $\mu_i = \exp(h\lambda_i)$ produces $\frac{1}{h} \exp(-h\lambda_i)$. Because $h > 0$ and $\lambda_i < 0$, $-\lambda_i > 0$, so $\exp(-h\lambda_i) \to \infty$ as $-\lambda_i \to \infty$.
 :::
 
 
@@ -157,14 +271,44 @@ Identifies governing equations $\dot{\bx} = \mathbf{\Xi}^T \boldsymbol{\Theta}(\
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Prove the result above without looking at the proof.
-    
-1. Implement DMD for a 2D damped oscillator. Verify the identified eigenvalues.
-    
-1. Build a polynomial library $\boldsymbol{\Theta}$ for $\bx \in \fR^2$ up to degree 2.
-    
-1. Use SINDy (via STLS) to identify the Lotka-Volterra predator-prey model from noisy data.
-    
-1. Compare DMD and SINDy on the same two-dimensional linear system. Which quantities should agree?
+1. **Check.**  **(Koopman linearity)**  Consider the one-dimensional system $x_{k+1} = x_k^3$. Let $g_1(x) = x$ and $g_2(x) = x^3$.
 
+    1. Compute $(\mathcal{K}g_1)(x)$ and $(\mathcal{K}g_2)(x)$.
+
+    1. Verify that while $x \mapsto x^3$ is nonlinear, $\mathcal{K}(\alpha g_1 + \beta g_2) = \alpha \mathcal{K}g_1 + \beta \mathcal{K}g_2$.
+
+1. **Compute.**  **(DMD residual)**  Compute $\bA_*=\bY\bX^\dagger$ for a rank-one snapshot matrix and verify directly that the residual $\bY-\bA_*\bX$ is orthogonal to the row space of $\bX$, as predicted by the referenced result.
+
+1. **Derive.**  **(Polynomial closure in unimolecular reaction networks)**  Consider the reversible isomerization network $A \underset{c_2}{\overset{c_1}{\rightleftharpoons}} B$. Let $x_1, x_2$ denote the copy numbers of species $A$ and $B$.
+
+    1. Write down the propensities $\alpha_1(\bx) = c_1 x_1$ and $\alpha_2(\bx) = c_2 x_2$, and the stoichiometry vectors $\bnu_1 = (-1, 1)^T$ and $\bnu_2 = (1, -1)^T$.
+
+    1. Apply the Koopman generator $\mathcal{A}$ to the linear observable $g(\bx) = x_1$. Show that $(\mathcal{A}g)(\bx) = -c_1 x_1 + c_2 x_2$, which is strictly linear.
+
+    1. Apply $\mathcal{A}$ to the second-order observable $g(\bx) = x_1^2$. Show that $(\mathcal{A}g)(\bx)$ contains only polynomials of degree at most 2.
+
+    1. Explain why the subspace of polynomials of degree at most $d$ is invariant under $\mathcal{A}$ for any unimolecular network.
+
+1. **Derive.**  **(Bimolecular moment hierarchy)**  Consider the dimerization reaction $2A \xrightarrow{c} B$. The stoichiometry is $\bnu = (-2, 1)^T$ and the propensity is $\alpha(x) = c x(x-1)/2$.
+
+    1. Compute $(\mathcal{A}g)(x)$ for $g(x) = x$. Show that the result is quadratic in $x$.
+
+    1. Explain why computing the time derivative of the mean $\frac{d}{dt}\mathbb{E}[x]$ requires knowledge of the second moment $\mathbb{E}[x^2]$.
+
+1. **Explore.**  **(Logarithmic noise explosion on fast decay modes)**  Suppose a continuous dynamical system has decay rates $\lambda_1 = -1$ and $\lambda_2 = -50$. Data snapshots are collected at sampling interval $h = 0.1$.
+
+    1. Compute the true discrete eigenvalues $\mu_1 = \exp(h\lambda_1)$ and $\mu_2 = \exp(h\lambda_2)$.
+
+    1. Suppose statistical noise perturbs the discrete estimates by $\Delta \mu = 10^{-3}$. Compute the resulting perturbation $\Delta \lambda_1 \approx \frac{\Delta \mu}{h \mu_1}$.
+
+    1. Compute the resulting perturbation $\Delta \lambda_2 \approx \frac{\Delta \mu}{h \mu_2}$.
+
+    1. Explain why recovering continuous generators from discrete snapshots requires regularized regression rather than unconstrained matrix logarithms.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Koopman's original paper gives the operator viewpoint for Hamiltonian systems [@koopman1931]. Schmid introduces dynamic mode decomposition in its fluid-mechanics form, and Williams, Kevrekidis, and Rowley connect a dictionary-based extension to the Koopman operator [@schmid2010; @williamsetal2015].
 :::

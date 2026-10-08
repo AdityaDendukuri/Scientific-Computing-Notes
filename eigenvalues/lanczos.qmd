@@ -1,158 +1,260 @@
-# Lanczos Algorithm
+# The Lanczos Algorithm
 
 
-Iterative method for finding extreme eigenpairs of large, symmetric matrices without explicit $O(n^2)$ formation.
+When $\bA$ is real symmetric, the Arnoldi process of the referenced section simplifies in two ways. First, the projected matrix $\bH_k=\bV_k^T\bA\bV_k$ is symmetric as well as Hessenberg, so it is tridiagonal. Each new basis vector then needs to be orthogonalized only against the two preceding ones, and the cost per step no longer grows with $k$. Second, the Rayleigh quotient characterization of the referenced result applies to the projected matrix. The characterization shows that the extreme Ritz values are the best estimates of the extreme eigenvalues available from the Krylov subspace.
 
 
-::: {.callout-tip icon=false}
-## Remark
-**(Symmetric assumption)**  Lanczos applies to symmetric or Hermitian matrices. For nonsymmetric matrices, use Arnoldi or GMRES-type constructions.
-:::
+We first derive the three-term recurrence that defines the Lanczos algorithm [@lanczos1950]. We then show that the extreme Ritz values move monotonically toward the extreme eigenvalues and that they are never worse than the power-iteration estimate obtained with the same number of products. A numerical example compares the two methods. The section ends with the loss of orthogonality that occurs in floating-point arithmetic.
 
 
-## Krylov Subspaces
+## Symmetry Gives a Three-Term Recurrence
 
 
 ::: {.callout-note icon=false}
-## Definition: Krylov Subspace
-$\mathcal{K}_k(\bA, \bv) = \text{span}\{\bv,\, \bA\bv,\, \bA^2\bv,\, ...,\, \bA^{k-1}\bv\}$.
-$\bA^j\bv$ amplifies components along dominant eigenvectors, concentrating information about the spectral edges.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Power iteration with memory)**  Power iteration keeps only the newest vector. Lanczos keeps an orthonormal basis for the whole Krylov subspace, so it can approximate several eigenvalues at once.
-:::
-
-
-## The Lanczos Recurrence
-
-
-::: {.callout-note icon=false}
-## Theorem: Lanczos Relation
-The process builds an orthonormal basis $V_k = [\bv_1, ..., \bv_k]$ for $\mathcal{K}_k$ satisfying:
+## Theorem: Tridiagonal Projection
+Let $\bA\in\fR^{n\times n}$ be symmetric, and suppose the Arnoldi iteration (the referenced result) completes $k$ steps. Then $\bH_k$ is symmetric tridiagonal. Writing $\alpha_j=h_{jj}$ and $\beta_j=h_{j+1,j}$, we have
 $$
 \begin{align}
-\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T.
+\bH_k=\bT_k=\begin{pmatrix}
+        \alpha_1 & \beta_1 & & \\
+        \beta_1 & \alpha_2 & \ddots & \\
+        & \ddots & \ddots & \beta_{k-1} \\
+        & & \beta_{k-1} & \alpha_k
+    \end{pmatrix},
 \end{align}
 $$
-
-- **$T_k$:**  Symmetric **tridiagonal** matrix.
-    
-- **$\alpha_j = \bv_j^T \bA \bv_j$:**  Rayleigh quotients (diagonal).
-    
-- \textbf{$\beta_j = \|\text{residual}\|$:}  Orthogonalization coefficients (off-diagonal).
-
-:::
-
-
-::: {.callout-note icon=false}
-## Proposition: Galerkin Projection
-In exact arithmetic,
-$$
-\begin{align}
-T_k=V_k^T\bA V_k.
-\end{align}
-$$
-Thus Lanczos replaces the large symmetric matrix $\bA$ by a small symmetric tridiagonal projection.
+and the Arnoldi coefficients satisfy $h_{ij}=0$ for $i<j-1$ and $h_{j-1,j}=\beta_{j-1}$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Left multiply the Lanczos relation in the result above by $V_k^T$:
+By the referenced result, $\bH_k=\bV_k^T\bA\bV_k$. Since $\bA^T=\bA$,
 $$
 \begin{align}
-V_k^T\bA V_k
-    =
-    V_k^T V_k T_k+\beta_k V_k^T\bv_{k+1}\be_k^T.
+\bH_k^T=\bV_k^T\bA^T\bV_k=\bV_k^T\bA\bV_k=\bH_k.
 \end{align}
 $$
-Since the Lanczos vectors are orthonormal, $V_k^T V_k=\bI$ and $V_k^T\bv_{k+1}=\bzero$. Hence $V_k^T\bA V_k=T_k$.
+The matrix $\bH_k$ is upper Hessenberg, so $h_{ij}=0$ for $i>j+1$. Symmetry gives $h_{ij}=h_{ji}=0$ for $i<j-1$ as well, which leaves only the diagonal and the two adjacent diagonals. Symmetry also gives $h_{j-1,j}=h_{j,j-1}=\beta_{j-1}$.
 :::
 
 
-::: {.callout-tip icon=false}
-## Remark
-**Performance Advantage:** 
-Unlike Gram-Schmidt, which orthogonalizes against all previous vectors, Lanczos only requires the **two previous vectors** (three-term recurrence). This makes it $O(k \cdot \text{nnz})$ for sparse matrices.
-:::
-
-
-## Ritz Values and Vectors
-
-Approximations to the true eigenpairs from the Krylov subspace.
+In the Arnoldi iteration, the coefficient $h_{ij}$ is the component of $\bA\bv_j$ along $\bv_i$. the referenced result shows that these components vanish for $i<j-1$ in exact arithmetic, so the inner loop of Step 2 reduces to two subtractions. The coefficient for $i=j-1$ is already known from the previous step. Substituting these facts into the referenced result gives the Lanczos iteration.
 
 
 ::: {.callout-note icon=false}
-## Definition: Ritz Pair
+## Definition: The Lanczos Iteration
+Let $\bA\in\fR^{n\times n}$ be symmetric and let $\bv_1$ be a unit vector. Set $\bv_0=\bzero$ and $\beta_0=0$. For $j=1,2,...,k$:
 
-- **Ritz Value ($\theta_i$):**  Eigenvalue of $T_k$.
-    
-- \textbf{Ritz Vector ($\tilde{\bu}_i$):}  $V_k \bs_i$, where $\bs_i$ is an eigenvector of $T_k$.
+1. Compute $\bw=\bA\bv_j-\beta_{j-1}\bv_{j-1}$.
+
+1. Compute $\alpha_j=\bv_j^T\bw$ and update $\bw\leftarrow\bw-\alpha_j\bv_j$.
+
+1. Compute $\beta_j=\|\bw\|_2$.
+
+1. If $\beta_j=0$, stop. Otherwise, set $\bv_{j+1}=\bw/\beta_j$.
 
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Residual Estimate
-The residual of the $i$-th Ritz pair $(\theta_i, \tilde{\bu}_i)$ satisfies:
+## Corollary: The Lanczos Relation
+After $k$ steps of the Lanczos iteration without breakdown, the matrix $\bV_k=(\bv_1\ \cdots\ \bv_k)$ has orthonormal columns spanning $\mathcal{K}_k(\bA,\bv_1)$, and
 $$
 \begin{align}
-\|\bA\tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 = \beta_k |s_i(k)|.
+\bA\bV_k=\bV_k\bT_k+\beta_k\bv_{k+1}\be_k^T,
+    \qquad
+    \bT_k=\bV_k^T\bA\bV_k.
 \end{align}
 $$
-**Significance:**  Convergence of a Ritz pair can be monitored for $O(k)$ cost without forming the full $n$-vector $\tilde{\bu}_i$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Starting from the Lanczos relation $\bA V_k = V_k T_k + \beta_k \bv_{k+1} \be_k^T$, multiply by the $i$-th eigenvector $\bs_i$ of $T_k$ on the right:
-$$
-\begin{align}
-\bA V_k \bs_i &= V_k T_k \bs_i + \beta_k \bv_{k+1} \be_k^T \bs_i \\
-    \bA \tilde{\bu}_i &= V_k (\theta_i \bs_i) + \beta_k \bv_{k+1} s_i(k).
-\end{align}
-$$
-where $s_i(k)$ is the $k$-th entry of $\bs_i$. Rearranging:
-$$
-\begin{align}
-\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i = \beta_k \bv_{k+1} s_i(k).
-\end{align}
-$$
-Taking the $L_2$ norm and using the fact that $\|\bv_{k+1}\|_2 = 1$:
-$$
-\begin{align}
-\|\bA \tilde{\bu}_i - \theta_i \tilde{\bu}_i\|_2 &= |\beta_k s_i(k)| \|\bv_{k+1}\|_2 \\
-    &= \beta_k |s_i(k)|.
-\end{align}
-$$
+In exact arithmetic the Lanczos iteration computes the same vectors and coefficients as the Arnoldi iteration, because it omits only the coefficients that the referenced result shows to be zero. The claims are therefore the referenced result with $\bH_k=\bT_k$ and $h_{k+1,k}=\beta_k$.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Ghost Eigenvalues:** 
-In floating-point, the three-term recurrence loses orthogonality, leading to ``ghost'' (spurious) copies of eigenvalues. **(Reorthogonalization)**  Use full or selective reorthogonalization to maintain basis integrity.
+**(Lanczos cost)**
+Each step requires one product with $\bA$ and $O(n)$ further operations, independent of $k$. If only eigenvalues are wanted, the iteration needs to keep just $\bv_{j-1}$, $\bv_j$, and the scalars $\alpha_j,\beta_j$. If Ritz vectors are also wanted, we either store $\bV_k$ or run the recurrence a second time to form $\bV_k\bs$.
+:::
+
+
+## Ritz Values as Optimal Estimates
+
+
+The Ritz pairs of the referenced result are now the eigenpairs of the symmetric tridiagonal matrix $\bT_k$, so the Ritz values are real. the referenced result gives their residuals as $\beta_k|s_k|$. Symmetry also lets us say how good the Ritz values are. Throughout, let $\lambda_1\leq\cdots\leq\lambda_n$ be the eigenvalues of $\bA$ and let $\theta_1^{(k)}\leq\cdots\leq\theta_k^{(k)}$ be the eigenvalues of $\bT_k$.
+
+
+::: {.callout-note icon=false}
+## Theorem: Rayleigh--Ritz Optimality
+Let $R(\bx)=\bx^T\bA\bx/\bx^T\bx$. The extreme Ritz values are the extreme values of the Rayleigh quotient over the Krylov subspace,
+$$
+\begin{align}
+\theta_k^{(k)}=\max_{\bx\in\mathcal{K}_k,\,\bx\neq\bzero}R(\bx),
+    \qquad
+    \theta_1^{(k)}=\min_{\bx\in\mathcal{K}_k,\,\bx\neq\bzero}R(\bx).
+\end{align}
+$$
+Consequently, $\lambda_1\leq\theta_1^{(k)}$ and $\theta_k^{(k)}\leq\lambda_n$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Every nonzero $\bx\in\mathcal{K}_k$ has the form $\bx=\bV_k\by$ with $\by\in\fR^k$ nonzero. Orthonormality of the columns of $\bV_k$ gives $\bx^T\bx=\by^T\by$, and the referenced result gives $\bx^T\bA\bx=\by^T\bT_k\by$. Hence
+$$
+\begin{align}
+R(\bx)=\frac{\by^T\bT_k\by}{\by^T\by}.
+\end{align}
+$$
+Applying the referenced result to the symmetric matrix $\bT_k$ with $k=1$ and with the largest index shows that the minimum and maximum of this quotient over $\by\neq\bzero$ are $\theta_1^{(k)}$ and $\theta_k^{(k)}$. Applied to $\bA$, the same characterization shows that $R(\bx)$ lies in $[\lambda_1,\lambda_n]$ for every nonzero $\bx\in\fR^n$, which gives the final inequalities.
+:::
+
+
+::: {.callout-note icon=false}
+## Corollary: Monotone Convergence of the Extreme Ritz Values
+The Ritz values at consecutive steps interlace,
+$$
+\begin{align}
+\theta_i^{(k+1)}\leq\theta_i^{(k)}\leq\theta_{i+1}^{(k+1)},
+    \qquad i=1,...,k.
+\end{align}
+$$
+In particular, $\theta_k^{(k)}$ increases toward $\lambda_n$ and $\theta_1^{(k)}$ decreases toward $\lambda_1$ as $k$ grows.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The matrix $\bT_k$ is obtained from $\bT_{k+1}$ by deleting its last row and column. Applying the referenced result with $\bT_{k+1}$ in place of $\bA$ and $\bT_k$ in place of $\bB$ gives the interlacing inequalities. Taking $i=k$ in the right inequality gives $\theta_k^{(k)}\leq\theta_{k+1}^{(k+1)}$, and taking $i=1$ in the left inequality gives $\theta_1^{(k+1)}\leq\theta_1^{(k)}$. the referenced result bounds the two sequences by $\lambda_n$ and $\lambda_1$.
+:::
+
+
+::: {.callout-note icon=false}
+## Corollary: Lanczos Improves on Power Iteration
+Let $\bA$ be symmetric positive definite, and let $\lambda^{(k-1)}$ be the Rayleigh quotient estimate of the referenced result after $k-1$ power steps from $\bv^{(0)}=\bv_1$. Both $\lambda^{(k-1)}$ and $\theta_k^{(k)}$ require $k$ products with $\bA$, and
+$$
+\begin{align}
+\lambda^{(k-1)}\leq\theta_k^{(k)}\leq\lambda_n.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The power iterate $\bv^{(k-1)}$ is a multiple of $\bA^{k-1}\bv_1$, so it lies in $\mathcal{K}_k(\bA,\bv_1)$. Its Rayleigh quotient is $\lambda^{(k-1)}=R(\bv^{(k-1)})$, which is at most the maximum in the referenced result. Power iteration uses $k-1$ products to form $\bv^{(k-1)}$ and one more to evaluate its Rayleigh quotient. Lanczos uses one product per step. Positive definiteness makes $\lambda_n$ the eigenvalue of largest magnitude, so the two methods approximate the same eigenvalue.
+:::
+
+
+The polynomial form of the referenced result explains the size of the improvement. Every vector in $\mathcal{K}_k$ is $p(\bA)\bv_1$ for some $p\in\mathcal{P}_{k-1}$. Expanding $\bv_1=\sum_i c_i\bq_i$ in the eigenvectors of $\bA$ gives
+$$
+\begin{align}
+\theta_k^{(k)}=\max_{p\in\mathcal{P}_{k-1}}R(p(\bA)\bv_1)
+    =\max_{p\in\mathcal{P}_{k-1}}\frac{\sum_{i=1}^n\lambda_i\,p(\lambda_i)^2c_i^2}{\sum_{i=1}^n p(\lambda_i)^2c_i^2}.
+\end{align}
+$$
+The quotient is close to $\lambda_n$ when $p$ is large at $\lambda_n$ and small on the rest of the spectrum. Power iteration is restricted to $p(t)=t^{k-1}$, which separates $\lambda_n$ from $\lambda_{n-1}$ only by the factor $(\lambda_{n-1}/\lambda_n)^{k-1}$. Lanczos implicitly selects the best polynomial. A shifted Chebyshev polynomial, which is bounded by one on $[\lambda_1,\lambda_{n-1}]$ and grows rapidly outside it, gives the following bound.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Kaniel--Paige bound)**
+Let $\phi$ be the angle between $\bv_1$ and the eigenvector $\bq_n$, let $\gamma=(\lambda_n-\lambda_{n-1})/(\lambda_{n-1}-\lambda_1)$, and let $T_m(x)=\cosh(m\operatorname{arccosh}x)$ for $x\geq1$. Then
+$$
+\begin{align}
+0\leq\lambda_n-\theta_k^{(k)}\leq(\lambda_n-\lambda_1)\left(\frac{\tan\phi}{T_{k-1}(1+2\gamma)}\right)^2.
+\end{align}
+$$
+A proof is given by Golub and Van Loan [@golubvanloan2013]. Since $T_m(1+2\gamma)$ grows roughly like $(1+2\sqrt{\gamma})^m$ when $\gamma$ is small, the error decreases geometrically at a rate set by the square root of the relative gap. A square root of the same kind appears in the conjugate gradient bound of the referenced result. The analogous bound for $\theta_1^{(k)}$ follows by applying the result to $-\bA$. Interior eigenvalues admit weaker bounds and converge more slowly, because no low-degree polynomial can be large at an interior point and small on both sides of it.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+**(Lanczos and power iteration on a model spectrum)**
+Let $\bA=\operatorname{diag}(1,2,...,100)$ and $\bv_1=(1,...,1)^T/10$. We run Lanczos with full reorthogonalization, so that the computed Ritz values agree with exact arithmetic to rounding level, and compare the error in the largest Ritz value with the error in the power-iteration estimate after the same number of products.
+
+\begin{tabular}{rccc}
+    $k$ & $\lambda_n-\theta_k^{(k)}$ & $\lambda_n-\lambda^{(k-1)}$ & Kaniel--Paige bound \\
+    \hline
+    10 & $8.6\times10^{-1}$ & $4.5$ & $9.9\times10^{2}$ \\
+    20 & $5.0\times10^{-2}$ & $2.0$ & $1.8\times10^{1}$ \\
+    30 & $6.4\times10^{-4}$ & $1.2$ & $3.3\times10^{-1}$ \\
+    40 & $7.2\times10^{-7}$ & $8.2\times10^{-1}$ & $5.8\times10^{-3}$
+\end{tabular}
+
+The relative gap is $\gamma=1/98$, and the power-iteration ratio is $\lambda_{99}/\lambda_{100}=0.99$. After 40 products the power-iteration estimate has not yet reached one correct digit, whereas the largest Ritz value is correct to about eight significant digits. The bound is valid but conservative at every step. By the symmetry of this spectrum about $50.5$ and of the starting vector, the error in $\theta_1^{(k)}$ is the same as the error in $\theta_k^{(k)}$.
+
+At $k=40$ the residual of the referenced result for the largest Ritz pair is $3.7\times10^{-3}$, about four orders of magnitude larger than the eigenvalue error. the referenced result explains the difference. The corollary bounds the distance from the Ritz value to the nearest eigenvalue by the squared residual divided by the distance $\delta$ from the Ritz value to the other eigenvalues. Here $\delta$ is about one, and the bound $1.4\times10^{-5}$ is consistent with the observed error.
+:::
+
+::: {.callout-tip icon=false}
+## Remark
+**(Lanczos and conjugate gradients)**
+The conjugate gradient method of the referenced section builds the same Krylov subspace $\mathcal{K}_k(\bA,\br^{(0)})$ for a symmetric positive definite system. Its residuals are multiples of the Lanczos vectors started from $\bv_1=\br^{(0)}/\|\br^{(0)}\|_2$, and its coefficients determine the entries of $\bT_k$. the referenced section derives this correspondence and uses it to estimate the extreme eigenvalues during a CG solve.
+:::
+
+
+## Loss of Orthogonality and Ghost Eigenvalues
+
+
+the referenced result relies on the exact orthogonality of $\bv_{j+1}$ to $\bv_1,...,\bv_{j-2}$. The Lanczos iteration never enforces this orthogonality explicitly, so rounding errors are free to destroy it.
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Paige's analysis)**
+In floating-point arithmetic, the computed Lanczos vectors gradually lose mutual orthogonality. Paige showed that the loss is not random [@paige1976]. Let $(\theta_i,\tilde{\bu}_i)$ be a Ritz pair computed from $\bT_k$, and let $u$ denote the unit roundoff. Paige's analysis gives
+$$
+\begin{align}
+|\tilde{\bu}_i^T\bv_{k+1}|\approx\frac{u\,\|\bA\|_2}{\beta_k|s_{k,i}|}.
+\end{align}
+$$
+The denominator is the residual of the referenced result. The new Lanczos vector therefore acquires a component along $\tilde{\bu}_i$ precisely as that Ritz pair converges, and orthogonality is lost in the directions of converged Ritz vectors. Once orthogonality to a converged Ritz vector is lost, the iteration begins to approximate the same eigenvalue again and produces repeated copies of it, known as **ghost eigenvalues**. In the example above, running the iteration without reorthogonalization for $k=150$ steps gives three Ritz values within $10^{-6}$ of $\lambda_{100}=100$ and three within $10^{-6}$ of $\lambda_1=1$. At $k=200$ there are four copies of each.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Connection to Conjugate Gradient:** 
-The Lanczos algorithm applied to a symmetric system $\bA\bx=\bb$ is mathematically equivalent to the Conjugate Gradient method. Both algorithms build the same Krylov subspace and produce identical iterates in exact arithmetic.
+**(Remedies for ghost eigenvalues)**
+Practical implementations use one of three strategies.
+
+1. **Full reorthogonalization.** We orthogonalize each new vector against all previous Lanczos vectors. This restores the behavior of exact arithmetic at the Arnoldi cost of $O(k^2n)$ operations and $O(kn)$ storage.
+
+1. **Selective reorthogonalization.** We orthogonalize only against converged Ritz vectors, and only when Paige's analysis indicates that orthogonality to them has been lost. The cost is proportional to the number of converged Ritz vectors.
+
+1. **Cullum--Willoughby identification.** We run the iteration without reorthogonalization and discard spurious Ritz values afterward by comparing the eigenvalues of $\bT_k$ with those of the matrix obtained by deleting its first row and column.
+
 :::
+
+
+## Exercises
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Carry out 2 steps of Lanczos for $\bA = \text{diag}(5, 3, 1)$ starting with $\bv_1 = \frac{1}{\sqrt{3}}\mathbf{1}$.
-    
-1. Verify the result above numerically for a random symmetric matrix.
-    
-1. Implement Lanczos on a $50 \times 50$ Hilbert matrix. Count spurious eigenvalues without reorthogonalization.
+1. **Check.**  Carry out two steps of the Lanczos iteration by hand for $\bA=\operatorname{diag}(4,2,1)$ and $\bv_1=(1,1,1)^T/\sqrt{3}$. Write down $\alpha_1$, $\beta_1$, $\alpha_2$, and $\bT_2$, and compute $\beta_2$.
 
+1. **Check.**  For $\bT_2$ from the previous exercise, compute both Ritz values and their residuals using the referenced result. Verify the interlacing inequalities of the referenced result between the Ritz value $\theta_1^{(1)}=\alpha_1$, the two eigenvalues of $\bT_2$, and the eigenvalues of $\bA$.
+
+1. **Derive.**  Using the referenced result, show that $\theta_{k-1}^{(k)}=\max_{S}\min_{\bx\in S,\,\bx\neq\bzero}R(\bx)$, where $S$ ranges over two-dimensional subspaces of $\mathcal{K}_k$. Conclude that $\theta_{k-1}^{(k)}\leq\lambda_{n-1}$.
+
+1. **Derive.**  Let $\bA$ be symmetric positive definite. Show that the power-iteration estimate satisfies $\lambda_n-\lambda^{(k-1)}\leq(\lambda_n-\lambda_1)\tan^2\phi\,(\lambda_{n-1}/\lambda_n)^{2(k-1)}$, where $\phi$ is the angle between $\bv_1$ and $\bq_n$. Compare the rate with the Kaniel--Paige bound when $\gamma$ is small.
+
+1. **Compute.**  Implement the referenced result with an option for full reorthogonalization. Reproduce the table in the example above, and plot all Ritz values against $k$ for $k\leq200$ with and without reorthogonalization. Identify the steps at which ghost copies of $\lambda_{100}$ appear, and relate them to the step at which the largest Ritz value converged.
+
+1. **Explore.**  Repeat the previous computation with $\bA=\operatorname{diag}(1,2,...,99,110)$. Explain, using the polynomial characterization, why the largest Ritz value now converges much faster while the convergence of $\theta_1^{(k)}$ is essentially unchanged.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Horn and Johnson are a reference for the matrix structure behind the spectral results [@hornjohnson2012]. The computational treatment in Golub and Van Loan includes symmetric eigensolvers and the SVD [@golubvanloan2013]. The original Lanczos and Golub--Kahan papers show how two algorithms in these chapters first appeared [@lanczos1950; @golubkahan1965].
 :::

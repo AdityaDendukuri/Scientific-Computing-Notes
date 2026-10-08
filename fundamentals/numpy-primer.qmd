@@ -1,7 +1,8 @@
 # Python and NumPy Primer
 
 
-Condensed reference for the toolset used throughout these notes.
+This section summarizes the NumPy array conventions, linear-algebra operations, and indexing idioms used throughout the computational examples in these notes.
+
 
 ## Arrays and Basic Operations
 
@@ -11,41 +12,43 @@ Condensed reference for the toolset used throughout these notes.
 The `ndarray` is the fundamental structure.
 
 - **Creation:** `np.array([1, 2])`, `np.zeros((m, n))`, `np.random.randn(m, n)`.
-  
-- **Indexing:** 0-indexed. `A[i, j]` for entries; `A[i, :]` for rows; `A[:, j]` for columns.
+
+- **Indexing:** 0-indexed. `A[i, j]` for entries, `A[i, :]` for rows, and `A[:, j]` for columns.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Shapes and Rank-1 Arrays)** 
-`A.shape` returns `(m, n)`. Note that a 1D array has shape `(n,)`, which is **not** equivalent to a column vector `(n, 1)`. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use `x[:, None]` or `x.reshape(-1, 1)` to convert to 2D.
+**(Shapes and rank-1 arrays)**
+`A.shape` returns `(m, n)`. A 1D array has shape `(n,)`, which is **not** equivalent to a column vector `(n, 1)`. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use `x[:, None]` or `x.reshape(-1, 1)` to convert to 2D.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**Compute.**
 
 1. Create $4 \times 4$ identity matrix. Verify `shape` and `dtype`.
-  
+
 1. Extract row 2 and column 3 from a random $3 \times 3$ $\bA$.
-  
-1. Confirm that `np.zeros((3,))` fails where a `(3, 1)` column vector is required in a matrix-vector product.
+
+1. Compare `A @ x` for `x.shape == (3,)` and `x.shape == (3,1)`. Record the output shape in each case, then explain why the two representations behave differently under broadcasting.
 
 :::
 
 
 ## Linear Algebra Operations
 
-Core routines in `numpy.linalg`:
+
+The core routines in `numpy.linalg` provide access to standard BLAS and LAPACK implementations:
 
 
 \begin{tabular}{ll}
 **Function** & **Computes** \\ \hline
 `A @ B` & Matrix product $\bA\bB$ \\
 `np.linalg.solve(A, b)` & Solve $\bA\bx = \bb$ ($O(n^3)$) \\
-`np.linalg.inv(A)` & Matrix inverse (Avoid; use `solve`) \\
+`np.linalg.inv(A)` & Matrix inverse (prefer `solve` for linear systems) \\
 `np.linalg.norm(x)` & Euclidean norm $\|\bx\|_2$ \\
 `np.linalg.eig(A)` & Eigenvalues and eigenvectors \\
 `np.linalg.svd(A)` & Singular Value Decomposition \\
@@ -56,14 +59,14 @@ Core routines in `numpy.linalg`:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Performance Law: Vectorization)** 
+**(Vectorization and performance)**
 Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by **vectorizing** operations. For example, use `A @ B` instead of triple-nested loops.
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Stability: solve vs inv)** 
+**(Linear solve versus inversion)**
 `np.linalg.solve(A, b)` is faster and more stable than `np.linalg.inv(A) @ b`. Explicit inversion is almost never desirable in scientific computation.
 :::
 
@@ -82,11 +85,12 @@ Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS rout
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**Compute.**
 
 1. Solve a $2 \times 2$ system and verify the residual $\|\bA\bx - \bb\|$.
-  
+
 1. Profile `solve` vs `inv @ b` for $n=1000$.
-  
+
 1. Compare `np.linalg.eig` and `np.linalg.eigh` (optimized for symmetric matrices).
 
 :::
@@ -96,21 +100,28 @@ Explicit `for` loops in Python are slow. Push heavy lifting into NumPy/BLAS rout
 
 
 - **Element-wise:** `*` and `**` are entry-wise. Matrix powers use `np.linalg.matrix\_power`.
-  
+
 - **Broadcasting:** Automatic dimension expansion. `A * v` scales columns of $\bA$ by entries of $v$.
-  
+
 - **Aliases, Views, Copies:** `B = A` makes a second name for the same array. Slices are usually views. Use `B = A.copy()` for independent data.
-  
+
 - **Sparse construction:** use `scipy.sparse.diags` for banded matrices and `scipy.sparse.csr\_matrix` for efficient arithmetic.
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**Compute.**
 
 1. Let $\bA = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$. Compare `A * A` and `A @ A`.
-  
+
 1. Demonstrate the ``view pitfall'' by modifying a slice of a matrix.
-  
+
 1. Use broadcasting to perform diagonal scaling $\bA\bD$ without constructing $\bD = \text{diag}(d)$.
 
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Heath gives a broad introduction to scientific computing at roughly the level of these notes [@heath2018]. For the effects of floating-point arithmetic, Higham is the standard detailed reference [@higham2002]. Meyer provides an accessible bridge from undergraduate linear algebra to matrix computation [@meyer2000].
 :::

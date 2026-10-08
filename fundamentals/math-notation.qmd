@@ -1,7 +1,8 @@
 # Mathematical Notation and Proof Techniques
 
 
-Standard vocabulary for proofs and algorithms.
+This section establishes the logical, set-theoretic, and matrix notation used throughout these notes, together with the standard proof structures.
+
 
 ## Logic and Set Notation
 
@@ -10,9 +11,9 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Logical Quantifiers
 
 - **Universal ($\forall$):**  ``For all.''
-  
+
 - **Existential ($\exists$):**  ``There exists.''
-  
+
 - **Example:**  ``$\forall \varepsilon > 0,\;\exists \delta > 0$'' reads as ``for every positive $\varepsilon$ there is a positive $\delta$.''
 
 :::
@@ -22,9 +23,9 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Implication and Equivalence
 
 - **Implication ($P \Rightarrow Q$):**  $P$ implies $Q$.
-  
+
 - **Equivalence ($P \Leftrightarrow Q$):**  $P$ if and only if $Q$ (iff).
-  
+
 - **Contrapositive:**  $\neg Q \Rightarrow \neg P$. Logically equivalent to $P \Rightarrow Q$.
 
 :::
@@ -34,13 +35,13 @@ Standard vocabulary for proofs and algorithms.
 ## Definition: Set Notation
 
 - $x \in S$: $x$ is an element of $S$.
-  
+
 - $S \subseteq T$: $S$ is a subset of $T$.
-  
-- $S \cup T$: Union; $S \cap T$: Intersection; $S \setminus T$: Set difference.
-  
+
+- $S \cup T$ (union), $S \cap T$ (intersection), and $S \setminus T$ (set difference).
+
 - $\{x \in S : P(x)\}$: Set builder notation.
-  
+
 - **Number Sets:**  $\fZ$ (integers), $\fR$ (reals), $\fC$ (complex), $\fR^n$ (vectors), $\fR^{m \times n}$ (matrices).
 
 :::
@@ -48,11 +49,12 @@ Standard vocabulary for proofs and algorithms.
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**Check.**
 
 1. Write ``every invertible matrix has a nonzero determinant'' using quantifiers and implication.
-  
+
 1. State the contrapositive of: ``if $\bA$ is invertible, then $\bA\bx = \bzero \Rightarrow \bx = \bzero$.''
-  
+
 1. Let $S = \{1, 2, 3, 4\}$ and $T = \{3, 4, 5, 6\}$. Compute $S \cup T, S \cap T, S \setminus T$.
 
 :::
@@ -78,7 +80,7 @@ Assume $\neg P$ and derive a logical contradiction ($R \wedge \neg R$). Proves $
 To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 1. **Base case:**  Verify $P(n_0)$ directly.
-  
+
 1. **Inductive step:**  Assume $P(k)$ and prove $P(k+1)$.
 
 :::
@@ -86,17 +88,18 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**Numerical Proofs:**  Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
+**(Numerical proofs)**  Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
 :::
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
+**Derive.**
 
 1. Prove: if $\bA$ and $\bB$ are symmetric, then $\bA + \bB$ is symmetric.
-  
+
 1. Prove by contradiction: if $\bA\bx = \bzero \Rightarrow \bx = \bzero$, then $\bA$ has no zero eigenvalue.
-  
+
 1. By induction, prove $\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$.
 
 :::
@@ -107,29 +110,29 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Scalars, Vectors, and Matrices)** 
+**(Scalars, Vectors, and Matrices)**
 
 - **Scalars:**  Lowercase italic ($a, b, x$).
-  
+
 - **Vectors:**  Lowercase bold ($\bx, \by, \ba$). Default is column vector.
-  
+
 - **Matrices:**  Uppercase bold ($\bA, \bB, \bQ$).
-  
-- **Indexing:**  1-based (unlike Python). $x_i$ is $i$-th entry; $a_{ij}$ is $(i,j)$ entry.
+
+- **Indexing:**  1-based (unlike Python). Here $x_i$ is the $i$-th entry, and $a_{ij}$ is the $(i,j)$ entry.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Transpose and Inverse)** 
+**(Transpose and Inverse)**
 
 - $\bA^T$: Transpose.
-  
+
 - $\bA^{-1}$: Matrix inverse (square, nonsingular matrices).
-  
+
 - $\bA^{-T}$: Transpose of the inverse $(\bA^{-1})^T$.
-  
+
 - $\bA^k$: $k$-th power. $\bA^0 = \bI$.
 
 :::
@@ -137,7 +140,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Sums and Products)** 
+**(Sums and Products)**
 $$
 \begin{align}
 \sum_{i=1}^{n} a_i = a_1 + ... + a_n, \qquad
@@ -149,10 +152,10 @@ $$
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Functions)** 
+**(Functions)**
 
 - $f : \fR^n \to \fR^m$: Maps $n$-vectors to $m$-vectors.
-  
+
 - $f \circ g$: Function composition $(f \circ g)(\bx) = f(g(\bx))$.
 
 :::
@@ -160,6 +163,6 @@ $$
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Asymptotic Notation)** 
+**(Asymptotic Notation)**
 Scaling of algorithms is described using Big-O notation ($O(n^2), O(n^3)$). Details in the Computational Complexity section.
 :::

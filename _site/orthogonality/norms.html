@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>13&nbsp; Vector and Matrix Norms – Scientific Computing</title>
+<title>5&nbsp; Operator Norms and Matrix Geometry – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../orthogonality/stability.html" rel="next">
-<link href="../orthogonality/orthogonal.html" rel="prev">
+<link href="../fundamentals/complexity.html" rel="next">
+<link href="../fundamentals/norms.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/norms.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../orthogonality/norms.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,8 +710,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#vector-norms" id="toc-vector-norms" class="nav-link active" data-scroll-target="#vector-norms"><span class="header-section-number">13.1</span> Vector Norms</a></li>
-  <li><a href="#matrix-norms" id="toc-matrix-norms" class="nav-link" data-scroll-target="#matrix-norms"><span class="header-section-number">13.2</span> Matrix Norms</a></li>
+  <li><a href="#induced-norms-as-worst-case-amplification" id="toc-induced-norms-as-worst-case-amplification" class="nav-link active" data-scroll-target="#induced-norms-as-worst-case-amplification"><span class="header-section-number">5.1</span> Induced Norms as Worst-Case Amplification</a></li>
+  <li><a href="#dual-norms-and-sharp-linear-bounds" id="toc-dual-norms-and-sharp-linear-bounds" class="nav-link" data-scroll-target="#dual-norms-and-sharp-linear-bounds"><span class="header-section-number">5.2</span> Dual Norms and Sharp Linear Bounds</a></li>
+  <li><a href="#the-frobenius-geometry-of-matrices" id="toc-the-frobenius-geometry-of-matrices" class="nav-link" data-scroll-target="#the-frobenius-geometry-of-matrices"><span class="header-section-number">5.3</span> The Frobenius Geometry of Matrices</a></li>
+  <li><a href="#condition-number-as-distortion" id="toc-condition-number-as-distortion" class="nav-link" data-scroll-target="#condition-number-as-distortion"><span class="header-section-number">5.4</span> Condition Number as Distortion</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/orthogonality/norms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -680,9 +721,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../orthogonality/orthogonal.html">Orthogonality and Least Squares</a></li><li class="breadcrumb-item"><a href="../orthogonality/norms.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../orthogonality/norms.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></h1>
 </div>
 
 
@@ -699,110 +740,244 @@ window.Quarto = {
 </header>
 
 
-<p>Foundations for measuring approximation errors and convergence.</p>
-<section id="vector-norms" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="vector-norms"><span class="header-section-number">13.1</span> Vector Norms</h2>
+<p>A vector norm measures the size of an input or an error. A matrix norm measures what the matrix does to such vectors. This point matters because the entries of a matrix alone do not determine its effect on data. A matrix with modest entries can strongly amplify a carefully aligned vector, while a matrix with large entries may act harmlessly on the particular subspace being used.</p>
+<p>The induced norm turns this question into an optimization problem, asking for the largest amplification over all nonzero inputs. We define induced norms, derive their fundamental inequalities, and interpret the condition number through this geometric distortion.</p>
+<section id="induced-norms-as-worst-case-amplification" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="induced-norms-as-worst-case-amplification"><span class="header-section-number">5.1</span> Induced Norms as Worst-Case Amplification</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Vector Norm
+<span class="screen-reader-only">Note</span>Definition: Induced Operator Norm
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\|\cdot\| : \fR^n \to \fR\)</span> satisfies:</p>
+<p>Let <span class="math inline">\(\|\cdot\|_{\mathrm{in}}\)</span> be a norm on <span class="math inline">\(\fR^n\)</span> and let <span class="math inline">\(\|\cdot\|_{\mathrm{out}}\)</span> be a norm on <span class="math inline">\(\fR^m\)</span>. For <span class="math inline">\(\bA\in\fR^{m\times n}\)</span>, the induced operator norm is <span class="math display">\[
+\begin{align}
+\|\bA\|
+  =\sup_{\bx\neq\bzero}
+  \frac{\|\bA\bx\|_{\mathrm{out}}}{\|\bx\|_{\mathrm{in}}}
+  =\max_{\|\bx\|_{\mathrm{in}}=1}\|\bA\bx\|_{\mathrm{out}}.
+\end{align}
+\]</span> When the same <span class="math inline">\(p\)</span>-norm is used in the domain and range, we write <span class="math inline">\(\|\bA\|_p\)</span>.</p>
+</div>
+</div>
+<p>The quotient is unchanged when <span class="math inline">\(\bx\)</span> is rescaled, so only directions matter. Restricting to the unit sphere removes the irrelevant magnitude. In finite dimensions the unit sphere is compact and the objective is continuous, so the maximum is attained.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Fundamental Properties of Induced Norms
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For compatible matrices and vectors,</p>
 <ol type="1">
-<li><p><strong>Definiteness:</strong> <span class="math inline">\(\|\bx\| \geq 0\)</span>, with equality iff <span class="math inline">\(\bx = \bzero\)</span>.</p></li>
-<li><p><strong>Homogeneity:</strong> <span class="math inline">\(\|c\bx\| = |c|\|\bx\|\)</span>.</p></li>
-<li><p><strong>Triangle Inequality:</strong> <span class="math inline">\(\|\bx + \by\| \leq \|\bx\| + \|\by\|\)</span>.</p></li>
+<li><p><strong>Consistency:</strong> <span class="math inline">\(\|\bA\bx\|\leq\|\bA\|\,\|\bx\|\)</span>.</p></li>
+<li><p><strong>Submultiplicativity:</strong> <span class="math inline">\(\|\bA\bB\|\leq\|\bA\|\,\|\bB\|\)</span>.</p></li>
+<li><p><strong>Identity:</strong> <span class="math inline">\(\|\bI\|=1\)</span>.</p></li>
+<li><p><strong>Norm axioms:</strong> the induced norm is positive definite, absolutely homogeneous, and satisfies the triangle inequality.</p></li>
 </ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: <span class="math inline">\(\ell^p\)</span> Norms
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><span class="math inline">\(\|\bx\|_p = (\sum |x_i|^p)^{1/p}\)</span>.</p>
-<ul>
-<li><p><strong><span class="math inline">\(\ell_1\)</span>:</strong> <span class="math inline">\(\sum |x_i|\)</span> (Sparsity).</p></li>
-<li><p><strong><span class="math inline">\(\ell_2\)</span>:</strong> <span class="math inline">\(\sqrt{\bx^T\bx}\)</span> (Energy).</p></li>
-<li><p><strong><span class="math inline">\(\ell_\infty\)</span>:</strong> <span class="math inline">\(\max |x_i|\)</span> (Tolerance).</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Fundamental Inequalities
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><p><strong>Cauchy-Schwarz:</strong> <span class="math inline">\(|\bx^T\by| \leq \|\bx\|_2 \|\by\|_2\)</span>.</p></li>
-<li><p><strong>Hölder:</strong> <span class="math inline">\(|\bx^T\by| \leq \|\bx\|_p \|\by\|_q\)</span> where <span class="math inline">\(1/p + 1/q = 1\)</span>.</p></li>
-</ul>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bx\neq\bzero\)</span>, the definition gives <span class="math display">\[
+\begin{align}
+\frac{\|\bA\bx\|}{\|\bx\|}\leq\|\bA\|,
+\end{align}
+\]</span> which proves consistency. Applying consistency to <span class="math inline">\(\bA\)</span> and then to <span class="math inline">\(\bB\)</span> gives <span class="math display">\[
+\begin{align}
+\|\bA\bB\bx\|
+  \leq\|\bA\|\,\|\bB\bx\|
+  \leq\|\bA\|\,\|\bB\|\,\|\bx\|.
+\end{align}
+\]</span> Taking the maximum over unit vectors proves submultiplicativity. The identity property follows from <span class="math inline">\(\|\bI\bx\|/\|\bx\|=1\)</span>. Homogeneity follows by pulling <span class="math inline">\(|\alpha|\)</span> out of the numerator. For the triangle inequality, <span class="math display">\[
+\begin{align}
+\|(\bA+\bB)\bx\|
+  \leq\|\bA\bx\|+\|\bB\bx\|
+  \leq(\|\bA\|+\|\bB\|)\|\bx\|.
+\end{align}
+\]</span> Taking the maximum over unit vectors completes the proof.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Example
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Equivalence:</strong> On <span class="math inline">\(\fR^n\)</span>, all norms are equivalent: <span class="math inline">\(c_1 \|\bx\|_\beta \leq \|\bx\|_\alpha \leq c_2 \|\bx\|_\beta\)</span>. Convergence in one implies convergence in all.</p>
+<p>For the diagonal matrix <span class="math display">\[
+\begin{align}
+\bD=\begin{pmatrix}4&amp;0\\0&amp;1/2\end{pmatrix},
+\end{align}
+\]</span> the Euclidean unit circle is sent to an ellipse with semiaxis lengths <span class="math inline">\(4\)</span> and <span class="math inline">\(1/2\)</span>. Hence <span class="math inline">\(\|\bD\|_2=4\)</span>. The norm records the greatest stretch, not the average stretch and not the largest entry by convention. In this example those quantities happen to agree because the coordinate axes are the stretching directions.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Note</span>Theorem: The Induced <span class="math inline">\(1\)</span>- and Infinity Norms
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Prove the triangle inequality for <span class="math inline">\(\|\cdot\|_2\)</span> using Cauchy-Schwarz.</p></li>
-<li><p>Show that <span class="math inline">\(\|\bx\|_\infty = \lim_{p\to\infty} \|\bx\|_p\)</span>.</p></li>
-</ol>
+<p>For <span class="math inline">\(\bA=(a_{ij})\in\fR^{m\times n}\)</span>, <span class="math display">\[
+\begin{align}
+\|\bA\|_1
+  &amp;=\max_{1\leq j\leq n}\sum_{i=1}^m|a_{ij}|,
+  &amp;
+  \|\bA\|_\infty
+  &amp;=\max_{1\leq i\leq m}\sum_{j=1}^n|a_{ij}|.
+\end{align}
+\]</span> Thus the induced <span class="math inline">\(1\)</span>-norm is the largest absolute column sum, while the induced infinity norm is the largest absolute row sum.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(C=\max_j\sum_i|a_{ij}|\)</span>. For every vector <span class="math inline">\(\bx\)</span>, <span class="math display">\[
+\begin{align}
+\|\bA\bx\|_1
+  &amp;\leq\sum_{i=1}^m\sum_{j=1}^n|a_{ij}||x_j| \\
+  &amp;=\sum_{j=1}^n|x_j|\sum_{i=1}^m|a_{ij}| \\
+  &amp;\leq C\|\bx\|_1.
+\end{align}
+\]</span> If column <span class="math inline">\(j_*\)</span> attains <span class="math inline">\(C\)</span>, then <span class="math inline">\(\|\be_{j_*}\|_1=1\)</span> and <span class="math inline">\(\|\bA\be_{j_*}\|_1=C\)</span>, so the bound is sharp.</p>
+<p>Let <span class="math inline">\(R=\max_i\sum_j|a_{ij}|\)</span>. If <span class="math inline">\(\|\bx\|_\infty=1\)</span>, then <span class="math display">\[
+\begin{align}
+\|\bA\bx\|_\infty
+  \leq\max_i\sum_j|a_{ij}||x_j|
+  \leq R.
+\end{align}
+\]</span> Choose a row <span class="math inline">\(i_*\)</span> attaining <span class="math inline">\(R\)</span> and take <span class="math inline">\(x_j=\operatorname{sign}(a_{i_*j})\)</span>, with either sign allowed when an entry is zero. Then <span class="math inline">\(\|\bx\|_\infty=1\)</span> and the <span class="math inline">\(i_*\)</span>-th component of <span class="math inline">\(\bA\bx\)</span> has magnitude <span class="math inline">\(R\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The Induced Euclidean Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The induced Euclidean norm is <span class="math display">\[
+\begin{align}
+\|\bA\|_2
+  =\max_{\|\bx\|_2=1}\|\bA\bx\|_2.
+\end{align}
+\]</span> Equivalently, <span class="math display">\[
+\begin{align}
+\|\bA\|_2^2
+  =\max_{\|\bx\|_2=1}\bx^T\bA^T\bA\bx.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<p>The second expression follows by squaring the output norm. It already shows why <span class="math inline">\(\bA^T\bA\)</span> appears in questions about Euclidean amplification. The eigenvalue and singular-value chapters will prove the computable formula <span class="math display">\[
+\begin{align}
+\|\bA\|_2=\sqrt{\lambda_{\max}(\bA^T\bA)}=\sigma_{\max}(\bA).
+\end{align}
+\]</span> We postpone that proof until the required spectral theory is available.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Orthogonal Transformations Have Unit Euclidean Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bQ^T\bQ=\bI\)</span>, then <span class="math display">\[
+\begin{align}
+\|\bQ\bx\|_2=\|\bx\|_2
+  \qquad\text{and}\qquad
+  \|\bQ\|_2=1.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For every vector <span class="math inline">\(\bx\)</span>, <span class="math display">\[
+\begin{align}
+\|\bQ\bx\|_2^2
+  =\bx^T\bQ^T\bQ\bx
+  =\bx^T\bx
+  =\|\bx\|_2^2.
+\end{align}
+\]</span> Every unit vector is therefore mapped to a unit vector, so the maximum amplification is one.</p>
+</div>
 </div>
 </div>
 </section>
-<section id="matrix-norms" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="matrix-norms"><span class="header-section-number">13.2</span> Matrix Norms</h2>
-<p>Measure how much a matrix amplifies vectors.</p>
+<section id="dual-norms-and-sharp-linear-bounds" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="dual-norms-and-sharp-linear-bounds"><span class="header-section-number">5.2</span> Dual Norms and Sharp Linear Bounds</h2>
+<p>An inner product turns a vector <span class="math inline">\(\by\)</span> into the linear measurement <span class="math inline">\(\bx\mapsto\by^T\bx\)</span>. The dual norm measures the largest value of this measurement on the unit ball.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Induced (Operator) Norm
+<span class="screen-reader-only">Note</span>Definition: Dual Norm
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\|\bA\| = \max_{\bx \neq \bzero} \frac{\|\bA\bx\|}{\|\bx\|}\)</span>.</p>
-<ul>
-<li><p><strong><span class="math inline">\(\|\bA\|_1\)</span>:</strong> Max absolute column sum.</p></li>
-<li><p><strong><span class="math inline">\(\|\bA\|_\infty\)</span>:</strong> Max absolute row sum.</p></li>
-<li><p><strong><span class="math inline">\(\|\bA\|_2\)</span> (Spectral):</strong> <span class="math inline">\(\sigma_{\max}(\bA) = \sqrt{\lambda_{\max}(\bA^T\bA)}\)</span>.</p></li>
-</ul>
+<p>For a norm <span class="math inline">\(\|\cdot\|\)</span> on <span class="math inline">\(\fR^n\)</span>, its dual norm is <span class="math display">\[
+\begin{align}
+\|\by\|_*
+  =\max_{\|\bx\|=1}|\by^T\bx|.
+\end{align}
+\]</span> Consequently, <span class="math display">\[
+\begin{align}
+|\by^T\bx|\leq\|\by\|_*\|\bx\|.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -811,14 +986,80 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Frobenius Norm
+<span class="screen-reader-only">Note</span>Theorem: Duals of the Standard Norms
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\|\bA\|_F = \sqrt{\sum a_{ij}^2} = \sqrt{\text{Tr}(\bA^T\bA)}\)</span>.</p>
-<ul>
-<li><strong>Relation:</strong> <span class="math inline">\(\|\bA\|_2 \leq \|\bA\|_F \leq \sqrt{\text{rank}(\bA)} \|\bA\|_2\)</span>.</li>
-</ul>
+<p>The Euclidean norm is self-dual. The <span class="math inline">\(1\)</span>- and infinity norms are dual to one another: <span class="math display">\[
+\begin{align}
+\|\by\|_{2,*}=\|\by\|_2,
+  \qquad
+  \|\by\|_{1,*}=\|\by\|_\infty,
+  \qquad
+  \|\by\|_{\infty,*}=\|\by\|_1.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Cauchy–Schwarz gives <span class="math inline">\(|\by^T\bx|\leq\|\by\|_2\|\bx\|_2\)</span>, with equality when <span class="math inline">\(\bx\)</span> is a normalized copy of <span class="math inline">\(\by\)</span>. For the <span class="math inline">\(1\)</span>-norm, <span class="math display">\[
+\begin{align}
+|\by^T\bx|
+  \leq\sum_i|y_i||x_i|
+  \leq\|\by\|_\infty\|\bx\|_1.
+\end{align}
+\]</span> A signed coordinate vector supported where <span class="math inline">\(|y_i|\)</span> is largest attains equality. For the infinity norm, <span class="math display">\[
+\begin{align}
+|\by^T\bx|
+  \leq\sum_i|y_i||x_i|
+  \leq\|\by\|_1\|\bx\|_\infty.
+\end{align}
+\]</span> Choosing <span class="math inline">\(x_i=\operatorname{sign}(y_i)\)</span> attains equality.</p>
+</div>
+</div>
+</div>
+<p>Dual norms explain why the norm used for a residual determines the norm that appears in the corresponding linear functional. They also explain the row-sum and column-sum formulas above. The transpose interchanges inputs with linear measurements, giving the useful identity <span class="math display">\[
+\begin{align}
+\|\bA\|_1=\|\bA^T\|_\infty.
+\end{align}
+\]</span></p>
+</section>
+<section id="the-frobenius-geometry-of-matrices" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="the-frobenius-geometry-of-matrices"><span class="header-section-number">5.3</span> The Frobenius Geometry of Matrices</h2>
+<p>Matrices themselves form a vector space. When a matrix is being treated as data rather than as an operator, the natural Euclidean measurement is entrywise.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Frobenius Inner Product and Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For matrices <span class="math inline">\(\bA,\bB\in\fR^{m\times n}\)</span>, the Frobenius inner product is <span class="math display">\[
+\begin{align}
+\langle\bA,\bB\rangle_F
+  =\sum_{i=1}^m\sum_{j=1}^n a_{ij}b_{ij}
+  =\operatorname{trace}(\bA^T\bB).
+\end{align}
+\]</span> Its induced norm is <span class="math display">\[
+\begin{align}
+\|\bA\|_F
+  =\left(\sum_{i=1}^m\sum_{j=1}^n a_{ij}^2\right)^{1/2}.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -831,9 +1072,139 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Consistency and Submultiplicativity:</strong> Matrix norms are useful when they satisfy <span class="math inline">\(\|\bA\bx\| \leq \|\bA\|\|\bx\|\)</span>. All induced norms are additionally submultiplicative: <span class="math inline">\(\|\bA\bB\| \leq \|\bA\|\|\bB\|\)</span>.</p>
+<p><strong>(Two different questions)</strong> The Frobenius norm measures the collective size of the entries. The induced <span class="math inline">\(2\)</span>-norm measures the largest amplification of a vector. Both are useful, but they answer different questions. Calling both a ``matrix norm’’ does not make them interchangeable.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Bounds Relating Frobenius and Operator Norms
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(\bA\in\fR^{m\times n}\)</span>, <span class="math display">\[
+\begin{align}
+\|\bA\|_2\leq\|\bA\|_F\leq\sqrt n\,\|\bA\|_2.
+\end{align}
+\]</span> For compatible matrices <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bB\)</span>, <span class="math display">\[
+\begin{align}
+\|\bA\bB\|_F\leq\|\bA\|_2\|\bB\|_F.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\ba_i^T\)</span> denote row <span class="math inline">\(i\)</span> of <span class="math inline">\(\bA\)</span>. For a Euclidean unit vector <span class="math inline">\(\bx\)</span>, Cauchy–Schwarz gives <span class="math display">\[
+\begin{align}
+\|\bA\bx\|_2^2
+  =\sum_i|\ba_i^T\bx|^2
+  \leq\sum_i\|\ba_i\|_2^2\|\bx\|_2^2
+  =\|\bA\|_F^2.
+\end{align}
+\]</span> Taking the maximum over unit vectors proves <span class="math inline">\(\|\bA\|_2\leq\|\bA\|_F\)</span>. Writing <span class="math inline">\(\bA\)</span> by columns gives <span class="math display">\[
+\begin{align}
+\|\bA\|_F^2
+  =\sum_{j=1}^n\|\bA\be_j\|_2^2
+  \leq\sum_{j=1}^n\|\bA\|_2^2
+  =n\|\bA\|_2^2.
+\end{align}
+\]</span> Finally, applying consistency to every column <span class="math inline">\(\bb_j\)</span> of <span class="math inline">\(\bB\)</span>: <span class="math display">\[
+\begin{align}
+\|\bA\bB\|_F^2
+  &amp;= \sum_{j=1}^k \|\bA\bb_j\|_2^2 \\
+  &amp;\leq \sum_{j=1}^k \|\bA\|_2^2\|\bb_j\|_2^2 \\
+  &amp;= \|\bA\|_2^2 \sum_{j=1}^k \|\bb_j\|_2^2 \\
+  &amp;= \|\bA\|_2^2\|\bB\|_F^2.
+\end{align}
+\]</span> Taking square roots yields <span class="math inline">\(\|\bA\bB\|_F \leq \|\bA\|_2\|\bB\|_F\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="condition-number-as-distortion" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="condition-number-as-distortion"><span class="header-section-number">5.4</span> Condition Number as Distortion</h2>
+<p>An invertible matrix can stretch some directions and compress others. A solve with that matrix must undo both effects. The condition number measures the total distortion.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Condition Number
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a nonsingular square matrix <span class="math inline">\(\bA\)</span> and an induced norm, <span class="math display">\[
+\begin{align}
+\kappa(\bA)=\|\bA\|\,\|\bA^{-1}\|.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Two-Sided Stretching Bound
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For every nonzero vector <span class="math inline">\(\bx\)</span>, <span class="math display">\[
+\begin{align}
+\frac{1}{\|\bA^{-1}\|}
+  \leq
+  \frac{\|\bA\bx\|}{\|\bx\|}
+  \leq
+  \|\bA\|.
+\end{align}
+\]</span> The ratio between the largest possible upper stretch and the guaranteed lower stretch is <span class="math inline">\(\kappa(\bA)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The upper bound follows directly from the definition of the induced norm: <span class="math display">\[
+\begin{align}
+\frac{\|\bA\bx\|}{\|\bx\|} \leq \max_{\bz\neq\bzero} \frac{\|\bA\bz\|}{\|\bz\|} = \|\bA\|.
+\end{align}
+\]</span> For the lower bound, write <span class="math inline">\(\bx = \bA^{-1}(\bA\bx)\)</span>. Consistency applied to <span class="math inline">\(\bA^{-1}\)</span> yields <span class="math display">\[
+\begin{align}
+\|\bx\| = \|\bA^{-1}(\bA\bx)\| \leq \|\bA^{-1}\|\,\|\bA\bx\|.
+\end{align}
+\]</span> Since <span class="math inline">\(\bx\neq\bzero\)</span> and <span class="math inline">\(\bA\)</span> is nonsingular, <span class="math inline">\(\|\bA\bx\| &gt; 0\)</span>. Dividing by <span class="math inline">\(\|\bA^{-1}\|\,\|\bx\|\)</span> gives <span class="math display">\[
+\begin{align}
+\frac{1}{\|\bA^{-1}\|} \leq \frac{\|\bA\bx\|}{\|\bx\|}.
+\end{align}
+\]</span> Combining the two inequalities establishes the bound.</p>
+</div>
+</div>
+</div>
+<p>If <span class="math inline">\(\kappa(\bA)\)</span> is near one, the matrix treats every direction comparably. If it is large, at least one direction is compressed relative to another. Recovering a component in a strongly compressed direction requires amplification by <span class="math inline">\(\bA^{-1}\)</span>. This is why ill-conditioned linear systems can turn small data errors into large solution errors. The next chapter makes that statement quantitative.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -845,9 +1216,23 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Compute <span class="math inline">\(\|\bA\|_1, \|\bA\|_\infty, \|\bA\|_2, \|\bA\|_F\)</span> for <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; -2 \\ -3 &amp; 4 \end{pmatrix}\)</span>.</p></li>
-<li><p><strong>Low-Rank Approximation:</strong> The Frobenius norm is central to the Eckart-Young-Mirsky theorem. How is it related to singular values?</p></li>
-<li><p>Find a <span class="math inline">\(2 \times 2\)</span> example where the max norm (<span class="math inline">\(\max|a_{ij}|\)</span>) is not submultiplicative.</p></li>
+<li><p><strong>Compute.</strong> <strong>Three induced norms.</strong> For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}1&amp;-2\\3&amp;4\end{pmatrix},
+\end{align}
+\]</span> compute <span class="math inline">\(\|\bA\|_1\)</span> and <span class="math inline">\(\|\bA\|_\infty\)</span>. Estimate <span class="math inline">\(\|\bA\|_2\)</span> from below by testing at least four unit vectors and from above using <span class="math inline">\(\|\bA\|_F\)</span>.</p></li>
+<li><p><strong>Derive.</strong> <strong>Submultiplicativity from amplification.</strong> Prove <span class="math inline">\(\|\bA_1\cdots\bA_k\|\leq\prod_{j=1}^k\|\bA_j\|\)</span>. Explain why this bound may be conservative when the direction of greatest stretch for one factor is not mapped into the direction of greatest stretch for the next.</p></li>
+<li><p><strong>Explore.</strong> <strong>Entries do not determine action.</strong> Compare <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}1&amp;1\\1&amp;1\end{pmatrix},
+     \qquad
+     \bB=\begin{pmatrix}1&amp;1\\-1&amp;-1\end{pmatrix}.
+\end{align}
+\]</span> Both matrices have the same entry magnitudes. Find their ranges and null spaces, identify directions they annihilate, and explain why an entrywise description misses this structure.</p></li>
+<li><p><strong>Derive.</strong> <strong>Duality and transpose.</strong> Starting from the definition of a dual norm, prove <span class="math inline">\(\|\bA\|_1=\|\bA^T\|_\infty\)</span>. Then formulate the corresponding statement for an arbitrary norm and its dual.</p></li>
+<li><p><strong>Derive.</strong> <strong>Frobenius geometry.</strong> Verify the inner-product axioms for <span class="math inline">\(\langle\bA,\bB\rangle_F\)</span>. Prove the matrix Cauchy–Schwarz inequality <span class="math inline">\(|\langle\bA,\bB\rangle_F|\leq\|\bA\|_F\|\bB\|_F\)</span> by treating the entries as vectors.</p></li>
+<li><p><strong>Explore.</strong> <strong>Conditioning as a thin ellipse.</strong> Let <span class="math inline">\(\bA=\operatorname{diag}(1,\varepsilon)\)</span> with <span class="math inline">\(0&lt;\varepsilon&lt;1\)</span>. Describe the image of the Euclidean unit circle, compute <span class="math inline">\(\|\bA\|_2\)</span>, <span class="math inline">\(\|\bA^{-1}\|_2\)</span>, and <span class="math inline">\(\kappa_2(\bA)\)</span> directly from the definition, and explain which component of a solution is sensitive to perturbations.</p></li>
+<li><p><strong>Explore.</strong> <strong>Changing units.</strong> Suppose the two coordinates of <span class="math inline">\(\bx\)</span> are measured in meters and millimeters. Introduce a diagonal scaling matrix that expresses both in meters. Derive the transformed matrix for the same linear map and compare its induced norm before and after scaling. Explain why a condition number is meaningful only after the input and output measurements have been specified.</p></li>
 </ol>
 </div>
 </div>
@@ -1271,13 +1656,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../orthogonality/orthogonal.html" class="pagination-link" aria-label="Orthogonal Matrices">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span>
+      <a href="../fundamentals/norms.html" class="pagination-link" aria-label="Inner Products, Geometry, and Norms">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../orthogonality/stability.html" class="pagination-link" aria-label="Stability and Condition Number">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../fundamentals/complexity.html" class="pagination-link" aria-label="Computational Complexity">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computational Complexity</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

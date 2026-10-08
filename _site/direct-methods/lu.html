@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +710,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#lu-and-gaussian-elimination" id="toc-lu-and-gaussian-elimination" class="nav-link active" data-scroll-target="#lu-and-gaussian-elimination"><span class="header-section-number">10.1</span> LU and Gaussian Elimination</a></li>
-  <li><a href="#pivoting-and-stability" id="toc-pivoting-and-stability" class="nav-link" data-scroll-target="#pivoting-and-stability"><span class="header-section-number">10.2</span> Pivoting and Stability</a></li>
-  <li><a href="#algorithm-cost-analysis" id="toc-algorithm-cost-analysis" class="nav-link" data-scroll-target="#algorithm-cost-analysis"><span class="header-section-number">10.3</span> Algorithm Cost Analysis</a></li>
+  <li><a href="#gaussian-elimination-as-triangular-factorization" id="toc-gaussian-elimination-as-triangular-factorization" class="nav-link active" data-scroll-target="#gaussian-elimination-as-triangular-factorization"><span class="header-section-number">10.1</span> Gaussian Elimination as Triangular Factorization</a></li>
+  <li><a href="#triangular-solves-and-computational-complexity" id="toc-triangular-solves-and-computational-complexity" class="nav-link" data-scroll-target="#triangular-solves-and-computational-complexity"><span class="header-section-number">10.2</span> Triangular Solves and Computational Complexity</a></li>
+  <li><a href="#partial-pivoting-and-the-growth-factor" id="toc-partial-pivoting-and-the-growth-factor" class="nav-link" data-scroll-target="#partial-pivoting-and-the-growth-factor"><span class="header-section-number">10.3</span> Partial Pivoting and the Growth Factor</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">10.4</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/direct-methods/lu.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -700,11 +740,11 @@ window.Quarto = {
 </header>
 
 
-<p>Most direct methods for solving linear systems rely on matrix factorizations that reduce a complex system into multiple simpler ones. The <strong>LU factorization</strong> is the most fundamental of these, decomposing a square matrix <span class="math inline">\(\bA\)</span> into a unit lower triangular matrix <span class="math inline">\(\bL\)</span> and an upper triangular matrix <span class="math inline">\(\bU\)</span>. This process is essentially the matrix form of Gaussian elimination.</p>
-<p>Gaussian elimination transforms <span class="math inline">\(\bA\bx=\bb\)</span> into an equivalent upper triangular system. LU factorization stores the elimination steps, so the same work can be reused for many right-hand sides.</p>
-<section id="lu-and-gaussian-elimination" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="lu-and-gaussian-elimination"><span class="header-section-number">10.1</span> LU and Gaussian Elimination</h2>
-<p>Triangular systems are easy because the unknowns can be recovered one at a time. If <span class="math inline">\(\bU\)</span> is upper triangular, the last equation contains only <span class="math inline">\(x_n\)</span>, the next contains only <span class="math inline">\(x_{n-1}\)</span> and <span class="math inline">\(x_n\)</span>, and so on. This is backward substitution. Lower triangular systems are solved similarly by forward substitution.</p>
+<p>The solution of a square linear system <span class="math inline">\(\bA\bx = \bb\)</span> is one of the central problems of computational science. Direct solvers transform the original system into a pair of triangular systems that can be evaluated sequentially. The most fundamental of these decompositions is the LU factorization, which formalizes Gaussian elimination as matrix multiplication.</p>
+<p>The principle behind triangular factorization is the separation of elimination from substitution. Factoring the coefficient matrix <span class="math inline">\(\bA\)</span> into a unit lower triangular factor <span class="math inline">\(\bL\)</span> and an upper triangular factor <span class="math inline">\(\bU\)</span> requires <span class="math inline">\(O(n^3)\)</span> operations. Once <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> are stored, the solution <span class="math inline">\(\bx\)</span> for any right-hand side <span class="math inline">\(\bb\)</span> is computed via forward and backward substitution in only <span class="math inline">\(2n^2\)</span> operations.</p>
+<section id="gaussian-elimination-as-triangular-factorization" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="gaussian-elimination-as-triangular-factorization"><span class="header-section-number">10.1</span> Gaussian Elimination as Triangular Factorization</h2>
+<p>Triangular systems are straightforward to solve because each unknown is computed in order. In an upper triangular system <span class="math inline">\(\bU\bx = \by\)</span>, the final equation contains only <span class="math inline">\(x_n\)</span>. Once <span class="math inline">\(x_n\)</span> is known, the preceding equation contains only <span class="math inline">\(x_{n-1}\)</span>, and backward substitution continues until all components are resolved. Gaussian elimination systematically transforms a general system into this upper triangular form by subtracting multiples of each row from the rows beneath it.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -715,135 +755,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\bA = \bL\bU\)</span>: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span>. An LU factorization of <span class="math inline">\(\bA\)</span> is a decomposition <span class="math display">\[
 \begin{align}
-\bL = \begin{pmatrix} 1 &amp; 0 &amp; ... \\ \ell_{21} &amp; 1 &amp; ... \\ \vdots &amp; \vdots &amp; \ddots \end{pmatrix}, \quad
-\bU = \begin{pmatrix} u_{11} &amp; u_{12} &amp; ... \\ 0 &amp; u_{22} &amp; ... \\ \vdots &amp; \vdots &amp; \ddots \end{pmatrix}.
+\bA = \bL\bU,
 \end{align}
-\]</span></p>
-</div>
-</div>
-<p>The matrix <span class="math inline">\(\bU\)</span> contains the row-echelon form produced by elimination. The matrix <span class="math inline">\(\bL\)</span> stores the multipliers used to eliminate entries below each pivot. If row <span class="math inline">\(i\)</span> is updated by subtracting <span class="math inline">\(\ell_{ik}\)</span> times row <span class="math inline">\(k\)</span>, then <span class="math inline">\(\ell_{ik}\)</span> appears in <span class="math inline">\(\bL\)</span>.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(One elimination)</strong> Let <span class="math display">\[
-\begin{align}
-\bA =
-    \begin{pmatrix}
-        2 &amp; 1 \\
-        6 &amp; 5
-    \end{pmatrix}.
-\end{align}
-\]</span> To eliminate the entry <span class="math inline">\(6\)</span> below the pivot <span class="math inline">\(2\)</span>, subtract <span class="math inline">\(3\)</span> times row 1 from row 2: <span class="math display">\[
-\begin{align}
-\begin{pmatrix}
-        2 &amp; 1 \\
-        6 &amp; 5
-    \end{pmatrix}
-    \longrightarrow
-    \begin{pmatrix}
-        2 &amp; 1 \\
-        0 &amp; 2
-    \end{pmatrix}.
-\end{align}
-\]</span> The multiplier is <span class="math inline">\(\ell_{21}=3\)</span>, so <span class="math display">\[
-\begin{align}
-\bL =
-    \begin{pmatrix}
-        1 &amp; 0 \\
-        3 &amp; 1
-    \end{pmatrix},
-    \qquad
-    \bU =
-    \begin{pmatrix}
-        2 &amp; 1 \\
-        0 &amp; 2
-    \end{pmatrix},
-    \qquad
-    \bA=\bL\bU.
-\end{align}
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Compare free parameters: how many in <span class="math inline">\(\bL\)</span> vs.&nbsp;<span class="math inline">\(\bU\)</span>? Do they sum to <span class="math inline">\(n^2\)</span>?</p></li>
-<li><p>If <span class="math inline">\(\bA = \bL\bU\)</span> is invertible, prove <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> are also invertible.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Existence and Uniqueness)</strong> <span class="math inline">\(\bA\)</span> admits a unique LU factorization iff all leading principal submatrices <span class="math inline">\(\bA_k\)</span> are nonsingular (<span class="math inline">\(k=1, ..., n-1\)</span>). The algorithm fails if a zero pivot is encountered.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Elimination without pivoting is fragile)</strong> A zero pivot causes the algebraic algorithm to stop. A tiny pivot may be worse numerically: dividing by a tiny number creates huge multipliers, which amplify rounding errors in later rows.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Flop Cost)</strong> Computing <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> via Gaussian elimination costs .</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(The Solve Pattern)</strong> To solve <span class="math inline">\(\bA\bx = \bb\)</span> given <span class="math inline">\(\bA = \bL\bU\)</span>:</p>
-<ol type="1">
-<li><p>Solve <strong><span class="math inline">\(\bL\by = \bb\)</span></strong> via forward substitution (<span class="math inline">\(O(n^2)\)</span>).</p></li>
-<li><p>Solve <strong><span class="math inline">\(\bU\bx = \by\)</span></strong> via backward substitution (<span class="math inline">\(O(n^2)\)</span>).</p></li>
-</ol>
-<p><strong>Advantage:</strong> Once <span class="math inline">\(\bA\)</span> is factored, each new <span class="math inline">\(\bb\)</span> costs only <span class="math inline">\(O(n^2)\)</span>.</p>
+\]</span> where <span class="math inline">\(\bL \in \fR^{n \times n}\)</span> is unit lower triangular (<span class="math inline">\(\ell_{ii} = 1\)</span> and <span class="math inline">\(\ell_{ij} = 0\)</span> for <span class="math inline">\(j &gt; i\)</span>) and <span class="math inline">\(\bU \in \fR^{n \times n}\)</span> is upper triangular (<span class="math inline">\(u_{ij} = 0\)</span> for <span class="math inline">\(i &gt; j\)</span>).</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -852,148 +768,20 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
+<span class="screen-reader-only">Note</span>Lemma: Algebra of Unit Lower Triangular Matrices
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Solving with the factors)</strong> For the previous example, solve <span class="math inline">\(\bA\bx=\bb\)</span> with <span class="math inline">\(\bb=(3,11)^T\)</span>. First solve <span class="math inline">\(\bL\by=\bb\)</span>: <span class="math display">\[
-\begin{align}
-y_1=3, \qquad 3y_1+y_2=11 \Rightarrow y_2=2.
-\end{align}
-\]</span> Then solve <span class="math inline">\(\bU\bx=\by\)</span>: <span class="math display">\[
-\begin{align}
-2x_2=2 \Rightarrow x_2=1, \qquad 2x_1+x_2=3 \Rightarrow x_1=1.
-\end{align}
-\]</span> The solution is <span class="math inline">\(\bx=(1,1)^T\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>The set of <span class="math inline">\(n \times n\)</span> unit lower triangular matrices forms a group under matrix multiplication. In particular:</p>
 <ol type="1">
-<li><p>Factor <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 3 &amp; 1 \\ 4 &amp; 7 &amp; 3 \\ -2 &amp; -3 &amp; 1 \end{pmatrix}\)</span> by hand.</p></li>
-<li><p>Solve <span class="math inline">\(\bA\bx = (5, 15, 4)^T\)</span> using your factors.</p></li>
-<li><p>SciPy: Use <code>scipy.linalg.lu</code> and explain why it always returns a permutation <span class="math inline">\(\bP\)</span>.</p></li>
+<li><p>The product of two unit lower triangular matrices is unit lower triangular.</p></li>
+<li><p>The inverse of a unit lower triangular matrix is unit lower triangular.</p></li>
+<li><p>The determinant of every unit lower triangular matrix equals one.</p></li>
 </ol>
 </div>
 </div>
-</section>
-<section id="pivoting-and-stability" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="pivoting-and-stability"><span class="header-section-number">10.2</span> Pivoting and Stability</h2>
-<p>While mathematically elegant, basic LU factorization is numerically unstable if any pivot (the diagonal element used to eliminate entries below it) is small relative to the entries it is eliminating. This can lead to catastrophic rounding errors. <strong>Partial Pivoting</strong> mitigates this by ensuring that at each step, we swap rows to place the largest available entry in the pivot position.</p>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Small pivot)</strong> Consider <span class="math display">\[
-\begin{align}
-\bA =
-    \begin{pmatrix}
-        10^{-20} &amp; 1 \\
-        1 &amp; 1
-    \end{pmatrix}.
-\end{align}
-\]</span> Without pivoting, the first multiplier is <span class="math inline">\(10^{20}\)</span>. The elimination step creates huge intermediate entries even though the original matrix has modest entries. Partial pivoting swaps the two rows first, using the pivot <span class="math inline">\(1\)</span> instead of <span class="math inline">\(10^{-20}\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: LUP Decomposition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The result of Gaussian elimination with partial pivoting is recorded as <span class="math inline">\(\mathbf{P}\bA = \bL\bU\)</span>, where <span class="math inline">\(\bP\)</span> is a permutation matrix that tracks the row swaps.</p>
-</div>
-</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Permutation matrices)</strong> Multiplying by <span class="math inline">\(\bP\)</span> reorders rows. Permutation matrices are orthogonal: <span class="math inline">\(\bP^{-1}=\bP^T\)</span>. Applying a permutation is cheap because no arithmetic is required; the code only reorders indices.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Stability and Growth Factor)</strong> The numerical stability of LUP is characterized by the growth factor <span class="math inline">\(\rho = \max|u_{ij}| / \max|a_{ij}|\)</span>. If <span class="math inline">\(\rho\)</span> is large, the solution may be inaccurate. Partial pivoting keeps <span class="math inline">\(\rho\)</span> small in practice (typically <span class="math inline">\(O(n)\)</span>), ensuring the algorithm is backward stable. While the theoretical worst-case growth is <span class="math inline">\(2^{n-1}\)</span>, such matrices are rarely encountered in engineering applications.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Give a <span class="math inline">\(2 \times 2\)</span> matrix where LU fails (due to a zero or small pivot) but LUP succeeds.</p></li>
-<li><p>Why is <span class="math inline">\(\bP^{-1}\)</span> trivial to compute for any permutation matrix? (<em>Hint: consider <span class="math inline">\(\bP^T\)</span></em>).</p></li>
-<li><p>Complete pivoting (swapping both rows and columns) provides even stronger stability guarantees but is rarely used. Why? (Consider the trade-off between search cost and marginal stability gain).</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="algorithm-cost-analysis" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="algorithm-cost-analysis"><span class="header-section-number">10.3</span> Algorithm Cost Analysis</h2>
-<p>Understanding the computational cost is vital for choosing the right solver for large-scale engineering problems. The bulk of the work is in the factorization step.</p>
-<p>There are two separate costs:</p>
-<ul>
-<li><p><strong>Factorization cost:</strong> Build <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> once. This costs <span class="math inline">\(O(n^3)\)</span>.</p></li>
-<li><p><strong>Solve cost:</strong> Use the factors for a specific <span class="math inline">\(\bb\)</span>. This costs <span class="math inline">\(O(n^2)\)</span>.</p></li>
-</ul>
-<p>This distinction is the reason factorizations are valuable.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Total Cost for <span class="math inline">\(k\)</span> Right-Hand Sides)</strong> For a system with <span class="math inline">\(n\)</span> unknowns and <span class="math inline">\(k\)</span> different right-hand side vectors <span class="math inline">\(\bb\)</span>, the total cost is: <span class="math display">\[
-\begin{align}
-\text{Cost} = \frac{2}{3}n^3 + 2kn^2 \text{ flops}.
-\end{align}
-\]</span> When <span class="math inline">\(k\)</span> is large, the <span class="math inline">\(O(n^3)\)</span> cost of factorization is amortized over many <span class="math inline">\(O(n^2)\)</span> solves. For example, solving for 500 <span class="math inline">\(\bb\)</span>’s for <span class="math inline">\(n=1000\)</span> using one factorization is significantly faster than re-factorizing for each new <span class="math inline">\(\bb\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -1002,18 +790,231 @@ y_1=3, \qquad 3y_1+y_2=11 \Rightarrow y_2=2.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Forward substitution solves <span class="math inline">\(\bL\by = \bb\)</span> where <span class="math inline">\(\ell_{ii} = 1\)</span>. The <span class="math inline">\(i\)</span>-th entry <span class="math inline">\(y_i\)</span> is given by: <span class="math display">\[
+<p>Let <span class="math inline">\(\bL_1, \bL_2\)</span> be unit lower triangular matrices. Entry <span class="math inline">\((i,j)\)</span> of their product is <span class="math display">\[
 \begin{align}
-y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
+(\bL_1 \bL_2)_{ij} = \sum_{k=1}^n (\bL_1)_{ik} (\bL_2)_{kj} = \sum_{k=j}^i (\bL_1)_{ik} (\bL_2)_{kj}.
 \end{align}
-\]</span> Counting the floating-point operations:</p>
-<ul>
-<li><p>For a fixed <span class="math inline">\(i\)</span>, the summation requires <span class="math inline">\(i-1\)</span> multiplications and <span class="math inline">\(i-1\)</span> additions/subtractions.</p></li>
-<li><p>Total flops: <span class="math inline">\(\sum_{i=1}^n 2(i-1) = 2 \sum_{k=0}^{n-1} k = 2 \frac{(n-1)n}{2} = n^2 - n\)</span>.</p></li>
-</ul>
-<p>For large <span class="math inline">\(n\)</span>, each triangular solve costs approximately <span class="math inline">\(n^2\)</span> flops.</p>
+\]</span> If <span class="math inline">\(i &lt; j\)</span>, the summation range is empty, so <span class="math inline">\((\bL_1 \bL_2)_{ij} = 0\)</span>. For the diagonal entries where <span class="math inline">\(i = j\)</span>, the only surviving term is <span class="math inline">\(k = i\)</span>, yielding <span class="math inline">\((\bL_1 \bL_2)_{ii} = (\bL_1)_{ii} (\bL_2)_{ii} = 1 \cdot 1 = 1\)</span>. This proves that the product is unit lower triangular. To prove invertibility, let <span class="math inline">\(\bL\)</span> be unit lower triangular. Because its determinant is the product of its diagonal entries, <span class="math inline">\(\det(\bL) = \prod_{i=1}^n 1 = 1 \neq 0\)</span>, so <span class="math inline">\(\bL^{-1}\)</span> exists. Solving <span class="math inline">\(\bL \bX = \bI\)</span> column by column using forward substitution reveals that each column <span class="math inline">\(\bx_j\)</span> has zeros above row <span class="math inline">\(j\)</span> and <span class="math inline">\(x_{jj} = 1\)</span>, which establishes that <span class="math inline">\(\bL^{-1}\)</span> is unit lower triangular.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Elimination Matrices and the Structure of L
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA^{(0)} = \bA\)</span>. At step <span class="math inline">\(k\)</span> of Gaussian elimination, assuming the pivot entry <span class="math inline">\(a_{kk}^{(k-1)} \neq 0\)</span>, the subdiagonal entries in column <span class="math inline">\(k\)</span> are annihilated by applying the elementary elimination matrix <span class="math display">\[
+\begin{align}
+\bM_k = \bI - \boldsymbol{\ell}_k \be_k^T,
+\end{align}
+\]</span> where <span class="math inline">\(\boldsymbol{\ell}_k = (0, ..., 0, \ell_{k+1,k}, ..., \ell_{n,k})^T\)</span> contains the multipliers <span class="math inline">\(\ell_{ik} = a_{ik}^{(k-1)} / a_{kk}^{(k-1)}\)</span>. After <span class="math inline">\(n-1\)</span> elimination steps, the upper triangular factor is <span class="math inline">\(\bU = \bM_{n-1} ... \bM_1 \bA\)</span>. The lower triangular factor is the inverse of the accumulated elimination operations: <span class="math display">\[
+\begin{align}
+\bL = \bM_1^{-1} \bM_2^{-1} ... \bM_{n-1}^{-1} = \bI + \sum_{k=1}^{n-1} \boldsymbol{\ell}_k \be_k^T.
+\end{align}
+\]</span> Consequently, the entries of <span class="math inline">\(\bL\)</span> strictly below the main diagonal are precisely the multipliers computed during Gaussian elimination.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The inverse of an elementary elimination matrix <span class="math inline">\(\bM_k = \bI - \boldsymbol{\ell}_k \be_k^T\)</span> is <span class="math inline">\(\bM_k^{-1} = \bI + \boldsymbol{\ell}_k \be_k^T\)</span>. This identity follows from the fact that the first <span class="math inline">\(k\)</span> entries of <span class="math inline">\(\boldsymbol{\ell}_k\)</span> are zero, which implies <span class="math inline">\(\be_k^T \boldsymbol{\ell}_k = 0\)</span> and therefore <span class="math display">\[
+\begin{align}
+(\bI - \boldsymbol{\ell}_k \be_k^T)(\bI + \boldsymbol{\ell}_k \be_k^T) = \bI - \boldsymbol{\ell}_k \be_k^T + \boldsymbol{\ell}_k \be_k^T - \boldsymbol{\ell}_k (\be_k^T \boldsymbol{\ell}_k) \be_k^T = \bI.
+\end{align}
+\]</span> Next, consider the product of two successive inverse matrices <span class="math inline">\(\bM_j^{-1} \bM_k^{-1}\)</span> with <span class="math inline">\(j &lt; k\)</span>. Because <span class="math inline">\(\be_j^T \boldsymbol{\ell}_k = 0\)</span>, the cross term vanishes: <span class="math display">\[
+\begin{align}
+(\bI + \boldsymbol{\ell}_j \be_j^T)(\bI + \boldsymbol{\ell}_k \be_k^T) = \bI + \boldsymbol{\ell}_j \be_j^T + \boldsymbol{\ell}_k \be_k^T + \boldsymbol{\ell}_j (\be_j^T \boldsymbol{\ell}_k) \be_k^T = \bI + \boldsymbol{\ell}_j \be_j^T + \boldsymbol{\ell}_k \be_k^T.
+\end{align}
+\]</span> By induction, the product <span class="math inline">\(\bM_1^{-1} ... \bM_{n-1}^{-1}\)</span> simply places each column of multipliers into column <span class="math inline">\(k\)</span> of the identity matrix without modifying any previously placed multipliers. Multiplying <span class="math inline">\(\bU = \bM_{n-1} ... \bM_1 \bA\)</span> on the left by <span class="math inline">\(\bL\)</span> yields <span class="math inline">\(\bA = \bL\bU\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Existence and Uniqueness of the LU Factorization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A matrix <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> has a unique LU factorization with unit lower triangular <span class="math inline">\(\bL\)</span> and nonsingular upper triangular <span class="math inline">\(\bU\)</span> if and only if every leading principal submatrix <span class="math inline">\(\bA_k = \bA[1:k, 1:k]\)</span> is nonsingular for each <span class="math inline">\(k = 1, ..., n\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We proceed by induction on the matrix dimension <span class="math inline">\(n\)</span>. For <span class="math inline">\(n = 1\)</span>, <span class="math inline">\(\bA = (a_{11})\)</span>. Because <span class="math inline">\(\det(\bA_1) = a_{11} \neq 0\)</span>, the unique factorization is <span class="math inline">\(\bL = (1)\)</span> and <span class="math inline">\(\bU = (a_{11})\)</span>. Assume the result holds for matrices of dimension <span class="math inline">\(n-1\)</span>. Partition the <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(\bA\)</span> into blocks: <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \bA_{n-1} &amp; \bc \\ \bd^T &amp; a_{nn} \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\bA_{n-1} \in \fR^{(n-1) \times (n-1)}\)</span>, <span class="math inline">\(\bc, \bd \in \fR^{n-1}\)</span>, and <span class="math inline">\(a_{nn} \in \fR\)</span>. By the induction hypothesis, <span class="math inline">\(\bA_{n-1}\)</span> has a unique factorization <span class="math inline">\(\bA_{n-1} = \bL_{n-1} \bU_{n-1}\)</span> with <span class="math inline">\(\bL_{n-1}\)</span> unit lower triangular and <span class="math inline">\(\bU_{n-1}\)</span> nonsingular. We seek block factors <span class="math display">\[
+\begin{align}
+\bL = \begin{pmatrix} \bL_{n-1} &amp; \bzero \\ \boldsymbol{\ell}^T &amp; 1 \end{pmatrix}, \qquad
+    \bU = \begin{pmatrix} \bU_{n-1} &amp; \bu \\ \bzero^T &amp; u_{nn} \end{pmatrix}.
+\end{align}
+\]</span> Multiplying <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> and equating block by block gives: <span class="math display">\[
+\begin{align}
+\bL_{n-1}\bu = \bc, \qquad \boldsymbol{\ell}^T \bU_{n-1} = \bd^T, \qquad \boldsymbol{\ell}^T\bu + u_{nn} = a_{nn}.
+\end{align}
+\]</span> Because <span class="math inline">\(\bL_{n-1}\)</span> is unit lower triangular (hence invertible), <span class="math inline">\(\bu = \bL_{n-1}^{-1}\bc\)</span> is uniquely determined. Because <span class="math inline">\(\bU_{n-1}\)</span> is nonsingular, <span class="math inline">\(\boldsymbol{\ell}^T = \bd^T \bU_{n-1}^{-1}\)</span> is uniquely determined. Finally, the scalar diagonal entry is uniquely determined by <span class="math inline">\(u_{nn} = a_{nn} - \boldsymbol{\ell}^T\bu\)</span>. Taking determinants of the block decomposition gives <span class="math display">\[
+\begin{align}
+\det(\bA) = \det(\bL)\det(\bU) = (1 \cdot \det(\bL_{n-1})) (\det(\bU_{n-1}) \cdot u_{nn}) = \det(\bA_{n-1}) u_{nn}.
+\end{align}
+\]</span> Because <span class="math inline">\(\det(\bA) \neq 0\)</span> and <span class="math inline">\(\det(\bA_{n-1}) \neq 0\)</span>, we have <span class="math inline">\(u_{nn} = \det(\bA)/\det(\bA_{n-1}) \neq 0\)</span>, which ensures that <span class="math inline">\(\bU\)</span> is nonsingular. This completes the induction.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="triangular-solves-and-computational-complexity" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="triangular-solves-and-computational-complexity"><span class="header-section-number">10.2</span> Triangular Solves and Computational Complexity</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Forward and Backward Substitution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bL \in \fR^{n \times n}\)</span> be unit lower triangular and let <span class="math inline">\(\bU \in \fR^{n \times n}\)</span> be nonsingular upper triangular. Solving <span class="math inline">\(\bA\bx = \bb\)</span> decouples into two triangular steps:</p>
+<ol type="1">
+<li><p><strong>Forward substitution (<span class="math inline">\(\bL\by = \bb\)</span>):</strong> <span class="math display">\[
+\begin{align}
+y_1 = b_1, \qquad y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j \quad (i = 2, ..., n).
+\end{align}
+\]</span></p></li>
+<li><p><strong>Backward substitution (<span class="math inline">\(\bU\bx = \by\)</span>):</strong> <span class="math display">\[
+\begin{align}
+x_n = \frac{y_n}{u_{nn}}, \qquad x_i = \frac{1}{u_{ii}} \left( y_i - \sum_{j=i+1}^n u_{ij} x_j \right) \quad (i = n-1, ..., 1).
+\end{align}
+\]</span></p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Computational Operation Count of LU Factorization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a general dense matrix <span class="math inline">\(\bA \in \fR^{n \times n}\)</span>, computing the LU factorization requires asymptotically <span class="math inline">\(\frac{2}{3}n^3\)</span> floating-point operations. Evaluating the forward and backward triangular substitution steps requires <span class="math inline">\(2n^2\)</span> flops for each right-hand side vector <span class="math inline">\(\bb\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>At step <span class="math inline">\(k\)</span> of elimination, calculating the <span class="math inline">\(n-k\)</span> multipliers <span class="math inline">\(\ell_{ik} = a_{ik}/a_{kk}\)</span> requires <span class="math inline">\(n-k\)</span> divisions. Updating the active <span class="math inline">\((n-k) \times (n-k)\)</span> submatrix via <span class="math inline">\(a_{ij} \leftarrow a_{ij} - \ell_{ik}a_{kj}\)</span> requires one multiplication and one subtraction for each entry, totaling <span class="math inline">\(2(n-k)^2\)</span> operations. Summing over all <span class="math inline">\(n-1\)</span> elimination steps gives <span class="math display">\[
+\begin{align}
+\sum_{k=1}^{n-1} \left[ (n-k) + 2(n-k)^2 \right] = 2 \sum_{m=1}^{n-1} m^2 + \sum_{m=1}^{n-1} m = 2 \left( \frac{(n-1)n(2n-1)}{6} \right) + \frac{(n-1)n}{2} = \frac{2}{3}n^3 - \frac{1}{2}n^2 - \frac{1}{6}n.
+\end{align}
+\]</span> For forward substitution with unit diagonal, row <span class="math inline">\(i\)</span> requires <span class="math inline">\(i-1\)</span> multiplications and <span class="math inline">\(i-1\)</span> subtractions, totaling <span class="math inline">\(\sum_{i=1}^n 2(i-1) = n^2 - n\)</span> flops. For backward substitution, row <span class="math inline">\(i\)</span> requires <span class="math inline">\(n-i\)</span> multiplications, <span class="math inline">\(n-i\)</span> subtractions, and one division, totaling <span class="math inline">\(\sum_{i=1}^n (2(n-i) + 1) = n^2\)</span> flops. The combined solve phase requires <span class="math inline">\(2n^2 - n \approx 2n^2\)</span> flops.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="partial-pivoting-and-the-growth-factor" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="partial-pivoting-and-the-growth-factor"><span class="header-section-number">10.3</span> Partial Pivoting and the Growth Factor</h2>
+<p>In floating-point arithmetic, unpivoted Gaussian elimination fails if a pivot is zero, and it can be unstable when a pivot is small relative to the subdiagonal entries. Dividing by a small pivot creates large multipliers and can amplify rounding errors. Partial pivoting interchanges rows so that the pivot has maximal absolute value in its column. It keeps every multiplier at most one in magnitude and is usually stable, but it does not guarantee a small growth factor. The Wilkinson example below shows the exceptional worst case.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: PA = LU Factorization with Partial Pivoting
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Gaussian elimination with partial pivoting produces the decomposition <span class="math display">\[
+\begin{align}
+\bP\bA = \bL\bU,
+\end{align}
+\]</span> where <span class="math inline">\(\bP \in \fR^{n \times n}\)</span> is a permutation matrix recording row swaps, <span class="math inline">\(\bL \in \fR^{n \times n}\)</span> is unit lower triangular with all subdiagonal entries bounded by <span class="math inline">\(|\ell_{ij}| \leq 1\)</span>, and <span class="math inline">\(\bU \in \fR^{n \times n}\)</span> is upper triangular.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Wilkinson Growth Factor Bound for Partial Pivoting
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span>. The growth factor <span class="math inline">\(\rho\)</span> of Gaussian elimination is defined by <span class="math display">\[
+\begin{align}
+\rho = \frac{\max_{i,j,k} |a_{ij}^{(k)}|}{\max_{i,j} |a_{ij}|},
+\end{align}
+\]</span> where <span class="math inline">\(a_{ij}^{(k)}\)</span> denotes the entries of the active submatrix after step <span class="math inline">\(k\)</span>. For Gaussian elimination with partial pivoting, the growth factor satisfies <span class="math display">\[
+\begin{align}
+\rho \leq 2^{n-1}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(M_k = \max_{i,j} |a_{ij}^{(k)}|\)</span> denote the maximum absolute entry of the active matrix after <span class="math inline">\(k\)</span> elimination steps, with <span class="math inline">\(M_0 = \max_{i,j} |a_{ij}|\)</span>. At step <span class="math inline">\(k\)</span>, partial pivoting guarantees that the pivot <span class="math inline">\(|a_{kk}^{(k-1)}| = \max_{i \geq k} |a_{ik}^{(k-1)}|\)</span>, which ensures that all multipliers satisfy <span class="math display">\[
+\begin{align}
+|\ell_{ik}| = \left| \frac{a_{ik}^{(k-1)}}{a_{kk}^{(k-1)}} \right| \leq 1 \qquad \text{for all } i = k+1, ..., n.
+\end{align}
+\]</span> The elimination update rule is <span class="math inline">\(a_{ij}^{(k)} = a_{ij}^{(k-1)} - \ell_{ik} a_{kj}^{(k-1)}\)</span>. Applying the triangle inequality yields <span class="math display">\[
+\begin{align}
+|a_{ij}^{(k)}| \leq |a_{ij}^{(k-1)}| + |\ell_{ik}| |a_{kj}^{(k-1)}| \leq M_{k-1} + (1) M_{k-1} = 2 M_{k-1}.
+\end{align}
+\]</span> Taking the maximum over all active indices gives <span class="math inline">\(M_k \leq 2 M_{k-1}\)</span>. By induction, <span class="math inline">\(M_{n-1} \leq 2^{n-1} M_0\)</span>. Dividing by <span class="math inline">\(M_0\)</span> establishes <span class="math inline">\(\rho \leq 2^{n-1}\)</span>.</p>
 </div>
 </div>
 </div>
@@ -1027,9 +1028,12 @@ y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Implementation rule)</strong> In NumPy/SciPy, use <code>solve</code> for one right-hand side or <code>lu\_factor</code>/<code>lu\_solve</code> when reusing a factorization. Do not form <span class="math inline">\(\bA^{-1}\)</span> to solve a linear system.</p>
+<p><strong>(Practical backward stability versus worst-case bounds)</strong> Although the upper bound <span class="math inline">\(\rho \leq 2^{n-1}\)</span> is exponential, matrices achieving this bound (such as the Wilkinson matrix) are pathological. For real-world engineering problems, statistical analysis by Trefethen and Schreiber shows that <span class="math inline">\(\rho\)</span> typically scales as <span class="math inline">\(O(n^{1/2})\)</span> or <span class="math inline">\(O(n^{2/3})\)</span>, ensuring that Gaussian elimination with partial pivoting is backward stable in practice.</p>
 </div>
 </div>
+</section>
+<section id="exercises" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">10.4</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1041,8 +1045,60 @@ y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Sum the operations for forward substitution and show the cost is exactly <span class="math inline">\(n^2 - n\)</span>.</p></li>
-<li><p>Use <code>scipy.linalg.lu\_factor</code> and <code>lu\_solve</code> for a system with 3 right-hand sides. Verify residuals.</p></li>
+<li><p><strong>Compute.</strong> <strong>Hand execution of unpivoted versus pivoted LU.</strong> Consider the matrix <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} 10^{-4} &amp; 1 \\ 1 &amp; 1 \end{pmatrix}, \qquad \bb = \begin{pmatrix} 1 \\ 2 \end{pmatrix}.
+\end{align}
+\]</span></p>
+<ol type="1">
+<li><p>Compute the unpivoted LU factorization <span class="math inline">\(\bA = \bL\bU\)</span> in exact arithmetic, and evaluate the multiplier <span class="math inline">\(\ell_{21}\)</span>.</p></li>
+<li><p>Simulate standard 3-digit floating-point arithmetic with rounding. Show that unpivoted elimination computes the erroneous solution <span class="math inline">\(\hat{\bx} = (0, 1)^T\)</span>.</p></li>
+<li><p>Compute the pivoted factorization <span class="math inline">\(\bP\bA = \bL\bU\)</span> using partial pivoting. Verify that in 3-digit arithmetic, the computed solution recovers <span class="math inline">\((1, 1)^T\)</span> with negligible error.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>The Wilkinson counterexample and exponential growth.</strong> Consider the <span class="math inline">\(n \times n\)</span> matrix <span class="math display">\[
+\begin{align}
+\bW_n = \begin{pmatrix}
+             1 &amp; 0 &amp; 0 &amp; ... &amp; 0 &amp; 1 \\
+             -1 &amp; 1 &amp; 0 &amp; ... &amp; 0 &amp; 1 \\
+             -1 &amp; -1 &amp; 1 &amp; ... &amp; 0 &amp; 1 \\
+             \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+             -1 &amp; -1 &amp; -1 &amp; ... &amp; 1 &amp; 1 \\
+             -1 &amp; -1 &amp; -1 &amp; ... &amp; -1 &amp; 1
+         \end{pmatrix}.
+\end{align}
+\]</span></p>
+<ol type="1">
+<li><p>Show that partial pivoting performs no row swaps on <span class="math inline">\(\bW_n\)</span> because every diagonal entry already has absolute value 1, matching the maximum in its column.</p></li>
+<li><p>Compute the entries of the final column after each elimination step <span class="math inline">\(k = 1, 2, ..., n-1\)</span>.</p></li>
+<li><p>Prove that the final bottom-right entry grows as <span class="math inline">\(u_{nn} = 2^{n-1}\)</span>, confirming that the bound in the result above is tight.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Banded matrices and fill-in.</strong> Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> be a tridiagonal matrix (<span class="math inline">\(a_{ij} = 0\)</span> for <span class="math inline">\(|i - j| &gt; 1\)</span>).</p>
+<ol type="1">
+<li><p>Prove that without pivoting, the factors <span class="math inline">\(\bL\)</span> and <span class="math inline">\(\bU\)</span> retain the tridiagonal sparsity structure, meaning <span class="math inline">\(\bL\)</span> has bandwidth 1 on the subdiagonal and <span class="math inline">\(\bU\)</span> has bandwidth 1 on the superdiagonal.</p></li>
+<li><p>Calculate the flop count for unpivoted tridiagonal LU factorization and forward/backward substitution. Show that the total work is <span class="math inline">\(O(n)\)</span> instead of <span class="math inline">\(O(n^3)\)</span>.</p></li>
+<li><p>Explain what happens to the upper bandwidth of <span class="math inline">\(\bU\)</span> when partial pivoting performs row interchanges.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Block LU decomposition and the Schur complement.</strong> Partition a nonsingular matrix <span class="math inline">\(\bA\)</span> into blocks <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \bA_{11} &amp; \bA_{12} \\ \bA_{21} &amp; \bA_{22} \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\bA_{11} \in \fR^{k \times k}\)</span> is nonsingular.</p>
+<ol type="1">
+<li><p>Show that block Gaussian elimination factors <span class="math inline">\(\bA\)</span> as <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \bI &amp; \bzero \\ \bA_{21}\bA_{11}^{-1} &amp; \bI \end{pmatrix}
+             \begin{pmatrix} \bA_{11} &amp; \bA_{12} \\ \bzero &amp; \mathbf{S} \end{pmatrix},
+\end{align}
+\]</span> where <span class="math inline">\(\mathbf{S} = \bA_{22} - \bA_{21}\bA_{11}^{-1}\bA_{12}\)</span> is the Schur complement of <span class="math inline">\(\bA_{11}\)</span> in <span class="math inline">\(\bA\)</span>.</p></li>
+<li><p>Prove that <span class="math inline">\(\det(\bA) = \det(\bA_{11})\det(\mathbf{S})\)</span>.</p></li>
+<li><p>Relate the Schur complement <span class="math inline">\(\mathbf{S}\)</span> to the active submatrix remaining after <span class="math inline">\(k\)</span> steps of standard Gaussian elimination.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Determinants and multiple right-hand sides.</strong> Let <span class="math inline">\(\bP\bA = \bL\bU\)</span> be the computed LU factorization with partial pivoting.</p>
+<ol type="1">
+<li><p>Prove that <span class="math inline">\(\det(\bA) = (-1)^s \prod_{i=1}^n u_{ii}\)</span>, where <span class="math inline">\(s\)</span> is the number of row interchanges recorded by <span class="math inline">\(\bP\)</span>.</p></li>
+<li><p>Explain why computing the determinant via <span class="math inline">\(\bP\bA = \bL\bU\)</span> requires <span class="math inline">\(O(n^3)\)</span> flops, whereas evaluating the Leibniz expansion formula requires <span class="math inline">\(O(n!)\)</span> flops.</p></li>
+<li><p>For <span class="math inline">\(m\)</span> distinct right-hand side vectors <span class="math inline">\(\bb_1, ..., \bb_m\)</span>, analyze the computational cost of solving <span class="math inline">\(\bA\bx_j = \bb_j\)</span> by reusing the single factorization <span class="math inline">\(\bP\bA = \bL\bU\)</span> versus computing <span class="math inline">\(m\)</span> independent solves from scratch.</p></li>
+</ol></li>
 </ol>
 </div>
 </div>
@@ -1466,13 +1522,13 @@ y_i = b_i - \sum_{j=1}^{i-1} \ell_{ij} y_j.
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../direct-methods/linear-systems.html" class="pagination-link" aria-label="Linearity">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span>
+      <a href="../direct-methods/linear-systems.html" class="pagination-link" aria-label="Linearity and Fundamental Subspaces">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../direct-methods/spd.html" class="pagination-link" aria-label="Symmetric Positive Definite (SPD) Matrices">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../direct-methods/spd.html" class="pagination-link" aria-label="Symmetric Positive Definite Matrices">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

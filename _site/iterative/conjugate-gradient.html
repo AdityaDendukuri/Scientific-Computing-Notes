@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>23&nbsp; Conjugate Gradient Method – Scientific Computing</title>
+<title>23&nbsp; The Conjugate Gradient Method – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/conjugate-gradient.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/conjugate-gradient.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,12 +710,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#krylov-subspaces" id="toc-krylov-subspaces" class="nav-link active" data-scroll-target="#krylov-subspaces"><span class="header-section-number">23.1</span> Krylov Subspaces</a></li>
-  <li><a href="#cg-as-a-projection-method" id="toc-cg-as-a-projection-method" class="nav-link" data-scroll-target="#cg-as-a-projection-method"><span class="header-section-number">23.2</span> CG as a Projection Method</a></li>
-  <li><a href="#conjugate-directions-and-a-orthogonality" id="toc-conjugate-directions-and-a-orthogonality" class="nav-link" data-scroll-target="#conjugate-directions-and-a-orthogonality"><span class="header-section-number">23.3</span> Conjugate Directions and A-Orthogonality</a></li>
-  <li><a href="#the-cg-algorithm" id="toc-the-cg-algorithm" class="nav-link" data-scroll-target="#the-cg-algorithm"><span class="header-section-number">23.4</span> The CG Algorithm</a></li>
-  <li><a href="#convergence-rate" id="toc-convergence-rate" class="nav-link" data-scroll-target="#convergence-rate"><span class="header-section-number">23.5</span> Convergence Rate</a></li>
-  <li><a href="#preconditioning" id="toc-preconditioning" class="nav-link" data-scroll-target="#preconditioning"><span class="header-section-number">23.6</span> Preconditioning</a></li>
+  <li><a href="#quadratic-optimization-and-steepest-descent" id="toc-quadratic-optimization-and-steepest-descent" class="nav-link active" data-scroll-target="#quadratic-optimization-and-steepest-descent"><span class="header-section-number">23.1</span> Quadratic Optimization and Steepest Descent</a></li>
+  <li><a href="#conjugate-directions-and-subspace-decoupling" id="toc-conjugate-directions-and-subspace-decoupling" class="nav-link" data-scroll-target="#conjugate-directions-and-subspace-decoupling"><span class="header-section-number">23.2</span> Conjugate Directions and Subspace Decoupling</a></li>
+  <li><a href="#the-conjugate-gradient-algorithm" id="toc-the-conjugate-gradient-algorithm" class="nav-link" data-scroll-target="#the-conjugate-gradient-algorithm"><span class="header-section-number">23.3</span> The Conjugate Gradient Algorithm</a></li>
+  <li><a href="#convergence-rate-and-preconditioning" id="toc-convergence-rate-and-preconditioning" class="nav-link" data-scroll-target="#convergence-rate-and-preconditioning"><span class="header-section-number">23.4</span> Convergence Rate and Preconditioning</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/conjugate-gradient.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -684,9 +721,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/conjugate-gradient.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../iterative/iterative.html">Iterative Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../iterative/conjugate-gradient.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></h1>
+<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></h1>
 </div>
 
 
@@ -703,259 +740,90 @@ window.Quarto = {
 </header>
 
 
-<p>The Conjugate Gradient (CG) method is a standard iterative solver for large, sparse, symmetric positive definite (SPD) linear systems. It belongs to the class of <strong>Krylov subspace methods</strong>, which seek an approximate solution within a space spanned by powers of the matrix applied to the initial residual.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Assumption)</strong> CG requires <span class="math inline">\(\bA\)</span> to be symmetric positive definite. If <span class="math inline">\(\bA\)</span> is nonsymmetric, use GMRES or another nonsymmetric Krylov method. If <span class="math inline">\(\bA\)</span> is symmetric indefinite, use methods designed for indefinite systems, such as MINRES.</p>
-</div>
-</div>
-<p>For SPD <span class="math inline">\(\bA\)</span>, solving <span class="math inline">\(\bA\bx=\bb\)</span> is equivalent to minimizing a convex quadratic energy. CG chooses search directions that do not interfere with previous progress, so each step is optimal over a growing Krylov subspace.</p>
-<section id="krylov-subspaces" class="level2" data-number="23.1">
-<h2 data-number="23.1" class="anchored" data-anchor-id="krylov-subspaces"><span class="header-section-number">23.1</span> Krylov Subspaces</h2>
+<p>The Conjugate Gradient (CG) method of Hestenes and Stiefel is a standard iterative solver for large, sparse, symmetric positive definite systems. Unlike a stationary iteration determined by one fixed splitting, CG selects the approximation <span class="math inline">\(\bx^{(k)}\)</span> that minimizes the error in the <span class="math inline">\(\bA\)</span>-norm over the affine Krylov subspace <span class="math inline">\(\bx^{(0)}+\mathcal{K}_k(\bA,\br^{(0)})\)</span>.</p>
+<p>Symmetry and conjugacy reduce this expanding-subspace minimization to a short recurrence. The resulting algorithm stores only a few vectors of length <span class="math inline">\(n\)</span> and uses one matrix–vector product per iteration.</p>
+<p><strong>(Poisson thread)</strong> The discrete Poisson matrix is SPD, so CG applies without changing the model. Its slowly varying eigenmodes explain why the unpreconditioned iteration deteriorates under refinement and why the next chapter’s coarse-grid ideas are relevant.</p>
+<section id="quadratic-optimization-and-steepest-descent" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="quadratic-optimization-and-steepest-descent"><span class="header-section-number">23.1</span> Quadratic Optimization and Steepest Descent</h2>
+<p>The mathematical foundation of the Conjugate Gradient method lies in the equivalence between solving an SPD linear system and minimizing a convex quadratic energy functional.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Krylov Subspace
+<span class="screen-reader-only">Note</span>Theorem: Variational Equivalence for SPD Systems
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <span class="math inline">\(k\)</span>-th Krylov subspace <span class="math inline">\(\mathcal{K}_k(\bA, \bb)\)</span> is defined as the span of the first <span class="math inline">\(k\)</span> vectors in the sequence <span class="math inline">\(\{\bb, \bA\bb, \bA^2\bb, ... \}\)</span>: <span class="math display">\[
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> be a symmetric positive definite matrix and let <span class="math inline">\(\bb \in \fR^n\)</span>. Define the quadratic functional <span class="math inline">\(\phi: \fR^n \to \fR\)</span> by <span class="math display">\[
 \begin{align}
-\mathcal{K}_k(\bA, \bb) = \text{span}\{ \bb, \bA\bb, \bA^2\bb, ..., \bA^{k-1}\bb \}.
+\phi(\bx) = \frac{1}{2} \bx^T\bA\bx - \bb^T\bx.
 \end{align}
-\]</span> Krylov methods are efficient because they only require the ability to compute matrix-vector products <span class="math inline">\(\bA\bv\)</span>, making them ideal for sparse matrices where <span class="math inline">\(\bA\)</span> is never explicitly stored.</p>
-</div>
-</div>
-</section>
-<section id="cg-as-a-projection-method" class="level2" data-number="23.2">
-<h2 data-number="23.2" class="anchored" data-anchor-id="cg-as-a-projection-method"><span class="header-section-number">23.2</span> CG as a Projection Method</h2>
-<p>For SPD <span class="math inline">\(\bA\)</span>, the quadratic <span class="math display">\[
+\]</span> The gradient of <span class="math inline">\(\phi\)</span> is <span class="math inline">\(\nabla \phi(\bx) = \bA\bx - \bb = -\br(\bx)\)</span>, where <span class="math inline">\(\br(\bx) = \bb - \bA\bx\)</span> is the residual. Because <span class="math inline">\(\bA\)</span> is positive definite, the Hessian matrix <span class="math inline">\(\nabla^2 \phi(\bx) = \bA\)</span> is strictly positive definite everywhere, and <span class="math inline">\(\phi\)</span> has a unique global minimizer <span class="math inline">\(\bx^*\)</span> satisfying <span class="math display">\[
 \begin{align}
-\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx
+\nabla \phi(\bx^*) = \bzero \iff \bA\bx^* = \bb.
 \end{align}
-\]</span> has gradient <span class="math inline">\(\nabla\phi(\bx)=\bA\bx-\bb\)</span>. Therefore <span class="math inline">\(\nabla\phi(\bx)=0\)</span> exactly when <span class="math inline">\(\bA\bx=\bb\)</span>. Solving the linear system is the same as finding the unique minimizer of <span class="math inline">\(\phi\)</span>.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Error Minimization Properties:</strong> For an SPD system <span class="math inline">\(\bA\bx = \bb\)</span>, the CG method identifies the unique vector <span class="math inline">\(\bx_k \in \mathcal{K}_k(\bA, \bb)\)</span> that minimizes the <strong><span class="math inline">\(\bA\)</span>-norm of the error</strong>: <span class="math display">\[
+\]</span> Furthermore, the functional error is directly proportional to the squared <span class="math inline">\(\bA\)</span>-norm of the solution error: <span class="math display">\[
 \begin{align}
-\bx_k = \arg\min_{\by \in \mathcal{K}_k} \|\bx^* - \by\|_\bA,
-\end{align}
-\]</span> where <span class="math inline">\(\bx^*\)</span> is the exact solution and <span class="math inline">\(\|\be\|_\bA = \sqrt{\be^T\bA\be}\)</span>. This is equivalent to minimizing the quadratic energy functional <span class="math inline">\(\phi(\by) = \frac{1}{2} \by^T \bA \by - \by^T \bb\)</span>.</p>
-</div>
-</div>
-</section>
-<section id="conjugate-directions-and-a-orthogonality" class="level2" data-number="23.3">
-<h2 data-number="23.3" class="anchored" data-anchor-id="conjugate-directions-and-a-orthogonality"><span class="header-section-number">23.3</span> Conjugate Directions and A-Orthogonality</h2>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>The Basis of Directions:</strong> To find this minimum efficiently, CG constructs a basis of search directions <span class="math inline">\(\{\bp_0, \bp_1, ..., \bp_{k-1}\}\)</span> that are <strong><span class="math inline">\(\bA\)</span>-orthogonal</strong> (or conjugate), meaning <span class="math inline">\(\bp_i^T \bA \bp_j = 0\)</span> for <span class="math inline">\(i \neq j\)</span>.</p>
-<ul>
-<li><p><strong>Global Optimality:</strong> Because directions are <span class="math inline">\(\bA\)</span>-orthogonal, the <span class="math inline">\(k\)</span>-th update <span class="math inline">\(\bx_k = \bx_{k-1} + \alpha_{k-1}\bp_{k-1}\)</span> is guaranteed to be the best possible update in the entire subspace <span class="math inline">\(\mathcal{K}_k\)</span>. There is no need to revisit previous directions.</p></li>
-<li><p><strong>Short Recurrence:</strong> Due to the symmetry of <span class="math inline">\(\bA\)</span>, the new conjugate direction <span class="math inline">\(\bp_k\)</span> can be computed using only the current residual and the <em>single</em> previous direction. This leads to the <span class="math inline">\(O(n)\)</span> storage requirement.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Residuals vs.&nbsp;directions)</strong> In exact arithmetic, CG residuals are mutually orthogonal in the Euclidean inner product, while search directions are mutually orthogonal in the <span class="math inline">\(\bA\)</span>-inner product. These two orthogonality structures are what make the short recurrence possible.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Why not steepest descent?</strong> Steepest descent always moves in the negative gradient direction, but successive gradients can undo previous progress by zig-zagging across narrow energy valleys. CG corrects this by choosing conjugate directions adapted to the geometry of <span class="math inline">\(\bA\)</span>.</p>
-</div>
-</div>
-</section>
-<section id="the-cg-algorithm" class="level2" data-number="23.4">
-<h2 data-number="23.4" class="anchored" data-anchor-id="the-cg-algorithm"><span class="header-section-number">23.4</span> The CG Algorithm</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Conjugate Gradient Algorithm
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Initialize:</strong> <span class="math inline">\(\bx^{(0)} = \bzero, \br^{(0)} = \bb, \bp^{(0)} = \br^{(0)}\)</span>.\ <strong>Iteration:</strong></p>
-<ol type="1">
-<li><p> (Step length)</p></li>
-<li><p> (Update iterate)</p></li>
-<li><p> (Update residual)</p></li>
-<li><p> (Gram-Schmidt weight)</p></li>
-<li><p> (Next direction)</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Efficiency:</strong></p>
-<ul>
-<li><p><strong>Matvecs:</strong> Only 1 matrix-vector product per iteration.</p></li>
-<li><p><strong>Memory:</strong> <span class="math inline">\(O(n)\)</span> storage (requires only a few vectors). No need to store the basis.</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Practical stopping)</strong> A common stopping rule is <span class="math display">\[
-\begin{align}
-\frac{\|\br^{(k)}\|_2}{\|\bb\|_2} \leq `tol`.
-\end{align}
-\]</span> For ill-conditioned systems, residual decrease may not translate directly into error decrease. The condition number controls that conversion.</p>
-</div>
-</div>
-</section>
-<section id="convergence-rate" class="level2" data-number="23.5">
-<h2 data-number="23.5" class="anchored" data-anchor-id="convergence-rate"><span class="header-section-number">23.5</span> Convergence Rate</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Convergence Bound
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><span class="math display">\[
-\begin{align}
-\frac{\|\be^{(k)}\|_\bA}{\|\be^{(0)}\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1} \right)^k.
+\phi(\bx) - \phi(\bx^*) = \frac{1}{2} \|\bx - \bx^*\|_\bA^2.
 \end{align}
 \]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Tip</span>Proof
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p> While stationary methods depend on <span class="math inline">\((\kappa-1)/(\kappa+1)\)</span>, CG depends on the <strong>square root</strong> of the condition number. For <span class="math inline">\(\kappa=100\)</span>, CG reduces error <span class="math inline">\(5\times\)</span> faster per step.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Superlinear Convergence:</strong> If eigenvalues are clustered, CG converges much faster than the worst-case bound suggests (e.g., <span class="math inline">\(k \ll n\)</span> for clustered spectra).</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Polynomial view)</strong> CG chooses a degree-<span class="math inline">\(k\)</span> polynomial <span class="math inline">\(p_k\)</span> with <span class="math inline">\(p_k(0)=1\)</span> so that <span class="math display">\[
+<p>Taylor expanding <span class="math inline">\(\phi(\bx)\)</span> about the exact solution <span class="math inline">\(\bx^* = \bA^{-1}\bb\)</span> gives <span class="math display">\[
 \begin{align}
-\be^{(k)} = p_k(\bA)\be^{(0)}
+\phi(\bx) &amp;= \phi(\bx^*) + \nabla \phi(\bx^*)^T(\bx - \bx^*) + \frac{1}{2} (\bx - \bx^*)^T \bA (\bx - \bx^*) \\
+    &amp;= \phi(\bx^*) + \bzero + \frac{1}{2} \|\bx - \bx^*\|_\bA^2.
 \end{align}
-\]</span> is small in the <span class="math inline">\(\bA\)</span>-norm. Good convergence occurs when a low-degree polynomial can be small on the eigenvalues of <span class="math inline">\(\bA\)</span>.</p>
+\]</span> Since <span class="math inline">\(\bA\)</span> is positive definite, <span class="math inline">\(\|\bx - \bx^*\|_\bA^2 &gt; 0\)</span> for all <span class="math inline">\(\bx \neq \bx^*\)</span>. Thus, minimizing <span class="math inline">\(\phi(\bx)\)</span> over any subspace is strictly equivalent to minimizing the energy norm of the error <span class="math inline">\(\|\bx - \bx^*\|_\bA\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The limitation of steepest descent)</strong> The method of steepest descent chooses the negative gradient <span class="math inline">\(-\nabla \phi(\bx^{(k)}) = \br^{(k)}\)</span> as its search direction at each step, computing <span class="math inline">\(\bx^{(k+1)} = \bx^{(k)} + \alpha_k \br^{(k)}\)</span> where <span class="math inline">\(\alpha_k\)</span> is the exact line minimizer. Because successive gradients are mutually orthogonal in the Euclidean metric (<span class="math inline">\(\br^{(k+1)T}\br^{(k)} = 0\)</span>), the iterates oscillate back and forth along narrow, elongated energy valleys. The convergence rate of steepest descent depends on <span class="math inline">\((\kappa - 1)/(\kappa + 1)\)</span>, leading to severe slowdown when <span class="math inline">\(\kappa_2(\bA) \gg 1\)</span>.</p>
 </div>
 </div>
 </section>
-<section id="preconditioning" class="level2" data-number="23.6">
-<h2 data-number="23.6" class="anchored" data-anchor-id="preconditioning"><span class="header-section-number">23.6</span> Preconditioning</h2>
-<p>The convergence of CG depends on the condition number <span class="math inline">\(\kappa(\bA)\)</span>. <strong>Preconditioning</strong> transforms the system using a symmetric positive definite matrix <span class="math inline">\(\bM\)</span> that approximates <span class="math inline">\(\bA\)</span> but is much easier to invert.</p>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<section id="conjugate-directions-and-subspace-decoupling" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="conjugate-directions-and-subspace-decoupling"><span class="header-section-number">23.2</span> Conjugate Directions and Subspace Decoupling</h2>
+<p>To eliminate the inefficient zig-zagging of steepest descent, we replace orthogonal search directions with directions that are orthogonal with respect to the <span class="math inline">\(\bA\)</span>-inner product.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
+<span class="screen-reader-only">Note</span>Definition: A-Conjugate Vectors
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Spectral Transformation:</strong> The goal of the preconditioner is to cluster the eigenvalues of <span class="math inline">\(\bM^{-1}\bA\)</span> near 1. A perfectly preconditioned system (<span class="math inline">\(\bM = \bA\)</span>) has all eigenvalues equal to 1 and converges in a single step. In practice, a good preconditioner reduces the effective condition number, significantly accelerating convergence.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Preconditioning is not optional in hard problems)</strong> For large PDE systems, unpreconditioned CG can require too many iterations. The preconditioner is often the main algorithmic design choice.</p>
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> be symmetric positive definite. A set of nonzero vectors <span class="math inline">\(\{\bp_0, \bp_1, ..., \bp_{k-1}\} \subset \fR^n\)</span> is termed <strong><span class="math inline">\(\bA\)</span>-conjugate</strong> (or <span class="math inline">\(\bA\)</span>-orthogonal) if <span class="math display">\[
+\begin{align}
+\bp_i^T \bA \bp_j = 0 \qquad \text{for all } i \neq j.
+\end{align}
+\]</span> Because <span class="math inline">\(\bA\)</span> is positive definite, any set of mutually conjugate nonzero vectors is linearly independent.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -964,15 +832,265 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Common Preconditioners
+<span class="screen-reader-only">Note</span>Theorem: Subspace Decoupling and Exact Minimization
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\{\bp_0, ..., \bp_{n-1}\}\)</span> be an <span class="math inline">\(\bA\)</span>-conjugate basis for <span class="math inline">\(\fR^n\)</span>. The exact solution <span class="math inline">\(\bx^* = \bx^{(0)} + \sum_{i=0}^{n-1} \alpha_i \bp_i\)</span> can be computed by performing <span class="math inline">\(n\)</span> independent one-dimensional line minimizations. The optimal step lengths are given by <span class="math display">\[
+\begin{align}
+\alpha_k = \frac{\bp_k^T \br^{(0)}}{\bp_k^T \bA \bp_k} = \frac{\bp_k^T \br^{(k)}}{\bp_k^T \bA \bp_k}.
+\end{align}
+\]</span> Furthermore, for any <span class="math inline">\(k \leq n\)</span>, the partial sum <span class="math inline">\(\bx^{(k)} = \bx^{(0)} + \sum_{i=0}^{k-1} \alpha_i \bp_i\)</span> is the unique vector that minimizes <span class="math inline">\(\|\bx - \bx^*\|_\bA\)</span> over the affine subspace <span class="math inline">\(\bx^{(0)} + \operatorname{span}\{\bp_0, ..., \bp_{k-1}\}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Express the error in the conjugate basis: <span class="math display">\[
+\begin{align}
+\bx - \bx^* = \sum_{i=0}^{n-1} c_i \bp_i.
+\end{align}
+\]</span> Because the directions are <span class="math inline">\(\bA\)</span>-conjugate, <span class="math inline">\(\bp_i^T\bA\bp_j = 0\)</span> for <span class="math inline">\(i \neq j\)</span>. The squared <span class="math inline">\(\bA\)</span>-norm decouples into a sum of scalar terms: <span class="math display">\[
+\begin{align}
+\|\bx - \bx^*\|_\bA^2
+    &amp;= \left( \sum_{i=0}^{n-1} c_i \bp_i \right)^T \bA \left( \sum_{j=0}^{n-1} c_j \bp_j \right) \\
+    &amp;= \sum_{i=0}^{n-1} \sum_{j=0}^{n-1} c_i c_j \bp_i^T \bA \bp_j
+    = \sum_{i=0}^{n-1} c_i^2 \bp_i^T \bA \bp_i.
+\end{align}
+\]</span> Minimizing this sum over the first <span class="math inline">\(k\)</span> coordinates is equivalent to minimizing each term <span class="math inline">\(c_i^2 \bp_i^T \bA \bp_i\)</span> independently.</p>
+<p>For the initial guess <span class="math inline">\(\bx^{(0)}\)</span>, write <span class="math inline">\(\bx^{(0)} - \bx^* = -\sum_{i=0}^{n-1} \alpha_i \bp_i\)</span>. Taking the <span class="math inline">\(\bA\)</span>-inner product with <span class="math inline">\(\bp_k\)</span>: <span class="math display">\[
+\begin{align}
+\bp_k^T \bA (\bx^{(0)} - \bx^*)
+    &amp;= -\sum_{i=0}^{n-1} \alpha_i \bp_k^T \bA \bp_i
+    = -\alpha_k \bp_k^T \bA \bp_k.
+\end{align}
+\]</span> Since <span class="math inline">\(\bA\bx^* = \bb\)</span>, the left-hand side is <span class="math inline">\(\bp_k^T(\bA\bx^{(0)} - \bb) = -\bp_k^T \br^{(0)}\)</span>. Solving for <span class="math inline">\(\alpha_k\)</span>: <span class="math display">\[
+\begin{align}
+\alpha_k = \frac{\bp_k^T \br^{(0)}}{\bp_k^T \bA \bp_k}.
+\end{align}
+\]</span> Because <span class="math inline">\(\br^{(k)} = \br^{(0)} - \sum_{i=0}^{k-1} \alpha_i \bA\bp_i\)</span> and <span class="math inline">\(\bp_k^T\bA\bp_i = 0\)</span> for <span class="math inline">\(i &lt; k\)</span>, we have <span class="math inline">\(\bp_k^T\br^{(k)} = \bp_k^T\br^{(0)}\)</span>, giving <span class="math inline">\(\alpha_k = \frac{\bp_k^T \br^{(k)}}{\bp_k^T \bA \bp_k}\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-conjugate-gradient-algorithm" class="level2" data-number="23.3">
+<h2 data-number="23.3" class="anchored" data-anchor-id="the-conjugate-gradient-algorithm"><span class="header-section-number">23.3</span> The Conjugate Gradient Algorithm</h2>
+<p>The Conjugate Gradient algorithm generates the conjugate directions <span class="math inline">\(\{\bp_k\}\)</span> dynamically from the sequence of residuals <span class="math inline">\(\{\br^{(k)}\}\)</span> via a Gram–Schmidt process. Because <span class="math inline">\(\bA\)</span> is symmetric, all Gram–Schmidt orthogonalization coefficients against previous directions vanish except for the immediately preceding one, yielding a simple two-term recurrence.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Conjugate Gradient Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> be symmetric positive definite and let <span class="math inline">\(\bb \in \fR^n\)</span>. Given an initial estimate <span class="math inline">\(\bx^{(0)}\)</span>, compute <span class="math inline">\(\br^{(0)} = \bb - \bA\bx^{(0)}\)</span> and set <span class="math inline">\(\bp^{(0)} = \br^{(0)}\)</span>. For <span class="math inline">\(k = 0, 1, 2, ...\)</span>:</p>
 <ol type="1">
-<li><p><strong>Jacobi:</strong> <span class="math inline">\(\bM = \text{diag}(\bA)\)</span>. (Cheap, moderate speedup).</p></li>
-<li><p><strong>Incomplete Cholesky (IC):</strong> <span class="math inline">\(\bM \approx \bL\bL^T\)</span> with sparse factors. (Robust).</p></li>
-<li><p><strong>Multigrid:</strong> Near <span class="math inline">\(O(n)\)</span> total complexity for PDE systems.</p></li>
+<li><p>Compute the matrix–vector product <span class="math inline">\(\bw^{(k)} = \bA \bp^{(k)}\)</span>.</p></li>
+<li><p>Compute the step length: <span class="math display">\[
+\begin{align}
+\alpha_k = \frac{\br^{(k)T}\br^{(k)}}{\bp^{(k)T}\bw^{(k)}}.
+\end{align}
+\]</span></p></li>
+<li><p>Update the solution iterate: <span class="math display">\[
+\begin{align}
+\bx^{(k+1)} = \bx^{(k)} + \alpha_k \bp^{(k)}.
+\end{align}
+\]</span></p></li>
+<li><p>Update the residual vector: <span class="math display">\[
+\begin{align}
+\br^{(k+1)} = \br^{(k)} - \alpha_k \bw^{(k)}.
+\end{align}
+\]</span></p></li>
+<li><p>Check termination: if <span class="math inline">\(\|\br^{(k+1)}\|_2 / \|\bb\|_2 \leq `tol`\)</span>, terminate.</p></li>
+<li><p>Compute the orthogonalization coefficient: <span class="math display">\[
+\begin{align}
+\beta_k = \frac{\br^{(k+1)T}\br^{(k+1)}}{\br^{(k)T}\br^{(k)}}.
+\end{align}
+\]</span></p></li>
+<li><p>Compute the next search direction: <span class="math display">\[
+\begin{align}
+\bp^{(k+1)} = \br^{(k+1)} + \beta_k \bp^{(k)}.
+\end{align}
+\]</span></p></li>
 </ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Orthogonality Properties of CG
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In exact arithmetic, the sequences generated by the Conjugate Gradient algorithm satisfy the following orthogonality relations for all <span class="math inline">\(i \neq j\)</span>: <span class="math display">\[
+\begin{align}
+\br^{(i)T}\br^{(j)} = 0 \qquad \text{and} \qquad \bp^{(i)T}\bA\bp^{(j)} = 0.
+\end{align}
+\]</span> Moreover, the residual vectors and search directions span the Krylov subspace: <span class="math display">\[
+\begin{align}
+\operatorname{span}\{\br^{(0)}, \br^{(1)}, ..., \br^{(k)}\} = \operatorname{span}\{\bp^{(0)}, \bp^{(1)}, ..., \bp^{(k)}\} = \mathcal{K}_{k+1}(\bA, \br^{(0)}).
+\end{align}
+\]</span> Consequently, the method is guaranteed to reach the exact solution in at most <span class="math inline">\(n\)</span> iterations in exact arithmetic.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Complete hand trace of a <span class="math inline">\(2 \times 2\)</span> CG solve)</strong> Consider solving <span class="math inline">\(\bA\bx = \bb\)</span> with <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}, \qquad \bb = \begin{pmatrix} 4 \\ 5 \end{pmatrix}, \qquad \bx^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}.
+\end{align}
+\]</span></p>
+<ol type="1">
+<li><p><strong>Initialization (<span class="math inline">\(k=0\)</span>):</strong> <span class="math display">\[
+\begin{align}
+\br^{(0)} = \bb - \bA\bx^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix}, \qquad \bp^{(0)} = \br^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix}.
+\end{align}
+\]</span></p></li>
+<li><p><strong>First Iteration (<span class="math inline">\(k=0\)</span>):</strong> <span class="math display">\[
+\begin{align}
+\bA\bp^{(0)} &amp;= \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix} \begin{pmatrix} 4 \\ 5 \end{pmatrix} = \begin{pmatrix} 13 \\ 14 \end{pmatrix}, \\
+         \br^{(0)T}\br^{(0)} &amp;= 4^2 + 5^2 = 41, \\
+         \bp^{(0)T}\bA\bp^{(0)} &amp;= 4(13) + 5(14) = 52 + 70 = 122, \\
+         \alpha_0 &amp;= \frac{41}{122} \approx 0.3361, \\
+         \bx^{(1)} &amp;= \bx^{(0)} + \alpha_0 \bp^{(0)} = \frac{41}{122} \begin{pmatrix} 4 \\ 5 \end{pmatrix} = \begin{pmatrix} 164/122 \\ 205/122 \end{pmatrix} \approx \begin{pmatrix} 1.3443 \\ 1.6803 \end{pmatrix}, \\
+         \br^{(1)} &amp;= \br^{(0)} - \alpha_0 \bA\bp^{(0)} = \begin{pmatrix} 4 \\ 5 \end{pmatrix} - \frac{41}{122}\begin{pmatrix} 13 \\ 14 \end{pmatrix} = \begin{pmatrix} -45/122 \\ 36/122 \end{pmatrix} \approx \begin{pmatrix} -0.3689 \\ 0.2951 \end{pmatrix}.
+\end{align}
+\]</span> The inner product <span class="math inline">\(\br^{(1)T}\br^{(0)} = (-45)(4) + (36)(5) = -180 + 180 = 0\)</span> confirms residual orthogonality.</p></li>
+<li><p><strong>Direction Update (<span class="math inline">\(k=0 \to 1\)</span>):</strong> <span class="math display">\[
+\begin{align}
+\br^{(1)T}\br^{(1)} &amp;= \frac{(-45)^2 + 36^2}{122^2} = \frac{2025 + 1296}{14884} = \frac{3321}{14884}, \\
+         \beta_0 &amp;= \frac{\br^{(1)T}\br^{(1)}}{\br^{(0)T}\br^{(0)}} = \frac{3321/14884}{41} = \frac{81}{14884}, \\
+         \bp^{(1)} &amp;= \br^{(1)} + \beta_0 \bp^{(0)}
+         = \frac{1}{14884}\begin{pmatrix} -5166 \\ 4797 \end{pmatrix}.
+\end{align}
+\]</span> Checking conjugacy with <span class="math inline">\(\bA\bp^{(0)}=(13,14)^T\)</span> gives <span class="math display">\[
+\begin{align}
+\bp^{(1)T}\bA\bp^{(0)}
+         =\frac{-5166(13)+4797(14)}{14884}=0.
+\end{align}
+\]</span></p></li>
+<li><p><strong>Second Iteration (<span class="math inline">\(k=1\)</span>):</strong> Computing step <span class="math inline">\(\alpha_1\)</span> and updating <span class="math inline">\(\bx^{(2)}\)</span> arrives at the exact solution <span class="math inline">\(\bx^{(2)} = (1, 2)^T\)</span> with residual <span class="math inline">\(\br^{(2)} = \bzero\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="convergence-rate-and-preconditioning" class="level2" data-number="23.4">
+<h2 data-number="23.4" class="anchored" data-anchor-id="convergence-rate-and-preconditioning"><span class="header-section-number">23.4</span> Convergence Rate and Preconditioning</h2>
+<p>Although CG terminates in <span class="math inline">\(n\)</span> steps in exact arithmetic, its primary utility in scientific computing is as a rapid iterative solver for which <span class="math inline">\(k \ll n\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Chebyshev Error Bound for Conjugate Gradient
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be symmetric positive definite with 2-norm condition number <span class="math inline">\(\kappa = \lambda_{\max}/\lambda_{\min}\)</span>. The error at step <span class="math inline">\(k\)</span> satisfies <span class="math display">\[
+\begin{align}
+\frac{\|\bx^{(k)} - \bx^*\|_\bA}{\|\bx^{(0)} - \bx^*\|_\bA} \leq 2 \left( \frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} \right)^k.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Corollary: Termination with Distinct Eigenvalues
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bA\)</span> has only <span class="math inline">\(m\)</span> distinct eigenvalues, CG reaches the exact solution in at most <span class="math inline">\(m\)</span> iterations in exact arithmetic.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let the distinct eigenvalues be <span class="math inline">\(\lambda_1,...,\lambda_m\)</span>. The polynomial <span class="math display">\[
+\begin{align}
+p_m(t)=\prod_{j=1}^m\left(1-\frac{t}{\lambda_j}\right)
+\end{align}
+\]</span> has degree <span class="math inline">\(m\)</span>, satisfies <span class="math inline">\(p_m(0)=1\)</span>, and vanishes on the spectrum of <span class="math inline">\(\bA\)</span>. The spectral theorem therefore gives <span class="math inline">\(p_m(\bA)=\bzero\)</span>. CG minimizes the energy-norm error over all vectors whose error has the form <span class="math inline">\(p(\bA)\be^{(0)}\)</span> with <span class="math inline">\(p(0)=1\)</span>. Since <span class="math inline">\(p_m(\bA)\be^{(0)}=\bzero\)</span> is available after <span class="math inline">\(m\)</span> steps, the minimum error is zero.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(The square root condition number advantage)</strong> The convergence bound for the Conjugate Gradient method depends on <span class="math inline">\(\sqrt{\kappa}\)</span>, whereas stationary iterations depend directly on <span class="math inline">\(\kappa\)</span>. For an ill-conditioned system with <span class="math inline">\(\kappa = 10^4\)</span>, the reduction factor per iteration for stationary methods is approximately <span class="math inline">\((\kappa-1)/(\kappa+1) \approx 0.9998\)</span>, whereas for CG it is <span class="math inline">\((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1) = 99/101 \approx 0.9802\)</span>, converging fifty times faster per step.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Superlinear convergence)</strong> The Chebyshev bound is a worst-case guarantee for an arbitrary spectrum. When the eigenvalues of <span class="math inline">\(\bA\)</span> are grouped into tight clusters with only a few isolated outliers, CG eliminates the outlying eigenmodes in the first few iterations and then converges at a rate governed by the clustered eigenvalues. This behavior is termed superlinear convergence.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Preconditioned Conjugate Gradient (PCG)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bM\)</span> be a symmetric positive definite preconditioner. The Preconditioned Conjugate Gradient algorithm solves <span class="math inline">\(\bA\bx = \bb\)</span> by transforming the geometry using the inner product induced by <span class="math inline">\(\bM^{-1}\)</span>. At each step, a linear system <span class="math inline">\(\bM\bz^{(k)} = \br^{(k)}\)</span> is solved, and the step lengths and direction updates become <span class="math display">\[
+\begin{align}
+\alpha_k = \frac{\br^{(k)T}\bz^{(k)}}{\bp^{(k)T}\bA\bp^{(k)}}, \qquad \beta_k = \frac{\br^{(k+1)T}\bz^{(k+1)}}{\br^{(k)T}\bz^{(k)}}.
+\end{align}
+\]</span> A well-chosen preconditioner clusters the eigenvalues of <span class="math inline">\(\bM^{-1}\bA\)</span> near <span class="math inline">\(1\)</span>, ensuring rapid convergence in few iterations.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -986,9 +1104,9 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p><strong>Convergence Check:</strong> Solve a <span class="math inline">\(100 \times 100\)</span> Poisson system via CG. Compare your error plot to the theoretical bound.</p></li>
-<li><p><strong>Spectral Clustering:</strong> Construct <span class="math inline">\(\bA\)</span> with eigenvalues <span class="math inline">\(\{1, ..., 1, 100, 200\}\)</span>. Observe superlinear convergence in the first few steps.</p></li>
-<li><p><strong>Preconditioning:</strong> Compare iteration counts for a sparse system with and without an IC preconditioner.</p></li>
+<li><p><strong>Check.</strong> For a diagonal SPD matrix with three distinct eigenvalues, construct the polynomial in the result above and verify that it annihilates the matrix.</p></li>
+<li><p><strong>Derive.</strong> Derive the formula for <span class="math inline">\(\alpha_k\)</span> by explicitly minimizing the single-variable quadratic function <span class="math inline">\(g(\alpha) = \phi(\bx^{(k)} + \alpha \bp^{(k)})\)</span> with respect to <span class="math inline">\(\alpha\)</span>.</p></li>
+<li><p><strong>Compute.</strong> Implement the Preconditioned Conjugate Gradient algorithm in Python using an incomplete Cholesky preconditioner, and test it on a 2D discrete Laplacian of size <span class="math inline">\(100 \times 100\)</span>.</p></li>
 </ol>
 </div>
 </div>
@@ -1412,13 +1530,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../iterative/jacobi.html" class="pagination-link" aria-label="Jacobi and Gauss-Seidel Methods">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span>
+      <a href="../iterative/jacobi.html" class="pagination-link" aria-label="Jacobi, Gauss-Seidel, and SOR Methods">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../iterative/gmres.html" class="pagination-link" aria-label="GMRES">
-        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../iterative/gmres.html" class="pagination-link" aria-label="The Generalized Minimal Residual (GMRES) Method">
+        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

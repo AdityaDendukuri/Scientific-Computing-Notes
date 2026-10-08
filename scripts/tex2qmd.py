@@ -44,6 +44,7 @@ def strip_preamble(text: str) -> str:
 # ── Section headings ─────────────────────────────────────────────────────────
 
 def convert_sections(text: str) -> str:
+    text = re.sub(r'\\section\*\{([^}]+)\}', r'# \1 {.unnumbered}', text)
     text = re.sub(r'\\section\*?\{([^}]+)\}', r'# \1', text)
     text = re.sub(r'\\subsection\*?\{([^}]+)\}', r'# \1', text)
     text = re.sub(r'\\subsubsection\*?\{([^}]+)\}', r'## \1', text)
@@ -73,32 +74,95 @@ def convert_math(text: str) -> str:
 # ── Lists ────────────────────────────────────────────────────────────────────
 
 def convert_lists(text: str) -> str:
-    def do_enumerate(m: re.Match) -> str:
-        body = m.group(1)
-        body = re.sub(r'\\item\s*', '\n1. ', body)
-        return '\n' + body.strip() + '\n'
+    """Convert arbitrarily nested enumerate/itemize environments.
 
-    def do_itemize(m: re.Match) -> str:
-        body = m.group(1)
-        body = re.sub(r'\\item\s*', '\n- ', body)
-        return '\n' + body.strip() + '\n'
+    Convert innermost environments first. When their parent is converted on a
+    later pass, every continuation line is indented so the inner Markdown list
+    remains attached to the correct outer item.
+    """
+    innermost = re.compile(
+        r'\\begin\{(?P<env>enumerate|itemize)\}'
+        r'(?P<body>(?:(?!\\begin\{(?:enumerate|itemize)\}).)*?)'
+        r'\\end\{(?P=env)\}',
+        flags=re.DOTALL,
+    )
 
-    text = re.sub(r'\\begin\{enumerate\}(.*?)\\end\{enumerate\}', do_enumerate, text, flags=re.DOTALL)
-    text = re.sub(r'\\begin\{itemize\}(.*?)\\end\{itemize\}', do_itemize, text, flags=re.DOTALL)
+    def render_list(m: re.Match) -> str:
+        marker = '1.' if m.group('env') == 'enumerate' else '-'
+        parts = re.split(r'\\item(?:\s*\[[^]]*\])?\s*', m.group('body'))
+        items = []
+        for part in parts[1:]:
+            lines = part.strip().splitlines()
+            if not lines:
+                continue
+            rendered = [f'{marker} {lines[0]}']
+            rendered.extend(('    ' + line) if line else '' for line in lines[1:])
+            items.append('\n'.join(rendered))
+        return '\n' + '\n\n'.join(items) + '\n'
+
+    while True:
+        text, count = innermost.subn(render_list, text)
+        if count == 0:
+            break
     return text
 
 
 # ── Inline formatting ────────────────────────────────────────────────────────
 
 def convert_formatting(text: str) -> str:
-    # Multi-line safe versions using brace extraction would be more robust,
-    # but these cover the vast majority of cases in these notes.
-    text = re.sub(r'\\href\{([^{}]+)\}\{([^{}]+)\}', r'[\2](\1)', text)
-    text = re.sub(r'\\textbf\{([^{}]+)\}', r'**\1**', text)
-    text = re.sub(r'\\textit\{([^{}]+)\}', r'*\1*', text)
-    text = re.sub(r'\\emph\{([^{}]+)\}', r'*\1*', text)
-    text = re.sub(r'\\texttt\{([^{}]+)\}', r'`\1`', text)
-    text = re.sub(r'\\text\{([^{}]+)\}', r'\\text{\1}', text)  # keep inside math
+    def replace_one_arg(source: str, macro: str, left: str, right: str) -> str:
+        result = []
+        i = 0
+        while i < len(source):
+            if source.startswith(macro, i) and _is_word_end(source, i + len(macro)):
+                j = i + len(macro)
+                while j < len(source) and source[j].isspace():
+                    j += 1
+                if j < len(source) and source[j] == '{':
+                    body, end = extract_arg(source, j)
+                    result.append(left + body + right)
+                    i = end
+                    continue
+            result.append(source[i])
+            i += 1
+        return ''.join(result)
+
+    def replace_href(source: str) -> str:
+        result = []
+        i = 0
+        macro = r'\href'
+        while i < len(source):
+            if source.startswith(macro, i) and _is_word_end(source, i + len(macro)):
+                j = i + len(macro)
+                while j < len(source) and source[j].isspace():
+                    j += 1
+                if j < len(source) and source[j] == '{':
+                    url, end = extract_arg(source, j)
+                    j = end
+                    while j < len(source) and source[j].isspace():
+                        j += 1
+                    if j < len(source) and source[j] == '{':
+                        label, end = extract_arg(source, j)
+                        result.append(f'[{label}]({url})')
+                        i = end
+                        continue
+            result.append(source[i])
+            i += 1
+        return ''.join(result)
+
+    text = replace_href(text)
+    for macro, left, right in (
+        (r'\textbf', '**', '**'),
+        (r'\textit', '*', '*'),
+        (r'\emph', '*', '*'),
+        (r'\texttt', '`', '`'),
+    ):
+        # Repeated passes also handle the same formatting command nested in itself.
+        while macro in text:
+            converted = replace_one_arg(text, macro, left, right)
+            if converted == text:
+                break
+            text = converted
     return text
 
 
@@ -106,10 +170,31 @@ def convert_formatting(text: str) -> str:
 
 def convert_references(text: str) -> str:
     text = re.sub(r'\\label\{[^}]+\}', '', text)
-    text = re.sub(r'(?:Def|Thm|Lem|Cor|Prop|Remark|Ex)~?\\ref\{[^}]+\}',
-                  'the result above', text)
-    text = re.sub(r'\\ref\{[^}]+\}', 'above', text)
-    text = re.sub(r'\\S~?\\ref\{[^}]+\}', 'the section above', text)
+    text = re.sub(r'(?:Section|Sec\.?|\\S)~?\\ref\{[^}]+\}',
+                  'the referenced section', text)
+    text = re.sub(r'(?:Definition|Theorem|Lemma|Corollary|Proposition|Exercise|'
+                  r'Def|Thm|Lem|Cor|Prop|Remark|Ex)\.?~?\\ref\{[^}]+\}',
+                  'the referenced result', text)
+    text = re.sub(r'\\eqref\{[^}]+\}', 'the referenced equation', text)
+    text = re.sub(r'\\ref\{[^}]+\}', 'the referenced item', text)
+    return text
+
+
+def convert_citations(text: str) -> str:
+    """Convert the citation forms used in the TeX sources to Pandoc citations."""
+    def parenthetical(m: re.Match) -> str:
+        keys = [key.strip() for key in m.group(1).split(',') if key.strip()]
+        return '[' + '; '.join('@' + key for key in keys) + ']'
+
+    def textual(m: re.Match) -> str:
+        keys = [key.strip() for key in m.group(1).split(',') if key.strip()]
+        if len(keys) == 1:
+            return '@' + keys[0]
+        return '[' + '; '.join('@' + key for key in keys) + ']'
+
+    text = re.sub(r'\\citep\{([^}]+)\}', parenthetical, text)
+    text = re.sub(r'\\cite\{([^}]+)\}', parenthetical, text)
+    text = re.sub(r'\\citet\{([^}]+)\}', textual, text)
     return text
 
 
@@ -145,6 +230,17 @@ def convert_misc(text: str) -> str:
     text = re.sub(r'\\begin\{center\}(.*?)\\end\{center\}', r'\1', text, flags=re.DOTALL)
     text = re.sub(r'\\begin\{flushright\}(.*?)\\end\{flushright\}', r'\1', text, flags=re.DOTALL)
     text = re.sub(r'\\newentry\b', '', text)
+    text = text.replace(r'\exCheck', '**Check.** ')
+    text = text.replace(r'\exDerive', '**Derive.** ')
+    text = text.replace(r'\exCompute', '**Compute.** ')
+    text = text.replace(r'\exExplore', '**Explore.** ')
+    text = re.sub(r'\\nocite\{\*\}', '', text)
+    text = re.sub(r'\\bibliographystyle\{[^}]+\}', '', text)
+    text = re.sub(
+        r'\\bibliography\{[^}]+\}',
+        '\n# References {.unnumbered}\n\n::: {#refs}\n:::\n',
+        text,
+    )
     text = re.sub(r'\\ldots\b', '...', text)
     text = re.sub(r'\\cdots\b', r'\\cdots', text)  # keep in math context
     text = re.sub(r'\\dots\b', '...', text)
@@ -163,10 +259,14 @@ TWO_ARG_MACROS = [
     ('\\addCor',  'callout-note',    'Corollary'),
     ('\\addProp', 'callout-note',    'Proposition'),
     ('\\addExmpl','callout-note',    'Example'),
+    ('\\addTrail','callout-important','Literature trail'),
+    ('\\addRoute','callout-note',    'Chapter route'),
 ]
 
 ONE_ARG_MACROS = [
     ('\\addPrf',  'callout-tip',     'Proof',    True),   # collapse=true
+    ('\\proofMap','callout-tip',     'Proof map', False),
+    ('\\addReading','callout-note',  'Further reading', False),
     ('\\addRemark', 'callout-tip',   'Remark',   False),
     ('\\addExcr', 'callout-warning', 'Exercise', False),
     ('\\textBox', None,              None,       False),  # plain block
@@ -264,6 +364,8 @@ def convert_macros(text: str) -> str:
 def cleanup(text: str) -> str:
     # Strip remaining unknown \commands that take no visible argument
     text = re.sub(r'\\(?:mLabel|refstepcounter|newentry|setlength|renewcommand)\{[^}]*\}(?:\{[^}]*\})*', '', text)
+    # Generated Markdown should never carry TeX spacing as trailing whitespace.
+    text = '\n'.join(line.rstrip() for line in text.splitlines())
     # Collapse 3+ blank lines to 2
     text = re.sub(r'\n{4,}', '\n\n\n', text)
     text = text.strip()
@@ -277,6 +379,7 @@ def cleanup(text: str) -> str:
 # ── Main conversion pipeline ─────────────────────────────────────────────────
 
 def convert(tex_text: str, title: str = '', sec_label: str = '') -> str:
+    nocite_all = r'\nocite{*}' in tex_text
     text = strip_preamble(tex_text)
     text = convert_verbatim(text)     # before macros so verbatim content is protected
     text = convert_macros(text)       # must come before formatting (preserves braces in macro args)
@@ -284,6 +387,7 @@ def convert(tex_text: str, title: str = '', sec_label: str = '') -> str:
     text = convert_math(text)
     text = convert_lists(text)
     text = convert_formatting(text)
+    text = convert_citations(text)
     text = convert_references(text)
     text = convert_misc(text)
     text = cleanup(text)
@@ -293,6 +397,9 @@ def convert(tex_text: str, title: str = '', sec_label: str = '') -> str:
         label = sec_label or re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
         front = f'# {title} {{#sec-{label}}}\n\n'
         text = front + text
+
+    if nocite_all:
+        text = '---\nnocite: |\n  @*\n---\n\n' + text
 
     return text
 
@@ -307,7 +414,6 @@ FILE_MAP = [
     # Chapter 1: Fundamentals
     ('src/math_notation.tex',   'fundamentals/math-notation.qmd',         '',               ''),
     ('src/vecs_and_mats.tex',   'fundamentals/vectors-matrices.qmd',      '',               ''),
-    ('src/arithmetic.tex',      'fundamentals/arithmetic.qmd',            '',               ''),
     ('src/norms_intro.tex',     'fundamentals/norms.qmd',                 '',               ''),
     ('src/complexity.tex',      'fundamentals/complexity.qmd',            '',               ''),
     ('src/floating_point.tex',  'fundamentals/floating-point.qmd',        '',               ''),
@@ -317,30 +423,33 @@ FILE_MAP = [
     ('src/linear_systems.tex',  'direct-methods/linear-systems.qmd',      '',               ''),
     ('src/lu.tex',              'direct-methods/lu.qmd',                  '',               ''),
     ('src/spd.tex',             'direct-methods/spd.qmd',                 '',               ''),
+    ('src/structured_solvers.tex', 'direct-methods/structured-solvers.qmd', '',             ''),
 
     # Chapter 3: Orthogonality and Least Squares
     ('src/orthogonal.tex',      'orthogonality/orthogonal.qmd',           '',               ''),
     ('src/norm.tex',            'orthogonality/norms.qmd',                '',               ''),
     ('src/stability.tex',       'orthogonality/stability.qmd',            '',               ''),
     ('src/least_squares.tex',   'orthogonality/least-squares.qmd',        '',               ''),
-    ('src/chebyshev.tex',       'orthogonality/chebyshev.qmd',            '',               ''),
 
     # Chapter 4: Eigenvalues and SVD
     ('src/eigen.tex',           'eigenvalues/eigenvalues.qmd',            '',               ''),
+    ('src/eigen_algorithms.tex', 'eigenvalues/eigen-algorithms.qmd',      '',               ''),
     ('src/svd.tex',             'eigenvalues/svd.qmd',                    '',               ''),
+    ('src/arnoldi.tex',         'eigenvalues/arnoldi.qmd',                '',               ''),
     ('src/lanczos.tex',         'eigenvalues/lanczos.qmd',                '',               ''),
-    ('src/jacobi_eig.tex',      'eigenvalues/jacobi-eig.qmd',             '',               ''),
 
     # Chapter 5: Iterative Methods
     ('src/iterative.tex',       'iterative/iterative.qmd',                '',               ''),
     ('src/jacobi.tex',          'iterative/jacobi.qmd',                   '',               ''),
     ('src/conj_grad.tex',       'iterative/conjugate-gradient.qmd',       '',               ''),
     ('src/gmres.tex',           'iterative/gmres.qmd',                    '',               ''),
+    ('src/randomized.tex',      'iterative/randomized.qmd',               '',               ''),
+    ('src/multigrid.tex',       'iterative/multigrid.qmd',                '',               ''),
 
     # Chapter 6: Numerical Analysis
     ('src/interpolation.tex',   'numerical-analysis/interpolation.qmd',   '',               ''),
+    ('src/chebyshev.tex',       'numerical-analysis/chebyshev.qmd',       '',               ''),
     ('src/quadrature.tex',      'numerical-analysis/quadrature.qmd',      '',               ''),
-    ('src/root_finding.tex',    'numerical-analysis/root-finding.qmd',    '',               ''),
 
     # Chapter 7: ODEs
     ('src/ode_methods.tex',     'odes/ode-methods.qmd',                   '',               ''),
@@ -350,8 +459,10 @@ FILE_MAP = [
     ('src/graphs.tex',          'applications/graphs.qmd',                '',               ''),
     ('src/operators.tex',       'applications/operators.qmd',             '',               ''),
     ('src/fourier.tex',         'applications/fourier.qmd',               '',               ''),
+    ('src/matrix_exponential.tex', 'applications/matrix-exponential.qmd', '',               ''),
     ('src/markov.tex',          'applications/markov.qmd',                '',               ''),
     ('src/koopman.tex',         'applications/koopman.qmd',               '',               ''),
+    ('src/references.tex',       'references.qmd',                         '',               ''),
 ]
 
 

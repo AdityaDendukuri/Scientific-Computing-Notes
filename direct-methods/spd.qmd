@@ -1,296 +1,343 @@
-# Symmetric Positive Definite (SPD) Matrices
+# Symmetric Positive Definite Matrices
 
 
-Symmetric Positive Definite (SPD) matrices form one of the most important classes of matrices in scientific computing. They possess several remarkable properties that allow for algorithms that are twice as fast and significantly more stable than those for general matrices.
+Symmetric positive definite matrices occur whenever a nonzero displacement must have positive energy. Springs, diffusion operators, covariance models, and strictly convex quadratic objectives all lead to this structure. For these matrices an algebraic condition, a geometry, and an efficient algorithm describe the same property.
 
 
-An SPD matrix is the matrix version of positive curvature or positive energy. The quadratic form $\bx^T\bA\bx$ is always positive away from the origin, so it defines a geometry, a convex energy landscape, and a stable class of linear systems.
-
-
-## Definitions and Properties
-
-SPD matrices arise naturally in a wide variety of engineering contexts, including optimization (as Hessian matrices of convex functions), statistics (as covariance matrices), and physical simulations (as stiffness matrices in structural mechanics).
-
-
-The expression $\bx^T\bA\bx$ is called a **quadratic form**. It converts a vector into a scalar. If $\bA$ is symmetric, then this scalar measures the energy of $\bx$ in the geometry defined by $\bA$.
+## Positive Quadratic Energy
 
 
 ::: {.callout-note icon=false}
-## Definition: Positive Definite
-A symmetric matrix $\bA \in \fR^{n \times n}$ is **positive definite** (PD) if the quadratic form $\bx^T\bA\bx$ is strictly positive for every nonzero vector $\bx \in \fR^n$:
+## Definition: Symmetric Positive Definite Matrix
+A real matrix $\bA\in\fR^{n\times n}$ is **symmetric positive definite**, abbreviated SPD, if $\bA=\bA^T$ and
 $$
 \begin{align}
-\bx^T\bA\bx > 0 \quad \text{for every nonzero } \bx \in \fR^n.
+\bx^T\bA\bx>0
+    \qquad\text{for every }\bx\neq\bzero.
 \end{align}
 $$
-If $\bA$ is both symmetric and PD, it is **SPD**.
+It is **symmetric positive semidefinite** if the strict inequality is replaced by $\bx^T\bA\bx\geq0$.
 :::
 
 
 ::: {.callout-note icon=false}
-## Definition: Positive Semidefinite
-A symmetric matrix $\bA$ is **positive semidefinite** (PSD) if
-$$
-\begin{align}
-\bx^T\bA\bx \geq 0 \quad \text{for every } \bx \in \fR^n.
-\end{align}
-$$
-Positive definite means strictly positive for every nonzero vector. Positive semidefinite allows flat directions where $\bx^T\bA\bx=0$.
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(Definite vs.\ semidefinite)** 
-$$
-\begin{align}
-\begin{pmatrix}2&0\\0&1\end{pmatrix}
-    \quad \text{is SPD, while} \quad
-    \begin{pmatrix}1&0\\0&0\end{pmatrix}
-    \quad \text{is PSD but not PD.}
-\end{align}
-$$
-The second matrix has a flat direction: $(0,1)^T$ has zero quadratic energy.
-:::
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Test $\bA = \begin{pmatrix}2 & 1 \\ 1 & 2\end{pmatrix}$ for PD property by expanding $\bx^T\bA\bx$.
-    
-1. Prove a diagonal matrix $\bD$ is PD iff all diagonal entries $d_i > 0$.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Spectral Characterization)** 
-A symmetric matrix is PD iff **all its eigenvalues are strictly positive**.
-Every SPD matrix is invertible ($\det \bA = \prod \lambda_i > 0$).
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Equivalent tests for SPD)**  For a symmetric matrix $\bA$, the following are equivalent:
-
-1. $\bx^T\bA\bx>0$ for every nonzero $\bx$.
-    
-1. Every eigenvalue of $\bA$ is positive.
-    
-1. Cholesky factorization succeeds with positive pivots.
-    
-1. All leading principal minors are positive.
-
-The eigenvalue and Cholesky tests are the most useful computationally.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. If $\bA$ is SPD, show $\bB = \bA + c\bI$ for $c > 0$ is also SPD.
-    
-1. Use `np.linalg.eigvalsh` to verify SPD property for several test matrices.
-
-:::
-
-
-## Geometry and Metric
-
-
-An SPD matrix $\bA$ can be thought of as defining a new geometry or "metric" on $\fR^n$, where the distance and angle between vectors are weighted by the entries of $\bA$. This perspective is fundamental to understanding the behavior of iterative solvers like the Conjugate Gradient method.
-
-
-If $\bA=\bQ\boldsymbol{\Lambda}\bQ^T$, then
-$$
-\begin{align}
-\bx^T\bA\bx = \sum_{i=1}^n \lambda_i z_i^2,
-    \qquad \bz=\bQ^T\bx.
-\end{align}
-$$
-The eigenvectors give the principal directions of the geometry, and the eigenvalues determine how expensive motion is in each direction.
-
-
-::: {.callout-note icon=false}
-## Definition: $\bA$-Inner Product
-For SPD $\bA$, the mapping $\langle \bx, \by \rangle_\bA = \bx^T\bA\by$ satisfies the axioms of an inner product.
-
-- **$\bA$-Norm:** The induced norm is $\|\bx\|_\bA = \sqrt{\bx^T\bA\bx}$.
-    
-- **Ellipsoid:** The unit ball in this norm, $\{\bx : \|\bx\|_\bA = 1\}$, is an $n$-dimensional ellipsoid whose principal axes are aligned with the eigenvectors of $\bA$.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Physical Meaning:**  Directions with large eigenvalues are ``stiff'' or ``expensive'' (small axes in the unit ellipsoid); small eigenvalues represent ``sensitive'' directions.
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(Ellipse)**  For
-$$
-\begin{align}
-\bA=\begin{pmatrix}4&0\\0&1\end{pmatrix},
-\end{align}
-$$
-the unit $\bA$-norm curve is
-$$
-\begin{align}
-4x_1^2+x_2^2=1.
-\end{align}
-$$
-The axis in the $x_1$ direction is shorter because that direction has larger eigenvalue. Moving in that direction costs more energy.
-:::
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. For $\bA = \begin{pmatrix} 4 & 0 \\ 0 & 1 \end{pmatrix}$, compute the distance between $(1,0)^T$ and origin in both Euclidean and $\bA$-metrics.
-    
-1. Where does the $\bA$-metric appear in statistics? (Mahalanobis distance).
-
-:::
-
-
-## Cholesky Decomposition
-
-
-The symmetry and positive definiteness of $\bA$ allow for a specialized version of the LU factorization known as the **Cholesky decomposition**. The decomposition can be interpreted as a generalized square root for SPD matrices, where $\bA = \bL\bL^T$.
-
-
-Cholesky is the natural direct solver for SPD systems. It stores only one triangular factor instead of two, avoids pivoting, and preserves the symmetry of the problem.
-
-
-::: {.callout-note icon=false}
-## Definition: Cholesky Decomposition
-Every SPD matrix $\bA$ admits a unique decomposition $\bA = \bL\bL^T$, where $\bL$ is lower triangular with strictly positive diagonal entries.
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(A $2\times2$ Cholesky factor)**  Let
-$$
-\begin{align}
-\bA=\begin{pmatrix}4&2\\2&3\end{pmatrix}.
-\end{align}
-$$
-Assume
-$$
-\begin{align}
-\bL=\begin{pmatrix}\ell_{11}&0\\\ell_{21}&\ell_{22}\end{pmatrix}.
-\end{align}
-$$
-Matching $\bA=\bL\bL^T$ gives $\ell_{11}=2$, $\ell_{21}=1$, and $\ell_{22}=\sqrt{2}$, so
-$$
-\begin{align}
-\bL=\begin{pmatrix}2&0\\1&\sqrt{2}\end{pmatrix}.
-\end{align}
-$$
-:::
-
-::: {.callout-tip icon=false}
-## Remark
-**(Flop Cost)** 
-The computational cost of the Cholesky decomposition is \textbf{$\frac{1}{3}n^3$ flops}, approximately half that of a general LU factorization.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**Stability Advantage:** 
-Unlike general LU, Cholesky is **guaranteed to be stable without pivoting**. In code, `np.linalg.cholesky` is the standard numerical test for positive definiteness; if it raises a `LinAlgError`, the matrix is not PD.
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Solving with Cholesky)**  If $\bA=\bL\bL^T$, then solving $\bA\bx=\bb$ requires two triangular solves:
-
-1. Solve $\bL\by=\bb$.
-    
-1. Solve $\bL^T\bx=\by$.
-
-The factorization costs $O(n^3)$, but each solve costs only $O(n^2)$.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Factor $\bA = \begin{pmatrix} 4 & 2 \\ 2 & 3 \end{pmatrix}$ by hand.
-    
-1. Why does Cholesky not require row swaps?
-    
-1. Solve $\bA\bx = \bb$ using Cholesky for $\bA = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$.
-
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-**(Applications)**
-
-1. **Covariance:**  Generate `X = np.random.randn(100, 4)`. Verify `X.T @ X` is SPD via Cholesky.
-    
-1. **Gram Matrix:**  Prove that $\mathbf{G} = \bX^T\bX$ is at least positive semidefinite for any $\bX$, and PD if $\bX$ has full column rank.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Where SPD matrices appear)** 
-
-- **Optimization:**  Hessians of strictly convex quadratic functions.
-    
-- **Statistics:**  Covariance and Gram matrices, often PSD and SPD when data are full rank.
-    
-- **PDEs:**  Discrete Laplacians and stiffness matrices for elliptic problems.
-    
-- **Least squares:**  Normal equations $\bA^T\bA\bx=\bA^T\bb$ are SPD when $\bA$ has full column rank.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Connection to CG)**  Conjugate Gradient is designed for large sparse SPD systems. It minimizes the quadratic energy
-$$
-\begin{align}
-\phi(\bx)=\frac{1}{2}\bx^T\bA\bx-\bb^T\bx,
-\end{align}
-$$
-whose unique minimizer satisfies $\bA\bx=\bb$ when $\bA$ is SPD.
+## Theorem: First Consequences of Positive Definiteness
+If $\bA$ is SPD, then every diagonal entry is positive, every principal submatrix is SPD, and $\bA$ is nonsingular.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-For any nonzero vector $\bv \in \fR^n$, consider the quadratic form:
+Taking $\bx=\be_i$ gives $a_{ii}=\be_i^T\bA\be_i>0$. A vector supported only on an index set $I$ has quadratic energy equal to the quadratic form of the principal submatrix $\bA[I,I]$, so that submatrix is positive definite. Finally, if $\bA\bx=\bzero$ for a nonzero $\bx$, then $\bx^T\bA\bx=0$, a contradiction. Thus the null space is trivial.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: The $\bA$-Inner Product and Energy Norm
+If $\bA$ is SPD, then
 $$
 \begin{align}
-\bv^T \mathbf{G} \bv &= \bv^T (\bX^T \bX) \bv \\
-    &= (\bX \bv)^T (\bX \bv) \\
-    &= \|\bX \bv\|_2^2.
+\langle\bx,\by\rangle_{\bA}=\bx^T\bA\by,
+    \qquad
+    \|\bx\|_{\bA}=\sqrt{\bx^T\bA\bx}
 \end{align}
 $$
-Since the squared Euclidean norm is always non-negative, $\bv^T \mathbf{G} \bv \geq 0$, proving $\mathbf{G}$ is positive semidefinite.
-If $\bX$ has full column rank, then $\bX \bv = \bzero$ iff $\bv = \bzero$. Thus $\bv^T \mathbf{G} \bv > 0$ for all nonzero $\bv$, making $\mathbf{G}$ positive definite.
+define an inner product and its induced norm. The scalar $\bx^T\bA\bx$ is often called the **energy** of $\bx$.
 :::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Linearity follows from matrix multiplication, symmetry from $\bA^T=\bA$, and positive definiteness from the definition of SPD. The general inner-product results of the referenced section then give Cauchy--Schwarz and the triangle inequality for $\|\cdot\|_{\bA}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+For
+$$
+\begin{align}
+\bA=\begin{pmatrix}4&0\\0&1\end{pmatrix},
+\end{align}
+$$
+the unit-energy curve is $4x_1^2+x_2^2=1$. A displacement in the first coordinate costs four times as much energy as the same displacement in the second. A norm chosen this way also expresses which errors matter in the model.
+:::
+## Cholesky Factorization
+
+
+::: {.callout-note icon=false}
+## Theorem: Cholesky Factorization
+Every SPD matrix $\bA\in\fR^{n\times n}$ has a unique factorization
+$$
+\begin{align}
+\bA=\bL\bL^T,
+\end{align}
+$$
+where $\bL$ is lower triangular with positive diagonal entries.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+We proceed by induction on $n$. For $n=1$, $\bA = (\alpha)$ with $\alpha > 0$, so $\bL = (\sqrt{\alpha})$ is the unique positive square root.
+For the induction step, partition $\bA \in \fR^{n \times n}$ as
+$$
+\begin{align}
+\bA = \begin{pmatrix} \alpha & \br^T \\ \br & \bB \end{pmatrix}.
+\end{align}
+$$
+Since $\bA$ is SPD, $\alpha = \be_1^T\bA\be_1 > 0$. Set $\ell_{11} = \sqrt{\alpha}$ and $\boldsymbol{\ell} = \br / \ell_{11}$. Form the Schur complement
+$$
+\begin{align}
+\bS = \bB - \boldsymbol{\ell}\boldsymbol{\ell}^T = \bB - \frac{\br\br^T}{\alpha}.
+\end{align}
+$$
+For any nonzero $\by \in \fR^{n-1}$, choose $\bx = (-\boldsymbol{\ell}^T\by / \ell_{11}, \by^T)^T \in \fR^n$. Expanding the quadratic form:
+$$
+\begin{align}
+\bx^T\bA\bx
+    &= \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix}^T
+       \begin{pmatrix} \alpha & \br^T \\ \br & \bB \end{pmatrix}
+       \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix} \\
+    &= \alpha\left(\frac{\boldsymbol{\ell}^T\by}{\ell_{11}}\right)^2 - 2\frac{(\boldsymbol{\ell}^T\by)(\br^T\by)}{\ell_{11}} + \by^T\bB\by \\
+    &= (\boldsymbol{\ell}^T\by)^2 - 2(\boldsymbol{\ell}^T\by)^2 + \by^T\bB\by \\
+    &= \by^T(\bB - \boldsymbol{\ell}\boldsymbol{\ell}^T)\by = \by^T\bS\by.
+\end{align}
+$$
+Since $\by \neq \bzero$, the vector $\bx$ is nonzero, so $\by^T\bS\by = \bx^T\bA\bx > 0$. Hence $\bS$ is SPD. By induction, $\bS = \bK\bK^T$ for a unique lower triangular $\bK$ with positive diagonal entries. Block multiplication gives
+$$
+\begin{align}
+\bA = \begin{pmatrix} \ell_{11} & \bzero^T \\ \boldsymbol{\ell} & \bK \end{pmatrix}
+          \begin{pmatrix} \ell_{11} & \boldsymbol{\ell}^T \\ \bzero & \bK^T \end{pmatrix}
+        = \begin{pmatrix} \ell_{11}^2 & \ell_{11}\boldsymbol{\ell}^T \\ \ell_{11}\boldsymbol{\ell} & \boldsymbol{\ell}\boldsymbol{\ell}^T + \bK\bK^T \end{pmatrix}
+        = \begin{pmatrix} \alpha & \br^T \\ \br & \bB \end{pmatrix}.
+\end{align}
+$$
+The positivity of the diagonal requires $\ell_{11} = \sqrt{\alpha}$, which uniquely fixes $\boldsymbol{\ell} = \br / \ell_{11}$, and uniqueness of $\bK$ makes the entire factor $\bL$ unique.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Equivalent Characterizations of Positive Definiteness
+For a real symmetric matrix $\bA$, the following statements are equivalent.
+
+1. $\bx^T\bA\bx>0$ for every nonzero $\bx$.
+
+1. $\bA=\bL\bL^T$ for a lower triangular $\bL$ with positive diagonal.
+
+1. $\bA=\bW^T\bW$ for a nonsingular matrix $\bW$.
+
+1. Every leading principal minor is positive.
+
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The implication from (1) to (2) is the referenced result. Statement (2) implies (3) by taking $\bW=\bL^T$. If (3) holds, then
+$$
+\begin{align}
+\bx^T\bA\bx=\|\bW\bx\|_2^2>0
+\end{align}
+$$
+for every nonzero $\bx$, so (3) implies (1).
+
+If (2) holds, the leading $k$ by $k$ block satisfies $\bA_k=\bL_k\bL_k^T$. Hence
+$$
+\begin{align}
+\det(\bA_k)=\det(\bL_k)^2
+    =\prod_{j=1}^k\ell_{jj}^2>0,
+\end{align}
+$$
+which proves (4). Conversely, suppose every leading principal minor is positive. Apply the Cholesky formulas in order. At step $k$, the next squared pivot $v_k$ satisfies
+$$
+\begin{align}
+\det(\bA_k)=\left(\prod_{j=1}^{k-1}\ell_{jj}^2\right)v_k.
+\end{align}
+$$
+The determinant on the left and the preceding factors are positive, so $v_k>0$. Thus every square root exists and the algorithm produces (2).
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+After the spectral theorem is available, one more characterization follows directly. A real symmetric matrix is SPD exactly when all its eigenvalues are positive. The Cholesky argument does not need this fact, so we postpone it and keep the present argument self-contained.
+:::
+
+
+## The Cholesky Algorithm
+
+
+::: {.callout-note icon=false}
+## Theorem: The Cholesky Algorithm
+The entries of the factor in $\bA=\bL\bL^T$ are computed column by column:
+$$
+\begin{align}
+\ell_{jj}
+    &=\sqrt{a_{jj}-\sum_{k=1}^{j-1}\ell_{jk}^2},\\
+    \ell_{ij}
+    &=\frac{a_{ij}-\sum_{k=1}^{j-1}\ell_{ik}\ell_{jk}}{\ell_{jj}},
+    \qquad i=j+1,...,n.
+\end{align}
+$$
+For an SPD matrix every expression under a square root is positive. A nonpositive pivot signals that the input is not positive definite, apart from the effects of rounding.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+For $i\geq j$, equating entry $(i,j)$ in $\bA$ and $\bL\bL^T$ gives
+$$
+\begin{align}
+a_{ij}=\sum_{k=1}^{j}\ell_{ik}\ell_{jk}.
+\end{align}
+$$
+When $i=j$, solve this identity for the positive diagonal entry. When $i>j$, solve it for $\ell_{ij}$. The order of computation ensures that all earlier terms are already known.
+:::
+
+
+::: {.callout-note icon=false}
+## Example
+For
+$$
+\begin{align}
+\bA=\begin{pmatrix}4&2&-2\\2&10&2\\-2&2&6\end{pmatrix},
+\end{align}
+$$
+the algorithm gives
+$$
+\begin{align}
+\ell_{11}=2,&\quad \ell_{21}=1,\quad \ell_{31}=-1,\\
+    \ell_{22}=3,&\quad \ell_{32}=1,\quad \ell_{33}=2.
+\end{align}
+$$
+Thus
+$$
+\begin{align}
+\bL=\begin{pmatrix}2&0&0\\1&3&0\\-1&1&2\end{pmatrix},
+    \qquad \bL\bL^T=\bA.
+\end{align}
+$$
+To solve $\bA\bx=\bb$, first solve $\bL\by=\bb$ and then $\bL^T\bx=\by$.
+:::
+## Cost and Stability
+
+
+::: {.callout-note icon=false}
+## Theorem: Flop Count and Storage
+Dense Cholesky factorization requires $n^3/3+O(n^2)$ floating-point operations. Only one triangular half of the matrix and factor need be stored. The two triangular solves for one right-hand side require $2n^2+O(n)$ further operations.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Column $j$ updates $n-j+1$ entries using inner products of length about $j$. Summing these costs gives
+$$
+\begin{align}
+\sum_{j=1}^n 2(n-j)j=\frac{n^3}{3}+O(n^2).
+\end{align}
+$$
+The leading cost is half that of dense LU factorization.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+Cholesky needs no pivoting for an SPD matrix. Moreover, the identity
+$$
+\begin{align}
+a_{ii}=\sum_{k=1}^i\ell_{ik}^2
+\end{align}
+$$
+implies $|\ell_{ik}|\leq\sqrt{a_{ii}}$, so the factor cannot exhibit the element growth possible in general elimination. In standard floating-point arithmetic, and absent overflow or underflow, the computed factor is the exact Cholesky factor of a nearby symmetric matrix. This is the appropriate backward-stability statement. It does not say that an ill-conditioned system has an accurate forward solution.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+Once singular values are available, the referenced result gives
+$$
+\begin{align}
+\kappa_2(\bA)=\frac{\lambda_{\max}(\bA)}{\lambda_{\min}(\bA)},
+    \qquad
+    \kappa_2(\bL)=\sqrt{\kappa_2(\bA)}.
+\end{align}
+$$
+These are spectral interpretations of structure already visible in the energy and the factorization.
+:::
+
+
+## Sparse Cholesky and the Elimination Graph
+
+
+For a sparse SPD matrix, the Cholesky factor can have many more nonzero entries than the matrix itself. These new entries are called **fill**. Fill determines the memory and the arithmetic of a sparse factorization, and it depends strongly on the order in which the unknowns are eliminated. A graph associated with the matrix predicts the fill before any arithmetic is done.
+
+
+::: {.callout-note icon=false}
+## Definition: Graph of a Symmetric Matrix
+The graph of a symmetric matrix $\bA\in\fR^{n\times n}$ has vertices $1,...,n$ and an edge $\{i,j\}$ for each pair $i\neq j$ with $a_{ij}\neq0$. The neighbors of a vertex $v$ are the vertices joined to $v$ by an edge, and the degree of $v$ is the number of its neighbors.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Elimination as a Graph Operation
+Let $\bA$ be SPD with graph $G$, and partition $\bA$ as in the proof of the referenced result, with first column $(\alpha,\br^T)^T$ and trailing block $\bB$. The first column of $\bL$ is nonzero exactly in the rows of the neighbors of vertex $1$. Apart from exact numerical cancellation, the graph of the Schur complement $\bS=\bB-\br\br^T/\alpha$ is obtained from $G$ by deleting vertex $1$ and joining every pair of its neighbors by an edge.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The first column of $\bL$ is $(\sqrt{\alpha},\br^T/\sqrt{\alpha})^T$, and $r_i\neq0$ exactly when $i$ is a neighbor of vertex $1$. The entries of the Schur complement are $s_{ij}=b_{ij}-r_ir_j/\alpha$. The correction $r_ir_j/\alpha$ is nonzero exactly when both $i$ and $j$ are neighbors of vertex $1$. For such a pair, $s_{ij}$ is nonzero unless $b_{ij}$ happens to equal $r_ir_j/\alpha$, and for every other pair $s_{ij}=b_{ij}$.
+:::
+
+
+Applying the referenced result repeatedly describes the whole factorization. Eliminating a vertex turns its remaining neighbors into a clique, and the nonzero pattern of column $k$ of $\bL$ is the set of neighbors of vertex $k$ at the moment it is eliminated. Reordering the unknowns by a permutation $\bP$ and factoring $\bP\bA\bP^T$ changes the elimination order and therefore the fill, without changing the solution.
+
+
+::: {.callout-note icon=false}
+## Example
+**(An arrow matrix)**
+Let $\bA$ be SPD with nonzero entries only on the diagonal and in the first row and column. Its graph is a star with center $1$. If the center is eliminated first, its $n-1$ neighbors become a clique, the Schur complement is full, and $\bL$ has about $n^2/2$ nonzero entries. If the center is eliminated last, every leaf has the center as its only neighbor, no edges are added, and $\bL$ has $2n-1$ nonzero entries. The two orders give the same solution at costs of $O(n^3)$ and $O(n)$ flops.
+:::
+
+::: {.callout-tip icon=false}
+## Remark
+**(Fill-reducing orderings)**
+Finding the ordering with the least fill is NP-complete [@yannakakis1981], so practical codes use heuristics. The **minimum degree** heuristic always eliminates a vertex of smallest current degree, which bounds the fill created at each step by the square of that degree. The degrees change after every elimination, and an efficient implementation stores the vertices in a bucket queue, with one doubly linked list of vertices for each degree. Moving a vertex to a new bucket then takes constant time, and the next vertex is found by scanning upward from the lowest nonempty bucket [@davis2006]. **Nested dissection** instead removes a small set of vertices that separates the graph into two parts, orders the separator last, and recurses on the parts.
+:::
+
+
+Nested dissection determines the cost of sparse Cholesky for the Poisson problem. On an $N\times N$ grid with $n=N^2$ unknowns, the natural row-by-row order gives a factor with bandwidth $N$, so $\bL$ has about $n^{3/2}$ nonzero entries and the factorization costs about $n^2$ flops. Nested dissection with grid lines as separators reduces these to $O(n\log n)$ nonzero entries and $O(n^{3/2})$ flops [@george1973]. On an $N\times N\times N$ grid, separators are planes with $n^{2/3}$ vertices, and nested dissection leaves $O(n^{4/3})$ nonzero entries and $O(n^2)$ flops. The growth of the factor with $n$ is the reason that large three-dimensional problems are solved by the iterative methods of the referenced section.
+
+
+## Exercises
 
 
 ::: {.callout-warning icon=false}
 ## Exercise
-**(SPD Condition Number)**  $\kappa_2(\bA) = \lambda_{\max} / \lambda_{\min}$.
 
-1. If $\bA$ is SPD with eigenvalues $\{10, 0.01\}$, what is $\kappa_2(\bA)$?
-    
-1. Verify $\kappa_2(\bL) = \sqrt{\kappa_2(\bA)}$ where $\bL$ is the Cholesky factor.
+1. **Compute.**  Compute the Cholesky factor of
+        $$
+    \begin{align}
+    \bA=\begin{pmatrix}9&3&-6\\3&26&-7\\-6&-7&9\end{pmatrix}
+    \end{align}
+    $$
+        by hand, then use it to solve $\bA\bx=(6,44,2)^T$.
+
+1. **Derive.**  Prove directly from the quadratic form that every principal submatrix of an SPD matrix is SPD. Explain why the same statement for an arbitrary submatrix is meaningless.
+
+1. **Derive.**  Complete the block calculation in the proof of the referenced result: verify exactly that $\bx^T\bA\bx=\by^T\bS\by$. Then prove the converse statement that if $\alpha>0$ and $\bS$ is SPD, the block matrix $\bA$ is SPD.
+
+1. **Derive.**  Prove that the largest entry of an SPD matrix in absolute value lies on the main diagonal. Begin with a two by two principal submatrix and choose a useful vector, or use its positive determinant.
+
+1. **Derive.**  Let $\bX\in\fR^{m\times n}$ with $m\geq n$. Prove that $\bX^T\bX$ is SPD exactly when the columns of $\bX$ are linearly independent. State what remains true when they are dependent.
+
+1. **Check.**  For the arrow matrix of the example with $n=5$, draw the elimination graphs for the two orders, and count the nonzero entries of $\bL$ in each case.
+
+1. **Derive.**  Use the referenced result to prove that, apart from cancellation, $\ell_{ij}\neq0$ for $i>j$ exactly when $G$ contains a path from $i$ to $j$ whose interior vertices all precede $j$ in the elimination order.
+
+1. **Compute.**  Assemble the five-point Poisson matrix on an $N\times N$ grid for $N=20,40,80$. Factor it with a sparse direct solver using the natural order and a minimum degree order, and report the number of nonzero entries in the factors and the factorization times.
+
+1. **Explore.**  Show that $\|\bx\|_{\bA}=\|\bL^T\bx\|_2$. Use this identity to interpret the $\bA$-unit sphere as the inverse image of the Euclidean unit sphere, without mentioning eigenvalues.
 
 :::

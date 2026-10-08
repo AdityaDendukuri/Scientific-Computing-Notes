@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Vectors and Matrices – Scientific Computing</title>
+<title>2&nbsp; Vectors, Coordinates, and Linear Maps – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,33 +676,54 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#span-independence-and-basis" id="toc-span-independence-and-basis" class="nav-link active" data-scroll-target="#span-independence-and-basis"><span class="header-section-number">2.1</span> Span, Independence, and Basis</a></li>
+  <li><a href="#matrices-as-linear-maps" id="toc-matrices-as-linear-maps" class="nav-link" data-scroll-target="#matrices-as-linear-maps"><span class="header-section-number">2.2</span> Matrices as Linear Maps</a></li>
+  <li><a href="#transpose-and-symmetry" id="toc-transpose-and-symmetry" class="nav-link" data-scroll-target="#transpose-and-symmetry"><span class="header-section-number">2.3</span> Transpose and Symmetry</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">2.4</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/vectors-matrices.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/vectors-matrices.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></h1>
 </div>
 
 
@@ -692,8 +740,8 @@ window.Quarto = {
 </header>
 
 
-<p>Vectors and matrices serve as the primary data structures for representing numerical data and linear operators. Before introducing these formally, we fix notation for the standard number systems that provide the raw material for all numerical computation.</p>
-<p><strong>(Standard Number Systems)</strong> Throughout these notes, <span class="math inline">\(\fR\)</span> denotes the set of all real numbers, <span class="math inline">\(\fZ\)</span> the set of all integers, and <span class="math inline">\(\fC\)</span> the set of all complex numbers. Our primary focus is real-valued computation; complex numbers arise naturally in eigenvalue analysis and signal processing.</p>
+<p>Scientific computing begins with representation. A physical state, a polynomial, a sampled signal, and an image are different objects, yet each can be represented by a finite list of numbers. The list is useful only after we say what its entries mean. That distinction between an object and its coordinates will matter throughout these notes.</p>
+<p>Throughout, <span class="math inline">\(\fR\)</span>, <span class="math inline">\(\fZ\)</span>, and <span class="math inline">\(\fC\)</span> denote the real numbers, integers, and complex numbers. Most examples use real arithmetic. Complex numbers appear naturally when we study oscillations and eigenvalues.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -704,24 +752,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>An element of a number system (<span class="math inline">\(\fR\)</span>, <span class="math inline">\(\fZ\)</span>, or <span class="math inline">\(\fC\)</span>) is called a <strong>scalar</strong>. Scalars represent individual numerical quantities and serve as the atomic building blocks from which vectors and matrices are constructed.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
-<ol type="1">
-<li><p>Classify each of the following as a real scalar, an integer, a complex (non-real) scalar, or <em>not</em> a scalar: <span class="math inline">\(\;3.14\)</span>;; <span class="math inline">\(-7\)</span>;; <span class="math inline">\(2+3i\)</span>;; <span class="math inline">\(\begin{pmatrix}1\\0\end{pmatrix}\)</span>.</p></li>
-<li><p>In Python, evaluate <code>type(3.14)</code>, <code>type(3)</code>, and <code>type(3+2j)</code>. Which NumPy <code>dtype</code> would you use to store each?</p></li>
-</ol>
+<p>An element of the number system under discussion is a <strong>scalar</strong>. In these notes that number system is usually <span class="math inline">\(\fR\)</span> and occasionally <span class="math inline">\(\fC\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -730,11 +761,11 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Vectors
+<span class="screen-reader-only">Note</span>Definition: Vector
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A <strong>vector</strong> is a one-dimensional ordered array of scalars. Vectors can represent points, directions, or more abstract quantities within a vector space, and are fundamental in encoding data and linear relationships.</p>
+<p>A <strong>vector</strong> is an object that can be added to another vector and multiplied by a scalar, with the usual arithmetic laws. Once a basis has been chosen, a vector in an <span class="math inline">\(n\)</span>-dimensional space is represented by a column of <span class="math inline">\(n\)</span> coordinates.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -747,45 +778,9 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Vectors may be written as row vectors or column vectors. Although both forms carry the same information, the distinction matters when applying linear transformations and computing inner products. <strong>In these notes, we assume vectors are column vectors by default.</strong></p>
+<p>A column of numbers is therefore a representation, not the whole meaning of a vector. The coordinates <span class="math inline">\((3,2)^T\)</span> might describe a point, a velocity, the coefficients of <span class="math inline">\(3+2t\)</span>, or two temperature readings. Computation manipulates the coordinates, while interpretation tells us what vector they represent.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><span class="math display">\[
-\begin{pmatrix} 1 &amp; 2 &amp; 3 \end{pmatrix}, \quad
-\begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}, \quad
-\begin{pmatrix} 1+2i \\ 7i \\ 3 \end{pmatrix}, ...
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
-<ol type="1">
-<li><p>Write a column vector <span class="math inline">\(\bx \in \fR^4\)</span> whose <span class="math inline">\(i\)</span>-th entry equals <span class="math inline">\(2^i\)</span> for <span class="math inline">\(i = 1, 2, 3, 4\)</span>.</p></li>
-<li><p>In NumPy, construct this vector with <code>np.array([...])</code> and confirm <code>x.shape == (4,)</code>. This is known as a <em>rank-1 array</em>; it is neither a row nor a column vector, and its broadcasting behavior differs from 2D arrays.</p></li>
-<li><p>Can a vector in <span class="math inline">\(\fR^3\)</span> be added to a vector in <span class="math inline">\(\fR^4\)</span>? Justify in one sentence.</p></li>
-</ol>
-</div>
-</div>
-<p>Just as scalars belong to number systems like <span class="math inline">\(\fR\)</span> or <span class="math inline">\(\fC\)</span>, vectors inhabit <strong>vector spaces</strong>. While these notes treat vector spaces informally, subsequent chapters provide more rigorous definitions and properties.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -796,14 +791,11 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The set of all real vectors of size <span class="math inline">\(n\)</span>. When we write <span class="math inline">\(\bx \in \fR^n\)</span>, it means <span class="math inline">\(\bx\)</span> has <span class="math inline">\(n\)</span> real entries. Vectors in <span class="math inline">\(\fR^n\)</span> take one of the following forms: <span class="math display">\[
+<p>The vector space <span class="math inline">\(\fR^n\)</span> consists of all ordered <span class="math inline">\(n\)</span>-tuples of real numbers. We write vectors as columns unless stated otherwise: <span class="math display">\[
 \begin{align}
-\bx \in \fR^{n \times 1} &amp;= \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix}
-\quad \text{(column vector, default convention)}\\[1mm]
-\bx \in \fR^{1 \times n} &amp;= \begin{pmatrix} x_1 &amp; x_2 &amp; \cdots &amp; x_n \end{pmatrix}
-\quad \text{(row vector)}
+\bx=\begin{pmatrix}x_1\\ \vdots\\ x_n\end{pmatrix}\in\fR^n.
 \end{align}
-\]</span></p>
+\]</span> Vectors are added entry by entry and multiplied by scalars entry by entry. The zero vector is denoted by <span class="math inline">\(\bzero\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -816,45 +808,26 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>These notes focus on finite-dimensional spaces. Infinite-dimensional vector spaces, central to functional analysis, arise in differential equations and quantum mechanics but are beyond our scope here.</p>
+<p>NumPy normally stores a vector as an array of shape <code>(n,)</code>, which is neither a row nor a column. A shape <code>(n,1)</code> array is a genuine two-dimensional column. This implementation detail affects transposes and broadcasting, so shapes should be checked rather than guessed.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
-<ol type="1">
-<li><p>Let <span class="math inline">\(\bx = (1, -2, 3)^T \in \fR^3\)</span>. Identify the value of entry <span class="math inline">\(x_2\)</span>. What is the dimension of <span class="math inline">\(\fR^3\)</span>?</p></li>
-<li><p>In NumPy, create a column vector (shape <code>(3,1)</code>) from the list <code>[1, -2, 3]</code> in two ways: using <code>np.reshape</code> and using <code>[:, np.newaxis]</code>.</p></li>
-<li><p>What does <code>x.T</code> return when <code>x.shape == (3,)</code>? How does the result differ when <code>x.shape == (3,1)</code>?</p></li>
-</ol>
-</div>
-</div>
+<section id="span-independence-and-basis" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="span-independence-and-basis"><span class="header-section-number">2.1</span> Span, Independence, and Basis</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Matrices
+<span class="screen-reader-only">Note</span>Definition: Linear Combination, Span, and Subspace
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A <strong>matrix</strong> is a two-dimensional array of scalars. A matrix <span class="math inline">\(\bA \in \fR^{m \times n}\)</span> is written as <span class="math display">\[
-\bA = \begin{pmatrix}
-a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1n} \\
-a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2n} \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
-\end{pmatrix}.
-\]</span> Matrices are used to represent linear transformations, systems of linear equations, and more complex data structures.</p>
+<p>Given vectors <span class="math inline">\(\bv_1,...,\bv_k\)</span>, a <strong>linear combination</strong> is any vector of the form <span class="math display">\[
+\begin{align}
+c_1\bv_1+\cdots+c_k\bv_k.
+\end{align}
+\]</span> Their <strong>span</strong> is the set of all such combinations. A nonempty set <span class="math inline">\(S\subseteq\fR^n\)</span> is a <strong>subspace</strong> if every linear combination of vectors in <span class="math inline">\(S\)</span> remains in <span class="math inline">\(S\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -867,17 +840,42 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Two-dimensional matrices include: <span class="math display">\[
-\begin{pmatrix}
-1 &amp; 2 &amp; 3 \\[1mm]
-4 &amp; 5 &amp; 6
-\end{pmatrix} \in \fR^{2 \times 3}, \quad
-\begin{pmatrix}
-1 &amp; 2 \\[1mm]
-4 &amp; 5 \\[1mm]
-6 &amp; 7
-\end{pmatrix} \in \fR^{3 \times 2}.
-\]</span></p>
+<p>The vectors <span class="math inline">\((1,0,0)^T\)</span> and <span class="math inline">\((0,1,0)^T\)</span> span the coordinate plane in <span class="math inline">\(\fR^3\)</span> on which the third coordinate is zero. A plane not passing through the origin is not a subspace: it does not contain <span class="math inline">\(\bzero\)</span> and is not closed under scalar multiplication.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Linear Independence and Basis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Vectors <span class="math inline">\(\bv_1,...,\bv_k\)</span> are <strong>linearly independent</strong> if <span class="math display">\[
+\begin{align}
+c_1\bv_1+\cdots+c_k\bv_k=\bzero
+\end{align}
+\]</span> forces every coefficient <span class="math inline">\(c_i\)</span> to be zero. A <strong>basis</strong> of a vector space is a linearly independent spanning set.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Exchange, Extension, and Dimension
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(V\)</span> be spanned by <span class="math inline">\(m\)</span> vectors.</p>
+<ol type="1">
+<li><p>Every linearly independent list in <span class="math inline">\(V\)</span> contains at most <span class="math inline">\(m\)</span> vectors.</p></li>
+<li><p>Any linearly independent list can be extended to a basis by adding vectors from a spanning list.</p></li>
+<li><p>Any two bases of <span class="math inline">\(V\)</span> contain the same number of vectors. This common number is the <strong>dimension</strong> of <span class="math inline">\(V\)</span>.</p></li>
+</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -890,29 +888,194 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Structural Intuition: Matrix Columns)</strong> Matrices can be interpreted as vectors whose entries are themselves vectors: <span class="math display">\[
-\bA = \printmatrow{r} = \printmatcol{c},
-\]</span> where <span class="math inline">\(r_i = \bA[i,:]\)</span> is the <span class="math inline">\(i\)</span>-th row and <span class="math inline">\(c_i = \bA[:,i]\)</span> is the <span class="math inline">\(i\)</span>-th column. This viewpoint is vital: the product <span class="math inline">\(\bA\bx\)</span> is simply a <strong>linear combination of the columns of <span class="math inline">\(\bA\)</span></strong> weighted by the entries of <span class="math inline">\(\bx\)</span>.</p>
+<p>The proof is assigned below because the replacement argument is worth doing rather than merely reading. This theorem justifies phrases used later such as ``extend a basis of the null space to a basis of the domain.’’</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Note</span>Theorem: A Basis Gives Unique Coordinates
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
-<ol type="1">
-<li><p>State the dimensions <span class="math inline">\((m, n)\)</span> of <span class="math inline">\(\bA = \begin{pmatrix}1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6\end{pmatrix}\)</span>. What is the shape of its second column as a vector?</p></li>
-<li><p>In NumPy (0-based indexing), write the expression to access entry <span class="math inline">\(a_{12}\)</span> (first row, second column in 1-based notation). Then extract the second column of <span class="math inline">\(\bA\)</span> and verify its shape is <code>(2,)</code>.</p></li>
-<li><p>True or False: a vector in <span class="math inline">\(\fR^n\)</span> is a special case of a matrix in <span class="math inline">\(\fR^{n \times 1}\)</span>. How does NumPy handle this distinction in practice?</p></li>
-</ol>
+<p>Let <span class="math inline">\(\bv_1,...,\bv_n\)</span> be a basis of a vector space <span class="math inline">\(V\)</span>. Every <span class="math inline">\(\bx\in V\)</span> has exactly one representation <span class="math display">\[
+\begin{align}
+\bx=x_1\bv_1+\cdots+x_n\bv_n.
+\end{align}
+\]</span> The scalars <span class="math inline">\(x_1,...,x_n\)</span> are the coordinates of <span class="math inline">\(\bx\)</span> in this basis.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because the basis spans <span class="math inline">\(V\)</span>, at least one representation exists. Suppose <span class="math inline">\(\bx\)</span> admits two representations: <span class="math display">\[
+\begin{align}
+\bx=\sum_{i=1}^n x_i\bv_i=\sum_{i=1}^n y_i\bv_i.
+\end{align}
+\]</span> Subtracting the second sum from the first gives <span class="math display">\[
+\begin{align}
+\bzero = \sum_{i=1}^n x_i\bv_i - \sum_{i=1}^n y_i\bv_i = \sum_{i=1}^n (x_i-y_i)\bv_i.
+\end{align}
+\]</span> By linear independence of the basis vectors <span class="math inline">\(\bv_1,...,\bv_n\)</span>, every coefficient in this linear combination must vanish: <span class="math display">\[
+\begin{align}
+x_i - y_i = 0 \quad \Longrightarrow \quad x_i = y_i, \qquad i = 1,...,n.
+\end{align}
+\]</span> The coordinates are therefore unique.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Coordinates change when the basis changes, but the vector does not. For example, the polynomial <span class="math inline">\(p(t)=3+2t\)</span> has coordinates <span class="math inline">\((3,2)^T\)</span> in the basis <span class="math inline">\(1,t\)</span> and coordinates <span class="math inline">\((5,2)^T\)</span> in the basis <span class="math inline">\(1,t-1\)</span>. Confusing a vector with one coordinate list is a common source of conceptual errors in change-of-basis and eigenvalue arguments.</p>
+</div>
+</div>
+</section>
+<section id="matrices-as-linear-maps" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="matrices-as-linear-maps"><span class="header-section-number">2.2</span> Matrices as Linear Maps</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Linear Map
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A map <span class="math inline">\(T:V\to W\)</span> is <strong>linear</strong> if, for all vectors <span class="math inline">\(\bx,\by\in V\)</span> and scalars <span class="math inline">\(\alpha,\beta\)</span>, <span class="math display">\[
+\begin{align}
+T(\alpha\bx+\beta\by)=\alpha T(\bx)+\beta T(\by).
+\end{align}
+\]</span> Linearity says that the response to a combination of inputs is the same combination of the individual responses.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <strong>matrix</strong> <span class="math inline">\(\bA\in\fR^{m\times n}\)</span> is a rectangular array of scalars with <span class="math inline">\(m\)</span> rows and <span class="math inline">\(n\)</span> columns. It represents a linear map from <span class="math inline">\(\fR^n\)</span> to <span class="math inline">\(\fR^m\)</span> once bases have been selected in the domain and range.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Columns Determine the Map
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\be_1,...,\be_n\)</span> be the standard basis of <span class="math inline">\(\fR^n\)</span>, and let <span class="math inline">\(T:\fR^n\to\fR^m\)</span> be linear. If the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(\bA\)</span> is <span class="math inline">\(\ba_j=T(\be_j)\)</span>, then <span class="math display">\[
+\begin{align}
+T(\bx)=\bA\bx=\sum_{j=1}^n x_j\ba_j.
+\end{align}
+\]</span> Thus a linear map is completely determined by what it does to a basis.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Every vector has the standard-coordinate expansion <span class="math inline">\(\bx=\sum_{j=1}^n x_j\be_j\)</span>. Linearity gives <span class="math display">\[
+\begin{align}
+T(\bx)=T\left(\sum_{j=1}^n x_j\be_j\right)
+    =\sum_{j=1}^n x_jT(\be_j)
+    =\sum_{j=1}^n x_j\ba_j,
+\end{align}
+\]</span> which is precisely the definition of the matrix-vector product <span class="math inline">\(\bA\bx\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This column view is more informative than memorizing the row-by-column rule. The set of all possible outputs <span class="math inline">\(\bA\bx\)</span> is the span of the columns. A zero output means that one linear combination of the columns vanishes. Existence and uniqueness for linear systems will grow directly from these two observations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}1&amp;2\\3&amp;-1\end{pmatrix},
+    \qquad
+    \bx=\begin{pmatrix}4\\5\end{pmatrix},
+\end{align}
+\]</span> the product is best read as <span class="math display">\[
+\begin{align}
+\bA\bx
+    =4\begin{pmatrix}1\\3\end{pmatrix}
+     +5\begin{pmatrix}2\\-1\end{pmatrix}
+    =\begin{pmatrix}14\\7\end{pmatrix}.
+\end{align}
+\]</span> The same calculation can be read row by row: each output coordinate is a weighted sum of the input coordinates.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Matrix multiplication represents composition. If <span class="math inline">\(\bB\)</span> maps input coordinates to intermediate coordinates and <span class="math inline">\(\bA\)</span> maps the intermediate coordinates to outputs, then <span class="math inline">\(\bA\bB\)</span> represents ``first <span class="math inline">\(\bB\)</span>, then <span class="math inline">\(\bA\)</span>.’’ The order matters because composition usually does not commute.</p>
+</div>
+</div>
+</section>
+<section id="transpose-and-symmetry" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="transpose-and-symmetry"><span class="header-section-number">2.3</span> Transpose and Symmetry</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -923,11 +1086,11 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <strong>transpose</strong> of <span class="math inline">\(\bA \in \fR^{m \times n}\)</span>, denoted <span class="math inline">\(\bA^T\)</span>, is the <span class="math inline">\(n \times m\)</span> matrix obtained by interchanging rows and columns: <span class="math display">\[
+<p>The <strong>transpose</strong> of <span class="math inline">\(\bA\in\fR^{m\times n}\)</span> is the matrix <span class="math inline">\(\bA^T\in\fR^{n\times m}\)</span> defined by <span class="math display">\[
 \begin{align}
-(\bA^T)_{ij} = a_{ji}, \quad 1 \le i \le n,\ 1 \le j \le m.
+(\bA^T)_{ij}=a_{ji}.
 \end{align}
-\]</span> For a column vector <span class="math inline">\(\bx \in \fR^n\)</span>, the transpose <span class="math inline">\(\bx^T\)</span> is its corresponding row vector and vice versa.</p>
+\]</span> It turns columns into rows and rows into columns.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -940,11 +1103,7 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A square matrix <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> is:</p>
-<ul>
-<li><p><strong>symmetric</strong> if <span class="math inline">\(\bA^T = \bA\)</span>, equivalently <span class="math inline">\(a_{ij} = a_{ji}\)</span> for all <span class="math inline">\(i,j\)</span>.</p></li>
-<li><p><strong>skew-symmetric</strong> if <span class="math inline">\(\bA^T = -\bA\)</span>, equivalently <span class="math inline">\(a_{ij} = -a_{ji}\)</span> for all <span class="math inline">\(i,j\)</span>.</p></li>
-</ul>
+<p>A square matrix <span class="math inline">\(\bA\)</span> is <strong>symmetric</strong> if <span class="math inline">\(\bA^T=\bA\)</span> and <strong>skew-symmetric</strong> if <span class="math inline">\(\bA^T=-\bA\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -957,12 +1116,11 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Every square matrix <span class="math inline">\(\bA\)</span> decomposes uniquely into a symmetric part and a skew-symmetric part: <span class="math display">\[
+<p>Every square matrix splits uniquely into symmetric and skew-symmetric parts: <span class="math display">\[
 \begin{align}
-\bA = \underbrace{\tfrac{1}{2}(\bA + \bA^T)}_{\text{symmetric}} +
-          \underbrace{\tfrac{1}{2}(\bA - \bA^T)}_{\text{skew-symmetric}}.
+\bA=\frac{\bA+\bA^T}{2}+\frac{\bA-\bA^T}{2}.
 \end{align}
-\]</span> Symmetric matrices arise constantly in scientific computing: covariance matrices in statistics, graph Laplacians in network problems, and Hessians of quadratic objectives in optimization are all symmetric.</p>
+\]</span> Symmetric matrices will be especially important because they possess real eigenvalues and orthogonal eigenvectors.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -975,17 +1133,18 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\bA \in \fR^{m \times n}\)</span>, <span class="math inline">\(\bB \in \fR^{n \times p}\)</span>, and <span class="math inline">\(\alpha \in \fR\)</span>. Then:</p>
-<ol type="1">
-<li><p><span class="math inline">\((\bA^T)^T = \bA\)</span></p></li>
-<li><p><span class="math inline">\((\bA + \bB)^T = \bA^T + \bB^T\)</span> (for conformable <span class="math inline">\(\bA, \bB\)</span>)</p></li>
-<li><p><span class="math inline">\((\alpha\bA)^T = \alpha\bA^T\)</span></p></li>
-<li><p><span class="math inline">\((\bA\bB)^T = \bB^T\bA^T\)</span> *(Reversal Law)**</p></li>
-</ol>
+<p>For conformable matrices and any scalar <span class="math inline">\(\alpha\)</span>, <span class="math display">\[
+\begin{align}
+(\bA^T)^T&amp;=\bA,&amp;
+    (\bA+\bB)^T&amp;=\bA^T+\bB^T,\\
+    (\alpha\bA)^T&amp;=\alpha\bA^T,&amp;
+    (\bA\bB)^T&amp;=\bB^T\bA^T.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -994,26 +1153,17 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Properties (1)–(3) follow directly from the entry-wise definition <span class="math inline">\((\bA^T)_{ij} = a_{ji}\)</span>. For (2): <span class="math display">\[
+<p>The first three identities follow entry by entry. For the product, <span class="math display">\[
 \begin{align}
-(\bA+\bB)^T_{ij} &amp;= (\bA+\bB)_{ji} \\
-    &amp;= a_{ji} + b_{ji} \\
-    &amp;= (\bA^T)_{ij} + (\bB^T)_{ij} \\
-    &amp;= (\bA^T + \bB^T)_{ij}.
+((\bA\bB)^T)_{ij}
+    =(\bA\bB)_{ji}
+    =\sum_k a_{jk}b_{ki}
+    =\sum_k(\bB^T)_{ik}(\bA^T)_{kj}
+    =(\bB^T\bA^T)_{ij}.
 \end{align}
 \]</span></p>
-<p>For (4), let <span class="math inline">\(\bC = \bA\bB \in \fR^{m \times p}\)</span>. By the definition of matrix product: <span class="math display">\[
-\begin{align}
-(\bC^T)_{ij} = c_{ji} = \sum_{k=1}^{n} a_{jk}\,b_{ki}.
-\end{align}
-\]</span> Expanding the <span class="math inline">\((i,j)\)</span> entry of <span class="math inline">\(\bB^T\bA^T\)</span> using <span class="math inline">\((\bB^T)_{ik} = b_{ki}\)</span> and <span class="math inline">\((\bA^T)_{kj} = a_{jk}\)</span>: <span class="math display">\[
-\begin{align}
-(\bB^T\bA^T)_{ij} &amp;= \sum_{k=1}^{n} (\bB^T)_{ik}\,(\bA^T)_{kj} \\
-    &amp;= \sum_{k=1}^{n} b_{ki}\,a_{jk}.
-\end{align}
-\]</span> Both summations are identical, so <span class="math inline">\((\bA\bB)^T = \bB^T\bA^T\)</span>.</p>
 </div>
 </div>
 </div>
@@ -1027,30 +1177,11 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>By induction on the result above(4): <span class="math display">\[
+<p>Repeated use of the product rule gives <span class="math display">\[
 \begin{align}
-(\bA_1 \bA_2 \cdots \bA_k)^T = \bA_k^T \cdots \bA_2^T \bA_1^T.
+(\bA_1\bA_2\cdots\bA_k)^T=\bA_k^T\cdots\bA_2^T\bA_1^T.
 \end{align}
 \]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Refer to the result above and the result above. Let <span class="math inline">\(\bA = \begin{pmatrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \end{pmatrix}\)</span>.</p>
-<ol type="1">
-<li><p>State the dimensions of <span class="math inline">\(\bA\)</span>, <span class="math inline">\(\bA^T\)</span>, <span class="math inline">\(\bA\bA^T\)</span>, and <span class="math inline">\(\bA^T\bA\)</span>.</p></li>
-<li><p>Compute <span class="math inline">\(\bA^T\)</span> explicitly. Then compute <span class="math inline">\(\bA\bA^T\)</span> and verify it is symmetric using the result above.</p></li>
-<li><p>In NumPy (0-based indexing), write the expression to retrieve element <span class="math inline">\(a_{12}\)</span> (first row, second column in 1-based notation). Then write a one-liner for <span class="math inline">\(\bA\bA^T\)</span>.</p></li>
-<li><p>Is <span class="math inline">\(\bA\bA^T = \bA^T\bA\)</span> in general? What can you say about each product individually?</p></li>
-</ol>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1059,13 +1190,20 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Corollary: Outer Product is Symmetric of Rank 1
+<span class="screen-reader-only">Note</span>Corollary: Outer Product is Symmetric of Rank One
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For any nonzero <span class="math inline">\(\bx \in \fR^n\)</span>, the outer product <span class="math inline">\(\bx\bx^T \in \fR^{n \times n}\)</span> is symmetric and has rank 1. The inner product <span class="math inline">\(\bx^T\bx \in \fR\)</span> satisfies <span class="math inline">\(\bx^T\bx \ge 0\)</span> with equality iff <span class="math inline">\(\bx = \bzero\)</span>.</p>
+<p>For every nonzero <span class="math inline">\(\bx\in\fR^n\)</span>, the outer product <span class="math inline">\(\bx\bx^T\)</span> is symmetric and has rank one. Moreover, <span class="math display">\[
+\begin{align}
+\bx^T\bx=\sum_{i=1}^n x_i^2&gt;0.
+\end{align}
+\]</span></p>
 </div>
 </div>
+</section>
+<section id="exercises" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.4</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1076,18 +1214,20 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In this exercise, we will prove the result above. Refer to the result above and the result above.</p>
-<p>Let <span class="math inline">\(\bx = (x_1, ..., x_n)^T \in \fR^n\)</span> be a nonzero column vector.</p>
 <ol type="1">
-<li><p>The <strong>outer product</strong> is <span class="math inline">\(\bx\bx^T \in \fR^{n \times n}\)</span>. Write out entry <span class="math inline">\((i,j)\)</span> explicitly.</p></li>
-<li><p>Use the Reversal Law (the result above(4)) to show <span class="math inline">\(\bx\bx^T\)</span> is symmetric.</p></li>
-<li><p>Show that <span class="math inline">\(\bx\bx^T\)</span> has rank 1 by arguing about the column space. (<em>Hint: every column of <span class="math inline">\(\bx\bx^T\)</span> is a scalar multiple of <span class="math inline">\(\bx\)</span>.</em>)</p></li>
-<li><p>Express <span class="math inline">\(\bx^T\bx\)</span> as a sum of squares. Conclude <span class="math inline">\(\bx^T\bx \ge 0\)</span> with equality iff <span class="math inline">\(\bx = \bzero\)</span>, and identify the geometric quantity <span class="math inline">\(\sqrt{\bx^T\bx}\)</span>.</p></li>
+<li><p><strong>Check.</strong> Decide which of the following subsets of <span class="math inline">\(\fR^3\)</span> are subspaces: the plane <span class="math inline">\(x_1+x_2=0\)</span>, the plane <span class="math inline">\(x_1+x_2=1\)</span>, the set of vectors with at least one zero entry, and the span of <span class="math inline">\((1,1,0)^T\)</span> and <span class="math inline">\((0,1,1)^T\)</span>. For every negative answer, identify a subspace axiom that fails.</p></li>
+<li><p><strong>Derive.</strong> Prove that a list containing the zero vector is dependent. Prove that two nonzero vectors are dependent exactly when one is a scalar multiple of the other. Then explain why three vectors in <span class="math inline">\(\fR^2\)</span> cannot be independent.</p></li>
+<li><p><strong>Derive.</strong> Prove Thm.~above. Begin with a spanning list <span class="math inline">\(\bw_1,...,\bw_m\)</span> and a nonzero vector <span class="math inline">\(\bv_1\)</span>. Express <span class="math inline">\(\bv_1\)</span> in the spanning list and replace one <span class="math inline">\(\bw_j\)</span> having a nonzero coefficient by <span class="math inline">\(\bv_1\)</span>. Show that the new list still spans. Repeat with <span class="math inline">\(\bv_2,...,\bv_k\)</span>, using independence to show that a replaceable old vector always remains. Apply the result in both directions to two bases.</p></li>
+<li><p><strong>Explore.</strong> Let <span class="math inline">\(p(t)=a+bt+ct^2\)</span>. Find its coordinates in the bases <span class="math inline">\(1,t,t^2\)</span> and <span class="math inline">\(1,t-1,(t-1)^2\)</span>. Construct the matrix that converts the second coordinate vector into the first, and interpret each column.</p></li>
+<li><p><strong>Derive.</strong> Suppose <span class="math inline">\(T:\fR^n\to\fR^m\)</span> is linear and <span class="math inline">\(T(\be_j)=\bzero\)</span> for every standard basis vector. Prove that <span class="math inline">\(T\)</span> is the zero map. Why is checking only one non-basis collection insufficient?</p></li>
+<li><p><strong>Compute.</strong> Write a matrix as both a collection of columns and a collection of rows. Use the two views to explain, without entrywise multiplication, what <span class="math inline">\(\bA\bx\)</span> and <span class="math inline">\(\by^T\bA\)</span> mean.</p></li>
+<li><p><strong>Derive.</strong> Prove Cor.~above. In particular, show that every column of <span class="math inline">\(\bx\bx^T\)</span> is a multiple of <span class="math inline">\(\bx\)</span>, and identify one nonzero column.</p></li>
 </ol>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1506,17 +1646,17 @@ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../fundamentals/math-notation.html" class="pagination-link" aria-label="Mathematical Notation and Proof Techniques">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../fundamentals/arithmetic.html" class="pagination-link" aria-label="Matrix Arithmetic">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/vectors-matrices.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/vectors-matrices.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
           background:rgba(255,255,255,0.85);border:1px solid #ccc;
           border-radius:50%;width:2.4rem;height:2.4rem;
           display:flex;align-items:center;justify-content:center;

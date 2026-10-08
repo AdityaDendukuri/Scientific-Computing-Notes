@@ -17,59 +17,69 @@
 
     % Chapter 1: Fundamentals
     \section{Fundamentals}
-    \subfile{src/math_notation.tex}
     \subfile{src/vecs_and_mats.tex}
-    \subfile{src/arithmetic.tex}
     \subfile{src/norms_intro.tex}
-    \subfile{src/complexity.tex}
+    \subfile{src/norm.tex}
     \subfile{src/floating_point.tex}
-    \subfile{src/numpy_primer.tex}
+    \subfile{src/complexity.tex}
     \newpage
 
-    % Chapter 2: Direct solvers — exact solution of Ax=b
+    % Chapter 2: Direct solvers and the conditioning of Ax=b
     \section{Direct Methods for Linear Systems}
     \subfile{src/linear_systems.tex}
+    \subfile{src/stability.tex}
     \subfile{src/lu.tex}
     \subfile{src/spd.tex}
+    \subfile{src/structured_solvers.tex}
 
-    % Chapter 3: Orthogonal transforms, approximation, and the tools to measure error
+    % Chapter 3: Orthogonal transforms and approximation
     \section{Orthogonality and Least Squares}
     \subfile{src/orthogonal.tex}
-    \subfile{src/norm.tex}
-    \subfile{src/stability.tex}
     \subfile{src/least_squares.tex}
-    \subfile{src/chebyshev.tex}
 
-    % Chapter 4: Spectral structure — eigenvalues and singular values
+    % Chapter 4: Spectral structure, dense and sparse eigensolvers
     \section{Eigenvalues and the SVD}
     \subfile{src/eigen.tex}
+    \subfile{src/eigen_algorithms.tex}
     \subfile{src/svd.tex}
+    \subfile{src/arnoldi.tex}
     \subfile{src/lanczos.tex}
-    \subfile{src/jacobi_eig.tex}
 
-    % Chapter 5: Iterative solvers
-    \section{Iterative Methods for Linear Systems}
-    \subfile{src/iterative}
+    % Chapter 5: Approximation and integration
+    \section{Approximation and Integration}
+    \subfile{src/interpolation.tex}
+    \subfile{src/chebyshev.tex}
+    \subfile{src/quadrature.tex}
+    \subfile{src/fourier.tex}
+
+    % Chapter 6: Sparse systems and iterative solvers
+    \section{Sparse Systems and Iterative Methods}
+    \subfile{src/operators.tex}
+    \subfile{src/iterative.tex}
     \subfile{src/jacobi.tex}
     \subfile{src/conj_grad.tex}
     \subfile{src/gmres.tex}
+    \subfile{src/multigrid.tex}
+    \subfile{src/randomized.tex}
 
-    % Chapter 6: Numerical Analysis
-    \section{Numerical Analysis}
-    \subfile{src/interpolation.tex}
-    \subfile{src/quadrature.tex}
-    \subfile{src/root_finding.tex}
-
-    % Chapter 7: Ordinary Differential Equations
+    % Chapter 7: Ordinary differential equations
     \section{Ordinary Differential Equations}
     \subfile{src/ode_methods.tex}
 
-    % Chapter 8: Applications
-    \section{Applications}
+    % Chapter 8: Applications and research bridges
+    \section{Applications and Research Bridges}
     \subfile{src/pca.tex}
-    \subfile{src/graphs}
-    \subfile{src/operators.tex}
-    \subfile{src/fourier.tex}
+    \subfile{src/graphs.tex}
+    \subfile{src/matrix_exponential.tex}
     \subfile{src/markov.tex}
     \subfile{src/koopman.tex}
+
+    % Appendix: notation and software
+    \newpage
+    \section{Appendix: Notation and Software}
+    \subfile{src/math_notation.tex}
+    \subfile{src/numpy_primer.tex}
+
+    \newpage
+    \subfile{src/references.tex}
 \end{document}

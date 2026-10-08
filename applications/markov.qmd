@@ -1,10 +1,13 @@
-# Markov Chains and Stochastic Matrices
+# Markov Chains, Continuous Generators, and the CME
 
 
-Markov chains model random processes whose next state depends only on the current state. With the column convention used here, probability vectors are columns and the update is $\bx^{(k+1)}=\bP\bx^{(k)}$.
+**(Running example: Markov chains)**  In this setting the entries of the exponential action are transition probabilities and its column sums preserve total mass. Consequently, the probability mass that leaks out of a truncated state space is an observable measure of the truncation error.
 
 
-## Definitions
+Markov chains model random systems where transitions depend only on the current state. Discrete-time systems evolve via column-stochastic matrices $\bx^{(k+1)}=\bP\bx^{(k)}$. Continuous-time Markov jump processes evolve via infinitesimal generators $\dot{\bp}(t)=\bA\bp(t)$, leading to the Chemical Master Equation. Large or infinite state spaces require projection onto finite subgenerators with rigorous 1-norm leakage bounds.
+
+
+## Discrete-Time Markov Chains
 
 
 ::: {.callout-note icon=false}
@@ -15,262 +18,375 @@ $$
 x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 \end{align}
 $$
-The entry $x_i$ is the probability of state $i$.
+The entry $x_i$ represents the probability of occupying state $i$.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Definition: Column-Stochastic Matrix
-Matrix $\bP \in \fR^{n \times n}$ where:
+A matrix $\bP \in \fR^{n \times n}$ is column-stochastic if:
 
-1. $P_{ij} \geq 0$.
-    
-1. $\sum_i P_{ij} = 1$ (Columns sum to 1).
+1. $P_{ij} \geq 0$ for all $i,j$.
+
+1. $\sum_{i=1}^n P_{ij} = 1$ for each column $j$.
 
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Column convention)**  Column $j$ of $\bP$ contains the probabilities of moving from state $j$ to all possible next states. Some texts use row-stochastic matrices and row probability vectors. The two conventions are transposes of each other.
+**(Column convention)**  Column $j$ of $\bP$ contains the transition probabilities from state $j$ to all destination states $i$. The update rule for a probability distribution is $\bx^{(k+1)} = \bP \bx^{(k)}$.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Theorem: Spectrum of a Stochastic Matrix
-If $\bP$ is column-stochastic, then $\lambda=1$ is an eigenvalue and every eigenvalue satisfies $|\lambda|\leq 1$.
+If $\bP$ is column-stochastic, then $\lambda=1$ is an eigenvalue, and every eigenvalue satisfies $|\lambda|\leq 1$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Since $\mathbf{1}^T\bP=\mathbf{1}^T$, $1$ is a left eigenvalue, hence an eigenvalue. To bound the spectrum, apply the row-stochastic argument to $\bP^T$: if $\bP^T\bv=\lambda\bv$ and $|v_j|=\|\bv\|_\infty$, then
+The column sum condition implies $\mathbf{1}^T\bP=\mathbf{1}^T$. Thus $\lambda=1$ is a left eigenvalue with eigenvector $\mathbf{1}^T$, which guarantees that $1$ is an eigenvalue of $\bP$.
+
+To bound the spectral radius, let $\bP^T\bv=\lambda\bv$ with $\bv\neq \bzero$. Choose index $j$ such that $|v_j| = \|\bv\|_\infty = \max_i |v_i|$. Taking the $j$-th component of the eigenvalue equation yields
 $$
 \begin{align}
 |\lambda|\,|v_j|
     =
-    \left|\sum_i P_{ij}v_i\right|
+    \left|\sum_{i=1}^n P_{ij}v_i\right|
     \leq
-    \sum_i P_{ij}|v_i|
+    \sum_{i=1}^n P_{ij}|v_i|
     \leq
+    \left(\sum_{i=1}^n P_{ij}\right) |v_j|
+    =
     |v_j|.
 \end{align}
 $$
-Thus $|\lambda|\leq 1$.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Show that $\mathbf{1}^T\bP=\mathbf{1}^T$ for a column-stochastic matrix.
-    
-1. Conclude that $1$ is a left eigenvalue of $\bP$, hence an eigenvalue.
-    
-1. Prove $|\lambda|\leq 1$ first for a row-stochastic matrix by taking the largest-magnitude entry of an eigenvector.
-    
-1. Apply the previous step to $\bP^T$ to prove the result above.
-
-:::
-
-
-::: {.callout-note icon=false}
-## Definition: Markov Chain
-Probability distributions $\bx^{(k)}$ evolving by $\bx^{(k+1)} = \bP \bx^{(k)}$.
-
-- After $k$ steps: $\bx^{(k)} = \bP^k \bx^{(0)}$.
-    
-- Long-run behavior is governed by the eigendecomposition of $\bP$.
-
+Dividing by $|v_j|>0$ gives $|\lambda|\leq 1$.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Definition: Stationary Distribution
-A probability vector $\boldsymbol{\pi}$ such that $\bP \boldsymbol{\pi} = \boldsymbol{\pi}$.
+A probability vector $\boldsymbol{\pi}$ is stationary if $\bP \boldsymbol{\pi} = \boldsymbol{\pi}$. It is a right eigenvector of $\bP$ associated with $\lambda=1$, normalized so that $\mathbf{1}^T\boldsymbol{\pi}=1$.
+:::
 
-- Right eigenvector of $\bP$ for $\lambda=1$.
-    
-- Represents the equilibrium state of the chain.
+
+::: {.callout-note icon=false}
+## Theorem: Perron--Frobenius for Markov Chains
+If $\bP$ is irreducible (every state can be reached from any other state in finitely many steps) and primitive (aperiodic, so $\bP^k > 0$ elementwise for some $k \geq 1$), then:
+
+1. $\lambda_1 = 1$ is an algebraically and geometrically simple eigenvalue.
+
+1. $|\lambda_i| < 1$ for all other eigenvalues $\lambda_i \neq 1$.
+
+1. The stationary distribution $\boldsymbol{\pi}$ is strictly positive in every entry.
+
+1. For any initial probability vector $\bx^{(0)}$, $\lim_{k\to\infty} \bP^k \bx^{(0)} = \boldsymbol{\pi}$.
 
 :::
 
 
 ::: {.callout-note icon=false}
-## Example
-**(Two-state chain)**  Let
+## Definition: Spectral Gap and Mixing Time
+For a primitive chain with eigenvalues ordered as $1 = \lambda_1 > |\lambda_2| \geq ... \geq |\lambda_n|$, the spectral gap is
 $$
 \begin{align}
-\bP=
-    \begin{pmatrix}
-        1-a & b\\
-        a & 1-b
-    \end{pmatrix},
-    \qquad 0<a,b<1.
+\delta = 1 - |\lambda_2|.
 \end{align}
 $$
-Solving $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$ with $\pi_1+\pi_2=1$ gives
+For a diagonalizable matrix, the error $\|\bx^{(k)} - \boldsymbol{\pi}\|_2$ decays asymptotically as $\mathcal{O}(|\lambda_2|^k)$. The number of steps $k_\varepsilon$ required to reach error tolerance $\varepsilon$ satisfies
 $$
 \begin{align}
-\boldsymbol{\pi}
-    =
-    \frac{1}{a+b}
-    \begin{pmatrix} b\\ a\end{pmatrix}.
+k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}.
 \end{align}
 $$
 :::
-
-::: {.callout-note icon=false}
-## Definition: Reducible and Periodic Chains
-A chain is reducible if some state cannot be reached from another state. A state has period $d>1$ if returns to that state occur only at times divisible by $d$. A primitive chain is irreducible and aperiodic.
-:::
-
-
-::: {.callout-note icon=false}
-## Example
-**(Two failure modes)**  The identity matrix is reducible: every state is absorbing. The matrix
-$$
-\begin{align}
-\begin{pmatrix}
-    0&1\\
-    1&0
-    \end{pmatrix}
-\end{align}
-$$
-is irreducible but periodic with period $2$, so the distribution oscillates instead of converging.
-:::
-## Convergence and Mixing
-
-
-::: {.callout-note icon=false}
-## Theorem: Perron-Frobenius for Chains
-If $\bP$ is **irreducible** (all states reachable) and **primitive** (no cycles), then:
-
-1. $\lambda_1 = 1$ is simple and unique.
-    
-1. $|\lambda_i| < 1$ for all other eigenvalues.
-    
-1. $\lim_{k\to\infty} \bP^k \bx^{(0)} = \boldsymbol{\pi}$ for any initial state.
-
-:::
-
-
-::: {.callout-note icon=false}
-## Definition: Spectral Gap
-The gap $\delta = 1 - |\lambda_2|$ controls convergence speed.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Spectral Mixing Heuristic
-For a diagonalizable primitive chain, the distance to stationarity is dominated asymptotically by the second eigenvalue:
-$$
-\begin{align}
-\|\bx^{(k)}-\boldsymbol{\pi}\| \approx C|\lambda_2|^k.
-\end{align}
-$$
-Thus a larger spectral gap $\delta=1-|\lambda_2|$ means faster mixing, and the iteration count to reach tolerance $\varepsilon$ scales like
-$$
-\begin{align}
-k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
-\end{align}
-$$
-when $\delta$ is small.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Write an initial distribution as $\bx^{(0)}=\boldsymbol{\pi}+\sum_{i\geq 2} c_i\bv_i$ using eigenvectors of $\bP$.
-    
-1. Apply $\bP^k$ and use $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$.
-    
-1. Identify the slowest-decaying term.
-    
-1. Use $\log(1-\delta)\approx -\delta$ to derive the mixing-time estimate in the result above.
-
-:::
-
-
-## Properties and Design
 
 
 ::: {.callout-note icon=false}
 ## Definition: Detailed Balance (Reversibility)
-A chain is reversible if $\pi_j P_{ij} = \pi_i P_{ji}$ for all $i, j$.
+A Markov chain satisfies detailed balance with respect to $\boldsymbol{\pi}$ if
+$$
+\begin{align}
+P_{ij} \pi_j = P_{ji} \pi_i \qquad \text{for all } i, j.
+\end{align}
+$$
+A chain satisfying detailed balance is reversible.
 :::
 
 
 ::: {.callout-note icon=false}
-## Theorem: Reversible Chains Have Real Spectrum
-If $\bP$ satisfies detailed balance with stationary distribution $\boldsymbol{\pi}$ and $\bD_{\boldsymbol{\pi}}=\operatorname{diag}(\boldsymbol{\pi})$, then
+## Theorem: Real Spectrum of Reversible Chains
+Let $\bP$ satisfy detailed balance with stationary distribution $\boldsymbol{\pi} > 0$. Define $\bD_{\boldsymbol{\pi}} = \operatorname{diag}(\boldsymbol{\pi})$. Then the matrix
 $$
 \begin{align}
-\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}
+\bS = \bD_{\boldsymbol{\pi}}^{-1/2} \bP \bD_{\boldsymbol{\pi}}^{1/2}
 \end{align}
 $$
-is symmetric. Therefore reversible chains have real eigenvalues.
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Compute the $(i,j)$ entry of $\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}$.
-    
-1. Use detailed balance from the result above to show that this entry equals the $(j,i)$ entry.
-    
-1. Explain why similarity preserves eigenvalues.
-    
-1. Conclude the result above.
-
-:::
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Design Tool: Metropolis-Hastings)**  Construct a reversible chain for a desired $\boldsymbol{\pi}$ by accepting moves with probability $a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})$.
-:::
-
-
-::: {.callout-note icon=false}
-## Theorem: Metropolis-Hastings Detailed Balance
-Let $Q_{ij}$ be a proposal probability from state $j$ to state $i$. Define
-$$
-\begin{align}
-A_{ij}
-    =
-    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right),
-    \qquad i\neq j.
-\end{align}
-$$
-The transition probabilities $P_{ij}=Q_{ij}A_{ij}$ for $i\neq j$, with the remaining probability kept at state $j$, satisfy detailed balance with $\boldsymbol{\pi}$.
+is symmetric. Consequently, all eigenvalues of $\bP$ are real, and $\bP$ has an orthogonal basis of eigenvectors in the inner product weighted by $\bD_{\boldsymbol{\pi}}^{-1}$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-For $i\neq j$,
+The $(i,j)$ entry of $\bS$ is
 $$
 \begin{align}
-\pi_j P_{ij}
-    =
-    \pi_j Q_{ij}
-    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right)
-    =
-    \min(\pi_j Q_{ij},\pi_i Q_{ji}).
+S_{ij} = \pi_i^{-1/2} P_{ij} \pi_j^{1/2} = \frac{P_{ij}\pi_j}{\sqrt{\pi_i\pi_j}}.
 \end{align}
 $$
-The same calculation with $i$ and $j$ interchanged gives
+By detailed balance, $P_{ij}\pi_j = P_{ji}\pi_i$. Substituting this equality gives
 $$
 \begin{align}
-\pi_i P_{ji}
-    =
-    \min(\pi_i Q_{ji},\pi_j Q_{ij}).
+S_{ij} = \frac{P_{ji}\pi_i}{\sqrt{\pi_i\pi_j}} = \pi_j^{-1/2} P_{ji} \pi_i^{1/2} = S_{ji}.
 \end{align}
 $$
-Thus $\pi_jP_{ij}=\pi_iP_{ji}$.
+Thus $\bS = \bS^T$. Because $\bP$ is similar to the real symmetric matrix $\bS$, its eigenvalues are real.
+:::
+
+
+## Continuous-Time Markov Chains and the CME
+
+
+::: {.callout-note icon=false}
+## Definition: Continuous-Time Infinitesimal Generator
+A continuous-time Markov jump process on a discrete state space evolves according to
+$$
+\begin{align}
+\frac{d}{dt}\bp(t) = \bA \bp(t),
+\end{align}
+$$
+where $\bp(t)$ is the probability distribution vector and $\bA$ is an infinitesimal generator matrix satisfying:
+
+1. $A_{ij} \geq 0$ for all $i \neq j$ (transition rates between distinct states are nonnegative).
+
+1. $\sum_{i} A_{ij} = 0$ for every column $j$ (column sums vanish).
+
+1. $A_{jj} = -\sum_{i \neq j} A_{ij} \leq 0$ (diagonal entries equal the negative total exit rate from state $j$).
+
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Chemical Master Equation (CME)
+Consider a chemically reacting system with $S$ molecular species and $R$ reaction channels. The discrete state $\bx \in \mathbb{N}_0^S$ records the copy number of each species. Each reaction channel $k \in \{1,...,R\}$ is characterized by a stoichiometric change vector $\bnu_k \in \mathbb{Z}^S$ and a propensity function $\alpha_k(\bx; \bc) \geq 0$ parameterized by rate constants $\bc$.
+
+The Chemical Master Equation governs the probability $p(\bx, t)$ of occupying state $\bx$ at time $t$:
+$$
+\begin{align}
+\frac{\partial p(\bx, t)}{\partial t}
+    =
+    \sum_{k=1}^R \Big[ \alpha_k(\bx - \bnu_k; \bc)\, p(\bx - \bnu_k, t) - \alpha_k(\bx; \bc)\, p(\bx, t) \Big].
+\end{align}
+$$
+Enumerating the reachable states yields the linear system of ordinary differential equations
+$$
+\begin{align}
+\dot{\bp}(t) = \bA(\bc) \bp(t), \qquad \bp(0) = \bp_0,
+\end{align}
+$$
+whose exact formal solution is the matrix exponential action $\bp(t) = \exp(t\bA(\bc)) \bp_0$.
+:::
+
+
+## Assembling the Generator and Simulating Trajectories
+
+
+Two computations start from the list of reactions. The first builds the generator $\bA(\bc)$ on a finite set of states and evolves the whole distribution. The second samples individual trajectories of the jump process and never enumerates the state space. The generator is needed for the finite state projection below. Sampled trajectories provide the data for the Koopman estimators of the referenced section, and their histograms give an independent check on computed distributions.
+
+
+::: {.callout-note icon=false}
+## Definition: Generator Assembly by Forward Enumeration
+Let $\mathcal S$ be a finite set of $n$ states, stored in a hash table that maps each state $\bx$ to its index $\iota(\bx)\in\{1,...,n\}$. For each $\bx\in\mathcal S$ and each reaction $k$ with $\alpha_k(\bx;\bc)>0$:
+
+1. Compute the destination $\by=\bx+\bnu_k$.
+
+1. If $\by\in\mathcal S$, append the triplet $\big(\iota(\by),\iota(\bx),\alpha_k(\bx;\bc)\big)$.
+
+Finally, append the diagonal triplet $\big(\iota(\bx),\iota(\bx),-\sum_k\alpha_k(\bx;\bc)\big)$ for each $\bx$, and convert the triplets to CSR format by the referenced result.
+:::
+
+
+The diagonal entry contains the total exit rate, including the rates of reactions whose destination lies outside $\mathcal S$. Column $\iota(\bx)$ therefore sums to minus the rate at which probability leaves $\mathcal S$ from $\bx$, which is the leakage measured by the finite state projection bound. Assembly visits each pair of a state and a reaction once and performs one expected constant-time hash lookup for each, so it costs $O(nR)$ operations and produces at most $n(R+1)$ nonzero entries. Searching all pairs of states for possible transitions would cost $O(n^2)$ instead.
+
+
+::: {.callout-note icon=false}
+## Definition: Stochastic Simulation Algorithm
+Let the process be in state $\bx$ at time $t$. Gillespie's direct method advances it as follows [@gillespie1977].
+
+1. Compute the propensities $\alpha_k(\bx;\bc)$ and their sum $a_0(\bx)=\sum_{k=1}^R\alpha_k(\bx;\bc)$. If $a_0(\bx)=0$, stop.
+
+1. Draw independent $u_1,u_2$ uniformly from $(0,1)$.
+
+1. Set $\tau=-\ln(u_1)/a_0(\bx)$, and choose the smallest $k$ with $\sum_{l=1}^k\alpha_l(\bx;\bc)\geq u_2\,a_0(\bx)$.
+
+1. Replace $t$ by $t+\tau$ and $\bx$ by $\bx+\bnu_k$.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Exactness of the Stochastic Simulation Algorithm
+Suppose that from state $\bx$ each reaction $k$ fires after an independent exponential waiting time with rate $\alpha_k(\bx;\bc)$, and that the first reaction to fire determines the next state. Then the time to the next reaction is exponential with rate $a_0(\bx)$, the next reaction is $k$ with probability $\alpha_k(\bx;\bc)/a_0(\bx)$, and these two events are independent. The waiting time and reaction index produced by the referenced result have exactly this joint distribution.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Write $\alpha_k$ for $\alpha_k(\bx;\bc)$ and $a_0$ for $a_0(\bx)$. The probability that reaction $k$ fires first and after time $\tau$ is
+$$
+\begin{align}
+\int_\tau^\infty\alpha_ke^{-\alpha_k s}\prod_{l\neq k}e^{-\alpha_l s}\,ds
+    =\int_\tau^\infty\alpha_ke^{-a_0 s}\,ds
+    =\frac{\alpha_k}{a_0}\,e^{-a_0\tau}.
+\end{align}
+$$
+The probability factors into a function of $k$ and a function of $\tau$, which proves the independence and both marginal distributions. In the algorithm, $\Pr(-\ln(u_1)/a_0>\tau)=\Pr(u_1<e^{-a_0\tau})=e^{-a_0\tau}$, so $\tau$ is exponential with rate $a_0$. The reaction index equals $k$ exactly when $u_2a_0$ falls in an interval of length $\alpha_k$ inside $[0,a_0]$, which has probability $\alpha_k/a_0$. The two draws are independent.
+:::
+
+
+Each step costs $O(R)$ operations with a linear search for $k$, or $O(\log R)$ when the partial sums of the propensities are stored in a binary tree. The number of steps up to time $T$ is about $\int_0^Ta_0(\bX(t))\,dt$, which is large when some reactions are fast. An expected value $\mathbb{E}[f(\bX(T))]$ is estimated by averaging $f$ over $N$ independent trajectories. By the central limit theorem, the error of this average has standard deviation $\sigma_f/\sqrt N$, where $\sigma_f$ is the standard deviation of $f(\bX(T))$. Each additional digit of accuracy therefore requires a hundred times more trajectories. The finite state projection below computes the distribution instead, at a cost that grows with the number of retained states rather than with the accuracy.
+
+
+## Finite State Projection (FSP)
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Infinite state bottleneck)**  The CME generator $\bA(\bc)$ is defined over an infinite or very large discrete state space $\mathbb{N}_0^S$. A finite computation therefore requires truncation, aggregation, or another representation that avoids enumerating the full state space.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Finite State Projection (FSP)
+Let the discrete state space be partitioned into a finite retained index set $J \subset \mathbb{N}_0^S$ with $|J| = K$, and an infinite or omitted complement set $J^c$. Permuting states so that $J$ appears first partitions the full generator:
+$$
+\begin{align}
+\bA = \begin{pmatrix} \bA_J & \bA_{J, J^c} \\ \bA_{J^c, J} & \bA_{J^c} \end{pmatrix}.
+\end{align}
+$$
+The Finite State Projection of Munsky and Khammash [@munskykhammash2006] approximates the true marginal probability on $J$ by solving the isolated subgenerator system
+$$
+\begin{align}
+\dot{\bp}_J(t) = \bA_J \bp_J(t), \qquad \bp_J(0) = \bp_0|_J.
+\end{align}
+$$
+Here $\bA_J$ has negative diagonal entries and nonnegative off-diagonal entries, but its column sums are strictly nonpositive because transitions into $J^c$ act as probability leaks.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: FSP 1-Norm Leakage Bound
+Let $\bp(t)$ be the exact probability distribution solving $\dot{\bp} = \bA\bp$ with initial condition supported on $J$, so that $\mathbf{1}^T\bp(t) = 1$. Let $\bp_J(t) = \exp(t\bA_J)\bp_0|_J$ be the FSP solution. Then:
+
+1. Pointwise underestimation: $\bzero \leq \bp_J(t) \leq \bp|_J(t)$ for all $t \geq 0$.
+
+1. The full-space error of the zero-padded FSP approximation equals the leaked mass:
+        $$
+    \begin{align}
+    \|\bp(t) - \widetilde{\bp}_J(t)\|_1 = 1 - \mathbf{1}^T\bp_J(t),
+    \end{align}
+    $$
+        where $\widetilde{\bp}_J(t)$ is $\bp_J(t)$ padded with zeros on $J^c$. The retained-state error satisfies
+        $$
+    \begin{align}
+    \|\bp|_J(t)-\bp_J(t)\|_1
+            =\mathbf{1}^T\bp|_J(t)-\mathbf{1}^T\bp_J(t)
+            \leq 1-\mathbf{1}^T\bp_J(t).
+    \end{align}
+    $$
+
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+The exact retained dynamics satisfy the non-autonomous subgenerator ODE
+$$
+\begin{align}
+\frac{d}{dt}\bp|_J(t) = \bA_J\bp|_J(t) + \bA_{J,J^c}\bp|_{J^c}(t), \qquad \bp|_J(0) = \bp_0|_J.
+\end{align}
+$$
+The FSP approximation satisfies $\frac{d}{dt}\bp_J(t) = \bA_J\bp_J(t)$ with the same initial condition $\bp_J(0) = \bp_0|_J$.
+Subtracting the two equations gives the defect ODE for the difference $\boldsymbol{\delta}_J(t) = \bp|_J(t) - \bp_J(t)$:
+$$
+\begin{align}
+\frac{d}{dt}\boldsymbol{\delta}_J(t) = \bA_J \boldsymbol{\delta}_J(t) + \bA_{J,J^c}\bp|_{J^c}(t), \qquad \boldsymbol{\delta}_J(0) = \bzero.
+\end{align}
+$$
+By Duhamel's formula (variation of constants):
+$$
+\begin{align}
+\boldsymbol{\delta}_J(t) = \bp|_J(t) - \bp_J(t) = \int_0^t e^{(t-s)\bA_J}\bA_{J,J^c}\bp|_{J^c}(s)\,ds.
+\end{align}
+$$
+Because $\bA_J$ has non-negative off-diagonal entries, it is a Metzler matrix, and its matrix exponential $e^{\tau\bA_J}$ is entrywise non-negative for all $\tau \geq 0$. Furthermore, the coupling matrix $\bA_{J, J^c} \geq \bzero$ and exact probabilities $\bp|_{J^c}(s) \geq \bzero$ are non-negative.
+Consequently, the integrand is entrywise non-negative, proving that
+$$
+\begin{align}
+\bp|_J(t) - \bp_J(t) \geq \bzero \implies \bzero \leq \bp_J(t) \leq \bp|_J(t) \quad \text{for all } t \geq 0.
+\end{align}
+$$
+
+Because $\bp_J(t) \leq \bp|_J(t)$, the marginal 1-norm difference on $J$ simplifies without absolute value signs:
+$$
+\begin{align}
+\|\bp|_J(t) - \bp_J(t)\|_1
+    =
+    \sum_{i \in J} \big( p_i(t) - [\bp_J(t)]_i \big)
+    =
+    \mathbf{1}^T\bp|_J(t) - \mathbf{1}^T\bp_J(t).
+\end{align}
+$$
+The total probability across the full space satisfies $\mathbf{1}^T\bp|_J(t) + \mathbf{1}^T\bp|_{J^c}(t) = 1$. The omitted probability mass on $J^c$ is exactly $1 - \mathbf{1}^T\bp|_J(t)$. Adding the unmodeled mass on $J^c$ gives
+$$
+\begin{align}
+\|\bp(t) - \widetilde{\bp}_J(t)\|_1
+    &=
+    \|\bp|_J(t) - \bp_J(t)\|_1 + \|\bp|_{J^c}(t)\|_1 \\
+    &=
+    \big(\mathbf{1}^T\bp|_J(t) - \mathbf{1}^T\bp_J(t)\big) + \big(1 - \mathbf{1}^T\bp|_J(t)\big) \\
+    &=
+    1 - \mathbf{1}^T\bp_J(t).
+\end{align}
+$$
+Since total variation distance is one half of the $1$-norm distance, the zero-padded approximation has total variation error $(1-\mathbf{1}^T\bp_J(t))/2$. A sink-state comparison uses a different state space and must be stated separately.
+:::
+
+
+## Truncation Strategy: Probability Flux versus Probability Mass
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Failure of instantaneous mass truncation)**  A naive heuristic for expanding or pruning states in the FSP retains states where the instantaneous probability $p_i(t)$ exceeds a threshold $\varepsilon$. In multiscale or stiff reaction networks, this heuristic can discard a low-mass intermediate that carries substantial probability flux and thereby produce an order-one error.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Probability Flux
+For a transition from state $j$ to state $i$ with rate $A_{ij} > 0$, the instantaneous probability flux at time $t$ is
+$$
+\begin{align}
+\Phi_{ij}(t) = A_{ij} p_j(t).
+\end{align}
+$$
+The cumulative probability flux entering state $i$ over the time interval $[0, T]$ is
+$$
+\begin{align}
+F_i(T) = \int_0^T \sum_{j \neq i} A_{ij} p_j(s)\, ds.
+\end{align}
+$$
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Transient intermediate states)**  Consider a reaction cascade $S_1 \xrightarrow{k_1} S_2 \xrightarrow{k_2} S_3$ with $k_2 \gg k_1$. State $S_2$ has a rapid exit rate, so its instantaneous probability is tiny: $p_2(t) \approx \frac{k_1}{k_2} p_1(t) \ll 1$. Pruning based on instantaneous mass $p_2(t) < \varepsilon$ deletes $S_2$ from the state space. However, every reaction producing $S_3$ must pass through $S_2$. Deleting $S_2$ severs the probability flow entirely, causing an $\mathcal{O}(1)$ error in $p_3(T)$.
+
+Robust adaptive FSP algorithms monitor cumulative probability flux rather than instantaneous probability mass. A state may have negligible instantaneous mass yet carry substantial probability flux across the network.
 :::
 
 
@@ -280,16 +396,48 @@ Thus $\pi_jP_{ij}=\pi_iP_{ji}$.
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Construct $\bP$ for a 2-state chain with transition probabilities $\{0.1, 0.2\}$. Find $\boldsymbol{\pi}$.
-    
-1. Prove that $|\lambda| \leq 1$ for any stochastic matrix using the result above.
-    
-1. Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.\ $\lambda_2$ using the result above.
-    
-1. Find $\boldsymbol{\pi}$ for a random walk on $K_4$ (complete graph).
-    
-1. Give one reducible chain and one periodic irreducible chain. Explain which part of the result above fails.
-    
-1. Verify detailed balance for a three-state Metropolis-Hastings chain using the result above.
+1. **Compute.**  **(Simulation of a birth--death process)**  Consider the reactions $\emptyset\to X$ with propensity $k_1$ and $X\to\emptyset$ with propensity $k_2x$, started from $x=0$. Implement the referenced result, and compare the histogram of $X(T)$ over $10^4$ trajectories with the Poisson distribution of mean $(k_1/k_2)(1-e^{-k_2T})$. Then assemble the generator on the states $0,...,n_{\max}$ by the referenced result, compute $e^{T\bA}\be_1$, and compare all three distributions.
 
+1. **Compute.**  **(Discrete spectrum and mixing)**  Under the column-stochastic convention, let $\bP=\begin{pmatrix}0.8&0.1\\0.2&0.9\end{pmatrix}$. Find its stationary distribution $\boldsymbol{\pi}$, its second eigenvalue, and the spectral gap $\delta$. Starting from $\bx^{(0)}=\be_1$, derive the exact formula for $\|\bP^k\bx^{(0)}-\boldsymbol{\pi}\|_2$. Compare the first $k$ for which this error is at most $10^{-3}$ with the estimate $\log(10^3)/\delta$, and explain why the latter is only an asymptotic rule.
+
+1. **Compute.**  **(Detailed balance)**  Consider the column-stochastic matrix
+        $$
+    \begin{align}
+    \bP=\begin{pmatrix}0.6&0.2&0\\0.4&0.5&0.1\\0&0.3&0.9\end{pmatrix}.
+    \end{align}
+    $$
+        Find its stationary distribution $\boldsymbol{\pi}$, verify detailed balance on each edge, and compute $\bS = \bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}$. Verify directly that $\bS$ is symmetric and that the eigenvalues of $\bP$ are real.
+
+1. **Derive.**  **(FSP 1-norm leakage bound derivation)**  Consider a CTMC with generator $\bA$ partitioned into retained set $J$ and complement $J^c$.
+
+    1. Prove that $\mathbf{1}^T\bA_J \leq \bzero^T$ elementwise, with strict inequality for at least one entry if transitions from $J$ to $J^c$ exist.
+
+    1. Show that $\frac{d}{dt}\big(\mathbf{1}^T\bp_J(t)\big) \leq 0$, confirming that total modeled probability mass decreases monotonically over time.
+
+    1. Let $\varepsilon=1-\mathbf{1}^T\bp_J(T)$. Verify from the referenced result that the zero-padded FSP error is exactly $\varepsilon$ in the $1$-norm. Explain what additional identification of omitted states would be needed before comparing an absorbing sink with the exact distribution.
+
+1. **Explore.**  **(Probability mass versus cumulative flux in stiff cascades)**  Consider the three-state continuous-time Markov chain
+        $$
+    \begin{align}
+    X_1 \xrightarrow{k_1} X_2 \xrightarrow{k_2} X_3
+    \end{align}
+    $$
+        with $k_1 = 1$, $k_2 = 10^4$, and initial condition $\bp(0) = (1, 0, 0)^T$.
+
+    1. Solve the system analytically for $p_1(t), p_2(t), p_3(t)$.
+
+    1. Show that $\max_{t \geq 0} p_2(t) \approx 10^{-4}$. If a threshold $\varepsilon = 10^{-3}$ is used to prune states by instantaneous mass, state $X_2$ is discarded at all times.
+
+    1. Compute the cumulative flux $\int_0^T k_1 p_1(s)\, ds$ entering $X_2$ for $T = 3$. Show that over $95\%$ of the total system probability passes through $X_2$ despite its negligible instantaneous mass.
+
+    1. Explain why adaptive truncation based on cumulative probability flux preserves state $X_2$ while mass-based thresholding disconnects the state space.
+
+1. **Derive.**  **(Birth--death process and infinite generator truncation)**  For a simple birth--death process with birth rate $\lambda$ and death rate $\mu x$, write down the tridiagonal subgenerator $\bA_J$ for copy numbers $x \in \{0, 1, ..., N\}$. Formulate the exit rate from boundary state $N$ and derive the leakage rate $\frac{d}{dt}\mathbf{1}^T\bp_J(t)$ as a function of $p_N(t)$.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+The finite-state projection method and its error certificate originate with Munsky and Khammash [@munskykhammash2006]. Higham's treatment of matrix functions is useful background for the exponential calculations used here [@higham2008].
 :::

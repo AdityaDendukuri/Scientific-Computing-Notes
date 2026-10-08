@@ -1,11 +1,13 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
 \subsection{Python and NumPy Primer}
 \label{sub:numpy-primer}
 
-Condensed reference for the toolset used throughout these notes.
+\textBox{%
+This section summarizes the NumPy array conventions, linear-algebra operations, and indexing idioms used throughout the computational examples in these notes.
+}
 
 \subsubsection{Arrays and Basic Operations}
 
@@ -13,34 +15,37 @@ Condensed reference for the toolset used throughout these notes.
 The \texttt{ndarray} is the fundamental structure.
 \begin{itemize}
   \item \textbf{Creation:} \texttt{np.array([1, 2])}, \texttt{np.zeros((m, n))}, \texttt{np.random.randn(m, n)}.
-  \item \textbf{Indexing:} 0-indexed. \texttt{A[i, j]} for entries; \texttt{A[i, :]} for rows; \texttt{A[:, j]} for columns.
+  \item \textbf{Indexing:} 0-indexed. \texttt{A[i, j]} for entries, \texttt{A[i, :]} for rows, and \texttt{A[:, j]} for columns.
 \end{itemize}
 }
 \label{def:numpy-arrays}
 
 \addRemark{%
-\textbf{(Shapes and Rank-1 Arrays)}\enspace
-\texttt{A.shape} returns \texttt{(m, n)}. Note that a 1D array has shape \texttt{(n,)}, which is \textbf{not} equivalent to a column vector \texttt{(n, 1)}. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use \texttt{x[:, None]} or \texttt{x.reshape(-1, 1)} to convert to 2D.
+\textbf{(Shapes and rank-1 arrays)}\enspace
+\texttt{A.shape} returns \texttt{(m, n)}. A 1D array has shape \texttt{(n,)}, which is \textbf{not} equivalent to a column vector \texttt{(n, 1)}. These ``rank-1 arrays'' are a common source of broadcasting bugs. Use \texttt{x[:, None]} or \texttt{x.reshape(-1, 1)} to convert to 2D.
 }
 
 \addExcr{%
+\exCompute
 \begin{enumerate}
   \item Create $4 \times 4$ identity matrix. Verify \texttt{shape} and \texttt{dtype}.
   \item Extract row 2 and column 3 from a random $3 \times 3$ $\bA$.
-  \item Confirm that \texttt{np.zeros((3,))} fails where a \texttt{(3, 1)} column vector is required in a matrix-vector product.
+  \item Compare \texttt{A @ x} for \texttt{x.shape == (3,)} and \texttt{x.shape == (3,1)}. Record the output shape in each case, then explain why the two representations behave differently under broadcasting.
 \end{enumerate}
 }
 
 \subsubsection{Linear Algebra Operations}
 
-Core routines in \texttt{numpy.linalg}:
+\textBox{%
+The core routines in \texttt{numpy.linalg} provide access to standard BLAS and LAPACK implementations:
+}
 
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Function} & \textbf{Computes} \\ \hline
 \texttt{A @ B} & Matrix product $\bA\bB$ \\
 \texttt{np.linalg.solve(A, b)} & Solve $\bA\bx = \bb$ ($O(n^3)$) \\
-\texttt{np.linalg.inv(A)} & Matrix inverse (Avoid; use \texttt{solve}) \\
+\texttt{np.linalg.inv(A)} & Matrix inverse (prefer \texttt{solve} for linear systems) \\
 \texttt{np.linalg.norm(x)} & Euclidean norm $\|\bx\|_2$ \\
 \texttt{np.linalg.eig(A)} & Eigenvalues and eigenvectors \\
 \texttt{np.linalg.svd(A)} & Singular Value Decomposition \\
@@ -50,12 +55,12 @@ Core routines in \texttt{numpy.linalg}:
 \end{center}
 
 \addRemark{%
-\textbf{(Performance Law: Vectorization)}\enspace
+\textbf{(Vectorization and performance)}\enspace
 Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BLAS routines by \textbf{vectorizing} operations. For example, use \texttt{A @ B} instead of triple-nested loops.
 }
 
 \addRemark{%
-\textbf{(Stability: solve vs inv)}\enspace
+\textbf{(Linear solve versus inversion)}\enspace
 \texttt{np.linalg.solve(A, b)} is faster and more stable than \texttt{np.linalg.inv(A) @ b}. Explicit inversion is almost never desirable in scientific computation.
 }
 
@@ -68,6 +73,7 @@ Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BL
 }
 
 \addExcr{%
+\exCompute
 \begin{enumerate}
   \item Solve a $2 \times 2$ system and verify the residual $\|\bA\bx - \bb\|$.
   \item Profile \texttt{solve} vs \texttt{inv @ b} for $n=1000$.
@@ -85,11 +91,16 @@ Explicit \texttt{for} loops in Python are slow. Push heavy lifting into NumPy/BL
 \end{itemize}
 
 \addExcr{%
+\exCompute
 \begin{enumerate}
   \item Let $\bA = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$. Compare \texttt{A * A} and \texttt{A @ A}.
   \item Demonstrate the ``view pitfall'' by modifying a slice of a matrix.
   \item Use broadcasting to perform diagonal scaling $\bA\bD$ without constructing $\bD = \text{diag}(d)$.
 \end{enumerate}
+}
+
+\addReading{%
+Heath gives a broad introduction to scientific computing at roughly the level of these notes \citep{heath2018}. For the effects of floating-point arithmetic, Higham is the standard detailed reference \citep{higham2002}. Meyer provides an accessible bridge from undergraduate linear algebra to matrix computation \citep{meyer2000}.
 }
 
 \end{document}

@@ -1,0 +1,218 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\subsection{Matrix Exponentials and Krylov Subspace Actions}
+\label{subsec:matrix-exponential}
+
+\textBox{%
+\textbf{(Running example: Markov chains)}\enspace A probability vector governed by a finite-state generator satisfies $\bp(t)=e^{t\bA}\bp_0$. The exponential action developed here advances that distribution without forming $e^{t\bA}$. The next chapter adds positivity, conservation, and truncation structure.
+}
+
+Linear evolution equations describe continuous physical and probabilistic processes throughout scientific computing. Consider the autonomous initial-value problem
+\begin{align}
+\label{eq:linear-ivp}
+    \frac{d\bu}{dt} = \bA\bu(t), \qquad \bu(0) = \bv,
+\end{align}
+where $\bA \in \fR^{n \times n}$ or $\fC^{n \times n}$ is an infinitesimal generator or spatial discretization matrix, and $\bv$ is a prescribed initial state. The analytical solution is given by the matrix exponential action
+\begin{align}
+\label{eq:matrix-exponential-action}
+    \bu(t) = e^{t\bA}\bv.
+\end{align}
+When $n$ is large and $\bA$ is sparse, computing the full matrix $e^{t\bA}$ is computationally prohibitive. We evaluate the vector action $e^{t\bA}\bv$ directly through projection onto Krylov subspaces.
+
+\subsubsection{Definition, Properties, and the Sparse Bottleneck}
+
+\addDef{The Matrix Exponential}{%
+For any square matrix $\bA \in \fC^{n \times n}$, the matrix exponential is defined by the convergent power series
+\begin{align*}
+    e^{\bA} = \sum_{k=0}^\infty \frac{\bA^k}{k!} = \bI + \bA + \frac{1}{2}\bA^2 + \frac{1}{6}\bA^3 + \dots
+\end{align*}
+For any scalar $t \in \fR$, the matrix function $e^{t\bA}$ satisfies $\frac{d}{dt} e^{t\bA} = \bA e^{t\bA} = e^{t\bA}\bA$.
+}
+\label{def:matrix-exponential}
+
+\addThm{Algebraic Properties of the Matrix Exponential}{%
+Let $\bA, \bB \in \fC^{n \times n}$.
+\begin{enumerate}
+    \item If $\bA$ and $\bB$ commute ($\bA\bB = \bB\bA$), then $e^{\bA+\bB} = e^\bA e^\bB$. If they do not commute, this equality fails in general.
+    \item The matrix exponential is always nonsingular, with inverse $(e^\bA)^{-1} = e^{-\bA}$.
+    \item For any nonsingular similarity transform $\bS$, $e^{\bS\bA\bS^{-1}} = \bS e^\bA \bS^{-1}$. In particular, if $\bA = \bQ\boldsymbol{\Lambda}\bQ^{-1}$ is diagonalizable, then $e^\bA = \bQ \operatorname{diag}(e^{\lambda_1}, \dots, e^{\lambda_n}) \bQ^{-1}$.
+    \item The determinant satisfies Jacobi's formula: $\det(e^\bA) = e^{\operatorname{trace}(\bA)}$.
+\end{enumerate}
+}
+\label{thm:matrix-exponential-properties}
+
+\addPrf{%
+Property (1) follows by expanding the Cauchy product of the series for $e^\bA$ and $e^\bB$, where commutativity permits the binomial theorem for $(\bA+\bB)^k$. Property (2) is a direct consequence of (1) with $\bB = -\bA$, since $\bA$ commutes with $-\bA$ and $e^{\bzero} = \bI$. Property (3) follows from $(\bS\bA\bS^{-1})^k = \bS\bA^k\bS^{-1}$. Property (4) follows from the Schur decomposition $\bA = \bQ\bT\bQ^*$: the diagonal entries of $\bT$ are the eigenvalues $\lambda_i$, the diagonal entries of $e^\bT$ are $e^{\lambda_i}$, and the determinant of a triangular matrix is the product of its diagonal entries: $\det(e^\bA) = \det(e^\bT) = \prod_{i=1}^n e^{\lambda_i} = e^{\sum \lambda_i} = e^{\operatorname{trace}(\bA)}$.
+}
+
+\addRemark{%
+\textbf{(Dense evaluation vs.\ the vector action bottleneck)}\enspace
+Classical methods for computing the full $n \times n$ matrix $e^{\bA}$ rely on scaling and squaring with rational Padé approximants. Evaluating an $[m/m]$ Padé approximant requires computing matrix powers and solving matrix linear systems, incurring $O(n^3)$ operations. More critically, even when $\bA$ is sparse, the exponential $e^{t\bA}$ is typically dense. Storing $e^{t\bA}$ for $n = 10^6$ requires eight terabytes of memory in double precision. Many evolution calculations require only the action $e^{t\bA}\bv$, which can be approximated without forming the full exponential.
+}
+
+\subsubsection{Krylov Subspace Approximation of the Exponential Action}
+
+To compute the action $e^{t\bA}\bv$ for large sparse $\bA$, we project the evolution onto an expanding Krylov subspace $\mathcal{K}_m(\bA, \bv) = \operatorname{span}\{\bv, \bA\bv, \dots, \bA^{m-1}\bv\}$.
+
+\addThm{Arnoldi Approximation of $e^{t\bA}\bv$}{%
+Let $\bA \in \fC^{n \times n}$ and let $\bv \in \fC^n$ be a nonzero vector with $\beta = \|\bv\|_2$. After $m$ steps of the Arnoldi iteration starting from $\bv_1 = \bv / \beta$, we obtain the Arnoldi relation
+\begin{align*}
+    \bA \bV_m = \bV_m \bH_m + h_{m+1,m}\bv_{m+1}\be_m^T,
+\end{align*}
+where $\bV_m \in \fC^{n \times m}$ has orthonormal columns and $\bH_m = \bV_m^* \bA \bV_m \in \fC^{m \times m}$ is upper Hessenberg. The Arnoldi approximation to the exponential action is
+\begin{align*}
+    e^{t\bA}\bv \approx \beta \bV_m e^{t\bH_m}\be_1.
+\end{align*}
+}
+\label{thm:krylov-expm}
+
+\addPrf{%
+We approximate the solution of $\bu'(t) = \bA\bu(t)$ with $\bu(0) = \bv$ within the subspace $\mathcal{K}_m(\bA, \bv)$ by setting $\bu_m(t) = \bV_m \bz_m(t)$, where $\bz_m(t) \in \fC^m$. The residual defect of the ODE is $\br_m(t) = \bu_m'(t) - \bA\bu_m(t) = \bV_m \bz_m'(t) - \bA\bV_m\bz_m(t)$. Imposing the Galerkin orthogonality condition $\bV_m^* \br_m(t) = \bzero$ yields
+\begin{align*}
+    \bV_m^* \bV_m \bz_m'(t) - \bV_m^* \bA \bV_m \bz_m(t) = \bzero \implies \bz_m'(t) = \bH_m \bz_m(t).
+\end{align*}
+The initial condition $\bu_m(0) = \bv = \beta \bv_1 = \beta \bV_m \be_1$ requires $\bz_m(0) = \beta \be_1$. Solving the reduced $m \times m$ linear system gives $\bz_m(t) = \beta e^{t\bH_m}\be_1$. Multiplying by $\bV_m$ recovers $\bu_m(t) = \beta \bV_m e^{t\bH_m}\be_1$.
+}
+
+\addThm{Residual Representation and A Posteriori Error Bound}{%
+The defect in the differential equation satisfies
+\begin{align*}
+    \bu_m'(t) - \bA\bu_m(t) = -\beta h_{m+1,m} [\be_m^T e^{t\bH_m}\be_1] \bv_{m+1}.
+\end{align*}
+Integrating the defect via variation of constants yields the exact error identity
+\begin{align*}
+    e^{t\bA}\bv - \beta \bV_m e^{t\bH_m}\be_1 = \beta h_{m+1,m} \int_0^t e^{(t-\tau)\bA} \bv_{m+1} [\be_m^T e^{\tau\bH_m}\be_1]\,d\tau.
+\end{align*}
+If the operator $\bA$ generates a contractive semigroup satisfying $\|e^{\tau\bA}\| \leq 1$ for all $\tau \geq 0$, the error is bounded by
+\begin{align*}
+    \|e^{t\bA}\bv - \beta \bV_m e^{t\bH_m}\be_1\| \leq \beta |h_{m+1,m}| \int_0^t |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau.
+\end{align*}
+}
+\label{thm:krylov-expm-error}
+
+\addPrf{%
+Using the Arnoldi relation $\bA\bV_m = \bV_m\bH_m + h_{m+1,m}\bv_{m+1}\be_m^T$, the ODE defect is
+\begin{align*}
+    \bu_m'(t) - \bA\bu_m(t) &= \bV_m \bz_m'(t) - \bA\bV_m \bz_m(t) \\
+    &= \bV_m \bH_m \bz_m(t) - \left( \bV_m\bH_m + h_{m+1,m}\bv_{m+1}\be_m^T \right) \bz_m(t) \\
+    &= -h_{m+1,m} \bv_{m+1} \be_m^T \bz_m(t) \\
+    &= -\beta h_{m+1,m} [\be_m^T e^{t\bH_m}\be_1] \bv_{m+1}.
+\end{align*}
+The approximation error $\be(t) = \bu(t) - \bu_m(t)$ satisfies $\be'(t) = \bA\be(t) - (\bu_m'(t) - \bA\bu_m(t))$ with $\be(0) = \bzero$.
+Integrating via variation of constants:
+\begin{align*}
+    \be(t) = \int_0^t e^{(t-\tau)\bA} \left[ \bA\bu_m(\tau) - \bu_m'(\tau) \right] d\tau = \beta h_{m+1,m} \int_0^t e^{(t-\tau)\bA} \bv_{m+1} [\be_m^T e^{\tau\bH_m}\be_1]\,d\tau.
+\end{align*}
+Taking norms with $\|e^{(t-\tau)\bA}\| \leq 1$ and $\|\bv_{m+1}\|_2 = 1$ yields
+\begin{align*}
+    \|\be(t)\| \leq \beta |h_{m+1,m}| \int_0^t \|e^{(t-\tau)\bA}\|_2 \|\bv_{m+1}\|_2 |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau \leq \beta |h_{m+1,m}| \int_0^t |\be_m^T e^{\tau\bH_m}\be_1|\,d\tau.
+\end{align*}
+}
+
+\addRemark{%
+\textbf{(Superlinear convergence of Krylov actions)}\enspace
+Hochbruck and Lubich bound the error of the Krylov approximation in terms of the spectrum and the time step \citep{hochbrucklubich1997}. For a symmetric negative semidefinite matrix with eigenvalues in $[-4\rho,0]$, the error in approximating $e^{\tau\bA}\bv$ from $\mathcal{K}_m(\bA,\bv)$ is bounded by a constant multiple of $e^{-m^2/(5\rho\tau)}$ when $\sqrt{4\rho\tau}\leq m\leq2\rho\tau$. For $m\geq2\rho\tau$ the bound decays superlinearly in $m$. The relevant scale is therefore $\rho\tau$, not $\|\bA\|_2$ alone, and in the first regime the required dimension grows only like the square root of $\rho\tau$. The same paper gives analogous bounds for non-Hermitian matrices whose numerical range lies in a known region of the left half-plane. The projected approximation also adapts to the spectrum seen from the starting vector rather than to the full matrix norm alone. Grid-independent convergence requires additional spectral or semigroup assumptions and should be checked for the discretization at hand.
+}
+
+\subsubsection{The Continuous-Adjoint Sensitivity Formula}
+
+In parameter inference, we estimate unknown coefficients in an evolution model from discrete observations. Consider an affine generator family
+\begin{align}
+\label{eq:affine-generator}
+    \bA(\btheta) = \bA_0 + \sum_{j=1}^{M_{\mathrm{lib}}} \theta_j \bA_j,
+\end{align}
+where $\bA_0$ is a baseline operator, the matrices $\bA_j$ represent candidate physical mechanisms, and $\btheta = (\theta_1, \dots, \theta_{M_{\mathrm{lib}}})^T$ is a vector of unknown rate parameters.
+
+\addThm{Adjoint Gradient Formula for Exponential Actions}{%
+Let $\by = e^{h\bA(\btheta)}\bv$ denote the state propagated across an interval of length $h$. Let $\ell(\by)$ be a differentiable scalar loss with endpoint gradient $\nabla_{\by}\ell$. Then the derivative of the loss with respect to coefficient $\theta_j$ is
+\begin{align*}
+    \frac{\partial \ell}{\partial \theta_j} = h \operatorname{Re} \int_0^1 \blambda(s)^* \bA_j \bm{f}(s)\,ds,
+\end{align*}
+where the forward path $\bm{f}(s)$ and adjoint path $\blambda(s)$ are defined by
+\begin{align*}
+    \bm{f}(s) = e^{sh\bA}\bv, \qquad \blambda(s) = e^{(1-s)h\bA^*} \nabla_{\by}\ell, \qquad 0 \leq s \leq 1.
+\end{align*}
+}
+\label{thm:adjoint-gradient-expm}
+
+\addPrf{%
+Let $\bm{f}(s)$ satisfy the ODE $\bm{f}'(s) = h\bA(\btheta)\bm{f}(s)$ with $\bm{f}(0) = \bv$ and $\by = \bm{f}(1)$. Differentiating this initial-value problem with respect to $\theta_j$ yields the tangent equation
+\begin{align*}
+    \frac{d}{ds} \left( \frac{\partial \bm{f}}{\partial \theta_j} \right) = h\bA \left( \frac{\partial \bm{f}}{\partial \theta_j} \right) + h\bA_j \bm{f}(s), \qquad \frac{\partial \bm{f}(0)}{\partial \theta_j} = \bzero.
+\end{align*}
+Applying variation of constants at the endpoint $s = 1$ gives
+\begin{align*}
+    \frac{\partial \by}{\partial \theta_j} = h \int_0^1 e^{(1-s)h\bA} \bA_j \bm{f}(s)\,ds.
+\end{align*}
+Applying the chain rule to the scalar loss $\ell(\by)$ and taking the real part produces
+\begin{align*}
+    \frac{\partial \ell}{\partial \theta_j} &= \operatorname{Re}\left( (\nabla_{\by}\ell)^* \frac{\partial \by}{\partial \theta_j} \right)
+    = h \operatorname{Re} \int_0^1 (\nabla_{\by}\ell)^* e^{(1-s)h\bA} \bA_j \bm{f}(s)\,ds \\
+    &= h \operatorname{Re} \int_0^1 \left( e^{(1-s)h\bA^*} \nabla_{\by}\ell \right)^* \bA_j \bm{f}(s)\,ds
+    = h \operatorname{Re} \int_0^1 \blambda(s)^* \bA_j \bm{f}(s)\,ds.
+\end{align*}
+}
+
+\addRemark{%
+\textbf{(The adjoint sharing principle)}\enspace
+Evaluating a separate directional Fréchet derivative $L_{\exp}(h\bA, h\bA_j)$ for each candidate matrix $\bA_j$ repeats the forward exponential propagation $M_{\mathrm{lib}}$ times. The adjoint identity separates propagation from the candidate directions. We compute the forward path $\bm{f}$ and adjoint path $\blambda$ once per observation interval, and evaluate their contractions against $\bA_j$ via numerical quadrature.
+}
+
+\subsubsection{Shared Krylov Spaces and Quadrature}
+
+To evaluate the bilinear integral numerically, we approximate both paths using independent forward and adjoint Krylov spaces, and integrate the contraction using Gauss--Legendre quadrature.
+
+\addThm{Bilinear Quadrature Evaluation}{%
+Let $\mathcal{K}_{m_f}(\bA, \bv)$ have basis $\bV_f$ and projected Hessenberg matrix $\bH_f$, with $\beta_f = \|\bv\|_2$. Let $\mathcal{K}_{m_a}(\bA^*, \nabla_{\by}\ell)$ have basis $\bV_a$ and projected matrix $\bH_a$, with $\beta_a = \|\nabla_{\by}\ell\|_2$. At any Gauss--Legendre node $s_q \in [0, 1]$ with quadrature weight $w_q$, the path approximations are
+\begin{align*}
+    \bm{f}^{(q)} = \beta_f \bV_f e^{s_q h \bH_f}\be_1, \qquad \blambda^{(q)} = \beta_a \bV_a e^{(1-s_q) h \bH_a}\be_1.
+\end{align*}
+The coefficient gradient evaluates to
+\begin{align*}
+    \frac{\partial \ell}{\partial \theta_j} \approx h \sum_{q=1}^{n_q} w_q \operatorname{Re}\left[ (\blambda^{(q)})^* \bA_j \bm{f}^{(q)} \right].
+\end{align*}
+}
+\label{thm:bilinear-quadrature}
+
+\addRemark{%
+\textbf{(One-sided termination in refinement heuristics)}\enspace
+A common stopping diagnostic tests the product of forward and adjoint residuals $\rho_f \rho_a$. If the forward path reaches an invariant subspace, $\rho_f = 0$, causing the product to vanish even when the adjoint path is at depth $m_a = 2$ and completely unresolved. Reliable stopping criteria require monitoring forward and adjoint convergence separately.
+}
+
+\subsubsection{Generator Recovery via the Matrix Logarithm}
+
+When discrete-time snapshot maps $\bK_h \approx e^{h\calA}$ are observed rather than continuous trajectories, we invert the exponential map using the principal matrix logarithm.
+
+\addDef{The Matrix Logarithm}{%
+Let $\bK \in \fC^{n \times n}$ have no eigenvalues on the closed negative real axis $(-\infty, 0]$. The principal matrix logarithm $\log(\bK)$ is the unique matrix $\bA$ such that $e^\bA = \bK$ and all eigenvalues of $\bA$ satisfy $|\operatorname{Im}(\lambda)| < \pi$.
+}
+\label{def:matrix-logarithm}
+
+\addRemark{%
+\textbf{(Projection and finite-time closure bias)}\enspace
+If $P$ denotes the orthogonal projection onto a subspace of observables $\calF$, the projected generator obtained from finite-time observations satisfies
+\begin{align*}
+    \widehat{\bA}_h = h^{-1}\log\left( P e^{h\calA} |_{\calF} \right) \neq P\calA|_{\calF}.
+\end{align*}
+Unless $\calF$ is invariant under $\calA$, projection and exponentiation do not commute. The resulting finite-time closure bias can be expanded in powers of $h$, but its leading order depends on which terms leave the observable space. Any rate such as $O(h^r)$ therefore requires a separately defined closure depth and corresponding assumptions.
+}
+
+\subsubsection{Exercises}
+
+\addExcr{%
+\begin{enumerate}
+    \item \exCompute \textbf{Dense vs.\ Action Complexity:}\enspace A sparse matrix $\bA \in \fR^{10^6 \times 10^6}$ has 10 nonzero entries per row. Compute the memory required to store $e^{h\bA}$ as a dense array. Compare this with storing $m=30$ Arnoldi basis vectors.
+    \item \exCompute \textbf{Adjoint Sharing:}\enspace Let an overcomplete library contain $M_{\mathrm{lib}} = 200$ candidate directions. Calculate the number of sparse matrix--vector products needed to evaluate all 200 coefficient gradients using (a) directional Fréchet derivatives and (b) the adjoint Krylov formula with 5 quadrature nodes.
+    \item \exCheck \textbf{Logarithm Branch Cuts:}\enspace Let an evolution operator have oscillatory eigenvalue $\lambda = -\gamma + i\omega$ with $\omega = 50\pi$. Determine the maximum observation interval $h$ that avoids branch-cut crossing in the principal matrix logarithm.
+    \item \exExplore \textbf{Taylor vs.\ Krylov Convergence:}\enspace For the 1D discrete Laplacian $\bA$ with $\|\bA\|_2 = 4 \times 10^4$ and $t = 10^{-2}$, compare the polynomial degrees suggested by a direct Taylor remainder bound and by Krylov projection. State every estimate you use, since neither degree is determined by $\|\bA\|_2$ alone.
+    \item \exExplore \textbf{One-Sided Termination:}\enspace Construct a $3 \times 3$ example where $\bv$ is an exact eigenvector of $\bA$, yielding forward residual $\rho_f = 0$ at step 1, while the adjoint starting vector is not an eigenvector. Explain why product heuristics fail in this setting.
+\end{enumerate}
+}
+\label{ex:matrix-exponential-exercises}
+
+\addReading{%
+Higham gives the general theory of matrix functions \citep{higham2008}. Moler and Van Loan explain why apparently reasonable methods for the matrix exponential can fail, and Al-Mohy and Higham develop a modern action method that avoids forming the exponential \citep{molervanloan2003,almohyhigham2011}.
+}
+
+\end{document}

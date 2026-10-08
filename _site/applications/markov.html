@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>33&nbsp; Markov Chains and Stochastic Matrices – Scientific Computing</title>
+<title>34&nbsp; Markov Chains, Continuous Generators, and the CME – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -34,7 +53,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../applications/koopman.html" rel="next">
-<link href="../applications/fourier.html" rel="prev">
+<link href="../applications/matrix-exponential.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/markov.html"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/markov.html"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,10 +729,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#definitions" id="toc-definitions" class="nav-link active" data-scroll-target="#definitions"><span class="header-section-number">33.1</span> Definitions</a></li>
-  <li><a href="#convergence-and-mixing" id="toc-convergence-and-mixing" class="nav-link" data-scroll-target="#convergence-and-mixing"><span class="header-section-number">33.2</span> Convergence and Mixing</a></li>
-  <li><a href="#properties-and-design" id="toc-properties-and-design" class="nav-link" data-scroll-target="#properties-and-design"><span class="header-section-number">33.3</span> Properties and Design</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">33.4</span> Exercises</a></li>
+  <li><a href="#discrete-time-markov-chains" id="toc-discrete-time-markov-chains" class="nav-link active" data-scroll-target="#discrete-time-markov-chains"><span class="header-section-number">34.1</span> Discrete-Time Markov Chains</a></li>
+  <li><a href="#continuous-time-markov-chains-and-the-cme" id="toc-continuous-time-markov-chains-and-the-cme" class="nav-link" data-scroll-target="#continuous-time-markov-chains-and-the-cme"><span class="header-section-number">34.2</span> Continuous-Time Markov Chains and the CME</a></li>
+  <li><a href="#finite-state-projection-fsp" id="toc-finite-state-projection-fsp" class="nav-link" data-scroll-target="#finite-state-projection-fsp"><span class="header-section-number">34.3</span> Finite State Projection (FSP)</a></li>
+  <li><a href="#truncation-strategy-probability-flux-versus-probability-mass" id="toc-truncation-strategy-probability-flux-versus-probability-mass" class="nav-link" data-scroll-target="#truncation-strategy-probability-flux-versus-probability-mass"><span class="header-section-number">34.4</span> Truncation Strategy: Probability Flux versus Probability Mass</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">34.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/markov.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -682,9 +741,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/markov.html"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/markov.html"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></h1>
+<h1 class="title"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></h1>
 </div>
 
 
@@ -701,9 +760,10 @@ window.Quarto = {
 </header>
 
 
-<p>Markov chains model random processes whose next state depends only on the current state. With the column convention used here, probability vectors are columns and the update is <span class="math inline">\(\bx^{(k+1)}=\bP\bx^{(k)}\)</span>.</p>
-<section id="definitions" class="level2" data-number="33.1">
-<h2 data-number="33.1" class="anchored" data-anchor-id="definitions"><span class="header-section-number">33.1</span> Definitions</h2>
+<p><strong>(Markov thread)</strong> The exponential action now carries additional meaning: its entries are transition probabilities and its column sums preserve total mass. Truncation is therefore not an arbitrary projection, because leaked mass becomes an observable error certificate.</p>
+<p>Markov chains model random systems where transitions depend only on the current state. Discrete-time systems evolve via column-stochastic matrices <span class="math inline">\(\bx^{(k+1)}=\bP\bx^{(k)}\)</span>. Continuous-time Markov jump processes evolve via infinitesimal generators <span class="math inline">\(\dot{\bp}(t)=\bA\bp(t)\)</span>, leading to the Chemical Master Equation. Large or infinite state spaces require projection onto finite subgenerators with rigorous 1-norm leakage bounds.</p>
+<section id="discrete-time-markov-chains" class="level2" data-number="34.1">
+<h2 data-number="34.1" class="anchored" data-anchor-id="discrete-time-markov-chains"><span class="header-section-number">34.1</span> Discrete-Time Markov Chains</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -718,7 +778,7 @@ window.Quarto = {
 \begin{align}
 x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 \end{align}
-\]</span> The entry <span class="math inline">\(x_i\)</span> is the probability of state <span class="math inline">\(i\)</span>.</p>
+\]</span> The entry <span class="math inline">\(x_i\)</span> represents the probability of occupying state <span class="math inline">\(i\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -731,10 +791,10 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Matrix <span class="math inline">\(\bP \in \fR^{n \times n}\)</span> where:</p>
+<p>A matrix <span class="math inline">\(\bP \in \fR^{n \times n}\)</span> is column-stochastic if:</p>
 <ol type="1">
-<li><p><span class="math inline">\(P_{ij} \geq 0\)</span>.</p></li>
-<li><p><span class="math inline">\(\sum_i P_{ij} = 1\)</span> (Columns sum to 1).</p></li>
+<li><p><span class="math inline">\(P_{ij} \geq 0\)</span> for all <span class="math inline">\(i,j\)</span>.</p></li>
+<li><p><span class="math inline">\(\sum_{i=1}^n P_{ij} = 1\)</span> for each column <span class="math inline">\(j\)</span>.</p></li>
 </ol>
 </div>
 </div>
@@ -748,7 +808,7 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Column convention)</strong> Column <span class="math inline">\(j\)</span> of <span class="math inline">\(\bP\)</span> contains the probabilities of moving from state <span class="math inline">\(j\)</span> to all possible next states. Some texts use row-stochastic matrices and row probability vectors. The two conventions are transposes of each other.</p>
+<p><strong>(Column convention)</strong> Column <span class="math inline">\(j\)</span> of <span class="math inline">\(\bP\)</span> contains the transition probabilities from state <span class="math inline">\(j\)</span> to all destination states <span class="math inline">\(i\)</span>. The update rule for a probability distribution is <span class="math inline">\(\bx^{(k+1)} = \bP \bx^{(k)}\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -761,7 +821,7 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bP\)</span> is column-stochastic, then <span class="math inline">\(\lambda=1\)</span> is an eigenvalue and every eigenvalue satisfies <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
+<p>If <span class="math inline">\(\bP\)</span> is column-stochastic, then <span class="math inline">\(\lambda=1\)</span> is an eigenvalue, and every eigenvalue satisfies <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -776,53 +836,21 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Since <span class="math inline">\(\mathbf{1}^T\bP=\mathbf{1}^T\)</span>, <span class="math inline">\(1\)</span> is a left eigenvalue, hence an eigenvalue. To bound the spectrum, apply the row-stochastic argument to <span class="math inline">\(\bP^T\)</span>: if <span class="math inline">\(\bP^T\bv=\lambda\bv\)</span> and <span class="math inline">\(|v_j|=\|\bv\|_\infty\)</span>, then <span class="math display">\[
+<p>The column sum condition implies <span class="math inline">\(\mathbf{1}^T\bP=\mathbf{1}^T\)</span>. Thus <span class="math inline">\(\lambda=1\)</span> is a left eigenvalue with eigenvector <span class="math inline">\(\mathbf{1}^T\)</span>, which guarantees that <span class="math inline">\(1\)</span> is an eigenvalue of <span class="math inline">\(\bP\)</span>.</p>
+<p>To bound the spectral radius, let <span class="math inline">\(\bP^T\bv=\lambda\bv\)</span> with <span class="math inline">\(\bv\neq \bzero\)</span>. Choose index <span class="math inline">\(j\)</span> such that <span class="math inline">\(|v_j| = \|\bv\|_\infty = \max_i |v_i|\)</span>. Taking the <span class="math inline">\(j\)</span>-th component of the eigenvalue equation yields <span class="math display">\[
 \begin{align}
 |\lambda|\,|v_j|
     =
-    \left|\sum_i P_{ij}v_i\right|
+    \left|\sum_{i=1}^n P_{ij}v_i\right|
     \leq
-    \sum_i P_{ij}|v_i|
+    \sum_{i=1}^n P_{ij}|v_i|
     \leq
+    \left(\sum_{i=1}^n P_{ij}\right) |v_j|
+    =
     |v_j|.
 \end{align}
-\]</span> Thus <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
+\]</span> Dividing by <span class="math inline">\(|v_j|&gt;0\)</span> gives <span class="math inline">\(|\lambda|\leq 1\)</span>.</p>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Show that <span class="math inline">\(\mathbf{1}^T\bP=\mathbf{1}^T\)</span> for a column-stochastic matrix.</p></li>
-<li><p>Conclude that <span class="math inline">\(1\)</span> is a left eigenvalue of <span class="math inline">\(\bP\)</span>, hence an eigenvalue.</p></li>
-<li><p>Prove <span class="math inline">\(|\lambda|\leq 1\)</span> first for a row-stochastic matrix by taking the largest-magnitude entry of an eigenvector.</p></li>
-<li><p>Apply the previous step to <span class="math inline">\(\bP^T\)</span> to prove the result above.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Markov Chain
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Probability distributions <span class="math inline">\(\bx^{(k)}\)</span> evolving by <span class="math inline">\(\bx^{(k+1)} = \bP \bx^{(k)}\)</span>.</p>
-<ul>
-<li><p>After <span class="math inline">\(k\)</span> steps: <span class="math inline">\(\bx^{(k)} = \bP^k \bx^{(0)}\)</span>.</p></li>
-<li><p>Long-run behavior is governed by the eigendecomposition of <span class="math inline">\(\bP\)</span>.</p></li>
-</ul>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -835,11 +863,7 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A probability vector <span class="math inline">\(\boldsymbol{\pi}\)</span> such that <span class="math inline">\(\bP \boldsymbol{\pi} = \boldsymbol{\pi}\)</span>.</p>
-<ul>
-<li><p>Right eigenvector of <span class="math inline">\(\bP\)</span> for <span class="math inline">\(\lambda=1\)</span>.</p></li>
-<li><p>Represents the equilibrium state of the chain.</p></li>
-</ul>
+<p>A probability vector <span class="math inline">\(\boldsymbol{\pi}\)</span> is stationary if <span class="math inline">\(\bP \boldsymbol{\pi} = \boldsymbol{\pi}\)</span>. It is a right eigenvector of <span class="math inline">\(\bP\)</span> associated with <span class="math inline">\(\lambda=1\)</span>, normalized so that <span class="math inline">\(\mathbf{1}^T\boldsymbol{\pi}=1\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -848,25 +872,36 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
+<span class="screen-reader-only">Note</span>Theorem: Perron–Frobenius for Markov Chains
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Two-state chain)</strong> Let <span class="math display">\[
+<p>If <span class="math inline">\(\bP\)</span> is irreducible (every state can be reached from any other state in finitely many steps) and primitive (aperiodic, so <span class="math inline">\(\bP^k &gt; 0\)</span> elementwise for some <span class="math inline">\(k \geq 1\)</span>), then:</p>
+<ol type="1">
+<li><p><span class="math inline">\(\lambda_1 = 1\)</span> is an algebraically and geometrically simple eigenvalue.</p></li>
+<li><p><span class="math inline">\(|\lambda_i| &lt; 1\)</span> for all other eigenvalues <span class="math inline">\(\lambda_i \neq 1\)</span>.</p></li>
+<li><p>The stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span> is strictly positive in every entry.</p></li>
+<li><p>For any initial probability vector <span class="math inline">\(\bx^{(0)}\)</span>, <span class="math inline">\(\lim_{k\to\infty} \bP^k \bx^{(0)} = \boldsymbol{\pi}\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Spectral Gap and Mixing Time
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a primitive chain with eigenvalues ordered as <span class="math inline">\(1 = \lambda_1 &gt; |\lambda_2| \geq ... \geq |\lambda_n|\)</span>, the spectral gap is <span class="math display">\[
 \begin{align}
-\bP=
-    \begin{pmatrix}
-        1-a &amp; b\\
-        a &amp; 1-b
-    \end{pmatrix},
-    \qquad 0&lt;a,b&lt;1.
+\delta = 1 - |\lambda_2|.
 \end{align}
-\]</span> Solving <span class="math inline">\(\bP\boldsymbol{\pi}=\boldsymbol{\pi}\)</span> with <span class="math inline">\(\pi_1+\pi_2=1\)</span> gives <span class="math display">\[
+\]</span> For a diagonalizable matrix, the error <span class="math inline">\(\|\bx^{(k)} - \boldsymbol{\pi}\|_2\)</span> decays asymptotically as <span class="math inline">\(\mathcal{O}(|\lambda_2|^k)\)</span>. The number of steps <span class="math inline">\(k_\varepsilon\)</span> required to reach error tolerance <span class="math inline">\(\varepsilon\)</span> satisfies <span class="math display">\[
 \begin{align}
-\boldsymbol{\pi}
-    =
-    \frac{1}{a+b}
-    \begin{pmatrix} b\\ a\end{pmatrix}.
+k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}.
 \end{align}
 \]</span></p>
 </div>
@@ -877,120 +912,15 @@ x_i\geq 0,\qquad \sum_{i=1}^n x_i=1.
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Reducible and Periodic Chains
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A chain is reducible if some state cannot be reached from another state. A state has period <span class="math inline">\(d&gt;1\)</span> if returns to that state occur only at times divisible by <span class="math inline">\(d\)</span>. A primitive chain is irreducible and aperiodic.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Two failure modes)</strong> The identity matrix is reducible: every state is absorbing. The matrix <span class="math display">\[
-\begin{align}
-\begin{pmatrix}
-    0&amp;1\\
-    1&amp;0
-    \end{pmatrix}
-\end{align}
-\]</span> is irreducible but periodic with period <span class="math inline">\(2\)</span>, so the distribution oscillates instead of converging.</p>
-</div>
-</div>
-</section>
-<section id="convergence-and-mixing" class="level2" data-number="33.2">
-<h2 data-number="33.2" class="anchored" data-anchor-id="convergence-and-mixing"><span class="header-section-number">33.2</span> Convergence and Mixing</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Perron-Frobenius for Chains
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bP\)</span> is <strong>irreducible</strong> (all states reachable) and <strong>primitive</strong> (no cycles), then:</p>
-<ol type="1">
-<li><p><span class="math inline">\(\lambda_1 = 1\)</span> is simple and unique.</p></li>
-<li><p><span class="math inline">\(|\lambda_i| &lt; 1\)</span> for all other eigenvalues.</p></li>
-<li><p><span class="math inline">\(\lim_{k\to\infty} \bP^k \bx^{(0)} = \boldsymbol{\pi}\)</span> for any initial state.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Spectral Gap
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The gap <span class="math inline">\(\delta = 1 - |\lambda_2|\)</span> controls convergence speed.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Spectral Mixing Heuristic
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For a diagonalizable primitive chain, the distance to stationarity is dominated asymptotically by the second eigenvalue: <span class="math display">\[
-\begin{align}
-\|\bx^{(k)}-\boldsymbol{\pi}\| \approx C|\lambda_2|^k.
-\end{align}
-\]</span> Thus a larger spectral gap <span class="math inline">\(\delta=1-|\lambda_2|\)</span> means faster mixing, and the iteration count to reach tolerance <span class="math inline">\(\varepsilon\)</span> scales like <span class="math display">\[
-\begin{align}
-k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
-\end{align}
-\]</span> when <span class="math inline">\(\delta\)</span> is small.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Write an initial distribution as <span class="math inline">\(\bx^{(0)}=\boldsymbol{\pi}+\sum_{i\geq 2} c_i\bv_i\)</span> using eigenvectors of <span class="math inline">\(\bP\)</span>.</p></li>
-<li><p>Apply <span class="math inline">\(\bP^k\)</span> and use <span class="math inline">\(\bP\boldsymbol{\pi}=\boldsymbol{\pi}\)</span>.</p></li>
-<li><p>Identify the slowest-decaying term.</p></li>
-<li><p>Use <span class="math inline">\(\log(1-\delta)\approx -\delta\)</span> to derive the mixing-time estimate in the result above.</p></li>
-</ol>
-</div>
-</div>
-</section>
-<section id="properties-and-design" class="level2" data-number="33.3">
-<h2 data-number="33.3" class="anchored" data-anchor-id="properties-and-design"><span class="header-section-number">33.3</span> Properties and Design</h2>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Definition: Detailed Balance (Reversibility)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A chain is reversible if <span class="math inline">\(\pi_j P_{ij} = \pi_i P_{ji}\)</span> for all <span class="math inline">\(i, j\)</span>.</p>
+<p>A Markov chain satisfies detailed balance with respect to <span class="math inline">\(\boldsymbol{\pi}\)</span> if <span class="math display">\[
+\begin{align}
+P_{ij} \pi_j = P_{ji} \pi_i \qquad \text{for all } i, j.
+\end{align}
+\]</span> A chain satisfying detailed balance is reversible.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -999,33 +929,240 @@ k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Reversible Chains Have Real Spectrum
+<span class="screen-reader-only">Note</span>Theorem: Real Spectrum of Reversible Chains
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\bP\)</span> satisfies detailed balance with stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span> and <span class="math inline">\(\bD_{\boldsymbol{\pi}}=\operatorname{diag}(\boldsymbol{\pi})\)</span>, then <span class="math display">\[
+<p>Let <span class="math inline">\(\bP\)</span> satisfy detailed balance with stationary distribution <span class="math inline">\(\boldsymbol{\pi} &gt; 0\)</span>. Define <span class="math inline">\(\bD_{\boldsymbol{\pi}} = \operatorname{diag}(\boldsymbol{\pi})\)</span>. Then the matrix <span class="math display">\[
 \begin{align}
-\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}
+\bS = \bD_{\boldsymbol{\pi}}^{-1/2} \bP \bD_{\boldsymbol{\pi}}^{1/2}
 \end{align}
-\]</span> is symmetric. Therefore reversible chains have real eigenvalues.</p>
+\]</span> is symmetric. Consequently, all eigenvalues of <span class="math inline">\(\bP\)</span> are real, and <span class="math inline">\(\bP\)</span> has an orthogonal basis of eigenvectors in the inner product weighted by <span class="math inline">\(\bD_{\boldsymbol{\pi}}^{-1}\)</span>.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The <span class="math inline">\((i,j)\)</span> entry of <span class="math inline">\(\bS\)</span> is <span class="math display">\[
+\begin{align}
+S_{ij} = \pi_i^{-1/2} P_{ij} \pi_j^{1/2} = \frac{P_{ij}\pi_j}{\sqrt{\pi_i\pi_j}}.
+\end{align}
+\]</span> By detailed balance, <span class="math inline">\(P_{ij}\pi_j = P_{ji}\pi_i\)</span>. Substituting this equality gives <span class="math display">\[
+\begin{align}
+S_{ij} = \frac{P_{ji}\pi_i}{\sqrt{\pi_i\pi_j}} = \pi_j^{-1/2} P_{ji} \pi_i^{1/2} = S_{ji}.
+\end{align}
+\]</span> Thus <span class="math inline">\(\bS = \bS^T\)</span>. Because <span class="math inline">\(\bP\)</span> is similar to the real symmetric matrix <span class="math inline">\(\bS\)</span>, its eigenvalues are real.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-time-markov-chains-and-the-cme" class="level2" data-number="34.2">
+<h2 data-number="34.2" class="anchored" data-anchor-id="continuous-time-markov-chains-and-the-cme"><span class="header-section-number">34.2</span> Continuous-Time Markov Chains and the CME</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
+<span class="screen-reader-only">Note</span>Definition: Continuous-Time Infinitesimal Generator
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>A continuous-time Markov jump process on a discrete state space evolves according to <span class="math display">\[
+\begin{align}
+\frac{d}{dt}\bp(t) = \bA \bp(t),
+\end{align}
+\]</span> where <span class="math inline">\(\bp(t)\)</span> is the probability distribution vector and <span class="math inline">\(\bA\)</span> is an infinitesimal generator matrix satisfying:</p>
 <ol type="1">
-<li><p>Compute the <span class="math inline">\((i,j)\)</span> entry of <span class="math inline">\(\bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}\)</span>.</p></li>
-<li><p>Use detailed balance from the result above to show that this entry equals the <span class="math inline">\((j,i)\)</span> entry.</p></li>
-<li><p>Explain why similarity preserves eigenvalues.</p></li>
-<li><p>Conclude the result above.</p></li>
+<li><p><span class="math inline">\(A_{ij} \geq 0\)</span> for all <span class="math inline">\(i \neq j\)</span> (transition rates between distinct states are nonnegative).</p></li>
+<li><p><span class="math inline">\(\sum_{i} A_{ij} = 0\)</span> for every column <span class="math inline">\(j\)</span> (column sums vanish).</p></li>
+<li><p><span class="math inline">\(A_{jj} = -\sum_{i \neq j} A_{ij} \leq 0\)</span> (diagonal entries equal the negative total exit rate from state <span class="math inline">\(j\)</span>).</p></li>
 </ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Chemical Master Equation (CME)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider a chemically reacting system with <span class="math inline">\(S\)</span> molecular species and <span class="math inline">\(R\)</span> reaction channels. The discrete state <span class="math inline">\(\bx \in \mathbb{N}_0^S\)</span> records the copy number of each species. Each reaction channel <span class="math inline">\(k \in \{1,...,R\}\)</span> is characterized by a stoichiometric change vector <span class="math inline">\(\bnu_k \in \mathbb{Z}^S\)</span> and a propensity function <span class="math inline">\(\alpha_k(\bx; \bc) \geq 0\)</span> parameterized by rate constants <span class="math inline">\(\bc\)</span>.</p>
+<p>The Chemical Master Equation governs the probability <span class="math inline">\(p(\bx, t)\)</span> of occupying state <span class="math inline">\(\bx\)</span> at time <span class="math inline">\(t\)</span>: <span class="math display">\[
+\begin{align}
+\frac{\partial p(\bx, t)}{\partial t}
+    =
+    \sum_{k=1}^R \Big[ \alpha_k(\bx - \bnu_k; \bc)\, p(\bx - \bnu_k, t) - \alpha_k(\bx; \bc)\, p(\bx, t) \Big].
+\end{align}
+\]</span> Enumerating the reachable states yields the linear system of ordinary differential equations <span class="math display">\[
+\begin{align}
+\dot{\bp}(t) = \bA(\bc) \bp(t), \qquad \bp(0) = \bp_0,
+\end{align}
+\]</span> whose exact formal solution is the matrix exponential action <span class="math inline">\(\bp(t) = \exp(t\bA(\bc)) \bp_0\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="finite-state-projection-fsp" class="level2" data-number="34.3">
+<h2 data-number="34.3" class="anchored" data-anchor-id="finite-state-projection-fsp"><span class="header-section-number">34.3</span> Finite State Projection (FSP)</h2>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Infinite state bottleneck)</strong> The CME generator <span class="math inline">\(\bA(\bc)\)</span> is defined over an infinite or very large discrete state space <span class="math inline">\(\mathbb{N}_0^S\)</span>. A finite computation therefore requires truncation, aggregation, or another representation that avoids enumerating the full state space.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Finite State Projection (FSP)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let the discrete state space be partitioned into a finite retained index set <span class="math inline">\(J \subset \mathbb{N}_0^S\)</span> with <span class="math inline">\(|J| = K\)</span>, and an infinite or omitted complement set <span class="math inline">\(J^c\)</span>. Permuting states so that <span class="math inline">\(J\)</span> appears first partitions the full generator: <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \bA_J &amp; \bA_{J, J^c} \\ \bA_{J^c, J} &amp; \bA_{J^c} \end{pmatrix}.
+\end{align}
+\]</span> The Finite State Projection approximates the true marginal probability on <span class="math inline">\(J\)</span> by solving the isolated subgenerator system <span class="math display">\[
+\begin{align}
+\dot{\bp}_J(t) = \bA_J \bp_J(t), \qquad \bp_J(0) = \bp_0|_J.
+\end{align}
+\]</span> Here <span class="math inline">\(\bA_J\)</span> has negative diagonal entries and nonnegative off-diagonal entries, but its column sums are strictly nonpositive because transitions into <span class="math inline">\(J^c\)</span> act as probability leaks.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: FSP 1-Norm Leakage Bound
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bp(t)\)</span> be the exact probability distribution solving <span class="math inline">\(\dot{\bp} = \bA\bp\)</span> with initial condition supported on <span class="math inline">\(J\)</span>, so that <span class="math inline">\(\mathbf{1}^T\bp(t) = 1\)</span>. Let <span class="math inline">\(\bp_J(t) = \exp(t\bA_J)\bp_0|_J\)</span> be the FSP solution. Then:</p>
+<ol type="1">
+<li><p>Pointwise underestimation: <span class="math inline">\(\bzero \leq \bp_J(t) \leq \bp|_J(t)\)</span> for all <span class="math inline">\(t \geq 0\)</span>.</p></li>
+<li><p>The full-space error of the zero-padded FSP approximation equals the leaked mass: <span class="math display">\[
+\begin{align}
+\|\bp(t) - \widetilde{\bp}_J(t)\|_1 = 1 - \mathbf{1}^T\bp_J(t),
+\end{align}
+\]</span> where <span class="math inline">\(\widetilde{\bp}_J(t)\)</span> is <span class="math inline">\(\bp_J(t)\)</span> padded with zeros on <span class="math inline">\(J^c\)</span>. The retained-state error satisfies <span class="math display">\[
+\begin{align}
+\|\bp|_J(t)-\bp_J(t)\|_1
+         =\mathbf{1}^T\bp|_J(t)-\mathbf{1}^T\bp_J(t)
+         \leq 1-\mathbf{1}^T\bp_J(t).
+\end{align}
+\]</span></p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The exact retained dynamics satisfy the non-autonomous subgenerator ODE <span class="math display">\[
+\begin{align}
+\frac{d}{dt}\bp|_J(t) = \bA_J\bp|_J(t) + \bA_{J,J^c}\bp|_{J^c}(t), \qquad \bp|_J(0) = \bp_0|_J.
+\end{align}
+\]</span> The FSP approximation satisfies <span class="math inline">\(\frac{d}{dt}\bp_J(t) = \bA_J\bp_J(t)\)</span> with the same initial condition <span class="math inline">\(\bp_J(0) = \bp_0|_J\)</span>. Subtracting the two equations gives the defect ODE for the difference <span class="math inline">\(\boldsymbol{\delta}_J(t) = \bp|_J(t) - \bp_J(t)\)</span>: <span class="math display">\[
+\begin{align}
+\frac{d}{dt}\boldsymbol{\delta}_J(t) = \bA_J \boldsymbol{\delta}_J(t) + \bA_{J,J^c}\bp|_{J^c}(t), \qquad \boldsymbol{\delta}_J(0) = \bzero.
+\end{align}
+\]</span> By Duhamel’s formula (variation of constants): <span class="math display">\[
+\begin{align}
+\boldsymbol{\delta}_J(t) = \bp|_J(t) - \bp_J(t) = \int_0^t e^{(t-s)\bA_J}\bA_{J,J^c}\bp|_{J^c}(s)\,ds.
+\end{align}
+\]</span> Because <span class="math inline">\(\bA_J\)</span> has non-negative off-diagonal entries, it is a Metzler matrix, and its matrix exponential <span class="math inline">\(e^{\tau\bA_J}\)</span> is entrywise non-negative for all <span class="math inline">\(\tau \geq 0\)</span>. Furthermore, the coupling matrix <span class="math inline">\(\bA_{J, J^c} \geq \bzero\)</span> and exact probabilities <span class="math inline">\(\bp|_{J^c}(s) \geq \bzero\)</span> are non-negative. Consequently, the integrand is entrywise non-negative, proving that <span class="math display">\[
+\begin{align}
+\bp|_J(t) - \bp_J(t) \geq \bzero \implies \bzero \leq \bp_J(t) \leq \bp|_J(t) \quad \text{for all } t \geq 0.
+\end{align}
+\]</span></p>
+<p>Because <span class="math inline">\(\bp_J(t) \leq \bp|_J(t)\)</span>, the marginal 1-norm difference on <span class="math inline">\(J\)</span> simplifies without absolute value signs: <span class="math display">\[
+\begin{align}
+\|\bp|_J(t) - \bp_J(t)\|_1
+    =
+    \sum_{i \in J} \big( p_i(t) - [\bp_J(t)]_i \big)
+    =
+    \mathbf{1}^T\bp|_J(t) - \mathbf{1}^T\bp_J(t).
+\end{align}
+\]</span> The total probability across the full space satisfies <span class="math inline">\(\mathbf{1}^T\bp|_J(t) + \mathbf{1}^T\bp|_{J^c}(t) = 1\)</span>. The omitted probability mass on <span class="math inline">\(J^c\)</span> is exactly <span class="math inline">\(1 - \mathbf{1}^T\bp|_J(t)\)</span>. Adding the unmodeled mass on <span class="math inline">\(J^c\)</span> gives <span class="math display">\[
+\begin{align}
+\|\bp(t) - \widetilde{\bp}_J(t)\|_1
+    &amp;=
+    \|\bp|_J(t) - \bp_J(t)\|_1 + \|\bp|_{J^c}(t)\|_1 \\
+    &amp;=
+    \big(\mathbf{1}^T\bp|_J(t) - \mathbf{1}^T\bp_J(t)\big) + \big(1 - \mathbf{1}^T\bp|_J(t)\big) \\
+    &amp;=
+    1 - \mathbf{1}^T\bp_J(t).
+\end{align}
+\]</span> Since total variation distance is one half of the <span class="math inline">\(1\)</span>-norm distance, the zero-padded approximation has total variation error <span class="math inline">\((1-\mathbf{1}^T\bp_J(t))/2\)</span>. A sink-state comparison uses a different state space and must be stated separately.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="truncation-strategy-probability-flux-versus-probability-mass" class="level2" data-number="34.4">
+<h2 data-number="34.4" class="anchored" data-anchor-id="truncation-strategy-probability-flux-versus-probability-mass"><span class="header-section-number">34.4</span> Truncation Strategy: Probability Flux versus Probability Mass</h2>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Failure of instantaneous mass truncation)</strong> A naive heuristic for expanding or pruning states in the FSP retains states where the instantaneous probability <span class="math inline">\(p_i(t)\)</span> exceeds a threshold <span class="math inline">\(\varepsilon\)</span>. In multiscale or stiff reaction networks, this heuristic can discard a low-mass intermediate that carries substantial probability flux and thereby produce an order-one error.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Probability Flux
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a transition from state <span class="math inline">\(j\)</span> to state <span class="math inline">\(i\)</span> with rate <span class="math inline">\(A_{ij} &gt; 0\)</span>, the instantaneous probability flux at time <span class="math inline">\(t\)</span> is <span class="math display">\[
+\begin{align}
+\Phi_{ij}(t) = A_{ij} p_j(t).
+\end{align}
+\]</span> The cumulative probability flux entering state <span class="math inline">\(i\)</span> over the time interval <span class="math inline">\([0, T]\)</span> is <span class="math display">\[
+\begin{align}
+F_i(T) = \int_0^T \sum_{j \neq i} A_{ij} p_j(s)\, ds.
+\end{align}
+\]</span></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1038,63 +1175,13 @@ k_\varepsilon \approx \frac{\log(1/\varepsilon)}{\delta}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Design Tool: Metropolis-Hastings)</strong> Construct a reversible chain for a desired <span class="math inline">\(\boldsymbol{\pi}\)</span> by accepting moves with probability <span class="math inline">\(a = \min(1, \frac{\pi_{\text{new}} Q(\text{old}|\text{new})}{\pi_{\text{old}} Q(\text{new}|\text{old})})\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: Metropolis-Hastings Detailed Balance
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(Q_{ij}\)</span> be a proposal probability from state <span class="math inline">\(j\)</span> to state <span class="math inline">\(i\)</span>. Define <span class="math display">\[
-\begin{align}
-A_{ij}
-    =
-    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right),
-    \qquad i\neq j.
-\end{align}
-\]</span> The transition probabilities <span class="math inline">\(P_{ij}=Q_{ij}A_{ij}\)</span> for <span class="math inline">\(i\neq j\)</span>, with the remaining probability kept at state <span class="math inline">\(j\)</span>, satisfy detailed balance with <span class="math inline">\(\boldsymbol{\pi}\)</span>.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Proof
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(i\neq j\)</span>, <span class="math display">\[
-\begin{align}
-\pi_j P_{ij}
-    =
-    \pi_j Q_{ij}
-    \min\left(1,\frac{\pi_i Q_{ji}}{\pi_j Q_{ij}}\right)
-    =
-    \min(\pi_j Q_{ij},\pi_i Q_{ji}).
-\end{align}
-\]</span> The same calculation with <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> interchanged gives <span class="math display">\[
-\begin{align}
-\pi_i P_{ji}
-    =
-    \min(\pi_i Q_{ji},\pi_j Q_{ij}).
-\end{align}
-\]</span> Thus <span class="math inline">\(\pi_jP_{ij}=\pi_iP_{ji}\)</span>.</p>
-</div>
+<p><strong>(Transient intermediate states)</strong> Consider a reaction cascade <span class="math inline">\(S_1 \xrightarrow{k_1} S_2 \xrightarrow{k_2} S_3\)</span> with <span class="math inline">\(k_2 \gg k_1\)</span>. State <span class="math inline">\(S_2\)</span> has a rapid exit rate, so its instantaneous probability is tiny: <span class="math inline">\(p_2(t) \approx \frac{k_1}{k_2} p_1(t) \ll 1\)</span>. Pruning based on instantaneous mass <span class="math inline">\(p_2(t) &lt; \varepsilon\)</span> deletes <span class="math inline">\(S_2\)</span> from the state space. However, every reaction producing <span class="math inline">\(S_3\)</span> must pass through <span class="math inline">\(S_2\)</span>. Deleting <span class="math inline">\(S_2\)</span> severs the probability flow entirely, causing an <span class="math inline">\(\mathcal{O}(1)\)</span> error in <span class="math inline">\(p_3(T)\)</span>.</p>
+<p>Robust adaptive FSP algorithms monitor cumulative probability flux rather than instantaneous probability mass. A state may have negligible instantaneous mass yet carry substantial probability flux across the network.</p>
 </div>
 </div>
 </section>
-<section id="exercises" class="level2" data-number="33.4">
-<h2 data-number="33.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">33.4</span> Exercises</h2>
+<section id="exercises" class="level2" data-number="34.5">
+<h2 data-number="34.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">34.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1106,17 +1193,77 @@ A_{ij}
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Construct <span class="math inline">\(\bP\)</span> for a 2-state chain with transition probabilities <span class="math inline">\(\{0.1, 0.2\}\)</span>. Find <span class="math inline">\(\boldsymbol{\pi}\)</span>.</p></li>
-<li><p>Prove that <span class="math inline">\(|\lambda| \leq 1\)</span> for any stochastic matrix using the result above.</p></li>
-<li><p>Simulate 100 steps of PageRank on a 5-node graph. Check convergence rate vs.&nbsp;<span class="math inline">\(\lambda_2\)</span> using the result above.</p></li>
-<li><p>Find <span class="math inline">\(\boldsymbol{\pi}\)</span> for a random walk on <span class="math inline">\(K_4\)</span> (complete graph).</p></li>
-<li><p>Give one reducible chain and one periodic irreducible chain. Explain which part of the result above fails.</p></li>
-<li><p>Verify detailed balance for a three-state Metropolis-Hastings chain using the result above.</p></li>
+<li><p><strong>Compute.</strong> <strong>(Discrete spectrum and mixing)</strong> Under the column-stochastic convention, let <span class="math inline">\(\bP=\begin{pmatrix}0.8&amp;0.1\\0.2&amp;0.9\end{pmatrix}\)</span>. Find its stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span>, its second eigenvalue, and the spectral gap <span class="math inline">\(\delta\)</span>. Starting from <span class="math inline">\(\bx^{(0)}=\be_1\)</span>, derive the exact formula for <span class="math inline">\(\|\bP^k\bx^{(0)}-\boldsymbol{\pi}\|_2\)</span>. Compare the first <span class="math inline">\(k\)</span> for which this error is at most <span class="math inline">\(10^{-3}\)</span> with the estimate <span class="math inline">\(\log(10^3)/\delta\)</span>, and explain why the latter is only an asymptotic rule.</p></li>
+<li><p><strong>Compute.</strong> <strong>(Detailed balance)</strong> Consider the column-stochastic matrix <span class="math display">\[
+\begin{align}
+\bP=\begin{pmatrix}0.6&amp;0.2&amp;0\\0.4&amp;0.5&amp;0.1\\0&amp;0.3&amp;0.9\end{pmatrix}.
+\end{align}
+\]</span> Find its stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span>, verify detailed balance on each edge, and compute <span class="math inline">\(\bS = \bD_{\boldsymbol{\pi}}^{-1/2}\bP\bD_{\boldsymbol{\pi}}^{1/2}\)</span>. Verify directly that <span class="math inline">\(\bS\)</span> is symmetric and that the eigenvalues of <span class="math inline">\(\bP\)</span> are real.</p></li>
+<li><p><strong>Derive.</strong> <strong>(FSP 1-norm leakage bound derivation)</strong> Consider a CTMC with generator <span class="math inline">\(\bA\)</span> partitioned into retained set <span class="math inline">\(J\)</span> and complement <span class="math inline">\(J^c\)</span>.</p>
+<ol type="1">
+<li><p>Prove that <span class="math inline">\(\mathbf{1}^T\bA_J \leq \bzero^T\)</span> elementwise, with strict inequality for at least one entry if transitions from <span class="math inline">\(J\)</span> to <span class="math inline">\(J^c\)</span> exist.</p></li>
+<li><p>Show that <span class="math inline">\(\frac{d}{dt}\big(\mathbf{1}^T\bp_J(t)\big) \leq 0\)</span>, confirming that total modeled probability mass decreases monotonically over time.</p></li>
+<li><p>Let <span class="math inline">\(\varepsilon=1-\mathbf{1}^T\bp_J(T)\)</span>. Verify from the result above that the zero-padded FSP error is exactly <span class="math inline">\(\varepsilon\)</span> in the <span class="math inline">\(1\)</span>-norm. Explain what additional identification of omitted states would be needed before comparing an absorbing sink with the exact distribution.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>(Probability mass versus cumulative flux in stiff cascades)</strong> Consider the three-state continuous-time Markov chain <span class="math display">\[
+\begin{align}
+X_1 \xrightarrow{k_1} X_2 \xrightarrow{k_2} X_3
+\end{align}
+\]</span> with <span class="math inline">\(k_1 = 1\)</span>, <span class="math inline">\(k_2 = 10^4\)</span>, and initial condition <span class="math inline">\(\bp(0) = (1, 0, 0)^T\)</span>.</p>
+<ol type="1">
+<li><p>Solve the system analytically for <span class="math inline">\(p_1(t), p_2(t), p_3(t)\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\max_{t \geq 0} p_2(t) \approx 10^{-4}\)</span>. If a threshold <span class="math inline">\(\varepsilon = 10^{-3}\)</span> is used to prune states by instantaneous mass, state <span class="math inline">\(X_2\)</span> is discarded at all times.</p></li>
+<li><p>Compute the cumulative flux <span class="math inline">\(\int_0^T k_1 p_1(s)\, ds\)</span> entering <span class="math inline">\(X_2\)</span> for <span class="math inline">\(T = 3\)</span>. Show that over <span class="math inline">\(95\%\)</span> of the total system probability passes through <span class="math inline">\(X_2\)</span> despite its negligible instantaneous mass.</p></li>
+<li><p>Explain why adaptive truncation based on cumulative probability flux preserves state <span class="math inline">\(X_2\)</span> while mass-based thresholding disconnects the state space.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>(Birth–death process and infinite generator truncation)</strong> For a simple birth–death process with birth rate <span class="math inline">\(\lambda\)</span> and death rate <span class="math inline">\(\mu x\)</span>, write down the tridiagonal subgenerator <span class="math inline">\(\bA_J\)</span> for copy numbers <span class="math inline">\(x \in \{0, 1, ..., N\}\)</span>. Formulate the exit rate from boundary state <span class="math inline">\(N\)</span> and derive the leakage rate <span class="math inline">\(\frac{d}{dt}\mathbf{1}^T\bp_J(t)\)</span> as a function of <span class="math inline">\(p_N(t)\)</span>.</p></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Literature trail: The original finite state projection argument
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read Brian Munsky and Mustafa Khammash’s 2006 paper, <em>The Finite State Projection Algorithm for the Solution of the Chemical Master Equation</em> <span class="citation" data-cites="munskykhammash2006">(<a href="../references.html#ref-munskykhammash2006" role="doc-biblioref">Munsky and Khammash 2006</a>)</span>.</p>
+<p><strong>Search hint.</strong> The exact title and authors lead directly to the <em>Journal of Chemical Physics</em> article.</p>
+<p><strong>Mathematical hint.</strong> Be careful about row-vector versus column-vector conventions and about whether the approximation is zero-padded or augmented by a sink. These choices change the form in which the error certificate is stated.</p>
+<ol type="1">
+<li><p>Give a complete citation and locate the paper’s central FSP theorem.</p></li>
+<li><p>Translate its generator, probability vector, retained set, and error parameter into this chapter’s convention.</p></li>
+<li><p>State the positivity and generator assumptions that make the comparison argument work.</p></li>
+<li><p>Reconstruct the step that turns missing probability mass into an error certificate. Then compare the paper’s statement with the result above, identifying exactly which conclusions are identical and which depend on the chosen state-space representation.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The finite-state projection method and its error certificate originate with Munsky and Khammash <span class="citation" data-cites="munskykhammash2006">(<a href="../references.html#ref-munskykhammash2006" role="doc-biblioref">Munsky and Khammash 2006</a>)</span>. Higham’s treatment of matrix functions is useful background for the exponential calculations used here <span class="citation" data-cites="higham2008">(<a href="../references.html#ref-higham2008" role="doc-biblioref">Higham 2008</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-higham2008" class="csl-entry" role="listitem">
+Higham, Nicholas J. 2008. <em>Functions of Matrices: Theory and Computation</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898717778">https://doi.org/10.1137/1.9780898717778</a>.
+</div>
+<div id="ref-munskykhammash2006" class="csl-entry" role="listitem">
+Munsky, Brian, and Mustafa Khammash. 2006. <span>“The Finite State Projection Algorithm for the Solution of the Chemical Master Equation.”</span> <em>The Journal of Chemical Physics</em> 124 (4): 044104. <a href="https://doi.org/10.1063/1.2145882">https://doi.org/10.1063/1.2145882</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1535,13 +1682,13 @@ A_{ij}
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../applications/fourier.html" class="pagination-link" aria-label="Fourier Analysis as Change of Basis">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span>
+      <a href="../applications/matrix-exponential.html" class="pagination-link" aria-label="Matrix Exponentials and Krylov Subspace Actions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../applications/koopman.html" class="pagination-link" aria-label="Koopman Theory, DMD, and SINDy">
-        <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../applications/koopman.html" class="pagination-link" aria-label="Koopman Theory, EDMD, and Continuous Generators">
+        <span class="nav-page-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

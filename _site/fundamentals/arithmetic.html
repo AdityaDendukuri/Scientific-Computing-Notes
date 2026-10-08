@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Matrix Arithmetic – Scientific Computing</title>
+<title>3&nbsp; Matrix Arithmetic – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -340,7 +350,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/arithmetic.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/arithmetic.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -671,9 +710,9 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#addition-and-subtraction" id="toc-addition-and-subtraction" class="nav-link active" data-scroll-target="#addition-and-subtraction"><span class="header-section-number">4.1</span> Addition and Subtraction</a></li>
-  <li><a href="#dot-product" id="toc-dot-product" class="nav-link" data-scroll-target="#dot-product"><span class="header-section-number">4.2</span> Dot Product</a></li>
-  <li><a href="#matrix-inverse" id="toc-matrix-inverse" class="nav-link" data-scroll-target="#matrix-inverse"><span class="header-section-number">4.3</span> Matrix Inverse</a></li>
+  <li><a href="#addition-and-subtraction" id="toc-addition-and-subtraction" class="nav-link active" data-scroll-target="#addition-and-subtraction"><span class="header-section-number">3.1</span> Addition and Subtraction</a></li>
+  <li><a href="#dot-product" id="toc-dot-product" class="nav-link" data-scroll-target="#dot-product"><span class="header-section-number">3.2</span> Dot Product</a></li>
+  <li><a href="#matrix-inverse" id="toc-matrix-inverse" class="nav-link" data-scroll-target="#matrix-inverse"><span class="header-section-number">3.3</span> Matrix Inverse</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/fundamentals/arithmetic.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +720,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/arithmetic.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../fundamentals/math-notation.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../fundamentals/arithmetic.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></h1>
 </div>
 
 
@@ -700,9 +739,9 @@ window.Quarto = {
 </header>
 
 
-<p>We are all familiar with scalar arithmetic: addition, subtraction, multiplication, and properties such as associativity and distributivity. In the following sections we extend these operations to vectors and matrices, building the algebraic machinery used throughout scientific computing.</p>
-<section id="addition-and-subtraction" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="addition-and-subtraction"><span class="header-section-number">4.1</span> Addition and Subtraction</h2>
+<p>Matrix operations generalize scalar addition, subtraction, and multiplication to arrays of numbers under compatibility constraints on their dimensions. We construct these operations from the dot product of coordinate vectors, determine their computational operation counts, and examine matrix inversion as an analytical concept rather than a practical algorithm.</p>
+<section id="addition-and-subtraction" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="addition-and-subtraction"><span class="header-section-number">3.1</span> Addition and Subtraction</h2>
 <p>Matrix addition generalizes scalar addition by operating entry-wise. The key constraint is dimensional compatibility: two matrices can be added only when they share the same shape.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -744,7 +783,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
+<p><strong>Check.</strong> Refer to the result above.</p>
 <ol type="1">
 <li><p>Let <span class="math inline">\(\bA = \begin{pmatrix}1 &amp; 2 \\ 3 &amp; 4\end{pmatrix}\)</span> and <span class="math inline">\(\bB = \begin{pmatrix}5 &amp; 6 \\ 7 &amp; 8\end{pmatrix}\)</span>. Compute <span class="math inline">\(\bA + \bB\)</span> and <span class="math inline">\(2\bA - \bB\)</span> by hand.</p></li>
 <li><p>In NumPy, verify your answers using <code>np.array</code>. Then check whether <code>np.array([1,2,3])</code> <span class="math inline">\(+\)</span> <code>np.array([1,2])</code> raises an error and explain why.</p></li>
@@ -855,7 +894,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above and the result above.</p>
+<p><strong>Check.</strong> Refer to the result above and the result above.</p>
 <ol type="1">
 <li><p>Compute <span class="math inline">\(3\bA - 2\bB\)</span> for <span class="math inline">\(\bA = \begin{pmatrix}1 &amp; 0 \\ -1 &amp; 2\end{pmatrix}\)</span> and <span class="math inline">\(\bB = \begin{pmatrix}2 &amp; 1 \\ 0 &amp; -1\end{pmatrix}\)</span>.</p></li>
 <li><p>The standard basis for <span class="math inline">\(\fR^{2 \times 2}\)</span> consists of four matrices <span class="math inline">\(\bE^{(ij)}\)</span>. Write them out explicitly and verify that <span class="math inline">\(\bA = \sum_{i,j} a_{ij}\bE^{(ij)}\)</span> holds for your <span class="math inline">\(\bA\)</span> above.</p></li>
@@ -863,8 +902,8 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 </section>
-<section id="dot-product" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="dot-product"><span class="header-section-number">4.2</span> Dot Product</h2>
+<section id="dot-product" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="dot-product"><span class="header-section-number">3.2</span> Dot Product</h2>
 <p>Before defining the general matrix product, we introduce the dot product of two vectors. The matrix product will then be understood entry-wise as a collection of dot products.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -891,7 +930,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above.</p>
+<p><strong>Check.</strong> Refer to the result above.</p>
 <ol type="1">
 <li><p>Compute <span class="math inline">\(\ba \cdot \bb\)</span> for <span class="math inline">\(\ba = (1, 2, 3)^T\)</span> and <span class="math inline">\(\bb = (-1, 0, 2)^T\)</span> by hand.</p></li>
 <li><p>In NumPy, evaluate this using <code>np.dot(a, b)</code> and also with <code>a @ b</code>. Confirm both give the same result.</p></li>
@@ -1002,7 +1041,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above and the result above. Let <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span> and <span class="math inline">\(\bB = \begin{pmatrix} 1 &amp; -1 \\ 2 &amp; 4 \end{pmatrix}\)</span>.</p>
+<p><strong>Compute.</strong> Refer to the result above and the result above. Let <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span> and <span class="math inline">\(\bB = \begin{pmatrix} 1 &amp; -1 \\ 2 &amp; 4 \end{pmatrix}\)</span>.</p>
 <ol type="1">
 <li><p>Compute <span class="math inline">\(\bA\bB\)</span> and <span class="math inline">\(\bB\bA\)</span> by hand. Confirm <span class="math inline">\(\bA\bB \neq \bB\bA\)</span>.</p></li>
 <li><p>Find a nonzero matrix <span class="math inline">\(\bC \neq \bI\)</span> that commutes with <span class="math inline">\(\bA\)</span> (i.e., <span class="math inline">\(\bA\bC = \bC\bA\)</span>). <em>Hint: try <span class="math inline">\(\bC = \alpha\bA + \beta\bI\)</span>.</em></p></li>
@@ -1016,7 +1055,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 <li><p>Vectors typically represent points or directions in space.</p></li>
 <li><p>Matrices often represent linear maps or transformations between vector spaces.</p></li>
 </ul>
-<p>This conceptual distinction becomes crucial when discussing eigenvalues and linear transformations.</p>
+<p>This conceptual distinction becomes essential when discussing eigenvalues and linear transformations.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1027,7 +1066,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <span class="math inline">\(\bA, \bB \in \fR^{n \times n}\)</span> and <span class="math inline">\(\bx \in \fR^n\)</span>, computing <span class="math inline">\(\bA(\bB\bx)\)</span> via two matrix-vector products costs <span class="math inline">\(O(n^2)\)</span> flops, whereas forming <span class="math inline">\((\bA\bB)\bx\)</span> via a matrix-matrix product costs <span class="math inline">\(O(n^3)\)</span> flops.</p>
+<p>For <span class="math inline">\(\bA, \bB \in \fR^{n \times n}\)</span> and <span class="math inline">\(\bx \in \fR^n\)</span>, computing <span class="math inline">\(\bA(\bB\bx)\)</span> via two matrix–vector products costs <span class="math inline">\(O(n^2)\)</span> flops, whereas forming <span class="math inline">\((\bA\bB)\bx\)</span> via a matrix–matrix product costs <span class="math inline">\(O(n^3)\)</span> flops.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1040,7 +1079,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Suppose <span class="math inline">\(\bA, \bB \in \fR^{n \times n}\)</span> and <span class="math inline">\(\bx \in \fR^n\)</span>.</p>
+<p><strong>Explore.</strong> Suppose <span class="math inline">\(\bA, \bB \in \fR^{n \times n}\)</span> and <span class="math inline">\(\bx \in \fR^n\)</span>.</p>
 <ol type="1">
 <li><p><em>Approach 1:</em> Compute <span class="math inline">\(\bM = \bA\bB\)</span> first (cost?), then <span class="math inline">\(\bM\bx\)</span> (cost?). Write the total flop count.</p></li>
 <li><p><em>Approach 2:</em> Compute <span class="math inline">\(\by = \bB\bx\)</span> first (cost?), then <span class="math inline">\(\bA\by\)</span> (cost?). Write the total flop count.</p></li>
@@ -1050,8 +1089,8 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 </section>
-<section id="matrix-inverse" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="matrix-inverse"><span class="header-section-number">4.3</span> Matrix Inverse</h2>
+<section id="matrix-inverse" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="matrix-inverse"><span class="header-section-number">3.3</span> Matrix Inverse</h2>
 <p>We now turn to a fundamental question: under what conditions can a matrix operation be defined that is analogous to scalar division? The matrix inverse plays the role of the reciprocal in scalar arithmetic, but it exists only under specific conditions.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1168,7 +1207,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Refer to the result above and the result above.</p>
+<p><strong>Compute.</strong> Refer to the result above and the result above.</p>
 <ol type="1">
 <li><p>For <span class="math inline">\(\bA = \begin{pmatrix} 2 &amp; 1 \\ 5 &amp; 3 \end{pmatrix}\)</span>, compute <span class="math inline">\(\bA^{-1}\)</span> by hand using the <span class="math inline">\(2 \times 2\)</span> formula <span class="math inline">\(\bA^{-1} = \frac{1}{\det\bA}\begin{pmatrix} d &amp; -b \\ -c &amp; a \end{pmatrix}\)</span>. Verify <span class="math inline">\(\bA\bA^{-1} = \bI\)</span>.</p></li>
 <li><p>Given <span class="math inline">\(\bB = \begin{pmatrix} 1 &amp; 0 \\ -1 &amp; 1 \end{pmatrix}\)</span>, use the Reversal Law to compute <span class="math inline">\((\bA\bB)^{-1}\)</span> without inverting a new <span class="math inline">\(2 \times 2\)</span> system.</p></li>
@@ -1199,7 +1238,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In this exercise, we will prove that a matrix is involutory (the result above) if and only if it is its own inverse. Refer to the result above and the result above.</p>
+<p><strong>Derive.</strong> In this exercise, we will prove that a matrix is involutory (the result above) if and only if it is its own inverse. Refer to the result above and the result above.</p>
 <ol type="1">
 <li><p>Suppose <span class="math inline">\(\bA^2 = \bI\)</span>. Multiply both sides of <span class="math inline">\(\bA\bA = \bI\)</span> on the right by <span class="math inline">\(\bA^{-1}\)</span> to deduce <span class="math inline">\(\bA^{-1} = \bA\)</span>.</p></li>
 <li><p>Conversely, suppose <span class="math inline">\(\bA^{-1} = \bA\)</span>. Show <span class="math inline">\(\bA^2 = \bI\)</span>.</p></li>
@@ -1217,7 +1256,7 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Identifying Invertibility)</strong> For each matrix below, determine without computing the inverse whether it is invertible. Give a one-sentence justification. <span class="math display">\[
+<p><strong>Check.</strong> <strong>(Identifying Invertibility)</strong> For each matrix below, determine without computing the inverse whether it is invertible. Give a one-sentence justification. <span class="math display">\[
 \begin{align}
 (a)\ \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix} \qquad
   (b)\ \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix} \qquad
@@ -1647,13 +1686,13 @@ c\bA = c \printmatsq{a} = \printmatsq{c a},
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../fundamentals/vectors-matrices.html" class="pagination-link" aria-label="Vectors and Matrices">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span>
+      <a href="../fundamentals/vectors-matrices.html" class="pagination-link" aria-label="Vectors, Coordinates, and Linear Maps">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../fundamentals/norms.html" class="pagination-link" aria-label="Introduction to Norms">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../fundamentals/norms.html" class="pagination-link" aria-label="Inner Products, Geometry, and Norms">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

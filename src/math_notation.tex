@@ -1,11 +1,13 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
 \subsection{Mathematical Notation and Proof Techniques}
 \label{sub:math-notation}
 
-Standard vocabulary for proofs and algorithms.
+\textBox{%
+This section establishes the logical, set-theoretic, and matrix notation used throughout these notes, together with the standard proof structures.
+}
 
 \subsubsection{Logic and Set Notation}
 
@@ -31,7 +33,7 @@ Standard vocabulary for proofs and algorithms.
 \begin{itemize}
   \item $x \in S$: $x$ is an element of $S$.
   \item $S \subseteq T$: $S$ is a subset of $T$.
-  \item $S \cup T$: Union; $S \cap T$: Intersection; $S \setminus T$: Set difference.
+  \item $S \cup T$ (union), $S \cap T$ (intersection), and $S \setminus T$ (set difference).
   \item $\{x \in S : P(x)\}$: Set builder notation.
   \item \textbf{Number Sets:}\enspace $\fZ$ (integers), $\fR$ (reals), $\fC$ (complex), $\fR^n$ (vectors), $\fR^{m \times n}$ (matrices).
 \end{itemize}
@@ -39,6 +41,7 @@ Standard vocabulary for proofs and algorithms.
 \label{def:set-notation}
 
 \addExcr{%
+\exCheck
 \begin{enumerate}
   \item Write ``every invertible matrix has a nonzero determinant'' using quantifiers and implication.
   \item State the contrapositive of: ``if $\bA$ is invertible, then $\bA\bx = \bzero \Rightarrow \bx = \bzero$.''
@@ -68,10 +71,11 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
 \label{def:proof-induction}
 
 \addRemark{%
-\textbf{Numerical Proofs:}\enspace Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
+\textbf{(Numerical proofs)}\enspace Often validate that an approximation is stable or that an error term converges. Frequently involves showing $|f(x) - \hat{f}(x)| \leq \varepsilon$ for small $\varepsilon$.
 }
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
   \item Prove: if $\bA$ and $\bB$ are symmetric, then $\bA + \bB$ is symmetric.
   \item Prove by contradiction: if $\bA\bx = \bzero \Rightarrow \bx = \bzero$, then $\bA$ has no zero eigenvalue.
@@ -87,7 +91,7 @@ To prove $P(n)$ holds for all integers $n \geq n_0$:
   \item \textbf{Scalars:}\enspace Lowercase italic ($a, b, x$).
   \item \textbf{Vectors:}\enspace Lowercase bold ($\bx, \by, \ba$). Default is column vector.
   \item \textbf{Matrices:}\enspace Uppercase bold ($\bA, \bB, \bQ$).
-  \item \textbf{Indexing:}\enspace 1-based (unlike Python). $x_i$ is $i$-th entry; $a_{ij}$ is $(i,j)$ entry.
+  \item \textbf{Indexing:}\enspace 1-based (unlike Python). Here $x_i$ is the $i$-th entry, and $a_{ij}$ is the $(i,j)$ entry.
 \end{itemize}
 }
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>34&nbsp; Koopman Theory, DMD, and SINDy – Scientific Computing</title>
+<title>35&nbsp; Koopman Theory, EDMD, and Continuous Generators – Scientific Computing</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,6 +52,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../references.html" rel="next">
 <link href="../applications/markov.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -118,11 +138,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -339,7 +369,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/koopman.html"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/koopman.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -371,7 +401,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -386,25 +416,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -439,7 +475,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -451,7 +487,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -468,31 +510,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -509,25 +539,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -535,12 +565,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -550,48 +597,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -599,7 +623,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -607,8 +631,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -616,7 +652,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -624,20 +660,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -648,18 +695,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -670,10 +729,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#koopman-operator-theory" id="toc-koopman-operator-theory" class="nav-link active" data-scroll-target="#koopman-operator-theory"><span class="header-section-number">34.1</span> Koopman Operator Theory</a></li>
-  <li><a href="#dynamic-mode-decomposition-dmd" id="toc-dynamic-mode-decomposition-dmd" class="nav-link" data-scroll-target="#dynamic-mode-decomposition-dmd"><span class="header-section-number">34.2</span> Dynamic Mode Decomposition (DMD)</a></li>
-  <li><a href="#sindy-sparse-identification" id="toc-sindy-sparse-identification" class="nav-link" data-scroll-target="#sindy-sparse-identification"><span class="header-section-number">34.3</span> SINDy: Sparse Identification</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">34.4</span> Exercises</a></li>
+  <li><a href="#koopman-operator-theory" id="toc-koopman-operator-theory" class="nav-link active" data-scroll-target="#koopman-operator-theory"><span class="header-section-number">35.1</span> Koopman Operator Theory</a></li>
+  <li><a href="#dynamic-mode-decomposition-dmd-and-edmd" id="toc-dynamic-mode-decomposition-dmd-and-edmd" class="nav-link" data-scroll-target="#dynamic-mode-decomposition-dmd-and-edmd"><span class="header-section-number">35.2</span> Dynamic Mode Decomposition (DMD) and EDMD</a></li>
+  <li><a href="#cme-koopman-generator-and-polynomial-closure" id="toc-cme-koopman-generator-and-polynomial-closure" class="nav-link" data-scroll-target="#cme-koopman-generator-and-polynomial-closure"><span class="header-section-number">35.3</span> CME Koopman Generator and Polynomial Closure</a></li>
+  <li><a href="#continuous-rate-recovery-and-logarithmic-noise-explosion" id="toc-continuous-rate-recovery-and-logarithmic-noise-explosion" class="nav-link" data-scroll-target="#continuous-rate-recovery-and-logarithmic-noise-explosion"><span class="header-section-number">35.4</span> Continuous Rate Recovery and Logarithmic Noise Explosion</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">35.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/koopman.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -681,9 +741,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications</a></li><li class="breadcrumb-item"><a href="../applications/koopman.html"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/pca.html">Applications and Research Bridges</a></li><li class="breadcrumb-item"><a href="../applications/koopman.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></h1>
+<h1 class="title"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></h1>
 </div>
 
 
@@ -700,9 +760,10 @@ window.Quarto = {
 </header>
 
 
-<p>Koopman analysis studies nonlinear dynamics through linear evolution of observables. DMD fits a finite-dimensional linear model from snapshots. SINDy fits sparse governing equations from a chosen function library.</p>
-<section id="koopman-operator-theory" class="level2" data-number="34.1">
-<h2 data-number="34.1" class="anchored" data-anchor-id="koopman-operator-theory"><span class="header-section-number">34.1</span> Koopman Operator Theory</h2>
+<p><strong>(Markov thread)</strong> The chemical master equation evolves probability densities, while the Koopman generator evolves observables. They are adjoint descriptions of the same Markov dynamics. This duality connects the matrix exponential, sensitivity formulas, polynomial closure, and data-driven operator recovery.</p>
+<p>Koopman operator theory shifts the analysis of nonlinear dynamical systems from finite-dimensional nonlinear state updates to linear transformations on an infinite-dimensional space of observables. Dynamic Mode Decomposition (DMD) and Extended DMD (EDMD) compute finite-dimensional approximations of this operator from snapshot data. In continuous-time Markov jump processes and chemical kinetics, the Koopman generator is the formal adjoint of the Chemical Master Equation, exhibiting exact polynomial closure for unimolecular systems. Recovering continuous rate matrices from discrete Koopman operators requires the matrix logarithm, which suffers from modal noise explosion on fast decaying dynamics.</p>
+<section id="koopman-operator-theory" class="level2" data-number="35.1">
+<h2 data-number="35.1" class="anchored" data-anchor-id="koopman-operator-theory"><span class="header-section-number">35.1</span> Koopman Operator Theory</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -713,12 +774,15 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\bx^{(k+1)} = \mathbf{F}(\bx^{(k)})\)</span> on <span class="math inline">\(\mathcal{M} \subseteq \fR^n\)</span>.</p>
-<ul>
-<li><p><strong>Observable:</strong> Scalar function <span class="math inline">\(g: \mathcal{M} \to \fR\)</span>.</p></li>
-<li><p> Linear operator acting on observables: <span class="math inline">\((\mathcal{K}g)(\bx) = g(\mathbf{F}(\bx))\)</span>.</p></li>
-</ul>
-<p><strong>Lifting:</strong> <span class="math inline">\(\mathcal{K}\)</span> is linear even if <span class="math inline">\(\mathbf{F}\)</span> is nonlinear, at the cost of being infinite-dimensional.</p>
+<p>Consider a discrete-time dynamical system <span class="math display">\[
+\begin{align}
+\bx^{(k+1)} = \mathbf{F}(\bx^{(k)}), \qquad \bx \in \mathcal{M} \subseteq \fR^n.
+\end{align}
+\]</span> An observable is a scalar function <span class="math inline">\(g: \mathcal{M} \to \fR\)</span> belonging to a function space <span class="math inline">\(\mathcal{F}\)</span> (such as <span class="math inline">\(L^2(\mathcal{M})\)</span>). The Koopman operator <span class="math inline">\(\mathcal{K}: \mathcal{F} \to \mathcal{F}\)</span> is defined by <span class="math display">\[
+\begin{align}
+(\mathcal{K}g)(\bx) = g(\mathbf{F}(\bx)).
+\end{align}
+\]</span> The operator <span class="math inline">\(\mathcal{K}\)</span> is linear on <span class="math inline">\(\mathcal{F}\)</span>, even when the underlying map <span class="math inline">\(\mathbf{F}\)</span> is nonlinear.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -727,15 +791,15 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Proposition: Koopman Linearity
+<span class="screen-reader-only">Note</span>Proposition: Linearity of the Koopman Operator
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The Koopman operator in the result above is linear on observables: <span class="math display">\[
+<p>The Koopman operator <span class="math inline">\(\mathcal{K}\)</span> satisfies <span class="math display">\[
 \begin{align}
-\mathcal{K}(\alpha g+\beta h)=\alpha\mathcal{K}g+\beta\mathcal{K}h.
+\mathcal{K}(\alpha g_1 + \beta g_2) = \alpha \mathcal{K} g_1 + \beta \mathcal{K} g_2
 \end{align}
-\]</span></p>
+\]</span> for all scalars <span class="math inline">\(\alpha, \beta \in \fR\)</span> and observables <span class="math inline">\(g_1, g_2 \in \mathcal{F}\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -750,17 +814,19 @@ window.Quarto = {
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>For every state <span class="math inline">\(\bx\)</span>, <span class="math display">\[
+<p>Evaluating the composition at any state <span class="math inline">\(\bx \in \mathcal{M}\)</span> gives <span class="math display">\[
 \begin{align}
-[\mathcal{K}(\alpha g+\beta h)](\bx)
+[\mathcal{K}(\alpha g_1 + \beta g_2)](\bx)
     &amp;=
-    (\alpha g+\beta h)(\mathbf{F}(\bx))\\
+    (\alpha g_1 + \beta g_2)(\mathbf{F}(\bx)) \\
     &amp;=
-    \alpha g(\mathbf{F}(\bx))+\beta h(\mathbf{F}(\bx))\\
+    \alpha g_1(\mathbf{F}(\bx)) + \beta g_2(\mathbf{F}(\bx)) \\
     &amp;=
-    [\alpha\mathcal{K}g+\beta\mathcal{K}h](\bx).
+    \alpha [\mathcal{K}g_1](\bx) + \beta [\mathcal{K}g_2](\bx) \\
+    &amp;=
+    [\alpha \mathcal{K}g_1 + \beta \mathcal{K}g_2](\bx).
 \end{align}
-\]</span> Since this holds for every <span class="math inline">\(\bx\)</span>, the two observables are equal.</p>
+\]</span> Because this equality holds for all <span class="math inline">\(\bx \in \mathcal{M}\)</span>, the operators are identical.</p>
 </div>
 </div>
 </div>
@@ -770,158 +836,257 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Example
+<span class="screen-reader-only">Note</span>Definition: Koopman Eigenfunctions and Eigenvalues
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Nonlinear map)</strong> Let <span class="math inline">\(x_{k+1}=x_k^2\)</span>. For observables <span class="math inline">\(g_1(x)=x\)</span> and <span class="math inline">\(g_2(x)=x^2\)</span>, <span class="math display">\[
+<p>A function <span class="math inline">\(\varphi \in \mathcal{F}\)</span> is a Koopman eigenfunction with eigenvalue <span class="math inline">\(\mu \in \fC\)</span> if <span class="math display">\[
 \begin{align}
-(\mathcal{K}g_1)(x)=x^2=g_2(x),
-    \qquad
-    (\mathcal{K}g_2)(x)=x^4.
+\mathcal{K}\varphi = \mu \varphi.
 \end{align}
-\]</span> The state map is nonlinear, but the operator <span class="math inline">\(g\mapsto g\circ F\)</span> is linear on the space of observables.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Koopman Eigenfunctions
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Observable <span class="math inline">\(\varphi\)</span> satisfying <span class="math inline">\(\mathcal{K}\varphi = \mu \varphi\)</span>.</p>
-<ul>
-<li><p><strong>Temporal Evolution:</strong> <span class="math inline">\(\varphi(\bx^{(k)}) = \mu^k \varphi(\bx^{(0)})\)</span>.</p></li>
-<li><p><strong>Significance:</strong> Provides a global linear coordinate system for nonlinear dynamics.</p></li>
-</ul>
+\]</span> Along system trajectories, Koopman eigenfunctions evolve linearly: <span class="math display">\[
+\begin{align}
+\varphi(\bx^{(k)}) = \mu^k \varphi(\bx^{(0)}).
+\end{align}
+\]</span> A sufficiently rich collection of Koopman eigenfunctions can provide coordinates in which part of the nonlinear dynamics evolves linearly. Such a collection need not exist globally, and finite dictionaries generally capture only a projected approximation.</p>
 </div>
 </div>
 </section>
-<section id="dynamic-mode-decomposition-dmd" class="level2" data-number="34.2">
-<h2 data-number="34.2" class="anchored" data-anchor-id="dynamic-mode-decomposition-dmd"><span class="header-section-number">34.2</span> Dynamic Mode Decomposition (DMD)</h2>
+<section id="dynamic-mode-decomposition-dmd-and-edmd" class="level2" data-number="35.2">
+<h2 data-number="35.2" class="anchored" data-anchor-id="dynamic-mode-decomposition-dmd-and-edmd"><span class="header-section-number">35.2</span> Dynamic Mode Decomposition (DMD) and EDMD</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: DMD Algorithm
+<span class="screen-reader-only">Note</span>Definition: Dynamic Mode Decomposition (DMD)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Finds the best linear fit <span class="math inline">\(\bY \approx \bA\bX\)</span> for snapshot matrices: <span class="math display">\[
+<p>Given snapshot matrices <span class="math inline">\(\bX, \bY \in \fR^{n \times M}\)</span> where <span class="math inline">\(\bY\)</span> advances <span class="math inline">\(\bX\)</span> by time step <span class="math inline">\(h\)</span>: <span class="math display">\[
 \begin{align}
-\bX = [\bx^{(0)} ... \bx^{(m-1)}], \quad \bY = [\bx^{(1)} ... \bx^{(m)}].
+\bX = [\bx_1, \bx_2, ..., \bx_M], \qquad \bY = [\by_1, \by_2, ..., \by_M], \qquad \by_m = \mathbf{F}(\bx_m),
+\end{align}
+\]</span> DMD seeks the best-fit linear map <span class="math inline">\(\bA \approx \bY \bX^\dagger\)</span> in the Frobenius norm.</p>
+<p>To compute the reduced model:</p>
+<ol type="1">
+<li><p>Compute the rank-<span class="math inline">\(r\)</span> truncated SVD <span class="math inline">\(\bX \approx \bU_r \boldsymbol{\Sigma}_r \bV_r^T\)</span>.</p></li>
+<li><p>Project onto the POD subspace: <span class="math inline">\(\widetilde{\bA} = \bU_r^T \bY \bV_r \boldsymbol{\Sigma}_r^{-1} \in \fR^{r \times r}\)</span>.</p></li>
+<li><p>Compute eigendecomposition <span class="math inline">\(\widetilde{\bA} \bw_i = \mu_i \bw_i\)</span>.</p></li>
+<li><p>The DMD modes are <span class="math inline">\(\boldsymbol{\phi}_i = \bY \bV_r \boldsymbol{\Sigma}_r^{-1} \bw_i\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Proposition: DMD as a Least-Squares Fit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The minimum-Frobenius-norm solution of <span class="math display">\[
+\begin{align}
+\min_{\bA}\|\bY-\bA\bX\|_F
+\end{align}
+\]</span> is <span class="math inline">\(\bA_*=\bY\bX^\dagger\)</span>. If <span class="math inline">\(\bX=\bU_r\boldsymbol{\Sigma}_r\bV_r^T\)</span> is a rank-<span class="math inline">\(r\)</span> SVD, the representation of this map on <span class="math inline">\(\mathcal{R}(\bU_r)\)</span> is <span class="math display">\[
+\begin{align}
+\widetilde{\bA}=\bU_r^T\bA_*\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}.
 \end{align}
 \]</span></p>
-<ol type="1">
-<li><p>Compute truncated SVD: <span class="math inline">\(\bX \approx \bU_r \bsigma_r \bV_r^T\)</span>.</p></li>
-<li><p>Construct <span class="math inline">\(r \times r\)</span> reduced operator: <span class="math inline">\(\tilde{\bA} = \bU_r^T \bY \bV_r \bsigma_r^{-1}\)</span>.</p></li>
-<li><p>DMD eigenvalues <span class="math inline">\(\{\lambda_i\}\)</span> and modes <span class="math inline">\(\{\boldsymbol{\phi}_i\}\)</span> are recovered from <span class="math inline">\(\tilde{\bA}\)</span>.</p></li>
-</ol>
 </div>
 </div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Theorem: DMD Least Squares Model
+<span class="screen-reader-only">Tip</span>Proof
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The best-fit linear map in Frobenius norm is <span class="math display">\[
+<p>The rows of <span class="math inline">\(\bA\bX\)</span> are independent least-squares fits to the corresponding rows of <span class="math inline">\(\bY\)</span>. The pseudoinverse therefore gives the minimum-norm minimizer <span class="math inline">\(\bA_*=\bY\bX^\dagger\)</span>. Substituting <span class="math inline">\(\bX^\dagger=\bV_r\boldsymbol{\Sigma}_r^{-1}\bU_r^T\)</span> and projecting on both sides by <span class="math inline">\(\bU_r\)</span> gives <span class="math display">\[
 \begin{align}
-\bA_*=\bY\bX^\dagger.
+\bU_r^T\bA_*\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}\bU_r^T\bU_r
+    =\bU_r^T\bY\bV_r\boldsymbol{\Sigma}_r^{-1}.
 \end{align}
-\]</span> The reduced operator in the result above is the projection of this map onto the rank-<span class="math inline">\(r\)</span> left singular subspace of <span class="math inline">\(\bX\)</span>.</p>
+\]</span></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><p>Use the least squares normal equations to derive <span class="math inline">\(\bA_*=\bY\bX^\dagger\)</span>.</p></li>
-<li><p>Substitute the truncated SVD <span class="math inline">\(\bX\approx\bU_r\bsigma_r\bV_r^T\)</span>.</p></li>
-<li><p>Show that <span class="math inline">\(\bU_r^T\bA_*\bU_r=\bU_r^T\bY\bV_r\bsigma_r^{-1}\)</span>.</p></li>
-<li><p>Interpret this as the small operator <span class="math inline">\(\tilde{\bA}\)</span> in the result above.</p></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Interpretation:</strong> DMD decomposes data into spatiotemporal modes <span class="math inline">\(\boldsymbol{\phi}_i\)</span> with associated frequencies and growth rates. It is the data-driven approximation of the Koopman operator using the identity dictionary.</p>
-</div>
-</div>
-</section>
-<section id="sindy-sparse-identification" class="level2" data-number="34.3">
-<h2 data-number="34.3" class="anchored" data-anchor-id="sindy-sparse-identification"><span class="header-section-number">34.3</span> SINDy: Sparse Identification</h2>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Sparse Regression for Dynamics
+<span class="screen-reader-only">Note</span>Definition: Extended Dynamic Mode Decomposition (EDMD)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Identifies governing equations <span class="math inline">\(\dot{\bx} = \mathbf{\Xi}^T \boldsymbol{\Theta}(\bx)\)</span> where <span class="math inline">\(\boldsymbol{\Theta}\)</span> is a library of candidate functions (monomials, sin, etc.).</p>
-<ul>
-<li><p><strong>STLS Algorithm:</strong> Sequential Thresholded Least Squares. Iteratively solves least squares and thresholds small coefficients to promote sparsity.</p></li>
-<li><p><strong>Outcome:</strong> Parsimonious, interpretable models (e.g., recovering Lorenz equations).</p></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(DMD vs.&nbsp;SINDy)</strong> DMD fits a linear time-advance map for snapshot data. SINDy fits a sparse differential equation in a chosen library. DMD returns modes and growth rates; SINDy returns equation coefficients.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Remark
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>(Noisy derivatives)</strong> SINDy is sensitive to derivative estimates. Smoothing, weak-form regression, or integral formulations are often needed when data are noisy.</p>
+<p>Extended DMD generalizes DMD by lifting state data through a dictionary of nonlinear observables <span class="math inline">\(\boldsymbol{\psi}(\bx) = (\psi_1(\bx), ..., \psi_K(\bx))^T \in \fR^K\)</span>.</p>
+<p>Form data matrices <span class="math display">\[
+\begin{align}
+\boldsymbol{\Psi}_X = [\boldsymbol{\psi}(\bx_1), ..., \boldsymbol{\psi}(\bx_M)] \in \fR^{K \times M}, \qquad
+    \boldsymbol{\Psi}_Y = [\boldsymbol{\psi}(\by_1), ..., \boldsymbol{\psi}(\by_M)] \in \fR^{K \times M}.
+\end{align}
+\]</span> The finite-dimensional representation <span class="math inline">\(\widehat{\bK}_h \in \fR^{K \times K}\)</span> of the Koopman operator minimizes <span class="math inline">\(\|\boldsymbol{\Psi}_Y - \bK \boldsymbol{\Psi}_X\|_F^2\)</span>: <span class="math display">\[
+\begin{align}
+\widehat{\bK}_h = \boldsymbol{\Psi}_Y \boldsymbol{\Psi}_X^\dagger = (\boldsymbol{\Psi}_Y \boldsymbol{\Psi}_X^T)(\boldsymbol{\Psi}_X \boldsymbol{\Psi}_X^T)^\dagger.
+\end{align}
+\]</span> Left eigenvectors of <span class="math inline">\(\widehat{\bK}_h\)</span> yield approximations to Koopman eigenfunctions.</p>
 </div>
 </div>
 </section>
-<section id="exercises" class="level2" data-number="34.4">
-<h2 data-number="34.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">34.4</span> Exercises</h2>
+<section id="cme-koopman-generator-and-polynomial-closure" class="level2" data-number="35.3">
+<h2 data-number="35.3" class="anchored" data-anchor-id="cme-koopman-generator-and-polynomial-closure"><span class="header-section-number">35.3</span> CME Koopman Generator and Polynomial Closure</h2>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Koopman generator for continuous Markov jump processes)</strong> For a continuous-time Markov process with master equation <span class="math inline">\(\dot{\bp}(t) = \bA(\bc) \bp(t)\)</span>, the expectation of an observable <span class="math inline">\(g(\bx)\)</span> evolves according to <span class="math inline">\(\frac{d}{dt}\mathbb{E}[g(\bx(t))] = \frac{d}{dt} \sum_{\bx} g(\bx) p(\bx, t) = \sum_{\bx} g(\bx) [\bA(\bc)\bp(t)]_{\bx} = \sum_{\bx} [\bA(\bc)^T g](\bx) p(\bx, t)\)</span>. The Koopman infinitesimal generator <span class="math inline">\(\mathcal{A}\)</span> is the formal adjoint of the master operator: <span class="math inline">\(\mathcal{A} = \bA(\bc)^T\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: CME Koopman Generator
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a chemical reaction network with stoichiometry <span class="math inline">\(\bnu_k\)</span> and propensities <span class="math inline">\(\alpha_k(\bx; \bc) = c_k h_k(\bx)\)</span>, the Koopman generator acts on observable <span class="math inline">\(g\)</span> by <span class="math display">\[
+\begin{align}
+(\mathcal{A}g)(\bx) = \sum_{k=1}^R \alpha_k(\bx; \bc) \Big( g(\bx + \bnu_k) - g(\bx) \Big).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Polynomial Closure in Chemical Kinetics
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Under mass-action kinetics, propensity functions are falling factorial polynomials: <span class="math display">\[
+\begin{align}
+h_k(\bx) = \prod_{s=1}^S x_s^{(\nu_{ks}^-)}, \qquad x_s^{(m)} = x_s(x_s - 1)\cdots(x_s - m + 1).
+\end{align}
+\]</span> Let <span class="math inline">\(\mathcal{P}_d\)</span> denote the space of polynomials in <span class="math inline">\(\bx\)</span> of degree at most <span class="math inline">\(d\)</span>.</p>
+<ol type="1">
+<li><p><strong>Unimolecular networks:</strong> If all reactions have reactant order at most 1 (reactions of form <span class="math inline">\(\emptyset \to X_i\)</span> or <span class="math inline">\(X_i \to X_j\)</span>), then <span class="math inline">\(\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_d\)</span> for all <span class="math inline">\(d \geq 0\)</span>. The subspace <span class="math inline">\(\mathcal{P}_d\)</span> is invariant under <span class="math inline">\(\mathcal{A}\)</span>, yielding exact finite-dimensional closure.</p></li>
+<li><p><strong>Bimolecular networks:</strong> For reactions of reactant order at most 2, <span class="math inline">\(\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_{d+1}\)</span>. A quadratic propensity can produce degree-<span class="math inline">\((d+1)\)</span> terms, so the moment equations generally fail to close at degree <span class="math inline">\(d\)</span> unless additional cancellations, conservation laws, or invariant subspaces are present.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(g \in \mathcal{P}_d\)</span> be a polynomial of degree <span class="math inline">\(d\)</span>. For each stoichiometric change vector <span class="math inline">\(\bnu_k\)</span>, the discrete difference operator expands via Taylor’s formula on polynomials: <span class="math display">\[
+\begin{align}
+g(\bx + \bnu_k) - g(\bx) = \sum_{j=1}^d \frac{1}{j!} (\bnu_k \cdot \nabla)^j g(\bx).
+\end{align}
+\]</span> Because differentiation reduces polynomial degree by at least one, each term in the sum has degree at most <span class="math inline">\(d - 1\)</span>, so <span class="math inline">\(g(\bx + \bnu_k) - g(\bx) \in \mathcal{P}_{d-1}\)</span>. Applying the Koopman generator (the result above): <span class="math display">\[
+\begin{align}
+(\mathcal{A}g)(\bx) = \sum_{k=1}^R \alpha_k(\bx; \bc) \big( g(\bx + \bnu_k) - g(\bx) \big).
+\end{align}
+\]</span> For unimolecular reactions, each propensity <span class="math inline">\(\alpha_k(\bx; \bc)\)</span> has reactant order at most 1, so <span class="math inline">\(\alpha_k \in \mathcal{P}_1\)</span>. The product of a degree-1 polynomial and a degree-<span class="math inline">\((d-1)\)</span> polynomial has degree at most <span class="math inline">\(1 + (d - 1) = d\)</span>, proving <span class="math inline">\(\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_d\)</span>. For bimolecular reactions, reactant order is at most 2, so <span class="math inline">\(\alpha_k \in \mathcal{P}_2\)</span>. The product has degree at most <span class="math inline">\(2 + (d - 1) = d + 1\)</span>, giving <span class="math inline">\(\mathcal{A}\mathcal{P}_d \subseteq \mathcal{P}_{d+1}\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="continuous-rate-recovery-and-logarithmic-noise-explosion" class="level2" data-number="35.4">
+<h2 data-number="35.4" class="anchored" data-anchor-id="continuous-rate-recovery-and-logarithmic-noise-explosion"><span class="header-section-number">35.4</span> Continuous Rate Recovery and Logarithmic Noise Explosion</h2>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Discrete-to-continuous inversion)</strong> Given an EDMD estimate of the discrete Koopman operator <span class="math inline">\(\widehat{\bK}_h \approx \exp(h\mathcal{A})\)</span> over a sampling interval <span class="math inline">\(h\)</span>, the continuous generator is recovered via the principal matrix logarithm: <span class="math display">\[
+\begin{align}
+\widehat{\bA} = \frac{1}{h} \operatorname{logm}(\widehat{\bK}_h).
+\end{align}
+\]</span> If <span class="math inline">\(\widehat{\bK}_h\)</span> is real and has no eigenvalues on the closed negative real axis <span class="math inline">\((-\infty,0]\)</span>, then its principal matrix logarithm exists and is real. A matrix with eigenvalues on this branch cut may possess other logarithms, but it does not possess the principal logarithm used here.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Logarithmic Noise Explosion on Fast Decay Modes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\lambda_i &lt; 0\)</span> be a continuous eigenvalue of the generator <span class="math inline">\(\mathcal{A}\)</span>, corresponding to a discrete Koopman eigenvalue <span class="math inline">\(\mu_i = \exp(h \lambda_i) \in (0, 1)\)</span>. The relation between discrete and continuous eigenvalues is <span class="math display">\[
+\begin{align}
+\lambda_i = \frac{1}{h} \ln \mu_i.
+\end{align}
+\]</span> The sensitivity of the continuous eigenvalue with respect to perturbations in the discrete eigenvalue is <span class="math display">\[
+\begin{align}
+\left|\frac{d\lambda_i}{d\mu_i}\right| = \frac{1}{h \mu_i} = \frac{1}{h \exp(h \lambda_i)}.
+\end{align}
+\]</span> For fast decaying modes where <span class="math inline">\(-\lambda_i \gg 1\)</span>, <span class="math inline">\(\mu_i \to 0\)</span> exponentially fast. Consequently, the noise amplification factor diverges: <span class="math display">\[
+\begin{align}
+\lim_{-\lambda_i \to \infty} \left|\frac{d\lambda_i}{d\mu_i}\right| = \infty.
+\end{align}
+\]</span> A tiny statistical fluctuation <span class="math inline">\(\Delta \mu_i\)</span> in data-driven EDMD induces an exponentially magnified error <span class="math inline">\(\Delta \lambda_i\)</span> in the recovered rate.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Differentiating <span class="math inline">\(\lambda_i = \frac{1}{h}\ln \mu_i\)</span> directly with respect to <span class="math inline">\(\mu_i\)</span> yields <span class="math inline">\(\frac{d\lambda_i}{d\mu_i} = \frac{1}{h\mu_i}\)</span>. Substituting <span class="math inline">\(\mu_i = \exp(h\lambda_i)\)</span> produces <span class="math inline">\(\frac{1}{h} \exp(-h\lambda_i)\)</span>. Because <span class="math inline">\(h &gt; 0\)</span> and <span class="math inline">\(\lambda_i &lt; 0\)</span>, <span class="math inline">\(-\lambda_i &gt; 0\)</span>, so <span class="math inline">\(\exp(-h\lambda_i) \to \infty\)</span> as <span class="math inline">\(-\lambda_i \to \infty\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="35.5">
+<h2 data-number="35.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">35.5</span> Exercises</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -933,16 +1098,81 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>Prove the result above without looking at the proof.</p></li>
-<li><p>Implement DMD for a 2D damped oscillator. Verify the identified eigenvalues.</p></li>
-<li><p>Build a polynomial library <span class="math inline">\(\boldsymbol{\Theta}\)</span> for <span class="math inline">\(\bx \in \fR^2\)</span> up to degree 2.</p></li>
-<li><p>Use SINDy (via STLS) to identify the Lotka-Volterra predator-prey model from noisy data.</p></li>
-<li><p>Compare DMD and SINDy on the same two-dimensional linear system. Which quantities should agree?</p></li>
+<li><p><strong>Check.</strong> <strong>(Koopman linearity)</strong> Consider the one-dimensional system <span class="math inline">\(x_{k+1} = x_k^3\)</span>. Let <span class="math inline">\(g_1(x) = x\)</span> and <span class="math inline">\(g_2(x) = x^3\)</span>.</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\((\mathcal{K}g_1)(x)\)</span> and <span class="math inline">\((\mathcal{K}g_2)(x)\)</span>.</p></li>
+<li><p>Verify that while <span class="math inline">\(x \mapsto x^3\)</span> is nonlinear, <span class="math inline">\(\mathcal{K}(\alpha g_1 + \beta g_2) = \alpha \mathcal{K}g_1 + \beta \mathcal{K}g_2\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>(DMD residual)</strong> Compute <span class="math inline">\(\bA_*=\bY\bX^\dagger\)</span> for a rank-one snapshot matrix and verify directly that the residual <span class="math inline">\(\bY-\bA_*\bX\)</span> is orthogonal to the row space of <span class="math inline">\(\bX\)</span>, as predicted by the result above.</p></li>
+<li><p><strong>Derive.</strong> <strong>(Polynomial closure in unimolecular reaction networks)</strong> Consider the reversible isomerization network <span class="math inline">\(A \underset{c_2}{\overset{c_1}{\rightleftharpoons}} B\)</span>. Let <span class="math inline">\(x_1, x_2\)</span> denote the copy numbers of species <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
+<ol type="1">
+<li><p>Write down the propensities <span class="math inline">\(\alpha_1(\bx) = c_1 x_1\)</span> and <span class="math inline">\(\alpha_2(\bx) = c_2 x_2\)</span>, and the stoichiometry vectors <span class="math inline">\(\bnu_1 = (-1, 1)^T\)</span> and <span class="math inline">\(\bnu_2 = (1, -1)^T\)</span>.</p></li>
+<li><p>Apply the Koopman generator <span class="math inline">\(\mathcal{A}\)</span> to the linear observable <span class="math inline">\(g(\bx) = x_1\)</span>. Show that <span class="math inline">\((\mathcal{A}g)(\bx) = -c_1 x_1 + c_2 x_2\)</span>, which is strictly linear.</p></li>
+<li><p>Apply <span class="math inline">\(\mathcal{A}\)</span> to the second-order observable <span class="math inline">\(g(\bx) = x_1^2\)</span>. Show that <span class="math inline">\((\mathcal{A}g)(\bx)\)</span> contains only polynomials of degree at most 2.</p></li>
+<li><p>Explain why the subspace of polynomials of degree at most <span class="math inline">\(d\)</span> is invariant under <span class="math inline">\(\mathcal{A}\)</span> for any unimolecular network.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>(Bimolecular moment hierarchy)</strong> Consider the dimerization reaction <span class="math inline">\(2A \xrightarrow{c} B\)</span>. The stoichiometry is <span class="math inline">\(\bnu = (-2, 1)^T\)</span> and the propensity is <span class="math inline">\(\alpha(x) = c x(x-1)/2\)</span>.</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\((\mathcal{A}g)(x)\)</span> for <span class="math inline">\(g(x) = x\)</span>. Show that the result is quadratic in <span class="math inline">\(x\)</span>.</p></li>
+<li><p>Explain why computing the time derivative of the mean <span class="math inline">\(\frac{d}{dt}\mathbb{E}[x]\)</span> requires knowledge of the second moment <span class="math inline">\(\mathbb{E}[x^2]\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>(Logarithmic noise explosion on fast decay modes)</strong> Suppose a continuous dynamical system has decay rates <span class="math inline">\(\lambda_1 = -1\)</span> and <span class="math inline">\(\lambda_2 = -50\)</span>. Data snapshots are collected at sampling interval <span class="math inline">\(h = 0.1\)</span>.</p>
+<ol type="1">
+<li><p>Compute the true discrete eigenvalues <span class="math inline">\(\mu_1 = \exp(h\lambda_1)\)</span> and <span class="math inline">\(\mu_2 = \exp(h\lambda_2)\)</span>.</p></li>
+<li><p>Suppose statistical noise perturbs the discrete estimates by <span class="math inline">\(\Delta \mu = 10^{-3}\)</span>. Compute the resulting perturbation <span class="math inline">\(\Delta \lambda_1 \approx \frac{\Delta \mu}{h \mu_1}\)</span>.</p></li>
+<li><p>Compute the resulting perturbation <span class="math inline">\(\Delta \lambda_2 \approx \frac{\Delta \mu}{h \mu_2}\)</span>.</p></li>
+<li><p>Explain why recovering continuous generators from discrete snapshots requires regularized regression rather than unconstrained matrix logarithms.</p></li>
+</ol></li>
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Literature trail: From DMD to a finite Koopman approximation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read Matthew O.~Williams, Ioannis G.~Kevrekidis, and Clarence W.~Rowley’s 2015 paper, <em>A Data-Driven Approximation of the Koopman Operator: Extending Dynamic Mode Decomposition</em> <span class="citation" data-cites="williamsetal2015">(<a href="../references.html#ref-williamsetal2015" role="doc-biblioref">Williams et al. 2015</a>)</span>.</p>
+<p><strong>Search hint.</strong> Search the exact title. The paper appeared in the <em>Journal of Nonlinear Science</em>.</p>
+<p><strong>Mathematical hint.</strong> View extended DMD as least squares in a dictionary of observables. The two small matrices are empirical inner-product matrices, and the pseudoinverse records both rank deficiency and the chosen projection.</p>
+<ol type="1">
+<li><p>Give a complete citation and locate the derivation of the EDMD matrix.</p></li>
+<li><p>Translate the paper’s dictionary, data matrices, Gram matrix, and Koopman approximation into this chapter’s notation.</p></li>
+<li><p>State the sampling and function-space assumptions used to interpret the finite matrix as an operator approximation.</p></li>
+<li><p>Reconstruct the least-squares or Galerkin step that yields the EDMD matrix. Then explain precisely how ordinary DMD is recovered as a special dictionary choice and what new approximation question appears when the dictionary is enlarged.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Koopman’s original paper gives the operator viewpoint for Hamiltonian systems <span class="citation" data-cites="koopman1931">(<a href="../references.html#ref-koopman1931" role="doc-biblioref">Koopman 1931</a>)</span>. Schmid introduces dynamic mode decomposition in its fluid-mechanics form, and Williams, Kevrekidis, and Rowley connect a dictionary-based extension to the Koopman operator <span class="citation" data-cites="schmid2010 williamsetal2015">(<a href="../references.html#ref-schmid2010" role="doc-biblioref">Schmid 2010</a>; <a href="../references.html#ref-williamsetal2015" role="doc-biblioref">Williams et al. 2015</a>)</span>.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-koopman1931" class="csl-entry" role="listitem">
+Koopman, Bernard O. 1931. <span>“Hamiltonian Systems and Transformation in <span>Hilbert</span> Space.”</span> <em>Proceedings of the National Academy of Sciences</em> 17 (5): 315–18. <a href="https://doi.org/10.1073/pnas.17.5.315">https://doi.org/10.1073/pnas.17.5.315</a>.
+</div>
+<div id="ref-schmid2010" class="csl-entry" role="listitem">
+Schmid, Peter J. 2010. <span>“Dynamic Mode Decomposition of Numerical and Experimental Data.”</span> <em>Journal of Fluid Mechanics</em> 656: 5–28. <a href="https://doi.org/10.1017/S0022112010001217">https://doi.org/10.1017/S0022112010001217</a>.
+</div>
+<div id="ref-williamsetal2015" class="csl-entry" role="listitem">
+Williams, Matthew O., Ioannis G. Kevrekidis, and Clarence W. Rowley. 2015. <span>“A Data-Driven Approximation of the <span>Koopman</span> Operator: Extending Dynamic Mode Decomposition.”</span> <em>Journal of Nonlinear Science</em> 25 (6): 1307–46. <a href="https://doi.org/10.1007/s00332-015-9258-5">https://doi.org/10.1007/s00332-015-9258-5</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1361,11 +1591,14 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../applications/markov.html" class="pagination-link" aria-label="Markov Chains and Stochastic Matrices">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span>
+      <a href="../applications/markov.html" class="pagination-link" aria-label="Markov Chains, Continuous Generators, and the CME">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

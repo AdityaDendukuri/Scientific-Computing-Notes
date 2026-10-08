@@ -2,6 +2,8 @@ project:
   type: book
   output-dir: _site
 
+bibliography: references.bib
+
 book:
   title: "Scientific Computing"
   author: "Aditya Dendukuri"
@@ -12,60 +14,68 @@ book:
 
     - part: "Fundamentals"
       chapters:
-        - fundamentals/math-notation.qmd
         - fundamentals/vectors-matrices.qmd
-        - fundamentals/arithmetic.qmd
         - fundamentals/norms.qmd
-        - fundamentals/complexity.qmd
+        - orthogonality/norms.qmd
         - fundamentals/floating-point.qmd
-        - fundamentals/numpy-primer.qmd
+        - fundamentals/complexity.qmd
 
     - part: "Direct Methods for Linear Systems"
       chapters:
         - direct-methods/linear-systems.qmd
+        - orthogonality/stability.qmd
         - direct-methods/lu.qmd
         - direct-methods/spd.qmd
+        - direct-methods/structured-solvers.qmd
 
     - part: "Orthogonality and Least Squares"
       chapters:
         - orthogonality/orthogonal.qmd
-        - orthogonality/norms.qmd
-        - orthogonality/stability.qmd
         - orthogonality/least-squares.qmd
-        - orthogonality/chebyshev.qmd
 
     - part: "Eigenvalues and the SVD"
       chapters:
         - eigenvalues/eigenvalues.qmd
+        - eigenvalues/eigen-algorithms.qmd
         - eigenvalues/svd.qmd
+        - eigenvalues/arnoldi.qmd
         - eigenvalues/lanczos.qmd
-        - eigenvalues/jacobi-eig.qmd
 
-    - part: "Iterative Methods for Linear Systems"
+    - part: "Approximation and Integration"
       chapters:
+        - numerical-analysis/interpolation.qmd
+        - numerical-analysis/chebyshev.qmd
+        - numerical-analysis/quadrature.qmd
+        - applications/fourier.qmd
+
+    - part: "Sparse Systems and Iterative Methods"
+      chapters:
+        - applications/operators.qmd
         - iterative/iterative.qmd
         - iterative/jacobi.qmd
         - iterative/conjugate-gradient.qmd
         - iterative/gmres.qmd
-
-    - part: "Numerical Analysis"
-      chapters:
-        - numerical-analysis/interpolation.qmd
-        - numerical-analysis/quadrature.qmd
-        - numerical-analysis/root-finding.qmd
+        - iterative/multigrid.qmd
+        - iterative/randomized.qmd
 
     - part: "ODEs"
       chapters:
         - odes/ode-methods.qmd
 
-    - part: "Applications"
+    - part: "Applications and Research Bridges"
       chapters:
         - applications/pca.qmd
         - applications/graphs.qmd
-        - applications/operators.qmd
-        - applications/fourier.qmd
+        - applications/matrix-exponential.qmd
         - applications/markov.qmd
         - applications/koopman.qmd
+
+    - part: "Appendix: Notation and Software"
+      chapters:
+        - fundamentals/math-notation.qmd
+        - fundamentals/numpy-primer.qmd
+
+    - references.qmd
 
 format:
   html:
@@ -135,11 +145,21 @@ format:
               bT: ["\\mathbf{T}"],
               bU: ["\\mathbf{U}"],
               bV: ["\\mathbf{V}"],
+              bW: ["\\mathbf{W}"],
               bX: ["\\mathbf{X}"],
               bY: ["\\mathbf{Y}"],
               bZ: ["\\mathbf{Z}"],
               bsigma: ["\\mathbf{\\Sigma}"],
               bzero: ["\\mathbf{0}"],
+              bnu: ["\\boldsymbol{\\nu}"],
+              blambda: ["\\boldsymbol{\\lambda}"],
+              bmu: ["\\boldsymbol{\\mu}"],
+              calA: ["\\mathcal{A}"],
+              calK: ["\\mathcal{K}"],
+              calM: ["\\mathcal{M}"],
+              calF: ["\\mathcal{F}"],
+              calP: ["\\mathcal{P}"],
+              btheta: ["\\boldsymbol{\\theta}"],
               argmin: ["\\operatorname{arg\\,min}"],
               argmax: ["\\operatorname{arg\\,max}"],
               printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],

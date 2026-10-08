@@ -1,10 +1,12 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 \subsection{Principal Component Analysis (PCA)}
 \label{sub:pca-via-svd}
 
-Optimal linear dimensionality reduction via variance maximization.
+\textBox{%
+\textbf{(Running example: data matrices)}\enspace Least squares used the data matrix to predict a response. PCA uses the same matrix to find the orthogonal directions along which the observations vary most. The SVD answers both questions.
+}
 
 \subsubsection{Definitions and Preprocessing}
 
@@ -28,6 +30,7 @@ The matrix $\bS = \frac{1}{n-1}\bX^T\bX \in \fR^{p\times p}$.
 \label{def:sample-covariance}
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Show that centering makes each column of $\bX$ have mean zero.
     \item Prove that the diagonal entries of $\bS$ are sample variances.
@@ -49,28 +52,37 @@ Let $\bX = \bU\bsigma\bV^T$ be the SVD of the centered data matrix.
 \label{thm:pca-svd}
 
 \addPrf{%
-Since $\bX=\bU\bsigma\bV^T$,
+Substituting the SVD $\bX = \bU\bsigma\bV^T$ into the sample covariance matrix $\bS$:
 \begin{align*}
-    \bS
-    =
-    \frac{1}{n-1}\bX^T\bX
-    =
-    \bV\left(\frac{\bsigma^2}{n-1}\right)\bV^T.
+    \bS &= \frac{1}{n-1} \bX^T\bX \\
+    &= \frac{1}{n-1} \left( \bV\bsigma^T\bU^T \right) \left( \bU\bsigma\bV^T \right) \\
+    &= \frac{1}{n-1} \bV \bsigma^T (\bU^T\bU) \bsigma \bV^T \\
+    &= \bV \left( \frac{\bsigma^2}{n-1} \right) \bV^T.
 \end{align*}
-Thus the columns of $\bV$ diagonalize the covariance matrix. The scores satisfy $\bZ=\bX\bV=\bU\bsigma$, so their sample covariance is diagonal with entries $\sigma_i^2/(n-1)$.
+Because $\bV$ is orthogonal and $\frac{\bsigma^2}{n-1}$ is diagonal with non-negative entries $\frac{\sigma_i^2}{n-1}$, this is the spectral decomposition of $\bS$. The columns $\bv_i$ are eigenvectors of $\bS$ with eigenvalues $\lambda_i = \sigma_i^2 / (n-1)$.
+The principal component score matrix is
+\begin{align*}
+    \bZ = \bX\bV = \left( \bU\bsigma\bV^T \right) \bV = \bU\bsigma (\bV^T\bV) = \bU\bsigma.
+\end{align*}
+The sample covariance matrix of the scores is
+\begin{align*}
+    \bS_{\bZ} = \frac{1}{n-1} \bZ^T\bZ = \frac{1}{n-1} (\bsigma\bU^T)(\bU\bsigma) = \frac{\bsigma^2}{n-1} = \operatorname{diag}(\lambda_1, \dots, \lambda_p),
+\end{align*}
+confirming that distinct score columns $\bz_i, \bz_j$ have sample covariance zero for $i \neq j$.
 }
 
 \addRemark{%
-\textbf{(PCA stability)}\enspace Never form $\bX^T\bX$ explicitly for PCA. Squaring the data matrix doubles the condition number ($\kappa(\bS) = \kappa(\bX)^2$). Compute PCA directly via the SVD of $\bX$.
+\textbf{(PCA stability)}\enspace Forming $\bX^T\bX$ squares the 2-norm condition number: $\kappa_2(\bX^T\bX)=\kappa_2(\bX)^2$ when $\bX$ has full column rank. Compute the singular vectors directly from an SVD when small singular values or numerical rank matter.
 }
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Starting from $\bX=\bU\bsigma\bV^T$, compute $\bS=(n-1)^{-1}\bX^T\bX$.
     \item Show that the columns of $\bV$ are eigenvectors of $\bS$.
     \item Show that the corresponding eigenvalues are $\lambda_i=\sigma_i^2/(n-1)$.
     \item Compute the score matrix $\bZ=\bX\bV$ and prove that $\operatorname{Cov}(\bZ)$ is diagonal.
-    \item Use Ex~\ref{ex:svd-normal-equations-warning} to explain the stability warning above.
+    \item Use Ex~\ref{ex:svd-exercises} to explain the stability warning above.
 \end{enumerate}
 }
 \label{ex:pca-svd}
@@ -90,11 +102,12 @@ The rank-$k$ matrix
 \begin{align*}
     \bX_k = \sum_{i=1}^k \sigma_i \bu_i \bv_i^T
 \end{align*}
-is the optimal $k$-dimensional linear approximation of the data in the Frobenius norm, by the Eckart-Young theorem.
+is the optimal $k$-dimensional linear approximation of the data in the Frobenius norm, by the Eckart--Young theorem.
 }
 \label{thm:pca-optimal-approximation}
 
 \addExcr{%
+\exDerive
 \begin{enumerate}
     \item Use Thm~\ref{thm:eckart-young} to prove Thm~\ref{thm:pca-optimal-approximation}.
     \item Show that $\|\bX-\bX_k\|_F^2=\sum_{i>k}\sigma_i^2$.
@@ -111,11 +124,11 @@ is the optimal $k$-dimensional linear approximation of the data in the Frobenius
 }
 
 \addRemark{%
-\textbf{(Interpretation)}\enspace Principal components are variance directions, not causal factors. A large loading identifies a direction of variation in the data matrix; it does not by itself explain why that variation occurs.
+\textbf{(Interpretation)}\enspace Principal components are directions of large variance. A large loading identifies a direction of variation in the data matrix. It does not by itself explain why that variation occurs.
 }
 
-\addDef{Kernel PCA (High-Dimensional Case)}{%
-When $p \gg n$, work with the $n \times n$ Gram matrix $\mathbf{K} = \bX\bX^T$. Principal directions are recovered via $\bv_i = \bX^T \bu_i / \sigma_i$.
+\addDef{Dual PCA for $p \gg n$}{%
+When the number of features greatly exceeds the number of samples, we may diagonalize the $n\times n$ Gram matrix $\mathbf{K}=\bX\bX^T$ instead of the $p\times p$ covariance matrix. For each nonzero singular value, the feature-space principal direction is recovered from $\bv_i=\bX^T\bu_i/\sigma_i$. Kernel PCA replaces this linear Gram matrix by a centered nonlinear kernel matrix.
 }
 \label{def:kernel-pca}
 
@@ -123,11 +136,15 @@ When $p \gg n$, work with the $n \times n$ Gram matrix $\mathbf{K} = \bX\bX^T$. 
 
 \addExcr{%
 \begin{enumerate}
-    \item Center $\bX = \begin{pmatrix} 2 & 1 \\ -1 & 3 \\ -1 & -4 \end{pmatrix}$ and compute $\bS$. Find the PVE for $k=1$.
-    \item Prove that PC scores $\bz_i, \bz_j$ are uncorrelated for $i \neq j$ using Ex~\ref{ex:pca-svd}.
-    \item Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?
-    \item Verify that the sum of variances $\sum \lambda_i$ equals the total variance $\text{Tr}(\bS)$.
+    \item \exCompute Center $\bX = \begin{pmatrix} 2 & 1 \\ -1 & 3 \\ -1 & -4 \end{pmatrix}$ and compute $\bS$. Find the PVE for $k=1$.
+    \item \exDerive Prove that PC scores $\bz_i, \bz_j$ are uncorrelated for $i \neq j$ using Ex~\ref{ex:pca-svd}.
+    \item \exCompute Load the Iris dataset. Plot the data in the basis of the first two PCs. Do species cluster?
+    \item \exCheck Verify that the sum of variances $\sum \lambda_i$ equals the total variance $\text{Tr}(\bS)$.
 \end{enumerate}
+}
+
+\addReading{%
+Jolliffe is a standard statistical reference for principal component analysis \citep{jolliffe2002}. The Golub--Kahan paper gives the bidiagonalization behind modern large-scale SVD calculations \citep{golubkahan1965}.
 }
 
 \end{document}

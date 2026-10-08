@@ -1,240 +1,288 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Chebyshev Polynomials}
+\subsection{Chebyshev Polynomials and Minimax Approximation}
 \label{sub:chebyshev-theory}
 
 \textBox{%
-Chebyshev polynomials are the polynomial analogue of Fourier modes on $[-1,1]$. They oscillate evenly, stay bounded, and give node sets that control interpolation error. The central idea is minimax: among polynomials of a fixed degree, Chebyshev polynomials spread error as evenly as possible instead of allowing large boundary spikes.
+Chebyshev polynomials provide an orthogonal polynomial basis on $[-1,1]$ and a principled choice of nodes for high-degree interpolation. Under the coordinate mapping $x=\cos\theta$, algebraic polynomials become cosine series. The scaled polynomial $2^{1-n}T_n(x)$ uniquely minimizes the uniform norm among monic polynomials of degree $n$. Chebyshev nodes replace the exponential growth of the uniform-grid Lebesgue constant by logarithmic growth, and analytic functions then admit geometrically convergent approximations.
 }
 
-\subsubsection{Failure of the Monomial Basis}
+\subsubsection{Two Failures of Polynomial Interpolation}
 
 \textBox{%
-Polynomial approximation has two separate failure modes. The first is numerical: the monomial basis $1,x,x^2,\dots$ leads to ill-conditioned Vandermonde matrices. The second is analytical: even exact interpolation at equally spaced nodes can oscillate badly near the interval endpoints.
+Approximating a continuous function $f \in C([-1, 1])$ by polynomial interpolation encounters two distinct failure modes. The first is algebraic. Vandermonde systems in the monomial basis are often ill-conditioned, so a coefficient calculation may lose accuracy even when the interpolating polynomial is well defined. The second is analytical. For functions such as Runge's example, interpolation at equally spaced nodes diverges near the endpoints even in exact arithmetic. These are different failures and require different remedies.
 }
 
-\addDef{Interpolation Error Polynomial}{%
-Given distinct interpolation nodes $x_1,\dots,x_n$, define
+\textBox{%
+For the analytical failure, Thm~\ref{thm:interpolation-error-cauchy} gives the remedy. With $n$ nodes $x_1,\dots,x_n$ and the monic nodal polynomial $\omega_n(x)=\prod_{j=1}^n(x-x_j)$, the theorem bounds the interpolation error by
 \begin{align*}
-    \omega_n(x)=\prod_{j=1}^n (x-x_j).
+    \|f-p_{n-1}\|_\infty\leq\frac{\|f^{(n)}\|_\infty}{n!}\,\|\omega_n\|_\infty.
 \end{align*}
-This polynomial is zero at every node. Its size between the nodes controls how much interpolation can amplify the derivative of the target function.
+The first factor depends only on $f$, and the second only on the nodes. Choosing the nodes to minimize $\|\omega_n\|_\infty$ is therefore a minimax problem over monic polynomials of degree $n$, which this section solves.
 }
-\label{def:cheb-error-polynomial}
 
-\addThm{Interpolation Error Formula}{%
-Let $p_{n-1}$ interpolate a function $f$ at $n$ distinct nodes $x_1,\dots,x_n$. If $f$ has $n$ continuous derivatives on $[-1,1]$, then for each $x\in[-1,1]$ there exists a point $\xi_x\in[-1,1]$ such that
+\subsubsection{Chebyshev Polynomials and Fundamental Identities}
+
+\addDef{Chebyshev Polynomials of the First Kind}{%
+For $x \in [-1, 1]$, the Chebyshev polynomial of degree $k$ is defined by
 \begin{align*}
-    f(x)-p_{n-1}(x)
-    =
-    \frac{f^{(n)}(\xi_x)}{n!}\omega_n(x).
+    T_k(x) = \cos(k \arccos x).
 \end{align*}
-Therefore,
+Under the substitution $x = \cos\theta$ with $\theta \in [0, \pi]$,
 \begin{align*}
-    \|f-p_{n-1}\|_\infty
-    \leq
-    \frac{\|f^{(n)}\|_\infty}{n!}\|\omega_n\|_\infty.
-\end{align*}
-}
-\label{thm:cheb-interpolation-error}
-
-\addExcr{%
-\begin{enumerate}
-    \item For three nodes $x_1,x_2,x_3$, write out $\omega_3(x)$ and verify that it vanishes at each node.
-    \item Use Thm~\ref{thm:cheb-interpolation-error} to explain why node choice matters even when $f^{(n)}$ is fixed.
-    \item Build the degree-$14$ Vandermonde matrix on $15$ equally spaced nodes in $[-1,1]$. Compute $\kappa_2(\bV)$.
-    \item Plot Runge's function $f(x)=1/(1+25x^2)$ and its degree-$10$ interpolant at equally spaced nodes. Compare the largest error in the middle of the interval with the largest error near the endpoints.
-\end{enumerate}
-}
-\label{ex:cheb-monomial-failure}
-
-\subsubsection{Chebyshev Polynomials ($T_k$)}
-
-\addDef{Chebyshev Polynomial}{%
-For $x\in[-1,1]$, the degree-$k$ Chebyshev polynomial is
-\begin{align*}
-    T_k(x)=\cos(k\arccos x).
-\end{align*}
-Equivalently, if $x=\cos\theta$, then
-\begin{align*}
-    T_k(\cos\theta)=\cos(k\theta).
+    T_k(\cos\theta) = \cos(k\theta).
 \end{align*}
 }
 \label{def:cheb-polynomial}
 
-\addThm{Basic Chebyshev Identities}{%
-The polynomials from Def~\ref{def:cheb-polynomial} satisfy
+\addLem{Chebyshev Three-Term Recurrence}{%
+The functions $T_k(x)$ are algebraic polynomials satisfying the three-term recurrence relation
 \begin{align*}
-    T_0(x)=1,\qquad T_1(x)=x,\qquad
-    T_{k+1}(x)=2xT_k(x)-T_{k-1}(x).
+    T_0(x) = 1, \qquad T_1(x) = x, \qquad T_{k+1}(x) = 2x T_k(x) - T_{k-1}(x) \quad \text{for } k \geq 1.
 \end{align*}
-They are bounded by $1$ on $[-1,1]$:
+Furthermore, for every $k \geq 1$, the leading coefficient of $T_k(x)$ is $2^{k-1}$.
+}
+\label{lem:cheb-recurrence}
+
+\addPrf{%
+Using the trigonometric angle sum and difference identities,
 \begin{align*}
-    |T_k(x)|\leq 1.
+    \cos((k+1)\theta) + \cos((k-1)\theta) = 2\cos\theta \cos(k\theta).
 \end{align*}
-They are orthogonal with respect to the weight $(1-x^2)^{-1/2}$:
+Substituting $\theta = \arccos x$, so that $\cos\theta = x$, yields
 \begin{align*}
-    \int_{-1}^1
-    T_j(x)T_k(x)\frac{dx}{\sqrt{1-x^2}}
-    =0,
-    \qquad j\neq k.
+    T_{k+1}(x) + T_{k-1}(x) = 2x T_k(x),
+\end{align*}
+which establishes the recurrence.
+
+For the initial conditions, $T_0(x) = \cos(0) = 1$ and $T_1(x) = \cos(\arccos x) = x$. Proceeding by induction, if $T_k(x)$ has degree $k$ with leading coefficient $2^{k-1}$, then $2x T_k(x)$ has degree $k+1$ with leading coefficient $2 \cdot 2^{k-1} = 2^k$. Because $T_{k-1}$ has degree $k-1 < k+1$, it does not affect the leading coefficient, confirming that $T_{k+1}(x)$ has leading coefficient $2^k$.
+}
+
+\addThm{Orthogonality of Chebyshev Polynomials}{%
+Chebyshev polynomials are orthogonal on $[-1, 1]$ with respect to the singular weight function $w(x) = (1 - x^2)^{-1/2}$:
+\begin{align*}
+    \int_{-1}^1 T_j(x) T_k(x) \frac{dx}{\sqrt{1 - x^2}}
+    =
+    \begin{cases}
+        0, & j \neq k, \\
+        \pi, & j = k = 0, \\
+        \frac{\pi}{2}, & j = k \geq 1.
+    \end{cases}
 \end{align*}
 }
-\label{thm:cheb-identities}
+\label{thm:cheb-orthogonality}
 
-\addExcr{%
+\addPrf{%
+Substitute $x = \cos\theta$. As $x$ ranges from $-1$ to $1$, $\theta$ ranges from $\pi$ to $0$. The differential transforms as $dx = -\sin\theta\, d\theta$, and the denominator becomes $\sqrt{1 - x^2} = \sin\theta$. The integral transforms to
+\begin{align*}
+    \int_{-1}^1 T_j(x) T_k(x) \frac{dx}{\sqrt{1 - x^2}}
+    =
+    \int_\pi^0 \cos(j\theta) \cos(k\theta) \frac{-\sin\theta\, d\theta}{\sin\theta}
+    =
+    \int_0^\pi \cos(j\theta) \cos(k\theta)\, d\theta.
+\end{align*}
+By the orthogonality of the trigonometric cosine basis on $[0, \pi]$, this integral evaluates to $0$ when $j \neq k$, to $\pi$ when $j = k = 0$, and to $\pi/2$ when $j = k \geq 1$.
+}
+
+\subsubsection{Roots, Extrema, and the Nodal Error Polynomial}
+
+\addThm{Zeros and Extreme Points of $T_n$}{%
+For each $n \geq 1$, the polynomial $T_n(x)$ has:
 \begin{enumerate}
-    \item Use $\cos((k+1)\theta)+\cos((k-1)\theta)=2\cos\theta\cos(k\theta)$ to prove the three-term recurrence in Thm~\ref{thm:cheb-identities}.
-    \item Compute $T_2$, $T_3$, and $T_4$ from the recurrence.
-    \item Prove $|T_k(x)|\leq 1$ on $[-1,1]$ directly from Def~\ref{def:cheb-polynomial}.
-    \item Substitute $x=\cos\theta$ into the weighted integral and reduce the orthogonality statement to Fourier cosine orthogonality on $[0,\pi]$.
-    \item Plot $T_0,\dots,T_5$. Mark the points where each polynomial reaches $\pm 1$.
+    \item Exactly $n$ distinct real zeros in $(-1, 1)$, given by
+    \begin{align*}
+        x_j = \cos\left( \frac{2j - 1}{2n} \pi \right), \qquad j = 1, \dots, n.
+    \end{align*}
+    \item Exactly $n+1$ alternating extreme points on $[-1, 1]$, given by
+    \begin{align*}
+        y_j = \cos\left( \frac{j\pi}{n} \right), \qquad j = 0, \dots, n,
+    \end{align*}
+    at which $T_n(y_j) = (-1)^j$.
 \end{enumerate}
-}
-\label{ex:cheb-basic-identities}
-
-\subsubsection{Zeros and Nodes}
-
-\addThm{Zeros and Extrema}{%
-The zeros of $T_n$ are
-\begin{align*}
-    x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,\dots,n.
-\end{align*}
-The extrema of $T_n$ occur at
-\begin{align*}
-    y_j=\cos\left(\frac{j\pi}{n}\right),
-    \qquad j=0,\dots,n,
-\end{align*}
-and satisfy $T_n(y_j)=(-1)^j$.
 }
 \label{thm:cheb-zeros-extrema}
 
+\addPrf{%
+The condition $T_n(x) = 0$ corresponds to $\cos(n\theta) = 0$ for $\theta \in [0, \pi]$. The cosine function vanishes when $n\theta = (j - 1/2)\pi = \frac{2j-1}{2}\pi$ for integers $j$. Restricting $\theta \in [0, \pi]$ restricts $j \in \{1, \dots, n\}$. Setting $x_j = \cos\theta_j$ gives the $n$ distinct roots.
+
+Similarly, $T_n(x)$ attains its extreme values $\pm 1$ when $|\cos(n\theta)| = 1$, which requires $n\theta = j\pi$ for $j \in \{0, \dots, n\}$. At these points, $T_n(y_j) = \cos(j\pi) = (-1)^j$.
+}
+
 \addDef{Chebyshev Nodes}{%
-The Chebyshev interpolation nodes are the zeros of $T_n$:
+The Chebyshev interpolation nodes of degree $n$ are the $n$ roots of $T_n(x)$:
 \begin{align*}
-    x_j=\cos\left(\frac{(2j-1)\pi}{2n}\right),
-    \qquad j=1,\dots,n.
+    x_j = \cos\left( \frac{2j - 1}{2n} \pi \right), \qquad j = 1, \dots, n.
 \end{align*}
-These nodes cluster near $\pm 1$. The clustering is not cosmetic; it reduces the size of the interpolation error polynomial from Def~\ref{def:cheb-error-polynomial}.
+These nodes cluster quadratically near the interval endpoints $\pm 1$, with local separation $x_{j+1} - x_j \sim O(1/n^2)$ near the boundaries and $O(1/n)$ in the interior.
 }
 \label{def:cheb-nodes}
 
-\addThm{Chebyshev Error Polynomial}{%
-If $x_1,\dots,x_n$ are the Chebyshev nodes from Def~\ref{def:cheb-nodes}, then
+\addThm{Representation of the Chebyshev Nodal Polynomial}{%
+Let $\{x_j\}_{j=1}^n$ be the Chebyshev nodes from Def~\ref{def:cheb-nodes}. The monic nodal polynomial satisfies
 \begin{align*}
-    \omega_n(x)=\prod_{j=1}^n (x-x_j)
-    =
-    2^{1-n}T_n(x).
+    \omega_n(x) = \prod_{j=1}^n (x - x_j) = 2^{1-n} T_n(x).
 \end{align*}
-Consequently,
+Consequently, the uniform norm of the nodal polynomial is
 \begin{align*}
-    \|\omega_n\|_\infty=2^{1-n}.
+    \|\omega_n\|_\infty = 2^{1-n} \|T_n\|_\infty = 2^{1-n}.
 \end{align*}
 }
 \label{thm:cheb-error-polynomial}
 
-\addExcr{%
-\begin{enumerate}
-    \item Starting from $T_n(\cos\theta)=\cos(n\theta)$, solve $\cos(n\theta)=0$ and prove the zero formula in Thm~\ref{thm:cheb-zeros-extrema}.
-    \item Solve $\cos(n\theta)=\pm 1$ and prove the extrema formula in Thm~\ref{thm:cheb-zeros-extrema}.
-    \item Explain why the Chebyshev nodes cluster near $\pm 1$ by comparing the spacing of equally spaced $\theta$ values under $x=\cos\theta$.
-    \item Show that $T_n$ has leading coefficient $2^{n-1}$ for $n\geq 1$.
-    \item Use the previous step and the fact that $T_n$ has zeros $x_1,\dots,x_n$ to prove Thm~\ref{thm:cheb-error-polynomial}.
-\end{enumerate}
+\addPrf{%
+Both $\omega_n(x)$ and $T_n(x)$ are polynomials of degree $n$ sharing the same $n$ distinct roots $x_1, \dots, x_n$. Therefore, they are proportional: $T_n(x) = C \omega_n(x)$ for some nonzero constant $C$. By Lem~\ref{lem:cheb-recurrence}, the leading coefficient of $T_n(x)$ is $2^{n-1}$, whereas $\omega_n(x)$ is monic with leading coefficient $1$. Hence $C = 2^{n-1}$, which gives $\omega_n(x) = 2^{1-n} T_n(x)$.
+
+Because $T_n(\cos\theta) = \cos(n\theta)$, $|T_n(x)| \leq 1$ for all $x \in [-1, 1]$, and this maximum is attained at $x = 1$. Thus $\|T_n\|_\infty = 1$, which confirms that $\|\omega_n\|_\infty = 2^{1-n}$.
 }
-\label{ex:cheb-nodes}
 
-\subsubsection{The Minimax Property}
+\subsubsection{The Minimax Property and Equioscillation}
 
-\addThm{Chebyshev Minimax Polynomial}{%
-Among all monic polynomials $q$ of degree $n$ on $[-1,1]$,
+\addThm{Chebyshev Minimax Theorem}{%
+Let $\widetilde{\mathcal{P}}_n$ denote the set of all monic polynomials of degree $n$ with real coefficients. Then $2^{1-n}T_n$ is the unique solution to the minimax problem on $[-1, 1]$:
 \begin{align*}
-    2^{1-n}T_n(x)
-\end{align*}
-has the smallest possible infinity norm:
-\begin{align*}
-    \|2^{1-n}T_n\|_\infty
-    =
-    2^{1-n}
-    \leq
-    \|q\|_\infty.
+    \min_{q \in \widetilde{\mathcal{P}}_n} \|q\|_\infty = \|2^{1-n}T_n\|_\infty = 2^{1-n}.
 \end{align*}
 }
 \label{thm:cheb-minimax}
 
-\addExcr{%
-\begin{enumerate}
-    \item Let $m(x)=2^{1-n}T_n(x)$. Use Thm~\ref{thm:cheb-identities} to show that $m$ is monic and $\|m\|_\infty=2^{1-n}$.
-    \item Suppose another monic polynomial $q$ satisfies $\|q\|_\infty<2^{1-n}$. Define $r=q-m$. What is the degree of $r$?
-    \item Evaluate the signs of $m$ at the $n+1$ extrema from Thm~\ref{thm:cheb-zeros-extrema}.
-    \item Use the assumption $\|q\|_\infty<2^{1-n}$ to show that $r$ changes sign between each pair of adjacent extrema.
-    \item Conclude that $r$ has at least $n$ roots, contradicting its degree. This proves Thm~\ref{thm:cheb-minimax}.
-    \item Combine Thm~\ref{thm:cheb-interpolation-error} and Thm~\ref{thm:cheb-error-polynomial} to explain why Chebyshev nodes are the natural interpolation nodes.
-\end{enumerate}
-}
-\label{ex:cheb-minimax}
-
-\subsubsection{Chebyshev Series}
-
-\addDef{Chebyshev Series}{%
-A Chebyshev expansion writes a function on $[-1,1]$ as
+\addPrf{%
+Let $m(x) = 2^{1-n}T_n(x) \in \widetilde{\mathcal{P}}_n$. By Thm~\ref{thm:cheb-error-polynomial}, $\|m\|_\infty = 2^{1-n}$. At the $n+1$ extreme points $y_j = \cos(j\pi/n)$ for $j = 0, \dots, n$,
 \begin{align*}
-    f(x)\sim \sum_{k=0}^{\infty} c_kT_k(x).
+    m(y_j) = 2^{1-n}(-1)^j.
 \end{align*}
-Using $x=\cos\theta$, this is exactly a cosine series for the even function $f(\cos\theta)$.
+Suppose there exists a monic polynomial $q \in \widetilde{\mathcal{P}}_n$ such that $\|q\|_\infty < 2^{1-n}$. Consider the difference polynomial
+\begin{align*}
+    r(x) = m(x) - q(x).
+\end{align*}
+Because both $m$ and $q$ are monic polynomials of degree $n$, the leading terms $x^n$ cancel. Thus $r \in \mathcal{P}_{n-1}$ has degree at most $n-1$.
+
+Evaluating $r(x)$ at each extreme point $y_j$:
+\begin{align*}
+    r(y_j) = m(y_j) - q(y_j) = 2^{1-n}(-1)^j - q(y_j).
+\end{align*}
+Because $|q(y_j)| \leq \|q\|_\infty < 2^{1-n}$, the sign of $r(y_j)$ is dictated entirely by $m(y_j)$:
+\begin{itemize}
+    \item When $j$ is even, $m(y_j) = 2^{1-n}$, so $r(y_j) = 2^{1-n} - q(y_j) > 0$.
+    \item When $j$ is odd, $m(y_j) = -2^{1-n}$, so $r(y_j) = -2^{1-n} - q(y_j) < 0$.
+\end{itemize}
+Thus $r(x)$ alternates sign across the $n+1$ ordered points $1 = y_0 > y_1 > \dots > y_n = -1$. By the Intermediate Value Theorem, $r(x)$ must vanish at least once in each of the $n$ disjoint open intervals $(y_{j+1}, y_j)$ for $j = 0, \dots, n-1$.
+
+Consequently, $r(x)$ has at least $n$ distinct real zeros in $(-1, 1)$. However, a nonzero polynomial of degree at most $n-1$ cannot have $n$ roots. Therefore, $r(x)$ must be identically zero, which contradicts the strict inequality $\|q\|_\infty < 2^{1-n}$. This proves that $\|q\|_\infty \geq 2^{1-n}$ for all monic $q \in \widetilde{\mathcal{P}}_n$.
+
+To establish uniqueness, suppose $\|q\|_\infty=2^{1-n}$ and retain $r=m-q\in\mathcal{P}_{n-1}$. The weak inequalities
+\begin{align*}
+    (-1)^j r(y_j)\geq0,
+    \qquad j=0,\dots,n,
+\end{align*}
+follow from $m(y_j)=2^{1-n}(-1)^j$ and $|q(y_j)|\leq2^{1-n}$. Because $r$ has degree at most $n-1$, its divided difference of order $n$ at the distinct points $y_0,\dots,y_n$ is zero:
+\begin{align*}
+    0=r[y_0,\dots,y_n]
+    =\sum_{j=0}^n\frac{r(y_j)}{\prod_{k\neq j}(y_j-y_k)}.
+\end{align*}
+Because the nodes are ordered $1 = y_0 > y_1 > \dots > y_n = -1$, the product in the denominator has exactly $j$ negative factors:
+\begin{align*}
+    \operatorname{sign}\left(\prod_{k\neq j}(y_j-y_k)\right)
+    = \operatorname{sign}\left(\prod_{k<j}(y_j-y_k) \prod_{k>j}(y_j-y_k)\right)
+    = (-1)^j.
+\end{align*}
+Therefore
+\begin{align*}
+    \frac{r(y_j)}{\prod_{k\neq j}(y_j-y_k)}
+    = \frac{(-1)^j r(y_j)}{\left|\prod_{k\neq j}(y_j-y_k)\right|} \geq 0.
+\end{align*}
+A sum of non-negative terms can vanish only if each numerator $(-1)^j r(y_j)$ is zero. Thus $r(y_j) = 0$ for all $j = 0, \dots, n$. Since $r \in \mathcal{P}_{n-1}$ has $n+1$ distinct roots, $r \equiv 0$, proving $q \equiv m$.
+}
+
+\addRemark{%
+\textbf{(Lebesgue constant growth)}\enspace
+For any grid of $n$ interpolation nodes $X_n$, the interpolation projection $I_n: C([-1, 1]) \to \mathcal{P}_{n-1}$ satisfies the Lebesgue inequality $\|f - I_n f\|_\infty \leq (1 + \Lambda_n) \min_{p \in \mathcal{P}_{n-1}} \|f - p\|_\infty$, where $\Lambda_n$ is the Lebesgue constant. For equally spaced nodes, $\Lambda_n \sim \frac{2^n}{e n \log n}$, which diverges exponentially and induces Runge's phenomenon. For Chebyshev nodes, $\Lambda_n \leq \frac{2}{\pi}\log n + 1$, guaranteeing that Chebyshev interpolation converges at a rate within a logarithmic factor of the optimal polynomial approximation.
+}
+
+\subsubsection{Chebyshev Series and Spectral Accuracy}
+
+\addDef{Chebyshev Series Expansion}{%
+A function with a convergent Chebyshev expansion is written using the primed-sum convention
+\begin{align*}
+    f(x) = \sideset{}{'}\sum_{k=0}^\infty c_k T_k(x),
+\end{align*}
+where the prime on the summation indicates that the initial term $k = 0$ carries a factor of $1/2$:
+\begin{align*}
+    c_k = \frac{2}{\pi} \int_{-1}^1 f(x) T_k(x) \frac{dx}{\sqrt{1 - x^2}} = \frac{2}{\pi} \int_0^\pi f(\cos\theta) \cos(k\theta)\, d\theta.
+\end{align*}
 }
 \label{def:cheb-series}
 
-\addThm{Coefficient Formula}{%
-For $k\geq 1$,
+\addThm{Geometric Convergence for Analytic Functions}{%
+Let $f$ be analytic on and inside a Bernstein ellipse whose boundary is
 \begin{align*}
-    c_k=\frac{2}{\pi}\int_0^\pi f(\cos\theta)\cos(k\theta)\,d\theta,
+    \mathcal{E}_\rho = \left\{ z \in \fC : z = \frac{w + w^{-1}}{2}, \; |w| = \rho \right\}
 \end{align*}
-and
+with $\rho>1$, semi-axes $a = \frac{\rho + \rho^{-1}}{2}$ and $b = \frac{\rho - \rho^{-1}}{2}$. Suppose $|f(z)|\leq M$ on this boundary. Then the Chebyshev coefficients satisfy
 \begin{align*}
-    c_0=\frac{1}{\pi}\int_0^\pi f(\cos\theta)\,d\theta.
+    |c_k| \leq \frac{2M}{\rho^k} \qquad \text{for all } k \geq 0.
+\end{align*}
+Consequently, the truncated polynomial approximation $p_n(x) = \sideset{}{'}\sum_{k=0}^n c_k T_k(x)$ converges geometrically:
+\begin{align*}
+    \|f - p_n\|_\infty \leq \frac{2M}{\rho - 1} \rho^{-n}.
 \end{align*}
 }
-\label{thm:cheb-coefficients}
+\label{thm:cheb-spectral-accuracy}
 
-\addThm{Spectral Accuracy}{%
-If $f$ is analytic on and near $[-1,1]$, then its Chebyshev coefficients decay geometrically:
-\begin{align*}
-    |c_k|\leq C\rho^{-k}
-    \qquad \text{for some } \rho>1.
-\end{align*}
-The truncated series
-\begin{align*}
-    p_n(x)=\sum_{k=0}^n c_kT_k(x)
-\end{align*}
-therefore satisfies
-\begin{align*}
-    \|f-p_n\|_\infty=O(\rho^{-n}).
-\end{align*}
-This is called spectral accuracy.
-}
-\label{thm:spectral-accuracy}
+\addPrf{%
+Under the conformal map $z = \frac{w + w^{-1}}{2}$, the circle $|w| = r$ for $1 < r < \rho$ maps to the ellipse $\mathcal{E}_r$ in the complex $z$-plane. The transformed function $F(w) = f\left(\frac{w + w^{-1}}{2}\right)$ is analytic in the annulus $r^{-1} < |w| < r$ and satisfies $F(w) = F(w^{-1})$.
 
-\addRemark{%
-\textbf{(Fourier connection)}\enspace Chebyshev methods are Fourier cosine methods after the change of variables $x=\cos\theta$. This is why fast cosine transforms can compute Chebyshev coefficients efficiently.
+Expanding $F(w)$ in its Laurent series $F(w) = \sum_{k=-\infty}^\infty a_k w^k$, the symmetry $F(w) = F(w^{-1})$ implies $a_k = a_{-k}$. On the unit circle $w = e^{i\theta}$, $F(e^{i\theta}) = f(\cos\theta) = a_0 + 2\sum_{k=1}^\infty a_k \cos(k\theta)$, so the Chebyshev coefficients are related to the Laurent coefficients by $c_k = 2 a_k$ for $k \geq 1$. By Cauchy's Integral Formula, for any $1 < r < \rho$,
+\begin{align*}
+    a_k = \frac{1}{2\pi i} \oint_{|w|=r} \frac{F(w)}{w^{k+1}}\, dw.
+\end{align*}
+Taking absolute values and using $|F(w)| \leq M$ gives $|a_k| \leq M r^{-k}$. Taking the infimum over $r \to \rho^-$ yields $|c_k| \leq 2M \rho^{-k}$. Summing the tail of the series gives the uniform error bound:
+\begin{align*}
+    \|f - p_n\|_\infty \leq \sum_{k=n+1}^\infty |c_k| \leq 2M \sum_{k=n+1}^\infty \rho^{-k} = \frac{2M \rho^{-n}}{\rho - 1}.
+\end{align*}
 }
 
-\addRemark{%
-\textbf{(Interpolation vs.\ expansion)}\enspace Chebyshev interpolation chooses values at Chebyshev nodes. Chebyshev series choose coefficients in the Chebyshev basis. Both work well for the same reason: the basis oscillates evenly and avoids the endpoint instability of monomials.
-}
+\subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Use Def~\ref{def:cheb-series} to rewrite a Chebyshev expansion as a cosine series in $\theta$.
-    \item Derive the coefficient formula in Thm~\ref{thm:cheb-coefficients} from Fourier cosine orthogonality.
-    \item Compute degree-$n$ Chebyshev fits to $e^x$ using \texttt{np.polynomial.chebyshev.chebfit}. Plot $\|f-p_n\|_\infty$ versus $n$ on a semilog scale.
-    \item Repeat the previous experiment for $f(x)=|x|$. Compare the coefficient decay with the analytic case in Thm~\ref{thm:spectral-accuracy}.
-    \item Use \texttt{chebder} to differentiate a Chebyshev approximation to $f(x)=\sin(\pi x)$. Compare the derivative error with a finite-difference approximation using the same number of sample points.
+    \item \exDerive \textbf{(Clenshaw's evaluation algorithm)}\enspace Evaluating a Chebyshev sum $p(x) = \sum_{k=0}^n c_k T_k(x)$ by explicitly forming $T_k(x)$ is inefficient and prone to floating-point error. Clenshaw's recurrence evaluates the sum in $O(n)$ flops without computing trigonometric functions.
+    \begin{enumerate}
+        \item Define the backward sequence $b_{n+2} = b_{n+1} = 0$, and for $k = n, n-1, \dots, 1$,
+        \begin{align*}
+            b_k = 2x b_{k+1} - b_{k+2} + c_k.
+        \end{align*}
+        Show that $p(x) = c_0 + x b_1 - b_2$.
+        \item Prove that this backward recurrence is algebraically equivalent to evaluating $p(x)$ by substituting the three-term relation $T_{k+1} = 2x T_k - T_{k-1}$.
+        \item Implement Clenshaw's algorithm in Python and compare its runtime against explicit monomial expansion for $n = 50$.
+    \end{enumerate}
+    \item \exCheck \textbf{(Equioscillation on a concrete polynomial)}\enspace Let $m(x)=2^{1-4}T_4(x)$.
+    \begin{enumerate}
+        \item Expand $m$ in the monomial basis and verify that it is monic.
+        \item Evaluate $m$ at $y_j=\cos(j\pi/4)$ for $j=0,\dots,4$ and verify the alternating values $\pm1/8$.
+        \item Choose any monic quartic $q\neq m$, evaluate it on a fine grid, and confirm numerically that $\|q\|_\infty>1/8$, as predicted by Thm~\ref{thm:cheb-minimax}.
+    \end{enumerate}
+    \item \exCompute \textbf{(Lebesgue constant computation and Runge comparison)}\enspace The Lebesgue function is $\lambda_n(x) = \sum_{j=1}^n |\ell_j(x)|$, where $\ell_j(x)$ are the Lagrange cardinal polynomials.
+    \begin{enumerate}
+        \item Write a script to evaluate $\lambda_n(x)$ on a fine grid of $10^4$ points in $[-1, 1]$ for uniform nodes and Chebyshev nodes for $n \in \{5, 10, 15, 20\}$.
+        \item Plot the maximum $\Lambda_n = \max_{x \in [-1, 1]} \lambda_n(x)$ versus $n$ on a semilog scale. Verify that $\Lambda_n$ grows exponentially for uniform nodes and logarithmically for Chebyshev nodes.
+        \item Interpolate Runge's function $f(x) = 1/(1 + 25x^2)$ with $n = 20$ using both node sets. Explain the boundary behavior in terms of the Bernstein ellipse parameter $\rho$.
+    \end{enumerate}
+    \item \exDerive \textbf{(Chebyshev differentiation matrix)}\enspace Let $\bx = (x_0, x_1, \dots, x_n)^T$ be the Chebyshev extreme nodes $x_j = \cos(j\pi/n)$.
+    \begin{enumerate}
+        \item Derive the entries of the spectral differentiation matrix $\bD_n \in \fR^{(n+1) \times (n+1)}$ that maps the nodal values $\mathbf{f} = (f(x_0), \dots, f(x_n))^T$ to the exact derivative values of the polynomial interpolant $\mathbf{f}' = \bD_n \mathbf{f}$.
+        \item Show that the diagonal entries satisfy $D_{00} = \frac{2n^2 + 1}{6}$ and $D_{nn} = -\frac{2n^2 + 1}{6}$.
+        \item Verify that the row sums of $\bD_n$ vanish identically: $\bD_n \mathbf{1} = \bzero$.
+    \end{enumerate}
+    \item \exExplore \textbf{(Bernstein ellipse parameter for Runge's function)}\enspace Consider $f(x) = \frac{1}{1 + 25x^2}$ on $[-1, 1]$.
+    \begin{enumerate}
+        \item Find the complex poles of $f(z)$ in $\fC$.
+        \item Determine the largest value of $\rho$ such that the Bernstein ellipse $\mathcal{E}_\rho$ does not contain either pole.
+        \item Using Thm~\ref{thm:cheb-spectral-accuracy}, compute the asymptotic error decay factor $\rho^{-1}$ and predict how many Chebyshev modes are needed to achieve machine precision $\|f - p_n\|_\infty \leq 10^{-16}$.
+    \end{enumerate}
 \end{enumerate}
 }
-\label{ex:cheb-series}
+\label{ex:cheb-comprehensive-exercises}
 
 \end{document}

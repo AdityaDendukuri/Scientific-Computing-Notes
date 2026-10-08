@@ -1,124 +1,135 @@
-# Spectral Graph Theory and PageRank
+# Spectral Graph Theory, Diffusion Maps, and Graph Laplacians
 
 
-Graph algorithms become numerical linear algebra after choosing matrix conventions. Undirected graphs lead to symmetric Laplacians. Directed ranking problems lead to stochastic matrices and eigenvectors.
+Graph algorithms translate into numerical linear algebra once edge weights and vertex degrees are assembled into matrices. Undirected graphs lead to symmetric positive semidefinite Laplacians whose spectra characterize connectivity and graph cuts. Random walks and diffusion maps generalize these spectra to nonlinear manifold learning, offering multiscale geometric filtering and permutation-invariant representations for physical systems.
 
 
-## Graph Matrices
-
-
-::: {.callout-tip icon=false}
-## Remark
-**(Convention)**  For undirected graphs, $\bA$ is symmetric. For directed random walks in this section, probability vectors are columns and $P_{ij}$ is the probability of moving from node $j$ to node $i$.
-:::
+## Graph Matrices and the Laplacian
 
 
 ::: {.callout-note icon=false}
 ## Definition: Adjacency and Degree Matrices
-For a graph $G = (V, E)$ with $n$ vertices:
+For a weighted undirected graph $G = (V, E)$ with $n$ vertices:
 
-- **Adjacency $\bA$:**  $A_{ij} = w_{ij}$ if $(i,j) \in E$, else $0$.
-    
-- **Degree $\bD$:**  Diagonal matrix with $D_{ii} = d_i = \sum_{j} w_{ij}$.
+- **Adjacency $\bA$:**  $A_{ij} = w_{ij} \geq 0$ if $(i,j) \in E$, and $A_{ij} = 0$ otherwise. We assume $w_{ij} = w_{ji}$ and $A_{ii} = 0$.
+
+- **Degree $\bD$:**  Diagonal matrix with entries $D_{ii} = d_i = \sum_{j=1}^n w_{ij}$.
 
 :::
 
 
 ::: {.callout-note icon=false}
-## Definition: Graph Laplacian
-Defined as **$\bL = \bD - \bA$**.
-
-- **Discrete Derivative:**  $(\bL \boldsymbol{f})_i = \sum_{j \sim i} w_{ij} (f_i - f_j)$.
-    
-- **Quadratic Form:**  $\bx^T \bL \bx = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2$, with each undirected edge counted once.
-
+## Definition: Unnormalized Graph Laplacian
+The unnormalized graph Laplacian is
+$$
+\begin{align}
+\bL = \bD - \bA.
+\end{align}
+$$
+For any signal $\bx \in \fR^n$ on the vertices, the action of $\bL$ acts as a discrete Laplace operator:
+$$
+\begin{align}
+(\bL \bx)_i = \sum_{j \sim i} w_{ij} (x_i - x_j).
+\end{align}
+$$
+The associated quadratic form satisfies
+$$
+\begin{align}
+\bx^T \bL \bx = \frac{1}{2} \sum_{i,j=1}^n w_{ij} (x_i - x_j)^2 = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-note icon=false}
 ## Proposition: Laplacian Positive Semidefinite
-For an undirected weighted graph with nonnegative weights, $\bL$ is symmetric positive semidefinite and $\bL\mathbf{1}=\bzero$.
+For an undirected graph with nonnegative weights, $\bL$ is symmetric positive semidefinite, and $\bL\mathbf{1}=\bzero$.
 :::
 
 
 ::: {.callout-tip icon=false collapse=true}
 ## Proof
-Symmetry follows from $w_{ij}=w_{ji}$. Using the quadratic form in the result above,
+Symmetry follows from $w_{ij} = w_{ji}$, so $\bA = \bA^T$ and $\bL = \bD - \bA = \bL^T$.
+Expanding the quadratic form algebraically from definitions:
 $$
 \begin{align}
-\bx^T\bL\bx
-    =
-    \sum_{(i,j)\in E} w_{ij}(x_i-x_j)^2
-    \geq 0.
+\bx^T \bL \bx &= \bx^T (\bD - \bA) \bx = \sum_{i=1}^n d_i x_i^2 - \sum_{i,j=1}^n w_{ij} x_i x_j \\
+    &= \sum_{i=1}^n \left( \sum_{j=1}^n w_{ij} \right) x_i^2 - \sum_{i,j=1}^n w_{ij} x_i x_j \\
+    &= \frac{1}{2} \sum_{i,j=1}^n w_{ij} x_i^2 + \frac{1}{2} \sum_{i,j=1}^n w_{ij} x_j^2 - \sum_{i,j=1}^n w_{ij} x_i x_j \\
+    &= \frac{1}{2} \sum_{i,j=1}^n w_{ij} (x_i - x_j)^2 = \sum_{(i,j) \in E} w_{ij} (x_i - x_j)^2.
 \end{align}
 $$
-Thus $\bL$ is positive semidefinite. If $\bx=\mathbf{1}$, every difference $x_i-x_j$ is zero, and direct substitution gives $\bL\mathbf{1}=\bzero$.
+Because $w_{ij} \geq 0$ and $(x_i - x_j)^2 \geq 0$, each term is non-negative, so $\bx^T \bL \bx \geq 0$ for all $\bx \in \fR^n$, proving positive semidefiniteness.
+For $\bx = \mathbf{1}$, every coordinate satisfies $(\bL\mathbf{1})_i = d_i - \sum_{j=1}^n w_{ij} = 0$, so $\bL\mathbf{1} = \bzero$.
 :::
 
 
 ::: {.callout-note icon=false}
-## Example
-**(Three-node path)**  For $1-2-3$,
+## Theorem: Spectral Properties of the Graph Laplacian
+Let the eigenvalues of $\bL$ be ordered as $0 = \lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n$.
+
+1. $\lambda_1 = 0$ with eigenvector $\bv_1 = \mathbf{1}$.
+
+1. The multiplicity of eigenvalue $0$ equals the number of connected components of $G$.
+
+1. The second smallest eigenvalue $\lambda_2$ is the algebraic connectivity (Fiedler value). It satisfies $\lambda_2 > 0$ if and only if $G$ is connected.
+
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+the referenced result shows that all eigenvalues of $\bL$ are nonnegative and that $\mathbf{1}\in\ker(\bL)$, so $\lambda_1=0$.
+
+It remains to identify the entire nullspace. If $\bx\in\ker(\bL)$, then
 $$
 \begin{align}
-\bA=
-    \begin{pmatrix}
-    0&1&0\\
-    1&0&1\\
-    0&1&0
-    \end{pmatrix},
-    \qquad
-    \bL=
-    \begin{pmatrix}
-    1&-1&0\\
-    -1&2&-1\\
-    0&-1&1
-    \end{pmatrix}.
+0=\bx^T\bL\bx=\sum_{(i,j)\in E}w_{ij}(x_i-x_j)^2.
 \end{align}
 $$
-The zero eigenvector is $\mathbf{1}$ because constant signals have no graph variation.
+Every term is nonnegative. Hence $x_i=x_j$ across every edge with positive weight, and therefore $\bx$ is constant on each connected component. Conversely, a vector that is constant on each connected component has zero difference across every edge and belongs to $\ker(\bL)$. The indicator vectors of the connected components form a basis for this nullspace, so the multiplicity of eigenvalue zero equals the number of components.
+
+In particular, $G$ is connected exactly when $\ker(\bL)=\operatorname{span}\{\mathbf{1}\}$. In that case zero is a simple eigenvalue, so $\lambda_2>0$. If $G$ is disconnected, the nullspace has dimension at least two and $\lambda_2=0$.
 :::
+
 
 ::: {.callout-note icon=false}
-## Theorem: Spectral Properties
-For a connected graph with $0 = \lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n$:
-
-1. $\lambda_1 = 0$ with eigenvector $\mathbf{1}$.
-    
-1. **Multiplicity of 0:**  Equals the number of connected components.
-    
-1. **Fiedler Value ($\lambda_2$):**  Measures algebraic connectivity. $\lambda_2 > 0$ iff graph is connected.
-
+## Corollary: Rayleigh Characterization of Algebraic Connectivity
+For a connected undirected graph,
+$$
+\begin{align}
+\lambda_2
+    =\min_{\bx\perp\mathbf{1},\,\bx\neq\bzero}
+    \frac{\bx^T\bL\bx}{\bx^T\bx}
+    =\min_{\bx\perp\mathbf{1},\,\bx\neq\bzero}
+    \frac{\sum_{(i,j)\in E}w_{ij}(x_i-x_j)^2}{\sum_i x_i^2}.
+\end{align}
+$$
 :::
 
 
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Use the result above to show $\bL\mathbf{1}=\bzero$.
-    
-1. Derive $\bx^T\bL\bx=\sum_{(i,j)\in E}w_{ij}(x_i-x_j)^2$ for edges counted once.
-    
-1. Conclude that $\bL$ is positive semidefinite for an undirected graph.
-    
-1. Show that if a graph has two connected components, then there are two independent vectors in $\mathcal{N}(\bL)$.
-
+::: {.callout-tip icon=false collapse=true}
+## Proof
+By the referenced result, a connected graph has an orthonormal eigenbasis with $\bq_1=\mathbf{1}/\sqrt{n}$ and $0=\lambda_1<\lambda_2\leq\cdots\leq\lambda_n$. If $\bx\perp\mathbf{1}$, then $\bx=\sum_{k=2}^n c_k\bq_k$, and
+$$
+\begin{align}
+\frac{\bx^T\bL\bx}{\bx^T\bx}
+    =\frac{\sum_{k=2}^n\lambda_k c_k^2}{\sum_{k=2}^n c_k^2}
+    \geq\lambda_2.
+\end{align}
+$$
+Equality holds for a Fiedler eigenvector $\bq_2$. The second expression follows from the referenced result.
 :::
 
 
 ::: {.callout-note icon=false}
 ## Definition: Normalized Laplacians
+Normalized Laplacians account for high-degree vertices:
 
-- **Symmetric:**  $\bL_{\text{sym}} = \bD^{-1/2} \bL \bD^{-1/2}$. (Eigenvalues in $[0, 2]$).
-    
-- **Random Walk:**  $\bL_{\text{rw}} = \bI-\bA\bD^{-1}$ under the column-stochastic convention.
+- **Symmetric Normalized Laplacian:**  $\bL_{\text{sym}} = \bD^{-1/2} \bL \bD^{-1/2} = \bI - \bD^{-1/2} \bA \bD^{-1/2}$. Its spectrum lies in the interval $[0, 2]$.
 
-:::
+- **Random Walk Laplacian:**  $\bL_{\text{rw}} = \bD^{-1} \bL = \bI - \bD^{-1} \bA$. It is similar to $\bL_{\text{sym}}$ and shares its eigenvalues.
 
-
-::: {.callout-tip icon=false}
-## Remark
-**(Degree normalization)**  The unnormalized Laplacian can let high-degree vertices dominate cuts. Normalized Laplacians measure variation relative to vertex degree.
 :::
 
 
@@ -126,66 +137,214 @@ For a connected graph with $0 = \lambda_1 \leq \lambda_2 \leq ... \leq \lambda_n
 
 
 ::: {.callout-note icon=false}
-## Theorem: Spectral Relaxation
-Minimizing a graph cut (RatioCut) is NP-hard. Spectral methods relax this to an eigenvector problem:
-
-1. Compute $k$ smallest eigenvectors of $\bL$ (starting from $\bv_2$).
-    
-1. Embed vertices in $\fR^k$ using these eigenvectors.
-    
-1. Cluster embedding via $k$-means.
-
-:::
-
-
-## Random Walks and PageRank
-
-
-::: {.callout-note icon=false}
-## Definition: Random Walk Matrix
-Transition matrix $\bP = \bA\bD^{-1}$ under the column-stochastic convention.
-
-- $P_{ij} = w_{ij}/d_j$ is the probability of moving from $j$ to $i$.
-    
-- **Stationary Distribution:**  $\boldsymbol{\pi}$ such that $\bP\boldsymbol{\pi} = \boldsymbol{\pi}$. For undirected graphs, $\pi_i = d_i / \sum d_j$.
-
-:::
-
-
-::: {.callout-warning icon=false}
-## Exercise
-
-1. Show that the columns of $\bP=\bA\bD^{-1}$ sum to one.
-    
-1. For the path graph $1-2-3$, compute $\bP$.
-    
-1. Verify that $\pi_i=d_i/\sum_j d_j$ satisfies $\bP\boldsymbol{\pi}=\boldsymbol{\pi}$.
-
-:::
-
-
-::: {.callout-note icon=false}
-## Definition: PageRank and Google Matrix
-Models a random surfer on a directed web graph with teleportation:
+## Theorem: Spectral Relaxation of Graph Cuts
+Partitioning a graph into two disjoint sets $A$ and $B$ to minimize the normalized cut is NP-hard. Relaxing the discrete indicator vector to a continuous vector subject to an orthogonality constraint yields the Rayleigh quotient problem
 $$
 \begin{align}
-\mathbf{G} = d \bS + \frac{1-d}{N} \mathbf{J},
+\min_{\bx \perp \bD\mathbf{1},\, \bx \neq \bzero} \frac{\bx^T \bL \bx}{\bx^T \bD \bx}.
 \end{align}
 $$
+The optimal solution is the Fiedler eigenvector $\bv_2$ of the generalized eigenvalue problem $\bL \bv = \lambda \bD \bv$, or equivalently the second eigenvector of $\bL_{\text{rw}}$. Spectral clustering embeds vertices in $\fR^k$ using the first $k$ nontrivial eigenvectors, then partitions the coordinates using $k$-means.
+:::
 
-- $d$ is the damping factor (standard: 0.85).
-    
-- $\bS$ is column-stochastic and handles dangling nodes.
-    
-- $\mathbf{J}$ is the all-ones matrix (teleportation).
 
-**Computation:**  PageRank vector $\mathbf{r}$ is the dominant eigenvector of $\mathbf{G}$, computed via power iteration.
+## Diffusion Maps and Nonlinear Manifolds
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(From graphs to manifolds)**  When data points $\bx_1, ..., \bx_N \in \fR^d$ lie on a low-dimensional manifold embedded in high-dimensional space, ambient Euclidean distances can obscure intrinsic connectivity or create shortcuts across a curved manifold. Diffusion maps define a random walk on a graph constructed over the point cloud and, under suitable sampling and bandwidth limits, approximate diffusion generated by a Laplace--Beltrami operator.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Diffusion Operator and Random Walk
+Given point cloud $\{\bx_i\}_{i=1}^N \subset \fR^d$, construct a pairwise affinity matrix $\bK \in \fR^{N \times N}$ using a Gaussian kernel with bandwidth $\delta > 0$:
+$$
+\begin{align}
+K_{ij} = \exp\left(-\frac{\|\bx_i - \bx_j\|^2}{2\delta^2}\right).
+\end{align}
+$$
+Let $d_i = \sum_{j=1}^N K_{ij}$ denote the row sums, and define $\bD = \operatorname{diag}(d_1, ..., d_N)$. The row-stochastic diffusion matrix is
+$$
+\begin{align}
+\mathbf{M} = \bD^{-1} \bK.
+\end{align}
+$$
+The entry $M_{ij} = K_{ij}/d_i$ defines the transition probability from point $\bx_i$ to point $\bx_j$ in a single diffusion step.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Spectral Decomposition of the Diffusion Operator
+The matrix $\mathbf{M} = \bD^{-1}\bK$ is similar to the real symmetric matrix
+$$
+\begin{align}
+\bS = \bD^{-1/2} \bK \bD^{-1/2} = \bD^{1/2} \mathbf{M} \bD^{-1/2}.
+\end{align}
+$$
+Let $\bS = \bV \boldsymbol{\Lambda} \bV^T$ be the eigendecomposition of $\bS$ with orthonormal eigenvectors $\bV = [\bv_0, \bv_1, ..., \bv_{N-1}]$ and eigenvalues
+$$
+\begin{align}
+1 = \lambda_0 > \lambda_1 \geq \lambda_2 \geq ... \geq \lambda_{N-1} \geq 0.
+\end{align}
+$$
+Then $\mathbf{M}$ has real eigenvalues $\lambda_k$ with right eigenvectors $\boldsymbol{\psi}_k = \bD^{-1/2}\bv_k$ and left eigenvectors $\boldsymbol{\phi}_k = \bD^{1/2}\bv_k$. The right eigenvectors satisfy $\mathbf{M} \boldsymbol{\psi}_k = \lambda_k \boldsymbol{\psi}_k$, with $\boldsymbol{\psi}_0 = \mathbf{1}$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Because $\bK$ is symmetric and strictly positive, $\bS = \bD^{-1/2}\bK\bD^{-1/2}$ is real symmetric. By the spectral theorem (the referenced result), $\bS = \bV\boldsymbol{\Lambda}\bV^T$ with orthonormal eigenvectors $\bV^T\bV = \bI$.
+Rewriting the similarity relation:
+$$
+\begin{align}
+\mathbf{M} = \bD^{-1/2} \bS \bD^{1/2}.
+\end{align}
+$$
+Multiplying by $\boldsymbol{\psi}_k = \bD^{-1/2}\bv_k$:
+$$
+\begin{align}
+\mathbf{M}\boldsymbol{\psi}_k = \left( \bD^{-1/2}\bS\bD^{1/2} \right) \left( \bD^{-1/2}\bv_k \right) = \bD^{-1/2}\bS\bv_k = \lambda_k \bD^{-1/2}\bv_k = \lambda_k \boldsymbol{\psi}_k.
+\end{align}
+$$
+Similarly, defining left eigenvectors $\boldsymbol{\phi}_k = \bD^{1/2}\bv_k$:
+$$
+\begin{align}
+\boldsymbol{\phi}_k^T\mathbf{M} = \left(\bD^{1/2}\bv_k\right)^T \left(\bD^{-1/2}\bS\bD^{1/2}\right) = \bv_k^T\bS\bD^{1/2} = \lambda_k \bv_k^T\bD^{1/2} = \lambda_k \boldsymbol{\phi}_k^T.
+\end{align}
+$$
+Biorthogonality follows directly:
+$$
+\begin{align}
+\boldsymbol{\phi}_j^T \boldsymbol{\psi}_k = \left(\bD^{1/2}\bv_j\right)^T \left(\bD^{-1/2}\bv_k\right) = \bv_j^T\bv_k = \delta_{jk}.
+\end{align}
+$$
+Because $\mathbf{M}$ is row-stochastic, $\mathbf{M}\mathbf{1} = \mathbf{1}$, so $\lambda_0 = 1$ with right eigenvector $\boldsymbol{\psi}_0 = \mathbf{1}$.
+:::
+
+
+::: {.callout-note icon=false}
+## Definition: Diffusion Distance and Diffusion Map Coordinates
+The $t$-step diffusion operator $\mathbf{M}^t$ represents running the random walk forward for time $t$. The diffusion distance between points $\bx_i$ and $\bx_j$ measures the difference between their conditional transition distributions weighted by the stationary measure $\boldsymbol{\pi}$:
+$$
+\begin{align}
+D_t(\bx_i, \bx_j)^2
+    =
+    \|\mathbf{M}^t(i, :) - \mathbf{M}^t(j, :)\|_{\bD^{-1}}^2
+    =
+    \sum_{k=1}^{N-1} \lambda_k^{2t} \big(\psi_k(i) - \psi_k(j)\big)^2.
+\end{align}
+$$
+The diffusion map embedding of point $\bx_i$ into an $m$-dimensional Euclidean space is
+$$
+\begin{align}
+\Psi_t(\bx_i) = \begin{pmatrix} \lambda_1^t \psi_1(i) \\ \lambda_2^t \psi_2(i) \\ \vdots \\ \lambda_m^t \psi_m(i) \end{pmatrix} \in \fR^m.
+\end{align}
+$$
+Under this embedding, Euclidean distance in $\fR^m$ equals the truncated diffusion distance:
+$$
+\begin{align}
+\|\Psi_t(\bx_i) - \Psi_t(\bx_j)\|_2^2 \approx D_t(\bx_i, \bx_j)^2.
+\end{align}
+$$
 :::
 
 
 ::: {.callout-tip icon=false}
 ## Remark
-**(Dangling nodes)**  A page with no outgoing links gives a zero column before normalization. The standard fix replaces that column by the uniform probability vector before forming $\bS$.
+**(Diffusion time as a geometric low-pass filter)**  The factor $\lambda_k^{2t}$ in the diffusion distance acts as an exponential low-pass filter on manifold coordinates. Because $\lambda_k < 1$ for all $k \geq 1$, increasing $t$ rapidly suppresses high-frequency modes associated with small eigenvalues, leaving only the dominant macroscopic geometric coordinates.
+:::
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Density normalization)**
+The random walk of the referenced result depends on how densely the points sample the manifold as well as on its geometry. Coifman and Lafon separate the two effects by renormalizing the kernel before forming the random walk [@coifmanlafon2006]. For a parameter $\alpha\in[0,1]$, they replace $K_{ij}$ by $K_{ij}/(d_i^\alpha d_j^\alpha)$ and then compute new row sums and the row-stochastic matrix as before. In the limit of many points and small bandwidth, $\alpha=0$ gives the classical normalized graph Laplacian, whose limit depends on the sampling density. The choice $\alpha=1/2$ gives the generator of a Fokker--Planck diffusion, and $\alpha=1$ recovers the Laplace--Beltrami operator independently of the density. The renormalized kernel is still symmetric, so the referenced result applies with the new row sums.
+:::
+
+
+## Permutation Invariance and Graph Spectra
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Combinatorial bottleneck in coordinate representations)**  In molecular systems and particle clusters with $N$ identical atoms, the state is specified by atomic positions in $\fR^{3N}$. Comparing two configurations $\bx, \by \in \fR^{3N}$ directly requires optimizing over all $N!$ atomic index permutations $\sigma \in S_N$, in addition to Euclidean rotations and translations. This combinatorial alignment cost is intractable for moderate $N$.
+:::
+
+
+::: {.callout-note icon=false}
+## Theorem: Permutation Invariance of Graph Spectra
+Let $\bD \in \fR^{N \times N}$ be the pairwise interatomic distance matrix with entries $D_{ij} = \|\mathbf{r}_i - \mathbf{r}_j\|_2$. Under any atom permutation $\sigma \in S_N$, the distance matrix transforms by an orthogonal permutation matrix $\bP_\sigma$:
+$$
+\begin{align}
+\bD_\sigma = \bP_\sigma \bD \bP_\sigma^T.
+\end{align}
+$$
+Let $\bL$ be any graph Laplacian constructed from edge weights $w_{ij} = f(D_{ij})$. Then the permuted Laplacian is
+$$
+\begin{align}
+\bL_\sigma = \bP_\sigma \bL \bP_\sigma^T.
+\end{align}
+$$
+Because $\bP_\sigma$ is orthogonal, $\bL_\sigma$ is orthogonally similar to $\bL$. Therefore, the eigenvalue spectrum
+$$
+\begin{align}
+\operatorname{spec}(\bL) = (\lambda_1, \lambda_2, ..., \lambda_N)
+\end{align}
+$$
+is invariant under all atomic permutations $\sigma \in S_N$ and all rigid Euclidean isometries $\mathrm{SE}(3)$.
+:::
+
+
+::: {.callout-tip icon=false collapse=true}
+## Proof
+Because rigid rotations and translations preserve pairwise distances $\|\mathbf{r}_i - \mathbf{r}_j\|_2$, the matrix $\bD$ is invariant under $\mathrm{SE}(3)$.
+
+Under a permutation $\sigma \in S_N$, vertex $i$ maps to $\sigma(i)$, so the permuted affinity matrix has entries $W_{\sigma(i), \sigma(j)} = W_{ij}$. In matrix notation, $\bW_\sigma = \bP_\sigma \bW \bP_\sigma^T$. Similarly, the degree matrix transforms as $\bD_\sigma = \bP_\sigma \bD \bP_\sigma^T$. Thus
+$$
+\begin{align}
+\bL_\sigma = \bD_\sigma - \bW_\sigma = \bP_\sigma (\bD - \bW) \bP_\sigma^T = \bP_\sigma \bL \bP_\sigma^T.
+\end{align}
+$$
+Because permutation matrices are orthogonal ($\bP_\sigma^{-1} = \bP_\sigma^T$), the characteristic polynomial satisfies
+$$
+\begin{align}
+\det(\bL_\sigma - \lambda \bI)
+    =
+    \det(\bP_\sigma (\bL - \lambda \bI) \bP_\sigma^T)
+    =
+    \det(\bP_\sigma)\det(\bL - \lambda \bI)\det(\bP_\sigma^T)
+    =
+    \det(\bL - \lambda \bI).
+\end{align}
+$$
+The roots of the characteristic polynomial are identical. Thus the eigenvalue multiset $\operatorname{spec}(\bL)$ is invariant under any relabeling of identical particles.
+:::
+
+
+## Bandwidth Selection via Affinity Scaling
+
+
+::: {.callout-tip icon=false}
+## Remark
+**(Sigmoidal behavior of the affinity sum)**  The Gaussian affinity kernel $K_{ij} = \exp(-\|\bx_i - \bx_j\|^2 / (2\delta^2))$ requires selecting the bandwidth parameter $\delta$. If $\delta$ is too small, points are isolated and $K_{ij} \approx 0$ for $i \neq j$. If $\delta$ is too large, points are fully connected and $K_{ij} \approx 1$.
+
+Define the total affinity sum
+$$
+\begin{align}
+S(\delta) = \sum_{i=1}^N \sum_{j=1}^N \exp\left(-\frac{\|\bx_i - \bx_j\|^2}{2\delta^2}\right).
+\end{align}
+$$
+Plotting $\ln S(\delta)$ against $\ln \delta$ yields a sigmoidal curve:
+
+1. As $\delta \to 0$, $K_{ij} \to 0$ for $i \neq j$, so $S(\delta) \to N$ and $\ln S(\delta) \to \ln N$.
+
+1. As $\delta \to \infty$, $K_{ij} \to 1$ for all $i,j$, so $S(\delta) \to N^2$ and $\ln S(\delta) \to 2\ln N$.
+
+1. In the intermediate scaling regime, $S(\delta) \propto \delta^d$, where $d$ is the intrinsic manifold dimension. The slope $\frac{d\ln S(\delta)}{d\ln \delta} \approx d$ estimates dimension.
+
+Choosing $\delta$ in the linear transition regime ensures that the kernel resolves intrinsic manifold geometry without collapsing into disconnected points or a uniform complete graph.
 :::
 
 
@@ -195,12 +354,38 @@ $$
 ::: {.callout-warning icon=false}
 ## Exercise
 
-1. Construct $\bL$ for a 3-vertex path graph. Find its eigenvalues by hand.
-    
-1. Show that $\bL \mathbf{1} = \bzero$ for any graph.
-    
-1. Prove $\bL$ is positive semidefinite using the quadratic form.
-    
-1. Implement PageRank power iteration for a 10-node random graph.
+1. **Compute.**  **(Path graph Laplacian spectrum)**  For a three-node unweighted path graph $1-2-3$, write down $\bA$ and $\bL$. Compute the eigenvalues and eigenvectors of $\bL$ by hand. Verify that $\lambda_1 = 0$ with $\bv_1 = (1, 1, 1)^T$, and compute the algebraic connectivity $\lambda_2$.
 
+1. **Derive.**  **(Rayleigh quotient for algebraic connectivity)**  For the path graph in the preceding exercise, minimize the quotient in the referenced result over vectors of the form $(a,b,-a-b)^T$. Verify that the minimum equals the computed value of $\lambda_2$. Then evaluate the numerator on a two-level vector that is constant on each side of a proposed cut and explain how weak cross-cut weights lower its energy.
+
+1. **Derive.**  **(Permutation invariance of graph spectra)**  Consider a cluster of four identical atoms in $\fR^3$.
+
+    1. Let the coordinates be arranged in a vector $\bx \in \fR^{12}$. Explain why comparing two configurations $\bx$ and $\by$ requires testing $4! = 24$ permutations.
+
+    1. Construct the interatomic distance matrix $\bD$ and form the graph Laplacian $\bL$. Prove that for any permutation $\sigma \in S_4$, $\bL_\sigma = \bP_\sigma \bL \bP_\sigma^T$.
+
+    1. Explain how sorting the eigenvalues $\operatorname{spec}(\bL) = (\lambda_1, \lambda_2, \lambda_3, \lambda_4)$ produces a coordinate-free, permutation-invariant fingerprint for molecular structure.
+
+1. **Explore.**  **(Diffusion time as a geometric low-pass filter)**  Let a diffusion operator on a data manifold have leading eigenvalues $\lambda_1 = 0.98$ and $\lambda_2 = 0.80$.
+
+    1. Compute the ratio of modal contributions $(\lambda_2 / \lambda_1)^{2t}$ for diffusion times $t = 1$, $t = 5$, and $t = 20$.
+
+    1. Explain why increasing $t$ contracts local high-frequency fluctuations while preserving macroscopic manifold geometry.
+
+    1. What happens to the diffusion distance $D_t(\bx_i, \bx_j)$ as $t \to \infty$?
+
+1. **Explore.**  **(Sigmoidal bandwidth selection)**  Let $N = 100$ data points be sampled uniformly from a circle of radius $R = 1$ in $\fR^2$.
+
+    1. Write down the formula for the affinity sum $S(\delta) = \sum_{i,j} \exp(-\|\bx_i - \bx_j\|^2 / (2\delta^2))$.
+
+    1. Evaluate the asymptotic limits of $\ln S(\delta)$ as $\delta \to 0$ and $\delta \to \infty$.
+
+    1. In the intermediate scaling regime $\delta \in [0.1, 0.5]$, show that the slope $\frac{d\ln S(\delta)}{d\ln \delta} \approx 1$, reflecting the one-dimensional geometry of the circle.
+
+:::
+
+
+::: {.callout-note icon=false}
+## Further reading
+Chung develops spectral graph theory from the graph-Laplacian side [@chung1997]. Belkin and Niyogi introduce Laplacian eigenmaps, while Coifman and Lafon develop diffusion maps and the density normalization described above [@belkinniyogi2003; @coifmanlafon2006].
 :::

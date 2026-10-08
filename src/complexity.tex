@@ -1,88 +1,136 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Computational Complexity}
+\subsection{Cost Models and Sparse Storage}
 \label{sub:complexity}
 
-Algorithmic cost measured in arithmetic operations (flops). Determines scalability and feasibility.
+\textBox{%
+Two algorithms that compute the same quantity can differ in cost by orders of magnitude. We measure cost by the number of floating-point operations an algorithm performs and by the memory it stores and reads. Most large matrices in these notes have only a few nonzero entries in each row, and for such matrices the storage format determines both the memory use and the cost of the basic operations.
+}
 
-\subsubsection{Big-O Notation}
+\textBox{%
+We first define asymptotic notation and count the operations of the basic dense kernels. We then describe how a sparse matrix is stored, how a matrix--vector product is computed in that format, and how a sparse matrix is assembled from local contributions.
+}
 
-\addDef{Big-O Notation}{%
-$f(n) = O(g(n))$ if $\exists C, n_0 > 0$ s.t. $|f(n)| \leq C|g(n)|$ for $n \geq n_0$.
-\begin{itemize}
-  \item $\Omega(g)$: Grows at least as fast.
-  \item $\Theta(g)$: Grows at the same rate.
-  \item $o(g)$: Grows strictly slower.
-\end{itemize}
+\subsubsection{Asymptotic Notation and Operation Counts}
+
+\addDef{Asymptotic Notation}{%
+Let $f$ and $g$ be positive functions of an integer $n$. We write $f(n)=O(g(n))$ if there are constants $C>0$ and $n_0$ such that $f(n)\leq Cg(n)$ for every $n\geq n_0$. We write $f(n)=\Theta(g(n))$ if both $f(n)=O(g(n))$ and $g(n)=O(f(n))$ hold.
 }
 \label{def:big-o}
 
-\addRemark{%
-\textbf{(Typical Rates)}\enspace
-$O(1) \ll O(\log n) \ll O(n) \ll O(n \log n) \ll O(n^2) \ll O(n^3) \ll O(2^n)$.
-For $n=1000$: $O(n^2)$ is $\sim 10^6$ ops (ms); $O(n^3)$ is $\sim 10^9$ ops (s).
-}
-
-\addRemark{%
-\textbf{(Properties)}\enspace
-1. \textbf{Transitivity:} $f=O(g), g=O(h) \Rightarrow f=O(h)$.
-2. \textbf{Sum Rule:} $O(f) + O(g) = O(\max(f, g))$.
-3. \textbf{Product Rule:} $O(f) \cdot O(g) = O(fg)$.
-4. \textbf{Constant Factors:} $O(cf) = O(f)$.
-}
-
-\addExcr{%
-\begin{enumerate}
-  \item Show $3n^2 + 100n + 5 = O(n^2)$.
-  \item Compare growth: $n \log n$ vs $n^2$.
-  \item Rank by cost: $5n^3+n, 100n^2, n^2 \log n, 2^{10}n^2$.
-  \item Use Master Theorem: $T(n) = 2T(n/2) + n$.
-\end{enumerate}
-}
-
-\subsubsection{Flop Counting}
-
-Hardware-independent measure of work.
-
 \addDef{Flop}{%
-A single floating-point operation ($+, -, \times, \div$).
+A \textbf{flop} is one floating-point addition, subtraction, multiplication, division, or square root.
 }
 \label{def:flop}
 
-\addThm{Basic Costs}{%
-For $\bx, \by \in \fR^n$ and $\bA \in \fR^{m \times n}, \bB \in \fR^{n \times p}$:
-\begin{itemize}
-  \item \textbf{Dot product:} $2n$ flops.
-  \item \textbf{Matrix-vector product:} $2mn$ flops.
-  \item \textbf{Matrix-matrix product:} $2mnp$ flops ($2n^3$ for square).
-  \item \textbf{Triangular solve:} $n^2$ flops.
-\end{itemize}
+\addThm{Costs of the Basic Dense Kernels}{%
+Let $\bx,\by\in\fR^n$, $\bA\in\fR^{m\times n}$, $\bB\in\fR^{n\times p}$, and let $\bL\in\fR^{n\times n}$ be nonsingular and lower triangular. The standard algorithms require
+\begin{enumerate}
+    \item $2n-1$ flops for the inner product $\bx^T\by$,
+    \item $m(2n-1)$ flops for the product $\bA\bx$,
+    \item $mp(2n-1)$ flops for the product $\bA\bB$,
+    \item $n^2$ flops for the solution of $\bL\bz=\by$ by forward substitution.
+\end{enumerate}
 }
 \label{thm:flop-costs}
 
-\addRemark{%
-\textbf{Data Locality and Performance:}\enspace
-On modern architectures, computational throughput often significantly exceeds memory bandwidth. Consequently, algorithms with high cache locality, such as blocked matrix multiplication (GEMM), may achieve superior performance compared to algorithms with lower theoretical operation counts but poorer data reuse.
+\addPrf{%
+The inner product forms $n$ products and adds them with $n-1$ additions. The product $\bA\bx$ consists of $m$ inner products of length $n$, and $\bA\bB$ consists of $mp$ such inner products, one for each entry. Forward substitution computes $z_i=(y_i-\sum_{j<i}\ell_{ij}z_j)/\ell_{ii}$, which uses $i-1$ multiplications, $i-1$ subtractions, and one division. Summing $2i-1$ over $i=1,\dots,n$ gives $n^2$.
+}
+
+\textBox{%
+The order of evaluation matters even when the result does not change. For $\bA,\bB\in\fR^{n\times n}$ and $\bx\in\fR^n$, forming $(\bA\bB)\bx$ costs about $2n^3$ flops, whereas $\bA(\bB\bx)$ costs about $4n^2$ flops. The factorizations of later sections have costs of the same kind. Dense LU factorization requires about $\tfrac23n^3$ flops (Thm~\ref{thm:lu-complexity}), Cholesky about $\tfrac13n^3$, and Householder QR of an $m\times n$ matrix about $2mn^2-\tfrac23n^3$.
+}
+
+\addExmpl{%
+\textbf{(The dense barrier)}\enspace
+At a sustained rate of $10^{10}$ flops per second, a dense LU factorization with $n=10^4$ requires about $\tfrac23\cdot10^{12}$ flops, or roughly one minute. With $n=10^5$ it requires about $\tfrac23\cdot10^{15}$ flops, or roughly nineteen hours, and storing the matrix in double precision requires $8\cdot10^{10}$ bytes. A finite-difference discretization on a $300\times300\times300$ grid already has $n\approx2.7\times10^7$ unknowns. Dense methods are therefore out of reach for such problems, and the matrix must be stored and used in a form that exploits its zero entries.
 }
 
 \addRemark{%
-\textbf{(Benchmarks)}\enspace
-\begin{itemize}
-    \item \textbf{LU Factorization:} $\frac{2}{3}n^3$.
-    \item \textbf{Cholesky:} $\frac{1}{3}n^3$.
-    \item \textbf{QR (Householder):} $\frac{4}{3}n^3$.
-\end{itemize}
+\textbf{(Memory traffic)}\enspace
+Flop counts ignore the cost of moving data between memory and the processor. A dense matrix--matrix product reuses each loaded entry $O(n)$ times, and blocked implementations run close to the peak arithmetic rate. A sparse matrix--vector product performs two flops for each stored nonzero but reads at least one value and one index for it. Its running time is therefore set by memory bandwidth rather than by the flop count, and reducing the number of stored entries reduces the running time directly.
 }
+
+\subsubsection{Sparse Matrix Storage}
+
+\textBox{%
+A matrix is \textbf{sparse} when the number of its nonzero entries, written $\operatorname{nnz}(\bA)$, is much smaller than $n^2$. The finite-difference Poisson matrix on an $N\times N$ grid has $n=N^2$ unknowns and fewer than $5n$ nonzero entries. Stored densely, it would occupy $n^2$ words, and a matrix--vector product would cost $2n^2$ flops. A sparse format stores only the nonzero entries and their positions.
+}
+
+\addDef{Coordinate and Compressed Sparse Row Formats}{%
+Let $\bA\in\fR^{n\times n}$ have $\operatorname{nnz}(\bA)$ nonzero entries.
+\begin{enumerate}
+    \item The \textbf{coordinate} (COO) format stores three arrays of length $\operatorname{nnz}(\bA)$ that list each nonzero entry as a triplet $(i,j,a_{ij})$. The triplets may appear in any order, and repeated positions are understood to be summed.
+    \item The \textbf{compressed sparse row} (CSR) format stores the nonzero values row by row in an array $\texttt{val}$, their column indices in an array $\texttt{col}$ of the same length, and an array $\texttt{ptr}$ of length $n+1$. The entries of row $i$ occupy positions $\texttt{ptr}_i,\dots,\texttt{ptr}_{i+1}-1$ of $\texttt{val}$ and $\texttt{col}$.
+\end{enumerate}
+}
+\label{def:sparse-formats}
+
+\addExmpl{%
+The matrix
+\begin{align*}
+    \bA=\begin{pmatrix}4&0&-1&0\\0&3&0&0\\-1&0&5&2\\0&0&2&6\end{pmatrix}
+\end{align*}
+has eight nonzero entries. Its CSR arrays are
+\begin{align*}
+    \texttt{val}&=(4,-1,\;3,\;-1,5,2,\;2,6), &
+    \texttt{col}&=(1,3,\;2,\;1,3,4,\;3,4), &
+    \texttt{ptr}&=(1,3,4,7,9).
+\end{align*}
+Row $3$ occupies positions $\texttt{ptr}_3=4$ through $\texttt{ptr}_4-1=6$.
+}
+
+\addThm{Cost of a CSR Matrix--Vector Product}{%
+For $\bA$ stored in CSR format, the product $\by=\bA\bx$ computed by
+\begin{align*}
+    y_i=\sum_{k=\texttt{ptr}_i}^{\texttt{ptr}_{i+1}-1}\texttt{val}_k\,x_{\texttt{col}_k},
+    \qquad i=1,\dots,n,
+\end{align*}
+requires at most $2\operatorname{nnz}(\bA)$ flops. The format stores $2\operatorname{nnz}(\bA)+n+1$ numbers.
+}
+\label{thm:csr-matvec}
+
+\addPrf{%
+Each stored entry contributes one multiplication and at most one addition to the sum for its row, and each entry is visited once. The arrays $\texttt{val}$ and $\texttt{col}$ have length $\operatorname{nnz}(\bA)$, and $\texttt{ptr}$ has length $n+1$.
+}
+
+\textBox{%
+The CSR format is efficient for computing $\bA\bx$ but inconvenient for constructing a matrix, because the position of an entry in $\texttt{val}$ depends on how many entries precede it. Matrices are therefore usually assembled in COO format, where a new entry is simply appended, and converted to CSR once assembly is complete.
+}
+
+\addThm{Conversion from COO to CSR}{%
+A matrix given by $t$ triplets can be converted to CSR format in $O(t+n)$ operations.
+}
+\label{thm:coo-to-csr}
+
+\addPrf{%
+We count the triplets in each row, which takes $O(t)$ operations. A running sum of these counts gives $\texttt{ptr}$ in $O(n)$ operations. We then pass over the triplets a second time and place each one at the next free position of its row, which again takes $O(t)$ operations. Repeated positions within a row are merged by a final pass that accumulates entries with equal column index. The pass uses a work array of length $n$, initialized once, that records for each column the position of its entry in the row currently being processed, so no array is cleared between rows. Every step is linear in $t$ or $n$.
+}
+
+\addExmpl{%
+\textbf{(Assembling the Poisson matrix)}\enspace
+For the one-dimensional Poisson matrix $h^{-2}\operatorname{tridiag}(-1,2,-1)$, we append for each $i=1,\dots,n$ the triplet $(i,i,2h^{-2})$, together with $(i,i-1,-h^{-2})$ when $i>1$ and $(i,i+1,-h^{-2})$ when $i<n$. The result has $3n-2$ triplets and converts to CSR in $O(n)$ operations. Finite-element matrices are assembled in the same way by looping over elements, and each element contributes a small block of triplets that overlaps the contributions of its neighbors. The overlapping triplets are summed during the conversion.
+}
+
+\addRemark{%
+\textbf{(Column storage and transposes)}\enspace
+The compressed sparse column (CSC) format stores $\bA$ column by column and is the CSR format of $\bA^T$. Column-oriented algorithms, such as sparse Cholesky factorization and column-oriented triangular solves, use CSC. A product $\bA^T\bx$ with a CSR matrix is computed by scattering $x_i\,\texttt{val}_k$ into position $\texttt{col}_k$ of the result. The scatter has the same flop count as the CSR product, but parallel threads that process different rows may then write to the same output entry.
+}
+
+\subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-  \item Verify $2mn$ flops for $\bA\bx$ by counting multiply-adds.
-  \item Estimate wall-clock time for $10^9$ flops on a $10^9$ flop/s CPU.
-  \item Python: Plot \texttt{np.dot(A, B)} time vs $n$ (log-log). Verify exponent $\approx 3$.
-  \item Why might the empirical exponent be less than 3? (Cache hierarchy, vectorization).
+    \item \exCheck Show that $3n^2+100n+5=\Theta(n^2)$, and arrange $5n^3+n$, $100n^2$, $n^2\log n$, and $2^{10}n^2$ in order of growth.
+    \item \exCheck Write the COO triplets and the CSR arrays of the $5\times5$ matrix $\operatorname{tridiag}(-1,2,-1)$. Then compute $\bA\bx$ for $\bx=(1,2,3,4,5)^T$ directly from the CSR arrays.
+    \item \exDerive Count the flops and the memory reads of the CSR product in Thm~\ref{thm:csr-matvec}, assuming 8-byte values and 4-byte indices. Compute the ratio of flops to bytes read, and explain why this ratio makes the product limited by memory bandwidth.
+    \item \exDerive Write the scatter algorithm for $\bA^T\bx$ from CSR arrays, and prove that it costs at most $2\operatorname{nnz}(\bA)$ flops.
+    \item \exCompute Assemble the five-point Poisson matrix on an $N\times N$ grid in COO format, convert it to CSR, and compare the time of a sparse and a dense matrix--vector product for $N=50,100,200$. Report $\operatorname{nnz}$, the storage of both formats, and the two times.
 \end{enumerate}
 }
+\label{ex:complexity-exercises}
 
 \end{document}

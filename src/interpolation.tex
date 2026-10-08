@@ -1,150 +1,345 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 
 \begin{document}
-\subsection{Polynomial Interpolation}
+\subsection{Polynomial and Spline Interpolation}
 \label{subsec:interpolation}
 
-\textBox{%
-Constructing a polynomial that passes exactly through a given set of data points.
+
+Interpolation is the process of constructing a continuous function that passes exactly through a discrete collection of given data points. Given $n+1$ distinct abscissas (or nodes) $x_0, x_1, \dots, x_n \in \fR$ and corresponding values $y_0, y_1, \dots, y_n \in \fR$, polynomial interpolation seeks a polynomial $P_n$ of degree at most $n$ such that
+\begin{align*}
+    P_n(x_i) = y_i, \qquad i = 0, 1, \dots, n.
+\end{align*}
+Polynomials are useful local and global approximants because finite polynomial representations can be evaluated, differentiated, and integrated by finite algorithms.
+
+\subsubsection{Existence, Uniqueness, and the Vandermonde Matrix}
+
+\addThm{Existence and Uniqueness of the Interpolating Polynomial}{%
+Let $x_0, x_1, \dots, x_n$ be $n+1$ pairwise distinct real numbers, and let $y_0, y_1, \dots, y_n$ be arbitrary real numbers. There exists a unique polynomial $P_n \in \mathcal{P}_n$ of degree at most $n$ such that $P_n(x_i) = y_i$ for all $i = 0, 1, \dots, n$.
 }
+\label{thm:interpolation-existence-uniqueness}
 
-\subsubsection{Existence and Uniqueness}
-
-\addThm{Existence and Uniqueness}{%
-Given $n+1$ distinct points $(x_i, y_i)$, there exists a unique polynomial $P_n(x)$ of degree at most $n$ such that $P_n(x_i) = y_i$ for all $i = 0, \dots, n$.
-}
-\label{thm:interpolation-existence}
-
-\addExcr{%
+\addPrf{%
+We establish existence and uniqueness using the fundamental properties of polynomials.
 \begin{enumerate}
-    \item Count the number of coefficients in a degree-$n$ polynomial.
-    \item Write the interpolation equations as a Vandermonde linear system.
-    \item Use distinctness of the nodes to explain why the Vandermonde matrix is nonsingular.
-    \item Conclude Thm~\ref{thm:interpolation-existence}.
+    \item \textbf{Uniqueness:} Suppose there exist two polynomials $P_n, Q_n \in \mathcal{P}_n$ that satisfy the interpolation conditions, so $P_n(x_i) = Q_n(x_i) = y_i$ for $i = 0, \dots, n$. Define the difference polynomial $R(x) = P_n(x) - Q_n(x)$. Because $\mathcal{P}_n$ is a vector space, $R$ has degree at most $n$. Furthermore,
+    \begin{align*}
+        R(x_i) = P_n(x_i) - Q_n(x_i) = y_i - y_i = 0, \qquad i = 0, \dots, n.
+    \end{align*}
+    Thus $R(x)$ has at least $n+1$ distinct real roots. By the Fundamental Theorem of Algebra, a non-zero polynomial of degree at most $n$ can have at most $n$ roots. Therefore, $R(x)$ must be the zero polynomial, which implies $P_n(x) \equiv Q_n(x)$.
+    \item \textbf{Existence via Linear Algebra:} Express $P_n(x)$ in the standard monomial basis:
+    \begin{align*}
+        P_n(x) = c_0 + c_1 x + c_2 x^2 + \dots + c_n x^n = \sum_{j=0}^n c_j x^j.
+    \end{align*}
+    The interpolation conditions $P_n(x_i) = y_i$ form a square $(n+1) \times (n+1)$ linear system $\bV \bc = \by$:
+    \begin{align*}
+        \begin{pmatrix}
+            1 & x_0 & x_0^2 & \cdots & x_0^n \\
+            1 & x_1 & x_1^2 & \cdots & x_1^n \\
+            \vdots & \vdots & \vdots & \ddots & \vdots \\
+            1 & x_n & x_n^2 & \cdots & x_n^n
+        \end{pmatrix}
+        \begin{pmatrix}
+            c_0 \\ c_1 \\ \vdots \\ c_n
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            y_0 \\ y_1 \\ \vdots \\ y_n
+        \end{pmatrix}.
+    \end{align*}
+    The matrix $\bV$ is the Vandermonde matrix. Its determinant evaluates to
+    \begin{align*}
+        \det(\bV) = \prod_{0 \leq i < j \leq n} (x_j - x_i).
+    \end{align*}
+    Because the nodes $x_i$ are pairwise distinct, $x_j - x_i \neq 0$ for all $j > i$, so $\det(\bV) \neq 0$. Consequently, $\bV$ is invertible, and a unique coefficient vector $\bc = \bV^{-1} \by$ exists for any data vector $\by$.
 \end{enumerate}
 }
-\label{ex:interpolation-existence}
 
-\subsubsection{Lagrange Form}
-
-\textBox{%
-Provides an explicit construction for the interpolating polynomial.
+\addRemark{%
+Although the Vandermonde matrix provides a constructive proof of existence, solving $\bV\bc=\by$ in the monomial basis is often a poor numerical representation. Its condition number depends on the nodes and their scaling and can grow rapidly with degree. A large coefficient error does not imply that the interpolation problem itself is ill-posed. It may instead reflect an ill-conditioned choice of basis. The Lagrange and barycentric forms avoid solving for monomial coefficients.
 }
+
+\subsubsection{The Lagrange Form}
+
+The Lagrange formulation circumvents the ill-conditioned Vandermonde linear system by constructing a basis of polynomials tailored to the specific nodes $x_i$.
 
 \addDef{Lagrange Basis Polynomials}{%
+Given $n+1$ distinct nodes $x_0, x_1, \dots, x_n$, the $i$-th Lagrange basis polynomial $L_i \in \mathcal{P}_n$ is defined by
 \begin{align*}
-    L_i(x) = \prod_{j=0, j \neq i}^n \frac{x - x_j}{x_i - x_j}.
+    L_i(x) = \prod_{\substack{j=0 \\ j \neq i}}^n \frac{x - x_j}{x_i - x_j} = \frac{(x - x_0)\cdots(x - x_{i-1})(x - x_{i+1})\cdots(x - x_n)}{(x_i - x_0)\cdots(x_i - x_{i-1})(x_i - x_{i+1})\cdots(x_i - x_n)}.
 \end{align*}
-The interpolating polynomial is $P_n(x) = \sum_{i=0}^n y_i L_i(x)$.
-}
-\label{def:lagrange-basis}
-
-\addExcr{%
-\begin{enumerate}
-    \item Show that $L_i(x_j)=0$ when $i\neq j$.
-    \item Show that $L_i(x_i)=1$.
-    \item Use the previous two steps to prove that $P_n(x_j)=y_j$ for every node.
-    \item Explain why uniqueness follows from Thm~\ref{thm:interpolation-existence}.
-\end{enumerate}
-}
-\label{ex:lagrange-basis}
-
-\addRemark{%
-\textbf{Computational Cost:}\enspace Evaluation of the Lagrange form costs $O(n^2)$ operations. Adding a new point requires recomputing all basis polynomials.
-}
-
-\subsubsection{Barycentric Interpolation}
-
-\textBox{%
-A numerically stable and efficient refinement of the Lagrange form.
-}
-
-\addDef{Barycentric Formula}{%
+The Lagrange basis polynomials satisfy the cardinal Kronecker delta property:
 \begin{align*}
-    P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}, \quad \text{where } w_i = \frac{1}{\prod_{j \neq i} (x_i - x_j)}.
+    L_i(x_j) = \delta_{ij} =
+    \begin{cases}
+        1, & \text{if } i = j, \\
+        0, & \text{if } i \neq j.
+    \end{cases}
+\end{align*}
+The interpolating polynomial in Lagrange form is
+\begin{align*}
+    P_n(x) = \sum_{i=0}^n y_i L_i(x).
 \end{align*}
 }
-\label{def:barycentric-formula}
+\label{def:lagrange-form}
 
-\addRemark{%
-\textbf{Advantages:}\enspace Evaluation costs only $O(n)$ once the weights $w_i$ are computed ($O(n^2)$). This is the standard recommended approach for general polynomial interpolation.
-}
-
-\subsubsection{Interpolation Error}
-
-\addThm{Polynomial Interpolation Error}{%
-Let $P_n$ interpolate $f$ at distinct nodes $x_0,\dots,x_n$. If $f$ has $n+1$ continuous derivatives, then for each $x$ there exists $\xi_x$ in the interval containing the nodes and $x$ such that
+\addExmpl{%
+To interpolate the three data points $(-1, 1)$, $(0, 0)$, and $(1, 1)$, we construct the degree-2 Lagrange basis polynomials on $x_0 = -1, x_1 = 0, x_2 = 1$:
 \begin{align*}
-    f(x)-P_n(x)
-    =
-    \frac{f^{(n+1)}(\xi_x)}{(n+1)!}
-    \prod_{j=0}^n (x-x_j).
+    L_0(x) &= \frac{(x - 0)(x - 1)}{(-1 - 0)(-1 - 1)} = \frac{x(x - 1)}{2} = \frac{x^2 - x}{2}, \\
+    L_1(x) &= \frac{(x - (-1))(x - 1)}{(0 - (-1))(0 - 1)} = \frac{(x + 1)(x - 1)}{-1} = 1 - x^2, \\
+    L_2(x) &= \frac{(x - (-1))(x - 0)}{(1 - (-1))(1 - 0)} = \frac{x(x + 1)}{2} = \frac{x^2 + x}{2}.
 \end{align*}
-}
-\label{thm:polynomial-interpolation-error}
-
-\addExcr{%
-\begin{enumerate}
-    \item Define $\omega(x)=\prod_{j=0}^n(x-x_j)$.
-    \item For a fixed $x$, construct $g(t)=f(t)-P_n(t)-c\omega(t)$ so that $g(x)=0$.
-    \item Count the zeros of $g$.
-    \item Apply Rolle's theorem $n+1$ times.
-    \item Solve for $c$ and derive Thm~\ref{thm:polynomial-interpolation-error}.
-\end{enumerate}
-}
-\label{ex:polynomial-interpolation-error}
-
-\subsubsection{Runge's Phenomenon}
-
-\textBox{%
-Equally spaced points are often a poor choice for high-degree interpolation.
+Multiplying by the data values $y_0 = 1, y_1 = 0, y_2 = 1$ gives
+\begin{align*}
+    P_2(x) = 1 \cdot \left(\frac{x^2 - x}{2}\right) + 0 \cdot (1 - x^2) + 1 \cdot \left(\frac{x^2 + x}{2}\right) = \frac{x^2 - x + x^2 + x}{2} = x^2.
+\end{align*}
 }
 
 \addRemark{%
-\textbf{The Runge Phenomenon:}\enspace For certain functions, such as $f(x) = 1/(1+25x^2)$ on $[-1, 1]$, the interpolation error near the boundaries increases exponentially as the degree $n \to \infty$. 
+The standard Lagrange form has two practical shortcomings. First, evaluating $P_n(x)$ at a single point $x$ requires $O(n^2)$ floating-point operations. Second, adding a new node $(x_{n+1}, y_{n+1})$ alters every single basis polynomial $L_i(x)$, requiring a complete recomputation from scratch.
 }
 
-\addThm{Chebyshev Nodes for Interpolation}{%
-The Chebyshev nodes from Def~\ref{def:cheb-nodes},
+\subsubsection{The Barycentric Interpolation Formula}
+
+Barycentric interpolation reorganizes the Lagrange formula into a stable, computationally optimal form requiring only $O(n)$ operations per evaluation.
+
+\addThm{Barycentric Interpolation Formulas}{%
+Let $\ell(x) = \prod_{j=0}^n (x - x_j)$ denote the nodal polynomial. For each node $x_i$, define the barycentric weights
 \begin{align*}
-    x_i = \cos\left( \frac{2i+1}{2n+2} \pi \right), \quad i = 0, \dots, n.
+    w_i = \frac{1}{\prod_{j \neq i} (x_i - x_j)} = \frac{1}{\ell'(x_i)}, \qquad i = 0, 1, \dots, n.
 \end{align*}
-make the interpolation error polynomial small on $[-1,1]$. By Thm~\ref{thm:cheb-interpolation-error} and Thm~\ref{thm:cheb-error-polynomial}, this directly improves the worst-case interpolation error bound.
-}
-\label{thm:interpolation-cheb-nodes}
-
-\addExcr{%
+Then the interpolating polynomial satisfies:
 \begin{enumerate}
-    \item Translate the node formula above into the indexing convention of Def~\ref{def:cheb-nodes}.
-    \item Use Thm~\ref{thm:cheb-error-polynomial} to compute $\|\omega_{n+1}\|_\infty$ for these nodes.
-    \item Compare this with the error polynomial for equally spaced nodes numerically for $n=10,20,40$.
-    \item Explain why Chebyshev nodes reduce Runge oscillations without claiming that every function converges uniformly under every interpolation scheme.
+    \item \textbf{First Barycentric Form:}
+    \begin{align*}
+        P_n(x) = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i.
+    \end{align*}
+    \item \textbf{Second (True) Barycentric Form:}
+    \begin{align*}
+        P_n(x) = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}.
+    \end{align*}
 \end{enumerate}
+If $x = x_j$ for some node index $j$, the formula evaluates to $P_n(x_j) = y_j$.
 }
-\label{ex:interpolation-cheb-nodes}
+\label{thm:barycentric-interpolation}
 
-\subsubsection{Cubic Splines}
+\addPrf{%
+We express the Lagrange basis polynomials in terms of $\ell(x)$ and $w_i$. By definition,
+\begin{align*}
+    L_i(x) = \prod_{j \neq i} \frac{x - x_j}{x_i - x_j} = \left( \prod_{j \neq i} (x - x_j) \right) \left( \frac{1}{\prod_{j \neq i} (x_i - x_j)} \right) = \frac{\ell(x)}{x - x_i} w_i.
+\end{align*}
+Substituting this relation into $P_n(x) = \sum_{i=0}^n y_i L_i(x)$ yields the First Barycentric Formula:
+\begin{align*}
+    P_n(x) = \sum_{i=0}^n y_i \left( \frac{\ell(x)}{x - x_i} w_i \right) = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i.
+\end{align*}
+To derive the Second Barycentric Formula, consider interpolating the constant function $f(x) \equiv 1$, where $y_i = 1$ for all $i$. Because the unique degree-$n$ interpolant of a constant is the constant itself, the First Barycentric Formula gives
+\begin{align*}
+    1 = \ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i}.
+\end{align*}
+Dividing the expression for $P_n(x)$ by this identity cancels the nodal polynomial $\ell(x)$, yielding
+\begin{align*}
+    P_n(x) = \frac{P_n(x)}{1} = \frac{\ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\ell(x) \sum_{i=0}^n \frac{w_i}{x - x_i}} = \frac{\sum_{i=0}^n \frac{w_i}{x - x_i} y_i}{\sum_{i=0}^n \frac{w_i}{x - x_i}}.
+\end{align*}
+}
+
+\addRemark{%
+The second barycentric formula is numerically stable. Higham (2004) proved that barycentric interpolation is backward stable, meaning the computed value $\hat{P}_n(x)$ is the exact value of a polynomial interpolating slightly perturbed data $y_i(1 + \varepsilon_i)$. Furthermore, common multiplicative factors in the weights $w_i$ cancel out in the numerator and denominator, allowing simple analytical expressions for standard node families (such as Chebyshev nodes).
+}
+
+\subsubsection{The Interpolation Error Formula}
+
+\addThm{Cauchy Remainder Error Theorem}{%
+Let $f \in C^{n+1}[a, b]$, and let $P_n \in \mathcal{P}_n$ interpolate $f$ at $n+1$ distinct nodes $x_0, x_1, \dots, x_n \in [a, b]$. For each point $x \in [a, b]$, there exists a point $\xi_x \in (a, b)$ such that
+\begin{align*}
+    f(x) - P_n(x) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \prod_{j=0}^n (x - x_j) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \omega_{n+1}(x),
+\end{align*}
+where $\omega_{n+1}(x) = \prod_{j=0}^n (x - x_j)$ is the nodal error polynomial.
+}
+\label{thm:interpolation-error-cauchy}
+
+\addPrf{%
+If $x = x_i$ for some node $x_i$, both sides vanish and the formula holds trivially for any $\xi_x$. Now fix $x \in [a, b]$ with $x \neq x_i$ for all $i$. Define the constant
+\begin{align*}
+    \lambda = \frac{f(x) - P_n(x)}{\omega_{n+1}(x)},
+\end{align*}
+and consider the auxiliary function $g : [a, b] \to \fR$ defined by
+\begin{align*}
+    g(t) = f(t) - P_n(t) - \lambda \omega_{n+1}(t).
+\end{align*}
+Because $f \in C^{n+1}[a, b]$ and polynomials are infinitely differentiable, $g \in C^{n+1}[a, b]$. We evaluate $g$ at the $n+2$ distinct points $x_0, x_1, \dots, x_n$ and $x$:
+\begin{align*}
+    g(x_i) &= f(x_i) - P_n(x_i) - \lambda \omega_{n+1}(x_i) = y_i - y_i - 0 = 0, \qquad i = 0, \dots, n, \\
+    g(x) &= f(x) - P_n(x) - \left( \frac{f(x) - P_n(x)}{\omega_{n+1}(x)} \right) \omega_{n+1}(x) = 0.
+\end{align*}
+Thus $g(t)$ vanishes at $n+2$ distinct points in $[a, b]$.
+
+By Rolle's Theorem, between any two adjacent zeros of $g(t)$, its derivative $g'(t)$ has at least one zero. Therefore, $g'(t)$ has at least $n+1$ distinct zeros in $(a, b)$. Applying Rolle's Theorem successively:
+\begin{itemize}
+    \item $g''(t)$ has at least $n$ distinct zeros in $(a, b)$,
+    \item $g'''(t)$ has at least $n-1$ distinct zeros in $(a, b)$,
+    \item Continuing inductively, $g^{(n+1)}(t)$ has at least one zero in $(a, b)$, which we denote by $\xi_x$.
+\end{itemize}
+We now differentiate $g(t)$ exactly $n+1$ times with respect to $t$:
+\begin{align*}
+    g^{(n+1)}(t) = f^{(n+1)}(t) - P_n^{(n+1)}(t) - \lambda \frac{d^{n+1}}{dt^{n+1}} [\omega_{n+1}(t)].
+\end{align*}
+Since $P_n$ has degree at most $n$, its $(n+1)$-th derivative is identically zero: $P_n^{(n+1)}(t) \equiv 0$. The nodal polynomial $\omega_{n+1}(t) = t^{n+1} + \dots$ is a monic polynomial of degree $n+1$, so its $(n+1)$-th derivative is $(n+1)!$. Evaluating at $t = \xi_x$ gives
+\begin{align*}
+    0 = g^{(n+1)}(\xi_x) = f^{(n+1)}(\xi_x) - 0 - \lambda (n+1)!.
+\end{align*}
+Solving for $\lambda$ produces
+\begin{align*}
+    \lambda = \frac{f^{(n+1)}(\xi_x)}{(n+1)!}.
+\end{align*}
+Equating this to our definition of $\lambda = (f(x) - P_n(x)) / \omega_{n+1}(x)$ completes the proof.
+}
+
+\subsubsection{Runge's Phenomenon and Chebyshev Nodes}
+
+The error bound contains two decoupled components:
+\begin{align*}
+    \|f - P_n\|_\infty \leq \frac{\|f^{(n+1)}\|_\infty}{(n+1)!} \|\omega_{n+1}\|_\infty.
+\end{align*}
+The derivative term $\|f^{(n+1)}\|_\infty$ depends entirely on the analytical smoothness of $f$, while $\|\omega_{n+1}\|_\infty = \max_{x \in [a, b]} |\prod_{j=0}^n (x - x_j)|$ depends exclusively on the geometric placement of the interpolation nodes.
+
+\addRemark{%
+\textbf{(Runge phenomenon)}\enspace Analyticity alone does not make equally spaced interpolation converge. For Runge's function $f(x)=1/(1+25x^2)$, the interpolants on equally spaced nodes develop increasing endpoint oscillations and satisfy
+\begin{align*}
+    \lim_{n \to \infty} \|f - P_n\|_\infty = \infty,
+\end{align*}
+even though $f$ is analytic on the real interval. The growing Lebesgue constant amplifies the approximation error, while the nearby complex poles at $\pm i/5$ limit the rate of polynomial approximation. The derivative remainder bound above warns that convergence is not automatic, but a divergent upper bound by itself would not prove divergence.
+}
 
 \textBox{%
-For large datasets, high-degree polynomial interpolation is avoided in favor of piecewise polynomials.
+The nodal factor can be made small by placing the nodes well. On $[-1,1]$, the best choice is the set of Chebyshev points $x_k=\cos\big((2k+1)\pi/(2n+2)\big)$, $k=0,\dots,n$, the roots of the Chebyshev polynomial $T_{n+1}$. For these nodes $\|\omega_{n+1}\|_\infty=2^{-n}$, the smallest value attained by any monic polynomial of degree $n+1$. Section~\ref{sub:chebyshev-theory} proves this minimax property and shows that interpolation at Chebyshev points converges geometrically for functions that are analytic in a neighborhood of $[-1,1]$.
 }
 
-\addDef{Cubic Spline}{%
-A piecewise cubic function $S(x)$ that is $C^2$ continuous (continuous values, first, and second derivatives) at the internal nodes.
+\addRemark{%
+The Lebesgue constant $\Lambda_n = \max_{x \in [a, b]} \sum_{i=0}^n |L_i(x)|$ bounds the stability of polynomial interpolation: $\|f - P_n\|_\infty \leq (1 + \Lambda_n) \min_{Q \in \mathcal{P}_n} \|f - Q\|_\infty$.
+\begin{itemize}
+    \item For equally spaced nodes, $\Lambda_n \sim O\left(\frac{2^n}{n \log n}\right)$ grows exponentially.
+    \item For Chebyshev nodes, $\Lambda_n \sim \frac{2}{\pi} \log(n+1) + O(1)$ grows only logarithmically, remaining near-optimal.
+\end{itemize}
+}
+
+\subsubsection{Piecewise Polynomials: Cubic Splines}
+
+When interpolating large sets of experimental data without prior knowledge of analytical smoothness, high-degree global polynomials are abandoned in favor of piecewise low-degree polynomials. A spline is a piecewise polynomial that maintains global derivative continuity across all internal nodes.
+
+\addDef{Cubic Spline Interpolant}{%
+Given $n+1$ distinct points $a = x_0 < x_1 < \dots < x_n = b$ and values $y_0, y_1, \dots, y_n$, a cubic spline $S(x)$ is a function such that:
+\begin{enumerate}
+    \item On each subinterval $[x_i, x_{i+1}]$, $S(x) = S_i(x)$ is a cubic polynomial:
+    \begin{align*}
+        S_i(x) = a_i + b_i(x - x_i) + c_i(x - x_i)^2 + d_i(x - x_i)^3, \qquad i = 0, \dots, n-1.
+    \end{align*}
+    \item Interpolation conditions: $S(x_i) = y_i$ for all $i = 0, \dots, n$.
+    \item $C^2$ continuity: $S(x)$, $S'(x)$, and $S''(x)$ are continuous on the entire interval $[a, b]$.
+\end{enumerate}
 }
 \label{def:cubic-spline}
 
-\addRemark{%
-\textbf{(Spline linear system)}\enspace Computing the coefficients of a cubic spline requires solving a sparse tridiagonal linear system, which can be done in $O(n)$ time.
+\addThm{The Tridiagonal Spline System}{%
+Let $h_i = x_{i+1} - x_i$ and let $M_i = S''(x_i)$ denote the second derivative of the spline at node $x_i$. The condition that $S'(x)$ is continuous at each interior node $x_i$ ($i = 1, \dots, n-1$) leads to the linear system
+\begin{align*}
+    h_{i-1} M_{i-1} + 2(h_{i-1} + h_i) M_i + h_i M_{i+1} = 6 \left( \frac{y_{i+1} - y_i}{h_i} - \frac{y_i - y_{i-1}}{h_{i-1}} \right).
+\end{align*}
+To close the system of $n-1$ equations in $n+1$ unknowns, two boundary conditions are imposed:
+\begin{enumerate}
+    \item \textbf{Natural (Free) Spline:} $M_0 = M_n = 0$.
+    \item \textbf{Clamped (Complete) Spline:} $S'(x_0) = f'(a)$ and $S'(x_n) = f'(b)$.
+    \item \textbf{Periodic Spline:} $S'(x_0) = S'(x_n)$ and $M_0 = M_n$.
+\end{enumerate}
+For natural and clamped boundary conditions, the resulting linear system is strictly diagonally dominant and symmetric positive definite. It can be solved in $O(n)$ time using the Thomas algorithm.
+}
+\label{thm:tridiagonal-spline-system}
+
+\addPrf{%
+Since $S_i(x)$ is a cubic polynomial on $[x_i, x_{i+1}]$, its second derivative $S_i''(x)$ is a linear function interpolating $M_i = S''(x_i)$ and $M_{i+1} = S''(x_{i+1})$:
+\begin{align*}
+    S_i''(x) = M_i \frac{x_{i+1} - x}{h_i} + M_{i+1} \frac{x - x_i}{h_i}.
+\end{align*}
+Integrating twice with respect to $x$ gives
+\begin{align*}
+    S_i(x) = \frac{M_i (x_{i+1} - x)^3}{6 h_i} + \frac{M_{i+1} (x - x_i)^3}{6 h_i} + C_i (x_{i+1} - x) + D_i (x - x_i).
+\end{align*}
+Applying the interpolation conditions $S_i(x_i) = y_i$ and $S_i(x_{i+1}) = y_{i+1}$ determines the constants $C_i$ and $D_i$:
+\begin{align*}
+    C_i = \frac{y_i}{h_i} - \frac{M_i h_i}{6}, \qquad D_i = \frac{y_{i+1}}{h_i} - \frac{M_{i+1} h_i}{6}.
+\end{align*}
+Differentiating $S_i(x)$ to obtain $S_i'(x)$ and evaluating at the endpoints of $[x_i, x_{i+1}]$ yields
+\begin{align*}
+    S_i'(x_i) &= -\frac{M_i h_i}{3} - \frac{M_{i+1} h_i}{6} + \frac{y_{i+1} - y_i}{h_i}, \\
+    S_{i-1}'(x_i) &= \frac{M_{i-1} h_{i-1}}{6} + \frac{M_i h_{i-1}}{3} + \frac{y_i - y_{i-1}}{h_{i-1}}.
+\end{align*}
+Equating $S_{i-1}'(x_i) = S_i'(x_i)$ for continuity of the first derivative and gathering terms produces the stated tridiagonal equation. Strict diagonal dominance follows from $2(h_{i-1} + h_i) > h_{i-1} + h_i$, which guarantees non-singularity and unconditional stability of Gaussian elimination without pivoting.
+}
+
+\addThm{Minimum Curvature (Energy Minimization) Property}{%
+Let $S(x)$ be the natural cubic spline interpolating $f(x)$ at $x_0, x_1, \dots, x_n$. Let $g \in C^2[a, b]$ be any other function satisfying $g(x_i) = y_i$ for all $i = 0, \dots, n$. Then
+\begin{align*}
+    \int_a^b [S''(x)]^2\,dx \leq \int_a^b [g''(x)]^2\,dx.
+\end{align*}
+Natural cubic splines are the smoothest possible interpolants in the sense of minimizing total bending energy.
+}
+\label{thm:spline-minimum-energy}
+
+\addPrf{%
+Let $h(x) = g(x) - S(x)$. Since both $g$ and $S$ interpolate $f$ at the knots $x_0, x_1, \dots, x_n$, we have
+\begin{align*}
+    h(x_i) = g(x_i) - S(x_i) = y_i - y_i = 0, \qquad i = 0, 1, \dots, n.
+\end{align*}
+Expanding the squared second derivative of $g = S + h$:
+\begin{align*}
+    \int_a^b [g''(x)]^2\,dx
+    &= \int_a^b [S''(x) + h''(x)]^2\,dx \\
+    &= \int_a^b [S''(x)]^2\,dx + 2\int_a^b S''(x)h''(x)\,dx + \int_a^b [h''(x)]^2\,dx.
+\end{align*}
+We evaluate the cross term by integrating by parts on each subinterval $[x_i, x_{i+1}]$:
+\begin{align*}
+    \int_{x_i}^{x_{i+1}} S''(x)h''(x)\,dx
+    &= \left[ S''(x) h'(x) \right]_{x_i}^{x_{i+1}} - \int_{x_i}^{x_{i+1}} S'''(x) h'(x)\,dx.
+\end{align*}
+Because $S(x)$ is a cubic polynomial on $[x_i, x_{i+1}]$, its third derivative $S_i'''(x)$ is constant on $(x_i, x_{i+1})$. Let $S_i'''(x) = c_i$. Then
+\begin{align*}
+    \int_{x_i}^{x_{i+1}} S'''(x) h'(x)\,dx
+    &= c_i \int_{x_i}^{x_{i+1}} h'(x)\,dx
+    = c_i [h(x_{i+1}) - h(x_i)] = 0,
+\end{align*}
+since $h(x_{i+1}) = h(x_i) = 0$. Summing the boundary terms over all subintervals:
+\begin{align*}
+    \int_a^b S''(x)h''(x)\,dx
+    &= \sum_{i=0}^{n-1} \left( S''(x_{i+1}^-) h'(x_{i+1}) - S''(x_i^+) h'(x_i) \right) \\
+    &= S''(b) h'(b) - S''(a) h'(a) + \sum_{i=1}^{n-1} \left( S''(x_i^-) - S''(x_i^+) \right) h'(x_i).
+\end{align*}
+Because $S \in C^2[a, b]$, the second derivative is continuous across interior knots: $S''(x_i^-) - S''(x_i^+) = 0$. For a natural cubic spline, $S''(a) = S''(b) = 0$, so the boundary terms vanish as well. Therefore
+\begin{align*}
+    \int_a^b S''(x)h''(x)\,dx = 0.
+\end{align*}
+Substituting this back yields
+\begin{align*}
+    \int_a^b [g''(x)]^2\,dx
+    &= \int_a^b [S''(x)]^2\,dx + \int_a^b [h''(x)]^2\,dx
+    \geq \int_a^b [S''(x)]^2\,dx,
+\end{align*}
+with equality if and only if $h''(x) \equiv 0$, meaning $h$ is linear and hence identically zero because $h(x_0) = h(x_n) = 0$.
 }
 
 \subsubsection{Exercises}
 
 \addExcr{%
 \begin{enumerate}
-    \item Construct the Lagrange form for points $(-1, 1), (0, 0), (1, 1)$. Verify it is $P_2(x) = x^2$.
-    \item Use the barycentric formula to interpolate $f(x) = \sin(x)$ at 5 Chebyshev nodes.
-    \item Compare the error plots for $f(x) = 1/(1+25x^2)$ using 15 equally spaced nodes vs. 15 Chebyshev nodes.
+    \item \exCompute Let $x_0 = 0, x_1 = 1, x_2 = 3$ and $y_0 = 1, y_1 = 3, y_2 = 2$. Construct the interpolating polynomial $P_2(x)$ using:
+    \begin{enumerate}
+        \item The Vandermonde matrix system.
+        \item The Lagrange basis form.
+        \item The Barycentric formula.
+    \end{enumerate}
+    Verify that all three approaches yield identical polynomials.
+    \item \exDerive Compute the barycentric weights $w_0, \dots, w_n$ explicitly for $n+1$ Chebyshev nodes on $[-1, 1]$. Show that $w_k = (-1)^k \sin\left(\frac{2k+1}{2n+2}\pi\right)$ (or $(-1)^k \delta_k$ with $\delta_k = 1/2$ at boundary nodes for Chebyshev-Lobatto points).
+    \item \exCheck Use Thm~\ref{thm:interpolation-error-cauchy} to bound the maximum error when $f(x) = \sin(x)$ is interpolated by a polynomial of degree 4 on $[0, \pi/2]$ using equally spaced nodes.
+    \item \exCompute Set up the $2 \times 2$ tridiagonal linear system for the natural cubic spline interpolating $(0, 0), (1, 1), (2, 0), (3, 1)$. Solve for $M_1$ and $M_2$, and write down the explicit cubic polynomial for each subinterval.
+    \item \exExplore For the spline in the previous exercise, compute its bending energy $\int_0^3(S'')^2\,dx$ and compare it with the energy of one other twice-differentiable interpolant.
 \end{enumerate}
 }
 

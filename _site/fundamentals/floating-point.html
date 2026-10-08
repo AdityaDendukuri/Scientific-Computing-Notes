@@ -119,11 +119,21 @@ window.MathJax = {
       bT: ["\\mathbf{T}"],
       bU: ["\\mathbf{U}"],
       bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
       bX: ["\\mathbf{X}"],
       bY: ["\\mathbf{Y}"],
       bZ: ["\\mathbf{Z}"],
       bsigma: ["\\mathbf{\\Sigma}"],
       bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
       argmin: ["\\operatorname{arg\\,min}"],
       argmax: ["\\operatorname{arg\\,max}"],
       printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
@@ -372,7 +382,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -387,25 +397,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Vectors and Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/arithmetic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Arithmetic</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Introduction to Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,7 +456,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -452,7 +468,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite (SPD) Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
   </div>
 </li>
       </ul>
@@ -469,31 +491,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Orthogonal Matrices</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Vector and Matrix Norms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Stability and Condition Number</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Overdetermined Systems and Least Squares</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../orthogonality/chebyshev.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
   </div>
 </li>
       </ul>
@@ -510,25 +520,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Eigenvalues and Eigenvectors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Eigenvalue Problems and the QR Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Singular Value Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lanczos Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../eigenvalues/jacobi-eig.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Jacobi Eigenvalue Algorithm</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">The Jacobi Eigenvalue Algorithm</span></span></a>
   </div>
 </li>
       </ul>
@@ -536,12 +546,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+ <span class="menu-text">Differential Operators and Discretization</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Iterative Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
@@ -551,48 +578,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi and Gauss-Seidel Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Conjugate Gradient Method</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">GMRES</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Numerical Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Polynomial Interpolation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../numerical-analysis/root-finding.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Root Finding</span></span></a>
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
   </div>
 </li>
       </ul>
@@ -600,7 +604,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">ODEs</span></a>
+ <span class="menu-text">Approximation and Integration</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -608,8 +612,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Methods for ODEs</span></span></a>
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
   </div>
 </li>
       </ul>
@@ -617,7 +633,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Applications</span></a>
+ <span class="menu-text">ODEs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -625,20 +641,31 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Spectral Graph Theory and PageRank</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,18 +676,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains and Stochastic Matrices</span></span></a>
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, DMD, and SINDy</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
   </div>
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -712,8 +751,8 @@ window.Quarto = {
 <p>Most modern systems adhere to the IEEE 754 standard, which represents numbers in a scientific-like notation. Normalized numbers take the form <span class="math inline">\(x = (-1)^s \times (1.f) \times 2^e\)</span>.</p>
 <ul>
 <li><p><strong>s:</strong> Sign bit, determining whether the number is positive or negative.</p></li>
-<li><p><strong>f:</strong> Fractional significand (mantissa); the leading 1 is implicit to maximize precision.</p></li>
-<li><p><strong>e:</strong> Biased exponent, allowing both very large and very small numbers to be represented.</p></li>
+<li><p><strong>f:</strong> Fractional significand (mantissa). The leading 1 is implicit to maximize precision.</p></li>
+<li><p><strong>e:</strong> Biased exponent, allowing numbers spanning many orders of magnitude to be represented.</p></li>
 </ul>
 <p>The exponent controls scale and the significand controls precision. This means floating-point numbers have roughly fixed <strong>relative</strong> spacing, not fixed absolute spacing. There are many representable numbers near zero and far fewer, in absolute terms, near <span class="math inline">\(10^{100}\)</span>. The gap between adjacent numbers near <span class="math inline">\(x\)</span> is proportional to <span class="math inline">\(|x|\)</span>.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -763,6 +802,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Check.</strong></p>
 <ol type="1">
 <li><p>Encode <span class="math inline">\(+5.5\)</span> in 16-bit format.</p></li>
 <li><p>How many distinct normalized numbers for 5 exp bits, 10 frac bits?</p></li>
@@ -795,7 +835,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Spacing rule)</strong> Near a normalized number <span class="math inline">\(x\)</span>, the distance to the next representable number is approximately <span class="math inline">\(\varepsilon_{\text{mach}}|x|\)</span>. Near <span class="math inline">\(10^{16}\)</span>, the gap is on the order of <span class="math inline">\(1\)</span>; near <span class="math inline">\(1\)</span>, the gap is on the order of <span class="math inline">\(10^{-16}\)</span>. This is why adding a small number to a huge number may do nothing.</p>
+<p><strong>(Spacing rule)</strong> Near a normalized number <span class="math inline">\(x\)</span>, the distance to the next representable number is approximately <span class="math inline">\(\varepsilon_{\text{mach}}|x|\)</span>. Near <span class="math inline">\(10^{16}\)</span>, the gap is on the order of <span class="math inline">\(1\)</span>, whereas near <span class="math inline">\(1\)</span>, the gap is on the order of <span class="math inline">\(10^{-16}\)</span>. This explains why adding a small number to a sufficiently large number has no effect.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -825,8 +865,9 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Compute.</strong></p>
 <ol type="1">
-<li><p>Use the result above to predict whether <code>1.0 + 1e-16</code> and <code>1.0 + 2e-16</code> differ from <code>1.0</code>; then check in Python.</p></li>
+<li><p>Use the result above to predict whether <code>1.0 + 1e-16</code> and <code>1.0 + 2e-16</code> differ from <code>1.0</code>. Then test the prediction in Python.</p></li>
 <li><p>Find <span class="math inline">\(\varepsilon_{\text{mach}}\)</span> empirically via loop.</p></li>
 <li><p>Use the result above to predict the smallest power of <span class="math inline">\(10\)</span> for which <code>1e16 + 10**k</code> changes <code>1e16</code>.</p></li>
 <li><p>Explain why the answer changes if <code>1e16</code> is replaced by <code>1.0</code>.</p></li>
@@ -873,7 +914,12 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>IEEE 754 guarantees <span class="math inline">\(\text{fl}(a \circ b) = (a \circ b)(1 + \delta)\)</span> for <span class="math inline">\(\circ \in \{+, -, \times, \div\}\)</span> and <span class="math inline">\(|\delta| \leq u\)</span>. Individual operations are as accurate as the representation allows.</p>
+<p>Suppose the exact result <span class="math inline">\(a\circ b\)</span> is finite, nonzero, and lies in the normalized floating-point range. In round-to-nearest arithmetic, <span class="math display">\[
+\begin{align}
+\operatorname{fl}(a\circ b)=(a\circ b)(1+\delta),
+    \qquad |\delta|\leq u,
+\end{align}
+\]</span> for <span class="math inline">\(\circ\in\{+,-,\times,\div\}\)</span>. Overflow and gradual underflow require separate absolute-error models.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -892,7 +938,7 @@ window.Quarto = {
 \begin{align}
 |\text{fl}(x) - x| \leq \frac{1}{2} \text{gap} = \frac{1}{2} (\varepsilon_{\text{mach}} |x|) = u|x|.
 \end{align}
-\]</span> Dividing by <span class="math inline">\(|x|\)</span> gives the relative error bound <span class="math inline">\(|\delta| \leq u\)</span>. For any operation <span class="math inline">\(\circ\)</span>, IEEE 754 mandates computing the exact result first, then rounding, ensuring: <span class="math display">\[
+\]</span> Dividing by <span class="math inline">\(|x|\)</span> gives the relative error bound <span class="math inline">\(|\delta| \leq u\)</span>. For any correctly rounded basic operation whose exact result remains in the normalized range, rounding gives <span class="math display">\[
 \begin{align}
 \text{fl}(a \circ b) = \text{round}(a \circ b) = (a \circ b)(1 + \delta).
 \end{align}
@@ -910,7 +956,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Warning:</strong> After <span class="math inline">\(n\)</span> operations, error often grows like <span class="math inline">\(O(nu)\)</span> when errors do not systematically amplify. This is a rule of thumb, not a guarantee. Operation order matters because each intermediate result is rounded.</p>
+<p><strong>(Accumulation of rounding errors)</strong> A sequence of <span class="math inline">\(n\)</span> benign operations often produces an error proportional to <span class="math inline">\(nu\)</span> when <span class="math inline">\(nu\ll1\)</span>. This rule is not a universal relative-error bound: cancellation and ill-conditioning can amplify the perturbations. Operation order matters because every intermediate result is rounded.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -923,6 +969,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Check.</strong></p>
 <ol type="1">
 <li><p>Let <span class="math inline">\(a=1, b=-0.999...\)</span>. Is error in <span class="math inline">\(\text{fl}(a+b)\)</span> bounded by <span class="math inline">\(u\)</span>?</p></li>
 <li><p>Estimate worst-case relative error for <span class="math inline">\(10^6\)</span> sequential additions.</p></li>
@@ -961,9 +1008,10 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Compute.</strong></p>
 <ol type="1">
-<li><p>Python: <code>1.0/0.0</code> vs <code>1.0/-0.0</code>.</p></li>
-<li><p>Result of <code>float('inf') - float('inf')</code> and <code>float('nan') == float('nan')</code>.</p></li>
+<li><p>Using NumPy scalars, compare <code>np.float64(1.0)/np.float64(0.0)</code> with division by <code>np.float64(-0.0)</code>. Explain the warnings and the signs of the results. (Python’s built-in float division raises <code>ZeroDivisionError</code> instead.)</p></li>
+<li><p>Evaluate <code>float('inf') - float('inf')</code> and <code>float('nan') == float('nan')</code>.</p></li>
 </ol>
 </div>
 </div>
@@ -1029,6 +1077,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Explore.</strong></p>
 <ol type="1">
 <li><p>Before running Python, use the result above to predict <code>(1e16 + 1.0) - 1e16</code>.</p></li>
 <li><p><code>a=1e16, b=1</code>. Find <code>(a+b)-a</code> in Python. Explain result.</p></li>
@@ -1062,7 +1111,7 @@ window.Quarto = {
 \begin{align}
 |\hat{x}-x| \leq \text{atol} + \text{rtol}|x|.
 \end{align}
-\]</span> This is the logic behind <code>np.isclose</code>. Absolute tolerance handles values near zero; relative tolerance handles scale.</p>
+\]</span> This principle underlies <code>np.isclose</code>. The absolute tolerance bounds errors near zero, whereas the relative tolerance scales with magnitude.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1075,6 +1124,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Check.</strong></p>
 <ol type="1">
 <li><p><span class="math inline">\(\sqrt{2} \approx 1.414\)</span>. Errors?</p></li>
 <li><p>Relative error of product <span class="math inline">\(\hat{x}\hat{y}\)</span>? (Sum of individual relative errors).</p></li>
@@ -1091,10 +1141,10 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The most dangerous error in numerical computing is <strong>catastrophic cancellation</strong>. This occurs when two nearly equal numbers are subtracted, causing the most significant digits to cancel out and leaving only the rounding errors as the “leading” digits.</p>
+<p><strong>Catastrophic cancellation</strong> occurs when two nearly equal approximations are subtracted. The leading digits cancel, so errors already present in the operands become large relative to the small difference.</p>
 <ul>
-<li><p>Relative error bound: <span class="math inline">\(\varepsilon_{\text{rel}} \leq u \cdot \frac{x+y}{x-y}\)</span>.</p></li>
-<li><p>As <span class="math inline">\(x \to y\)</span>, the amplification factor <span class="math inline">\(\frac{x+y}{x-y}\)</span> tends to infinity.</p></li>
+<li><p>Relative error bound: <span class="math inline">\(\varepsilon_{\text{rel}} \leq u \frac{|x|+|y|}{|x-y|}\)</span>.</p></li>
+<li><p>As <span class="math inline">\(x \to y\)</span>, the amplification factor <span class="math inline">\((|x|+|y|)/|x-y|\)</span> can become arbitrarily large.</p></li>
 </ul>
 </div>
 </div>
@@ -1117,9 +1167,9 @@ window.Quarto = {
 \end{align}
 \]</span> The relative error is bounded by: <span class="math display">\[
 \begin{align}
-\frac{|x\varepsilon_x - y\varepsilon_y|}{x-y} &amp;\leq \frac{x|\varepsilon_x| + y|\varepsilon_y|}{x-y} \\
-    &amp;\leq \frac{xu + yu}{x-y} \\
-    &amp;= u \cdot \frac{x+y}{x-y}.
+\frac{|x\varepsilon_x-y\varepsilon_y|}{|x-y|}
+    &amp;\leq \frac{|x||\varepsilon_x|+|y||\varepsilon_y|}{|x-y|} \\
+    &amp;\leq u\frac{|x|+|y|}{|x-y|}.
 \end{align}
 \]</span> As <span class="math inline">\(x \to y\)</span>, the denominator <span class="math inline">\(x-y \to 0\)</span>, causing the relative error to explode.</p>
 </div>
@@ -1135,7 +1185,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Numerical Stability Principle:</strong> Rounding error is an inevitable consequence of finite precision. However, catastrophic cancellation is an algorithmic flaw that can often be avoided by mathematically rearranging the problem.</p>
+<p><strong>(Numerical stability principle)</strong> Rounding error is an inevitable consequence of finite precision. However, catastrophic cancellation is an algorithmic flaw that can often be avoided by mathematically rearranging the problem.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1148,10 +1198,10 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>(Stabilizing Cancellation)</strong> <span class="math inline">\(f(x) = \sqrt{x+1} - \sqrt{x}\)</span> for <span class="math inline">\(x = 10^8\)</span>.</p>
+<p><strong>(Stabilizing Cancellation)</strong> <span class="math inline">\(f(x) = \sqrt{x+1} - \sqrt{x}\)</span> for <span class="math inline">\(x = 10^{16}\)</span>.</p>
 <ul>
-<li><p><strong>Direct:</strong> <span class="math inline">\(10000.00000005 - 10000 \approx 0\)</span> (Catastrophic).</p></li>
-<li><p><strong>Stable:</strong> <span class="math inline">\(\frac{1}{\sqrt{x+1} + \sqrt{x}} \approx 5 \times 10^{-5}\)</span>.</p></li>
+<li><p><strong>Direct:</strong> In double precision, both square roots round to <span class="math inline">\(10^8\)</span>, so the computed difference is zero.</p></li>
+<li><p><strong>Stable:</strong> <span class="math inline">\(\frac{1}{\sqrt{x+1} + \sqrt{x}} \approx 5 \times 10^{-9}\)</span>.</p></li>
 </ul>
 </div>
 </div>
@@ -1195,7 +1245,7 @@ x_{\pm} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Stabilize:</p>
+<p><strong>Explore.</strong> Stabilize:</p>
 <ol type="1">
 <li><p>Use the result above to explain why <span class="math inline">\((1-\cos x)/x^2\)</span> is unstable for small <span class="math inline">\(x\)</span>, then derive a stable form.</p></li>
 <li><p>Use the result above to identify which root of <span class="math inline">\(x^2 - 10^8 x + 1 = 0\)</span> is unstable in the quadratic formula, then compute it using <span class="math inline">\(x_1x_2=c/a\)</span>.</p></li>
@@ -1222,7 +1272,12 @@ x_{\pm} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Inherent sensitivity of the problem. <span class="math inline">\(\text{Forward Error} \leq \kappa \cdot \text{Backward Error}\)</span>.</p>
+<p>The condition number measures the local sensitivity of a problem’s output to perturbations in its input. For sufficiently small relative perturbations, the first-order relation has the form <span class="math display">\[
+\begin{align}
+\text{relative forward error}
+    \lesssim \kappa\,\text{relative backward error},
+\end{align}
+\]</span> with the precise definition of <span class="math inline">\(\kappa\)</span> determined by the problem and the chosen norms.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1248,9 +1303,10 @@ x_{\pm} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}.
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p><strong>Check.</strong></p>
 <ol type="1">
 <li><p><span class="math inline">\(\kappa(A) = 10^8, \text{Backward Error} = 10^{-15}\)</span>. Max forward error?</p></li>
-<li><p>Prove BE for linear systems: <span class="math inline">\((\bA + \bE)\hat{\bx} = \bb\)</span> for <span class="math inline">\(\bE = -\br\hat{\bx}^T/\|\hat{\bx}\|^2\)</span>.</p></li>
+<li><p>Verify the backward-error construction for a linear system using the derivation below.</p></li>
 </ol>
 </div>
 </div>
@@ -1266,15 +1322,17 @@ x_{\pm} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}.
 </div>
 <div id="callout-32" class="callout-32-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><strong>(1):</strong> Substituting <span class="math inline">\(\bE\)</span> into <span class="math inline">\((\bA + \bE)\hat{\bx}\)</span>: <span class="math display">\[
+<p>Let <span class="math inline">\(\br=\bb-\bA\hat{\bx}\)</span> and assume <span class="math inline">\(\hat{\bx}\neq\bzero\)</span>. Define <span class="math display">\[
+\begin{align}
+\bE=\frac{\br\hat{\bx}^T}{\|\hat{\bx}\|_2^2}.
+\end{align}
+\]</span> Substituting <span class="math inline">\(\bE\)</span> into the perturbed system gives <span class="math display">\[
 \begin{align}
 (\bA + \bE)\hat{\bx} &amp;= \bA\hat{\bx} + \bE\hat{\bx} \\
-    &amp;= \bA\hat{\bx} - \frac{\br\hat{\bx}^T}{\|\hat{\bx}\|^2} \hat{\bx} \\
-    &amp;= \bA\hat{\bx} - \br \frac{\hat{\bx}^T\hat{\bx}}{\|\hat{\bx}\|^2} \\
-    &amp;= \bA\hat{\bx} - \br.
+    &amp;= \bA\hat{\bx} + \frac{\br\hat{\bx}^T\hat{\bx}}{\|\hat{\bx}\|_2^2} \\
+    &amp;= \bA\hat{\bx}+\br=\bb.
 \end{align}
-\]</span> Since <span class="math inline">\(\br = \bb - \bA\hat{\bx}\)</span>, we have <span class="math inline">\(\bA\hat{\bx} - (\bb - \bA\hat{\bx}) = \bb\)</span>.</p>
-<p><strong>(2):</strong> For the relative error, using the rank-1 norm property <span class="math inline">\(\|\br\bv^T\|_2 = \|\br\|_2\|\bv\|_2\)</span>: <span class="math display">\[
+\]</span> Using the rank-one norm identity <span class="math inline">\(\|\br\bv^T\|_2=\|\br\|_2\|\bv\|_2\)</span>, <span class="math display">\[
 \begin{align}
 \|\bE\|_2 &amp;= \left\| \frac{\br\hat{\bx}^T}{\|\hat{\bx}\|^2} \right\|_2 \\
     &amp;= \frac{\|\br\|_2 \|\hat{\bx}\|_2}{\|\hat{\bx}\|^2} = \frac{\|\br\|_2}{\|\hat{\bx}\|_2}.

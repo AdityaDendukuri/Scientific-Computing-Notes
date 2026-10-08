@@ -1,270 +1,314 @@
-\documentclass[../readings.tex]{subfiles}
+\documentclass[../main.tex]{subfiles}
 \begin{document}
 
-
-\subsection{Vectors and Matrices}
-
-Vectors and matrices serve as the primary data structures for representing numerical data and linear operators.
-Before introducing these formally, we fix notation for the standard number systems that
-provide the raw material for all numerical computation.
+\subsection{Vectors, Coordinates, and Linear Maps}
 
 \textBox{%
-\textbf{(Standard Number Systems)}\enspace Throughout these notes, $\fR$ denotes
-the set of all real numbers, $\fZ$ the set of all integers, and $\fC$ the
-set of all complex numbers.  Our primary focus is real-valued computation; complex numbers
-arise naturally in eigenvalue analysis and signal processing.
+Scientific computing begins with representation. A physical state, a polynomial, a sampled signal, and an image are different objects, yet each can be represented by a finite list of numbers. The list is useful only after we say what its entries mean. That distinction between an object and its coordinates will matter throughout these notes.
+}
+
+\textBox{%
+Throughout, $\fR$, $\fZ$, and $\fC$ denote the real numbers, integers, and complex numbers. Most examples use real arithmetic. Complex numbers appear naturally when we study oscillations and eigenvalues.
 }
 
 \addDef{Scalar}{%
-An element of a number system ($\fR$, $\fZ$, or $\fC$) is called a
-\textbf{scalar}.  Scalars represent individual numerical quantities and serve as the
-atomic building blocks from which vectors and matrices are constructed.
+An element of the number system under discussion is a \textbf{scalar}. In these notes that number system is usually $\fR$ and occasionally $\fC$.
 }
 \label{def:scalar}
 
-\addExcr{%
-Refer to Def~\ref{def:scalar}.
-\begin{enumerate}
-    \item Classify each of the following as a real scalar, an integer, a complex (non-real)
-    scalar, or \emph{not} a scalar: $\;3.14$;\; $-7$;\; $2+3i$;\; $\begin{pmatrix}1\\0\end{pmatrix}$.
-    \item In Python, evaluate \texttt{type(3.14)}, \texttt{type(3)}, and \texttt{type(3+2j)}.
-    Which NumPy \texttt{dtype} would you use to store each?
-\end{enumerate}
-}
-
-\addDef{Vectors}{%
-A \textbf{vector} is a one-dimensional ordered array of scalars.  Vectors can represent
-points, directions, or more abstract quantities within a vector space, and are fundamental
-in encoding data and linear relationships.
+\addDef{Vector}{%
+A \textbf{vector} is an object that can be added to another vector and multiplied by a scalar, with the usual arithmetic laws. Once a basis has been chosen, a vector in an $n$-dimensional space is represented by a column of $n$ coordinates.
 }
 \label{def:vector}
 
 \addRemark{%
-Vectors may be written as row vectors or column vectors.  Although both forms carry the
-same information, the distinction matters when applying linear transformations and
-computing inner products. \textbf{In these notes, we assume vectors are column vectors by default.}
-}
-
-\addExmpl{%
-\begin{equation*}
-\begin{pmatrix} 1 & 2 & 3 \end{pmatrix}, \quad
-\begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}, \quad
-\begin{pmatrix} 1+2i \\ 7i \\ 3 \end{pmatrix}, \ldots
-\end{equation*}
-}
-
-\addExcr{%
-Refer to Def~\ref{def:vector}.
-\begin{enumerate}
-    \item Write a column vector $\bx \in \fR^4$ whose $i$-th entry equals $2^i$ for
-    $i = 1, 2, 3, 4$.
-    \item In NumPy, construct this vector with \texttt{np.array([...])} and confirm
-    \texttt{x.shape == (4,)}.  \textbf{Why does NumPy report shape \texttt{(4,)} rather than
-    \texttt{(4,1)}?} This is known as a \emph{rank-1 array}; it is neither a row nor a column
-    vector, and its broadcasting behavior differs from 2D arrays.
-    \item Can a vector in $\fR^3$ be added to a vector in $\fR^4$?  Justify in one sentence.
-\end{enumerate}
-}
-
-\textBox{%
-Just as scalars belong to number systems like $\fR$ or $\fC$, vectors inhabit
-\textbf{vector spaces}.  While these notes treat vector spaces informally, subsequent
-chapters provide more rigorous definitions and properties.
+A column of numbers therefore represents a vector only after we know what its coordinates refer to. The coordinates $(3,2)^T$ might describe a point, a velocity, the coefficients of $3+2t$, or two temperature readings. Computation manipulates the coordinates, while interpretation tells us what vector they represent.
 }
 
 \addDef{$\fR^n$}{%
-The set of all real vectors of size $n$.  When we write $\bx \in \fR^n$, it means $\bx$
-has $n$ real entries.  Vectors in $\fR^n$ take one of the following forms:
+The vector space $\fR^n$ consists of all ordered $n$-tuples of real numbers. We write vectors as columns unless stated otherwise:
 \begin{align*}
-\bx \in \fR^{n \times 1} &= \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix}
-\quad \text{(column vector, default convention)}\\[1mm]
-\bx \in \fR^{1 \times n} &= \begin{pmatrix} x_1 & x_2 & \cdots & x_n \end{pmatrix}
-\quad \text{(row vector)}
+    \bx=\begin{pmatrix}x_1\\ \vdots\\ x_n\end{pmatrix}\in\fR^n.
 \end{align*}
+Vectors are added entry by entry and multiplied by scalars entry by entry. The zero vector is denoted by $\bzero$.
 }
 \label{def:Rn}
 
 \addRemark{%
-These notes focus on finite-dimensional spaces.  Infinite-dimensional vector spaces, central
-to functional analysis, arise in differential equations and quantum mechanics but are beyond
-our scope here.
+NumPy normally stores a vector as an array of shape \texttt{(n,)}, which is neither a row nor a column. A shape \texttt{(n,1)} array is a genuine two-dimensional column. This implementation detail affects transposes and broadcasting, so shapes should be checked rather than guessed.
 }
 
-\addExcr{%
-Refer to Def~\ref{def:Rn}.
-\begin{enumerate}
-    \item Let $\bx = (1, -2, 3)^T \in \fR^3$.  Identify the value of entry $x_2$.  What
-    is the dimension of $\fR^3$?
-    \item In NumPy, create a column vector (shape \texttt{(3,1)}) from the list
-    \texttt{[1, -2, 3]} in two ways: using \texttt{np.reshape} and using
-    \texttt{[:, np.newaxis]}.
-    \item What does \texttt{x.T} return when \texttt{x.shape == (3,)}?  How does the result
-    differ when \texttt{x.shape == (3,1)}?
-\end{enumerate}
-}
+\subsubsection{Span, Independence, and Basis}
 
-\addDef{Matrices}{%
-A \textbf{matrix} is a two-dimensional array of scalars.  A matrix $\bA \in \fR^{m \times n}$
-is written as
-\begin{equation*}
-\bA = \begin{pmatrix}
-a_{11} & a_{12} & \cdots & a_{1n} \\
-a_{21} & a_{22} & \cdots & a_{2n} \\
-\vdots & \vdots & \ddots & \vdots \\
-a_{m1} & a_{m2} & \cdots & a_{mn}
-\end{pmatrix}.
-\end{equation*}
-Matrices are used to represent linear transformations, systems of linear equations, and
-more complex data structures.
+\addDef{Linear Combination, Span, and Subspace}{%
+Given vectors $\bv_1,\dots,\bv_k$, a \textbf{linear combination} is any vector of the form
+\begin{align*}
+    c_1\bv_1+\cdots+c_k\bv_k.
+\end{align*}
+Their \textbf{span} is the set of all such combinations. A nonempty set $S\subseteq\fR^n$ is a \textbf{subspace} if every linear combination of vectors in $S$ remains in $S$.
 }
-\label{def:matrix}
+\label{def:span-subspace}
 
 \addExmpl{%
-Two-dimensional matrices include:
-\begin{equation*}
-\begin{pmatrix}
-1 & 2 & 3 \\[1mm]
-4 & 5 & 6
-\end{pmatrix} \in \fR^{2 \times 3}, \quad
-\begin{pmatrix}
-1 & 2 \\[1mm]
-4 & 5 \\[1mm]
-6 & 7
-\end{pmatrix} \in \fR^{3 \times 2}.
-\end{equation*}
+The vectors $(1,0,0)^T$ and $(0,1,0)^T$ span the coordinate plane in $\fR^3$ on which the third coordinate is zero. A plane not passing through the origin is not a subspace: it does not contain $\bzero$ and is not closed under scalar multiplication.
+}
+
+\addDef{Linear Independence and Basis}{%
+Vectors $\bv_1,\dots,\bv_k$ are \textbf{linearly independent} if
+\begin{align*}
+    c_1\bv_1+\cdots+c_k\bv_k=\bzero
+\end{align*}
+forces every coefficient $c_i$ to be zero. A \textbf{basis} of a vector space is a linearly independent spanning set.
+}
+\label{def:basis}
+
+\addThm{Exchange, Extension, and Dimension}{%
+Let $V$ be spanned by $m$ vectors.
+\begin{enumerate}
+    \item Every linearly independent list in $V$ contains at most $m$ vectors.
+    \item Any linearly independent list can be extended to a basis by adding vectors from a spanning list.
+    \item Any two bases of $V$ contain the same number of vectors. This common number is the \textbf{dimension} of $V$.
+\end{enumerate}
+}
+\label{thm:basis-exchange}
+
+\addRemark{%
+The proof is left as an exercise below because the replacement argument is best learned by working through it. This theorem justifies phrases used later such as ``extend a basis of the null space to a basis of the domain.''
+}
+
+\addThm{A Basis Gives Unique Coordinates}{%
+Let $\bv_1,\dots,\bv_n$ be a basis of a vector space $V$. Every $\bx\in V$ has exactly one representation
+\begin{align*}
+    \bx=x_1\bv_1+\cdots+x_n\bv_n.
+\end{align*}
+The scalars $x_1,\dots,x_n$ are the coordinates of $\bx$ in this basis.
+}
+\label{thm:unique-coordinates}
+
+\addPrf{%
+Because the basis spans $V$, at least one representation exists. Suppose $\bx$ admits two representations:
+\begin{align*}
+    \bx=\sum_{i=1}^n x_i\bv_i=\sum_{i=1}^n y_i\bv_i.
+\end{align*}
+Subtracting the second sum from the first gives
+\begin{align*}
+    \bzero = \sum_{i=1}^n x_i\bv_i - \sum_{i=1}^n y_i\bv_i = \sum_{i=1}^n (x_i-y_i)\bv_i.
+\end{align*}
+By linear independence of the basis vectors $\bv_1,\dots,\bv_n$, every coefficient in this linear combination must vanish:
+\begin{align*}
+    x_i - y_i = 0 \quad \Longrightarrow \quad x_i = y_i, \qquad i = 1,\dots,n.
+\end{align*}
+The coordinates are therefore unique.
 }
 
 \addRemark{%
-\textbf{(Structural Intuition: Matrix Columns)}\enspace
-Matrices can be interpreted as vectors whose entries are themselves vectors:
-\begin{equation*}
-\bA = \printmatrow{r} = \printmatcol{c},
-\end{equation*}
-where $r_i = \bA[i,:]$ is the $i$-th row and $c_i = \bA[:,i]$ is the $i$-th column.
-This viewpoint is vital: the product $\bA\bx$ is simply a \textbf{linear combination of the columns of $\bA$} weighted by the entries of $\bx$.
+Coordinates change when the basis changes, but the vector does not. For example, the polynomial $p(t)=3+2t$ has coordinates $(3,2)^T$ in the basis $1,t$ and coordinates $(5,2)^T$ in the basis $1,t-1$. Confusing a vector with one coordinate list is a common source of conceptual errors in change-of-basis and eigenvalue arguments.
 }
 
-\addExcr{%
-Refer to Def~\ref{def:matrix}.
-\begin{enumerate}
-    \item State the dimensions $(m, n)$ of $\bA = \begin{pmatrix}1 & 2 & 3 \\ 4 & 5 & 6\end{pmatrix}$.
-    What is the shape of its second column as a vector?
-    \item In NumPy (0-based indexing), write the expression to access entry $a_{12}$
-    (first row, second column in 1-based notation).  Then extract the second column of $\bA$
-    and verify its shape is \texttt{(2,)}.
-    \item True or False: a vector in $\fR^n$ is a special case of a matrix in
-    $\fR^{n \times 1}$.  How does NumPy handle this distinction in practice?
-\end{enumerate}
+\subsubsection{Matrices as Linear Maps}
+
+\addDef{Linear Map}{%
+A map $T:V\to W$ is \textbf{linear} if, for all vectors $\bx,\by\in V$ and scalars $\alpha,\beta$,
+\begin{align*}
+    T(\alpha\bx+\beta\by)=\alpha T(\bx)+\beta T(\by).
+\end{align*}
+Linearity says that the response to a combination of inputs is the same combination of the individual responses.
 }
+\label{def:linear-map}
+
+\addDef{Matrix}{%
+A \textbf{matrix} $\bA\in\fR^{m\times n}$ is a rectangular array of scalars with $m$ rows and $n$ columns. It represents a linear map from $\fR^n$ to $\fR^m$ once bases have been selected in the domain and range.
+}
+\label{def:matrix}
+
+\addThm{The Columns Determine the Map}{%
+Let $\be_1,\dots,\be_n$ be the standard basis of $\fR^n$, and let $T:\fR^n\to\fR^m$ be linear. If the $j$th column of $\bA$ is $\ba_j=T(\be_j)$, then
+\begin{align*}
+    T(\bx)=\bA\bx=\sum_{j=1}^n x_j\ba_j.
+\end{align*}
+Thus a linear map is completely determined by what it does to a basis.
+}
+\label{thm:matrix-from-basis}
+
+\addPrf{%
+Every vector has the standard-coordinate expansion $\bx=\sum_{j=1}^n x_j\be_j$. Linearity gives
+\begin{align*}
+    T(\bx)=T\left(\sum_{j=1}^n x_j\be_j\right)
+    =\sum_{j=1}^n x_jT(\be_j)
+    =\sum_{j=1}^n x_j\ba_j,
+\end{align*}
+which is precisely the definition of the matrix-vector product $\bA\bx$.
+}
+
+\addRemark{%
+This column view is more informative than memorizing the row-by-column rule. The set of all possible outputs $\bA\bx$ is the span of the columns. A zero output means that one linear combination of the columns vanishes. Existence and uniqueness for linear systems will grow directly from these two observations.
+}
+
+\addExmpl{%
+For
+\begin{align*}
+    \bA=\begin{pmatrix}1&2\\3&-1\end{pmatrix},
+    \qquad
+    \bx=\begin{pmatrix}4\\5\end{pmatrix},
+\end{align*}
+the product is best read as
+\begin{align*}
+    \bA\bx
+    =4\begin{pmatrix}1\\3\end{pmatrix}
+     +5\begin{pmatrix}2\\-1\end{pmatrix}
+    =\begin{pmatrix}14\\7\end{pmatrix}.
+\end{align*}
+The same calculation can be read row by row: each output coordinate is a weighted sum of the input coordinates.
+}
+
+\subsubsection{Matrix Products}
+
+\textBox{%
+Composition of linear maps defines the matrix product. If $\bB\in\fR^{n\times p}$ represents a map from $\fR^p$ to $\fR^n$ and $\bA\in\fR^{m\times n}$ represents a map from $\fR^n$ to $\fR^m$, then the composition sends $\be_j$ first to the $j$th column $\bb_j$ of $\bB$ and then to $\bA\bb_j$. By Thm~\ref{thm:matrix-from-basis}, the matrix of the composition therefore has columns $\bA\bb_1,\dots,\bA\bb_p$.
+}
+
+\addDef{Matrix Product}{%
+For $\bA\in\fR^{m\times n}$ and $\bB\in\fR^{n\times p}$, the product $\bA\bB\in\fR^{m\times p}$ is the matrix with entries
+\begin{align*}
+    (\bA\bB)_{ij}=\sum_{k=1}^n a_{ik}b_{kj}.
+\end{align*}
+Equivalently, the $j$th column of $\bA\bB$ is $\bA\bb_j$. The product is defined only when the number of columns of $\bA$ equals the number of rows of $\bB$.
+}
+\label{def:matrix-product}
+
+\textBox{%
+Because the product represents composition, it is associative and distributes over addition. It is not commutative. For
+\begin{align*}
+    \bA=\begin{pmatrix}1&0\\0&2\end{pmatrix},
+    \qquad
+    \bB=\begin{pmatrix}0&1\\1&0\end{pmatrix},
+    \qquad
+    \bA\bB=\begin{pmatrix}0&1\\2&0\end{pmatrix}
+    \neq
+    \begin{pmatrix}0&2\\1&0\end{pmatrix}=\bB\bA.
+\end{align*}
+Scaling the coordinates and then exchanging them is a different map from exchanging them and then scaling.
+}
+
+\subsubsection{Transpose and Symmetry}
 
 \addDef{Matrix Transpose}{%
-The \textbf{transpose} of $\bA \in \fR^{m \times n}$, denoted $\bA^T$, is the $n \times m$
-matrix obtained by interchanging rows and columns:
+The \textbf{transpose} of $\bA\in\fR^{m\times n}$ is the matrix $\bA^T\in\fR^{n\times m}$ defined by
 \begin{align*}
-    (\bA^T)_{ij} = a_{ji}, \quad 1 \le i \le n,\ 1 \le j \le m.
+    (\bA^T)_{ij}=a_{ji}.
 \end{align*}
-For a column vector $\bx \in \fR^n$, the transpose $\bx^T$ is its corresponding row vector
-and vice versa.
+It turns columns into rows and rows into columns.
 }
 \label{def:transpose}
 
 \addDef{Symmetric and Skew-Symmetric Matrices}{%
-A square matrix $\bA \in \fR^{n \times n}$ is:
-\begin{itemize}
-    \item \textbf{symmetric} if $\bA^T = \bA$, equivalently $a_{ij} = a_{ji}$ for all $i,j$.
-    \item \textbf{skew-symmetric} if $\bA^T = -\bA$, equivalently $a_{ij} = -a_{ji}$ for all $i,j$.
-\end{itemize}
+A square matrix $\bA$ is \textbf{symmetric} if $\bA^T=\bA$ and \textbf{skew-symmetric} if $\bA^T=-\bA$.
 }
 \label{def:symmetric}
 
 \addRemark{%
-Every square matrix $\bA$ decomposes uniquely into a symmetric part and a skew-symmetric part:
+Every square matrix splits uniquely into symmetric and skew-symmetric parts:
 \begin{align*}
-    \bA = \underbrace{\tfrac{1}{2}(\bA + \bA^T)}_{\text{symmetric}} +
-          \underbrace{\tfrac{1}{2}(\bA - \bA^T)}_{\text{skew-symmetric}}.
+    \bA=\frac{\bA+\bA^T}{2}+\frac{\bA-\bA^T}{2}.
 \end{align*}
-Symmetric matrices arise constantly in scientific computing: covariance matrices in statistics,
-graph Laplacians in network problems, and Hessians of quadratic objectives in optimization
-are all symmetric.
+Symmetric matrices will be especially important because they possess real eigenvalues and orthogonal eigenvectors.
 }
 
 \addThm{Properties of the Transpose}{%
-Let $\bA \in \fR^{m \times n}$, $\bB \in \fR^{n \times p}$, and $\alpha \in \fR$. Then:
-\begin{enumerate}
-    \item $(\bA^T)^T = \bA$
-    \item $(\bA + \bB)^T = \bA^T + \bB^T$ \quad (for conformable $\bA, \bB$)
-    \item $(\alpha\bA)^T = \alpha\bA^T$
-    \item $(\bA\bB)^T = \bB^T\bA^T$ \quad \textbf{(Reversal Law)}
-\end{enumerate}
+For conformable matrices and any scalar $\alpha$,
+\begin{align*}
+    (\bA^T)^T&=\bA,&
+    (\bA+\bB)^T&=\bA^T+\bB^T,\\
+    (\alpha\bA)^T&=\alpha\bA^T,&
+    (\bA\bB)^T&=\bB^T\bA^T.
+\end{align*}
 }
 \label{thm:transpose-props}
 
 \addPrf{%
-Properties (1)--(3) follow directly from the entry-wise definition $(\bA^T)_{ij} = a_{ji}$.
-For (2):
+The first three identities follow entry by entry. For the product,
 \begin{align*}
-    (\bA+\bB)^T_{ij} &= (\bA+\bB)_{ji} \\
-    &= a_{ji} + b_{ji} \\
-    &= (\bA^T)_{ij} + (\bB^T)_{ij} \\
-    &= (\bA^T + \bB^T)_{ij}.
+    ((\bA\bB)^T)_{ij}
+    =(\bA\bB)_{ji}
+    =\sum_k a_{jk}b_{ki}
+    =\sum_k(\bB^T)_{ik}(\bA^T)_{kj}
+    =(\bB^T\bA^T)_{ij}.
 \end{align*}
-
-For (4), let $\bC = \bA\bB \in \fR^{m \times p}$. By the definition of matrix product:
-\begin{align*}
-    (\bC^T)_{ij} = c_{ji} = \sum_{k=1}^{n} a_{jk}\,b_{ki}.
-\end{align*}
-Expanding the $(i,j)$ entry of $\bB^T\bA^T$ using $(\bB^T)_{ik} = b_{ki}$ and $(\bA^T)_{kj} = a_{jk}$:
-\begin{align*}
-    (\bB^T\bA^T)_{ij} &= \sum_{k=1}^{n} (\bB^T)_{ik}\,(\bA^T)_{kj} \\
-    &= \sum_{k=1}^{n} b_{ki}\,a_{jk}.
-\end{align*}
-Both summations are identical, so $(\bA\bB)^T = \bB^T\bA^T$.
 }
 
 \addCor{Reversal Law for Multiple Factors}{%
-By induction on Thm~\ref{thm:transpose-props}(4):
+Repeated use of the product rule gives
 \begin{align*}
-    (\bA_1 \bA_2 \cdots \bA_k)^T = \bA_k^T \cdots \bA_2^T \bA_1^T.
+    (\bA_1\bA_2\cdots\bA_k)^T=\bA_k^T\cdots\bA_2^T\bA_1^T.
 \end{align*}
 }
 \label{cor:reversal-law}
 
-\addExcr{%
-Refer to Def~\ref{def:transpose} and Thm~\ref{thm:transpose-props}.
-Let $\bA = \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix}$.
-\begin{enumerate}
-    \item State the dimensions of $\bA$, $\bA^T$, $\bA\bA^T$, and $\bA^T\bA$.
-    \item Compute $\bA^T$ explicitly.  Then compute $\bA\bA^T$ and verify it is symmetric
-    using Def~\ref{def:symmetric}.
-    \item In NumPy (0-based indexing), write the expression to retrieve element $a_{12}$
-    (first row, second column in 1-based notation).  Then write a one-liner for $\bA\bA^T$.
-    \item Is $\bA\bA^T = \bA^T\bA$ in general?  What can you say about each product
-    individually?
-\end{enumerate}
-}
-
-\addCor{Outer Product is Symmetric of Rank 1}{%
-For any nonzero $\bx \in \fR^n$, the outer product $\bx\bx^T \in \fR^{n \times n}$ is
-symmetric and has rank 1.  The inner product $\bx^T\bx \in \fR$ satisfies
-$\bx^T\bx \ge 0$ with equality iff $\bx = \bzero$.
+\addCor{Outer Product is Symmetric of Rank One}{%
+For every nonzero $\bx\in\fR^n$, the outer product $\bx\bx^T$ is symmetric and has rank one. Moreover,
+\begin{align*}
+    \bx^T\bx=\sum_{i=1}^n x_i^2>0.
+\end{align*}
 }
 \label{cor:outer-product}
 
-\addExcr{%
-In this exercise, we will prove Cor~\ref{cor:outer-product}.
-Refer to Def~\ref{def:transpose} and Thm~\ref{thm:transpose-props}.
+\subsubsection{Inverses}
 
-Let $\bx = (x_1, \ldots, x_n)^T \in \fR^n$ be a nonzero column vector.
+\textBox{%
+A linear map from $\fR^n$ to itself can be undone exactly when its matrix has an inverse. The inverse is a useful theoretical object, but, as the remark below explains, it is rarely computed.
+}
+
+\addDef{Matrix Inverse}{%
+A square matrix $\bA\in\fR^{n\times n}$ is \textbf{invertible}, or nonsingular, if there is a matrix $\bA^{-1}$ with
+\begin{align*}
+    \bA\bA^{-1}=\bA^{-1}\bA=\bI.
+\end{align*}
+The inverse is unique. If $\bB$ and $\bC$ both satisfy the definition, then $\bB=\bB(\bA\bC)=(\bB\bA)\bC=\bC$.
+}
+\label{def:matrix-inverse}
+
+\addThm{Properties of the Inverse}{%
+Let $\bA,\bB\in\fR^{n\times n}$ be invertible and let $\alpha\neq0$. Then $\bA^{-1}$, $\bA\bB$, $\alpha\bA$, and $\bA^T$ are invertible, with
+\begin{align*}
+    (\bA^{-1})^{-1}=\bA,
+    \qquad
+    (\bA\bB)^{-1}=\bB^{-1}\bA^{-1},
+    \qquad
+    (\alpha\bA)^{-1}=\alpha^{-1}\bA^{-1},
+    \qquad
+    (\bA^T)^{-1}=(\bA^{-1})^T.
+\end{align*}
+}
+\label{thm:inverse-props}
+
+\addPrf{%
+Each claim follows by multiplying the proposed inverse with the matrix and using uniqueness. The definition of $\bA^{-1}$ shows that $\bA$ is an inverse of $\bA^{-1}$. For the product,
+\begin{align*}
+    (\bA\bB)(\bB^{-1}\bA^{-1})=\bA(\bB\bB^{-1})\bA^{-1}=\bA\bA^{-1}=\bI,
+\end{align*}
+and the product in the other order is $\bI$ by the same calculation. The scalar case is $(\alpha\bA)(\alpha^{-1}\bA^{-1})=\bI$. For the transpose, transposing $\bA\bA^{-1}=\bI$ and $\bA^{-1}\bA=\bI$ with Thm~\ref{thm:transpose-props} gives $(\bA^{-1})^T\bA^T=\bA^T(\bA^{-1})^T=\bI$.
+}
+
+\addRemark{%
+\textbf{(Factor instead of inverting)}\enspace
+Scientific codes almost never form $\bA^{-1}$. To solve $\bA\bx=\bb$, they factor $\bA$ into triangular or orthogonal factors and solve with each factor in turn, which costs less and is more accurate than forming the inverse and multiplying. The reversal law $(\bA\bB)^{-1}=\bB^{-1}\bA^{-1}$ describes this procedure. To solve $\bA\bB\bx=\bb$, we first solve $\bA\by=\bb$ and then $\bB\bx=\by$.
+}
+
+\subsubsection{Exercises}
+
+\addExcr{%
 \begin{enumerate}
-    \item The \textbf{outer product} is $\bx\bx^T \in \fR^{n \times n}$.  Write out entry
-    $(i,j)$ explicitly.
-    \item Use the Reversal Law (Thm~\ref{thm:transpose-props}(4)) to show $\bx\bx^T$ is
-    symmetric.
-    \item Show that $\bx\bx^T$ has rank 1 by arguing about the column space.
-    (\textit{Hint: every column of $\bx\bx^T$ is a scalar multiple of $\bx$.})
-    \item Express $\bx^T\bx$ as a sum of squares.  Conclude $\bx^T\bx \ge 0$ with equality
-    iff $\bx = \bzero$, and identify the geometric quantity $\sqrt{\bx^T\bx}$.
+    \item \exCheck Decide which of the following subsets of $\fR^3$ are subspaces: the plane $x_1+x_2=0$, the plane $x_1+x_2=1$, the set of vectors with at least one zero entry, and the span of $(1,1,0)^T$ and $(0,1,1)^T$. For every negative answer, identify a subspace axiom that fails.
+    \item \exDerive Prove that a list containing the zero vector is dependent. Prove that two nonzero vectors are dependent exactly when one is a scalar multiple of the other. Then explain why three vectors in $\fR^2$ cannot be independent.
+    \item \exDerive Prove Thm.~\ref{thm:basis-exchange}. Begin with a spanning list $\bw_1,\dots,\bw_m$ and a nonzero vector $\bv_1$. Express $\bv_1$ in the spanning list and replace one $\bw_j$ having a nonzero coefficient by $\bv_1$. Show that the new list still spans. Repeat with $\bv_2,\dots,\bv_k$, using independence to show that a replaceable old vector always remains. Apply the result in both directions to two bases.
+    \item \exExplore Let $p(t)=a+bt+ct^2$. Find its coordinates in the bases $1,t,t^2$ and $1,t-1,(t-1)^2$. Construct the matrix that converts the second coordinate vector into the first, and interpret each column.
+    \item \exDerive Suppose $T:\fR^n\to\fR^m$ is linear and $T(\be_j)=\bzero$ for every standard basis vector. Prove that $T$ is the zero map. Why is checking only one non-basis collection insufficient?
+    \item \exCompute Write a matrix as both a collection of columns and a collection of rows. Use the two views to explain, without entrywise multiplication, what $\bA\bx$ and $\by^T\bA$ mean.
+    \item \exCheck For $\bA=\begin{pmatrix}2&1\\0&3\end{pmatrix}$ and $\bB=\begin{pmatrix}1&-1\\2&4\end{pmatrix}$, compute $\bA\bB$ and $\bB\bA$ by entries and by columns. Find a matrix other than a multiple of $\bI$ that commutes with $\bA$.
+    \item \exDerive A square matrix is \textbf{involutory} if $\bA^2=\bI$. Prove that $\bA$ is involutory exactly when $\bA^{-1}=\bA$, and give an involutory $2\times2$ matrix other than $\pm\bI$. Interpret your example geometrically.
+    \item \exDerive Prove Cor.~\ref{cor:outer-product}. In particular, show that every column of $\bx\bx^T$ is a multiple of $\bx$, and identify one nonzero column.
 \end{enumerate}
 }
+\label{ex:vector-space-foundations}
 
 \end{document}
