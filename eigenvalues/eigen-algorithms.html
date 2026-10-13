@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>14&nbsp; Vector Iterations and the QR Algorithm – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../eigenvalues/svd.html" rel="next">
+<link href="../eigenvalues/eigenvalues.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6453f418aeef366c23116eb9cb0b6816.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-7d9ab679c82f4cdd3315c3a76f2ba6ee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigen-algorithms.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Direct Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Orthogonality and Least Squares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Eigenvalues and the SVD</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Approximation and Integration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">ODEs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#power-iteration-and-shifted-inverse-iteration" id="toc-power-iteration-and-shifted-inverse-iteration" class="nav-link active" data-scroll-target="#power-iteration-and-shifted-inverse-iteration"><span class="header-section-number">14.1</span> Power Iteration and Shifted Inverse Iteration</a></li>
+  <li><a href="#the-practical-qr-algorithm" id="toc-the-practical-qr-algorithm" class="nav-link" data-scroll-target="#the-practical-qr-algorithm"><span class="header-section-number">14.2</span> The Practical QR Algorithm</a></li>
+  <li><a href="#the-jacobi-eigenvalue-algorithm" id="toc-the-jacobi-eigenvalue-algorithm" class="nav-link" data-scroll-target="#the-jacobi-eigenvalue-algorithm"><span class="header-section-number">14.3</span> The Jacobi Eigenvalue Algorithm</a></li>
+  <li><a href="#shifted-systems-from-one-hessenberg-reduction" id="toc-shifted-systems-from-one-hessenberg-reduction" class="nav-link" data-scroll-target="#shifted-systems-from-one-hessenberg-reduction"><span class="header-section-number">14.4</span> Shifted Systems from One Hessenberg Reduction</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">14.5</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/eigen-algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../eigenvalues/eigenvalues.html">Eigenvalues and the SVD</a></li><li class="breadcrumb-item"><a href="../eigenvalues/eigen-algorithms.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>the referenced section characterized eigenvalues but did not compute them. Every polynomial is the characteristic polynomial of its companion matrix, so the Abel–Ruffini theorem implies that no formula built from finitely many arithmetic operations and root extractions gives the eigenvalues of a general matrix with <span class="math inline">\(n\geq5\)</span>. Every eigenvalue algorithm is therefore iterative. We first study iterations that apply <span class="math inline">\(\bA\)</span> or <span class="math inline">\((\bA-\sigma\bI)^{-1}\)</span> to a single vector. These iterations compute one eigenpair at a time and form the basis of the sparse methods in later sections. We then describe the QR algorithm, which computes all eigenvalues of a dense matrix by a sequence of orthogonal similarity transformations.</p>
+<section id="power-iteration-and-shifted-inverse-iteration" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="power-iteration-and-shifted-inverse-iteration"><span class="header-section-number">14.1</span> Power Iteration and Shifted Inverse Iteration</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Power Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be real symmetric. Given a unit vector <span class="math inline">\(\bv^{(0)}\)</span>, power iteration constructs <span class="math display">\[
+\begin{align}
+\bw^{(k)} = \bA \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}, \qquad \lambda^{(k)} = (\bv^{(k)})^T \bA \bv^{(k)}.
+\end{align}
+\]</span> Order the eigenvalues by magnitude. If <span class="math inline">\(|\lambda_1|&gt;|\lambda_2|\geq\cdots\geq|\lambda_n|\)</span> and <span class="math inline">\(\bq_1^T\bv^{(0)}\neq0\)</span>, the direction of the iterate converges linearly: <span class="math display">\[
+\begin{align}
+\|\bv^{(k)} - (\pm \bq_1)\|_2 = O\left( \left| \frac{\lambda_2}{\lambda_1} \right|^k \right).
+\end{align}
+\]</span> For a general nonnormal matrix, an eigenvector basis may be poorly conditioned or may not exist, and this simple orthogonal expansion no longer justifies the claim.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Shifted Inverse Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a real symmetric matrix, an eigenvalue near a target <span class="math inline">\(\sigma\)</span> can be isolated by applying power iteration implicitly to <span class="math inline">\((\bA-\sigma\bI)^{-1}\)</span>: <span class="math display">\[
+\begin{align}
+(\bA - \sigma \bI) \bw^{(k)} = \bv^{(k-1)}, \qquad \bv^{(k)} = \frac{\bw^{(k)}}{\|\bw^{(k)}\|_2}.
+\end{align}
+\]</span> The eigenvalues of <span class="math inline">\((\bA - \sigma \bI)^{-1}\)</span> are <span class="math inline">\((\lambda_i - \sigma)^{-1}\)</span>. Provided the shift is not itself an eigenvalue and the starting vector contains the desired component, the mode closest to <span class="math inline">\(\sigma\)</span> dominates. The matrix inverse is never formed. Each step solves a shifted linear system instead.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Rayleigh Quotient Iteration (RQI)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For symmetric matrices, updating the shift dynamically to the current Rayleigh estimate <span class="math inline">\(\sigma_k = (\bv^{(k)})^T \bA \bv^{(k)}\)</span> defines Rayleigh Quotient Iteration: <span class="math display">\[
+\begin{align}
+(\bA - \sigma_k \bI) \bw^{(k+1)} = \bv^{(k)}, \qquad \bv^{(k+1)} = \frac{\bw^{(k+1)}}{\|\bw^{(k+1)}\|_2}, \qquad \sigma_{k+1} = (\bv^{(k+1)})^T \bA \bv^{(k+1)}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Local Cubic Convergence of Rayleigh Quotient Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be real symmetric, and let <span class="math inline">\(\lambda_*\)</span> be a simple eigenvalue with unit eigenvector <span class="math inline">\(\bq_*\)</span>. If a unit RQI iterate <span class="math inline">\(\bv^{(k)}\)</span> is sufficiently close to <span class="math inline">\(\bq_*\)</span>, then <span class="math display">\[
+\begin{align}
+\sin\angle(\bv^{(k+1)},\bq_*)
+    \leq C\sin^3\angle(\bv^{(k)},\bq_*).
+\end{align}
+\]</span> If <span class="math inline">\(\lambda_*\)</span> is an extremal eigenvalue, the Rayleigh shifts also satisfy <span class="math display">\[
+\begin{align}
+|\sigma_{k+1}-\lambda_*|
+    \leq C'|\sigma_k-\lambda_*|^3
+\end{align}
+\]</span> for iterates sufficiently close to <span class="math inline">\(\bq_*\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Write the current unit vector as <span class="math display">\[
+\begin{align}
+\bv=\cos\theta\,\bq_*+\sin\theta\,\bz,
+    \qquad
+    \bz\perp\bq_*,
+    \qquad
+    \|\bz\|_2=1.
+\end{align}
+\]</span> Its Rayleigh quotient <span class="math inline">\(\sigma=\bv^T\bA\bv\)</span> obeys <span class="math display">\[
+\begin{align}
+\sigma
+    &amp;= (\cos\theta\,\bq_*+\sin\theta\,\bz)^T\bA(\cos\theta\,\bq_*+\sin\theta\,\bz) \\
+    &amp;= \cos^2\theta\,\lambda_* + 2\cos\theta\sin\theta\,\bq_*^T\bA\bz + \sin^2\theta\,\bz^T\bA\bz.
+\end{align}
+\]</span> Because <span class="math inline">\(\bA\bq_* = \lambda_*\bq_*\)</span> and <span class="math inline">\(\bq_*^T\bz = 0\)</span>, the cross-term vanishes: <span class="math inline">\(\bq_*^T\bA\bz = \lambda_*\bq_*^T\bz = 0\)</span>. Substituting <span class="math inline">\(\cos^2\theta = 1-\sin^2\theta\)</span>, <span class="math display">\[
+\begin{align}
+\sigma-\lambda_*
+    = (1-\sin^2\theta)\lambda_* + \sin^2\theta\,\bz^T\bA\bz - \lambda_*
+    = \sin^2\theta\,(\bz^T\bA\bz-\lambda_*),
+\end{align}
+\]</span> so <span class="math inline">\(|\sigma-\lambda_*|\leq C_0\sin^2\theta\)</span>.</p>
+<p>Let <span class="math inline">\(\gamma=\min_{\lambda_j\neq\lambda_*}|\lambda_j-\lambda_*|&gt;0\)</span>. Once <span class="math inline">\(\theta\)</span> is small enough, <span class="math inline">\(|\lambda_j-\sigma|\geq\gamma/2\)</span> for every other eigenvalue. Expanding the inverse-iteration vector <span class="math inline">\(\bw=(\bA-\sigma\bI)^{-1}\bv\)</span> in an orthonormal eigenbasis, its component along <span class="math inline">\(\bq_*\)</span> has magnitude <span class="math display">\[
+\begin{align}
+\frac{|\cos\theta|}{|\lambda_*-\sigma|},
+\end{align}
+\]</span> whereas the norm of its orthogonal component is at most <span class="math inline">\(2|\sin\theta|/\gamma\)</span>. Normalization does not change their ratio. Therefore, <span class="math display">\[
+\begin{align}
+\tan\angle(\bv^+,\bq_*)
+    \leq
+    \frac{2|\lambda_*-\sigma|}{\gamma|\cos\theta|}|\sin\theta|
+    \leq C_1|\sin\theta|^3.
+\end{align}
+\]</span> For small angles, <span class="math inline">\(\sin\theta\)</span> and <span class="math inline">\(\tan\theta\)</span> are comparable, which proves cubic convergence of the eigenvector direction.</p>
+<p>If <span class="math inline">\(\lambda_*\)</span> is extremal, the spectral gap also gives two-sided local bounds <span class="math inline">\(c\sin^2\theta\leq|\sigma-\lambda_*|\leq C\sin^2\theta\)</span>. Applying the Rayleigh-quotient identity to the next iterate and using the cubic angle bound yields <span class="math display">\[
+\begin{align}
+|\sigma^+-\lambda_*|
+    \leq C_2\sin^2\angle(\bv^+,\bq_*)
+    \leq C_3\sin^6\theta
+    \leq C_4|\sigma-\lambda_*|^3.
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-practical-qr-algorithm" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="the-practical-qr-algorithm"><span class="header-section-number">14.2</span> The Practical QR Algorithm</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Basic QR Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given <span class="math inline">\(\bA_0 = \bA\)</span>, the unshifted QR iteration generates orthogonally similar matrices via <span class="math display">\[
+\begin{align}
+\bA_k = \bQ_k \bR_k, \qquad \bA_{k+1} = \bR_k \bQ_k = \bQ_k^T \bA_k \bQ_k.
+\end{align}
+\]</span> All iterates share the same eigenvalues. Under suitable separation conditions the subdiagonal entries tend to zero and the iterates reveal a Schur form. Shifts and deflation are essential for a reliable practical method.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Invariance of Hessenberg Structure under QR Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bH \in \fR^{n \times n}\)</span> be an upper Hessenberg matrix (<span class="math inline">\(H_{ij} = 0\)</span> for all <span class="math inline">\(i &gt; j + 1\)</span>). If <span class="math inline">\(\bH = \bQ\bR\)</span> is the QR factorization of <span class="math inline">\(\bH\)</span>, then the reversed product <span class="math inline">\(\bH_+ = \bR\bQ\)</span> is also upper Hessenberg.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(\bH = \bQ\bR\)</span> and <span class="math inline">\(\bR\)</span> is upper triangular and invertible (assuming <span class="math inline">\(\bH\)</span> is nonsingular, or extending by continuity), <span class="math inline">\(\bQ = \bH \bR^{-1}\)</span>. Because the inverse of an upper triangular matrix is upper triangular, <span class="math inline">\(\bR^{-1}\)</span> is upper triangular. The product of an upper Hessenberg matrix <span class="math inline">\(\bH\)</span> and an upper triangular matrix <span class="math inline">\(\bR^{-1}\)</span> is upper Hessenberg. Therefore, <span class="math inline">\(\bQ\)</span> is upper Hessenberg.</p>
+<p>Now consider <span class="math inline">\(\bH_+ = \bR\bQ\)</span>. The matrix <span class="math inline">\(\bR\)</span> is upper triangular and <span class="math inline">\(\bQ\)</span> is upper Hessenberg. For entry <span class="math inline">\((i, j)\)</span> with <span class="math inline">\(i &gt; j + 1\)</span>: <span class="math display">\[
+\begin{align}
+(\bH_+)_{ij} = \sum_{k=1}^n R_{ik} Q_{kj}.
+\end{align}
+\]</span> Because <span class="math inline">\(\bR\)</span> is upper triangular, <span class="math inline">\(R_{ik} = 0\)</span> for all <span class="math inline">\(k &lt; i\)</span>. For the remaining terms <span class="math inline">\(k \geq i\)</span>, we have <span class="math inline">\(k \geq i &gt; j + 1\)</span>, which implies <span class="math inline">\(k &gt; j + 1\)</span>. Because <span class="math inline">\(\bQ\)</span> is upper Hessenberg, <span class="math inline">\(Q_{kj} = 0\)</span> for all <span class="math inline">\(k &gt; j + 1\)</span>. Thus every term in the sum vanishes, proving <span class="math inline">\((\bH_+)_{ij} = 0\)</span> for <span class="math inline">\(i &gt; j + 1\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Practical Shifted QR Framework
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A standard dense nonsymmetric eigenvalue computation has two phases:</p>
+<ol type="1">
+<li><p><strong>Hessenberg reduction:</strong> Compute <span class="math inline">\(\bH_0=\bU_0^T\bA\bU_0\)</span> with Householder reflectors. This one-time reduction costs <span class="math inline">\(O(n^3)\)</span> operations and preserves the eigenvalues.</p></li>
+<li><p><strong>Implicit shifted QR steps:</strong> Apply shifts while preserving Hessenberg form. A schematic single-shift step is <span class="math display">\[
+\begin{align}
+\bH_k - \mu_k \bI = \bQ_k \bR_k, \qquad \bH_{k+1} = \bR_k \bQ_k + \mu_k \bI.
+\end{align}
+\]</span> the referenced result explains why each step costs <span class="math inline">\(O(n^2)\)</span> rather than <span class="math inline">\(O(n^3)\)</span>. Real nonsymmetric codes use implicit single or double shifts so that complex conjugate pairs can remain in real arithmetic. A small subdiagonal entry permits deflation and splits the problem into smaller blocks.</p></li>
+</ol>
+<p>For a real symmetric matrix, Hessenberg form reduces to tridiagonal form. Wilkinson shifts from the trailing two by two block and implicit bulge chasing then give a particularly efficient symmetric algorithm.</p>
+</div>
+</div>
+</section>
+<section id="the-jacobi-eigenvalue-algorithm" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="the-jacobi-eigenvalue-algorithm"><span class="header-section-number">14.3</span> The Jacobi Eigenvalue Algorithm</h2>
+<p>For a symmetric matrix, an alternative to the QR algorithm drives the off-diagonal entries to zero directly. Each step applies an orthogonal similarity by a plane rotation chosen to annihilate one off-diagonal entry. The method, due to Jacobi in 1846, is slower than shifted QR for a general dense matrix. It remains useful because it can compute the small eigenvalues of graded positive definite matrices to high relative accuracy <span class="citation" data-cites="demmel1997">(<a href="../references.html#ref-demmel1997" role="doc-biblioref">Demmel 1997</a>)</span>, and because rotations acting on disjoint pairs of indices can be applied in parallel.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Givens Plane Rotation Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The matrix <span class="math inline">\(\bG(p, q, \theta) \in \fR^{n \times n}\)</span> is an identity matrix except for the four entries at the intersections of rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>: <span class="math display">\[
+\begin{align}
+g_{pp} = c, \qquad g_{pq} = s, \qquad g_{qp} = -s, \qquad g_{qq} = c,
+\end{align}
+\]</span> where <span class="math inline">\(c = \cos\theta\)</span> and <span class="math inline">\(s = \sin\theta\)</span>. The transformation <span class="math inline">\(\bA' = \bG^T \bA \bG\)</span> modifies only rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> of <span class="math inline">\(\bA\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Derivation of the Optimal Rotation Angle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To zero the transformed off-diagonal entry <span class="math inline">\(a'_{pq} = 0\)</span>, we consider the <span class="math inline">\(2 \times 2\)</span> orthogonal similarity transformation on the submatrix at indices <span class="math inline">\(\{p, q\}\)</span>: <span class="math display">\[
+\begin{align}
+\begin{pmatrix} a'_{pp} &amp; a'_{pq} \\ a'_{pq} &amp; a'_{qq} \end{pmatrix}
+    &amp;=
+    \begin{pmatrix} c &amp; -s \\ s &amp; c \end{pmatrix}
+    \begin{pmatrix} a_{pp} &amp; a_{pq} \\ a_{pq} &amp; a_{qq} \end{pmatrix}
+    \begin{pmatrix} c &amp; s \\ -s &amp; c \end{pmatrix} \\
+    &amp;=
+    \begin{pmatrix}
+        c^2 a_{pp} - 2cs a_{pq} + s^2 a_{qq} &amp; (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) \\
+        (c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) &amp; s^2 a_{pp} + 2cs a_{pq} + c^2 a_{qq}
+    \end{pmatrix}.
+\end{align}
+\]</span> Setting <span class="math inline">\(a'_{pq} = 0\)</span> yields the trigonometric condition <span class="math display">\[
+\begin{align}
+(c^2 - s^2) a_{pq} + cs (a_{pp} - a_{qq}) = 0
+    \implies
+    \frac{\cos(2\theta)}{\sin(2\theta)} = \frac{a_{qq} - a_{pp}}{2a_{pq}}.
+\end{align}
+\]</span> Defining <span class="math inline">\(\tau = \cot(2\theta) = \frac{a_{qq} - a_{pp}}{2a_{pq}}\)</span> and using <span class="math inline">\(\cot(2\theta) = \frac{1 - \tan^2\theta}{2\tan\theta}\)</span>, setting <span class="math inline">\(t = \tan\theta\)</span> produces <span class="math display">\[
+\begin{align}
+t^2 + 2\tau t - 1 = 0.
+\end{align}
+\]</span> To minimize the perturbation to <span class="math inline">\(\bA\)</span> and avoid cancellation, we select the root of smaller absolute value: <span class="math display">\[
+\begin{align}
+t = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}, \qquad c = \frac{1}{\sqrt{1 + t^2}}, \qquad s = ct.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The quadratic formula yields roots <span class="math inline">\(t = -\tau \pm \sqrt{1 + \tau^2}\)</span>. Multiplying the root of smaller magnitude by its algebraic conjugate yields <span class="math display">\[
+\begin{align}
+t = \frac{(-\tau \pm \sqrt{1 + \tau^2})(\tau \pm \sqrt{1 + \tau^2})}{\tau \pm \sqrt{1 + \tau^2}} = \frac{1}{\tau + \operatorname{sign}(\tau)\sqrt{1 + \tau^2}} = \frac{\operatorname{sign}(\tau)}{|\tau| + \sqrt{1 + \tau^2}}.
+\end{align}
+\]</span> This formula satisfies <span class="math inline">\(|t| \leq 1\)</span>, corresponding to a rotation angle <span class="math inline">\(|\theta| \leq \pi/4\)</span>, and avoids subtracting nearly equal floating-point numbers.</p>
+</div>
+</div>
+</div>
+<p>A rotation that annihilates <span class="math inline">\(a_{pq}\)</span> may make a previously annihilated entry nonzero again, so the method does not terminate after <span class="math inline">\(n(n-1)/2\)</span> steps. Convergence follows instead from a quantity that decreases at every step.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Monotone Decrease of the Off-Diagonal Frobenius Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let the off-diagonal squared norm be defined by <span class="math display">\[
+\begin{align}
+\operatorname{off}(\bA)^2 = \sum_{i \neq j} a_{ij}^2 = \|\bA\|_F^2 - \sum_{i=1}^n a_{ii}^2.
+\end{align}
+\]</span> Applying the Jacobi rotation <span class="math inline">\(\bA' = \bG(p, q, \theta)^T \bA \bG(p, q, \theta)\)</span> with the optimal angle strictly reduces the off-diagonal norm: <span class="math display">\[
+\begin{align}
+\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(\bG\)</span> is orthogonal, the total Frobenius norm is preserved: <span class="math inline">\(\|\bA'\|_F^2 = \|\bA\|_F^2\)</span>. The rotation affects only entries in rows and columns <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>. For the <span class="math inline">\(2 \times 2\)</span> submatrix, the sum of squares is invariant under orthogonal similarity: <span class="math display">\[
+\begin{align}
+(a'_{pp})^2 + (a'_{qq})^2 + 2(a'_{pq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align}
+\]</span> Because the rotation enforces <span class="math inline">\(a'_{pq} = 0\)</span>, the sum of squared diagonal entries increases: <span class="math display">\[
+\begin{align}
+(a'_{pp})^2 + (a'_{qq})^2 = a_{pp}^2 + a_{qq}^2 + 2a_{pq}^2.
+\end{align}
+\]</span> All other diagonal entries <span class="math inline">\(a_{ii}\)</span> (<span class="math inline">\(i \neq p, q\)</span>) are untouched. Substituting this into <span class="math inline">\(\operatorname{off}(\bA')^2 = \|\bA'\|_F^2 - \sum (a'_{ii})^2\)</span> proves that <span class="math inline">\(\operatorname{off}(\bA')^2 = \operatorname{off}(\bA)^2 - 2a_{pq}^2\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Cyclic Jacobi Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA^{(0)}=\bA\)</span> and <span class="math inline">\(\bV=\bI_n\)</span>. While <span class="math inline">\(\operatorname{off}(\bA)&gt;`tol`\,\|\bA^{(0)}\|_F\)</span>, sweep through the pairs <span class="math inline">\(1\leq p&lt;q\leq n\)</span> in a fixed order. For each pair, compute <span class="math inline">\(c\)</span> and <span class="math inline">\(s\)</span> from the referenced result, replace <span class="math inline">\(\bA\)</span> by <span class="math inline">\(\bG(p,q,\theta)^T\bA\bG(p,q,\theta)\)</span>, and replace <span class="math inline">\(\bV\)</span> by <span class="math inline">\(\bV\bG(p,q,\theta)\)</span>. On termination, the diagonal of <span class="math inline">\(\bA\)</span> approximates the eigenvalues and the columns of <span class="math inline">\(\bV\)</span> the eigenvectors.</p>
+</div>
+</div>
+<p>the referenced result shows that <span class="math inline">\(\operatorname{off}(\bA)^2\)</span> decreases by <span class="math inline">\(2a_{pq}^2\)</span> at every rotation. Choosing the largest off-diagonal entry at each step gives linear convergence, as the exercises show. The cyclic order avoids that search, and once the off-diagonal entries are small compared with the gaps between the eigenvalues, cyclic Jacobi converges quadratically, measured sweep by sweep <span class="citation" data-cites="golubvanloan2013">(<a href="../references.html#ref-golubvanloan2013" role="doc-biblioref">Golub and Van Loan 2013</a>)</span>. Each sweep costs <span class="math inline">\(O(n^3)\)</span> flops.</p>
+</section>
+<section id="shifted-systems-from-one-hessenberg-reduction" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="shifted-systems-from-one-hessenberg-reduction"><span class="header-section-number">14.4</span> Shifted Systems from One Hessenberg Reduction</h2>
+<p>Several calculations require the solution of <span class="math inline">\((s\bI-\bA)\bx=\bb\)</span> for many complex shifts <span class="math inline">\(s\)</span> with the same <span class="math inline">\(\bA\)</span> and <span class="math inline">\(\bb\)</span>. The vector <span class="math inline">\((s\bI-\bA)^{-1}\bb\)</span> is the resolvent of <span class="math inline">\(\bA\)</span> applied to <span class="math inline">\(\bb\)</span>. Resolvents appear in Laplace transforms of solutions of linear differential equations, in frequency responses, and in contour-integral formulas for matrix functions. Factoring <span class="math inline">\(s\bI-\bA\)</span> separately for each of <span class="math inline">\(N\)</span> shifts costs about <span class="math inline">\(\tfrac23n^3\)</span> flops per shift. The Hessenberg reduction of the referenced result removes this repetition, because adding a multiple of the identity does not change Hessenberg structure.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Shifted Solves with a Hessenberg Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA=\bQ\bH\bQ^T\)</span> with <span class="math inline">\(\bQ\)</span> orthogonal and <span class="math inline">\(\bH\)</span> upper Hessenberg, and let <span class="math inline">\(s\)</span> not be an eigenvalue of <span class="math inline">\(\bA\)</span>. Then <span class="math inline">\(\bx=(s\bI-\bA)^{-1}\bb\)</span> is given by <span class="math display">\[
+\begin{align}
+(s\bI-\bH)\by=\bQ^T\bb,
+    \qquad
+    \bx=\bQ\by.
+\end{align}
+\]</span> Gaussian elimination with partial pivoting solves the Hessenberg system in <span class="math inline">\(O(n^2)\)</span> operations. At each step, the only possible row interchange is between the pivot row and the row directly below it.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(\bQ\bQ^T=\bI\)</span>, we have <span class="math inline">\(s\bI-\bA=\bQ(s\bI-\bH)\bQ^T\)</span>, so <span class="math inline">\(\bx=\bQ(s\bI-\bH)^{-1}\bQ^T\bb\)</span>. The matrix <span class="math inline">\(s\bI-\bH\)</span> differs from <span class="math inline">\(-\bH\)</span> only on the diagonal, so it is upper Hessenberg. Suppose that after <span class="math inline">\(k-1\)</span> elimination steps the active submatrix is upper Hessenberg. Its first column then has a single nonzero entry below the diagonal, in row <span class="math inline">\(k+1\)</span>. Partial pivoting compares only rows <span class="math inline">\(k\)</span> and <span class="math inline">\(k+1\)</span>, computes one multiplier, and updates one row of length at most <span class="math inline">\(n-k+1\)</span>. Rows <span class="math inline">\(k+2,...,n\)</span> are untouched, so the next active submatrix is again upper Hessenberg. Summing the work over <span class="math inline">\(k=1,...,n-1\)</span> gives <span class="math inline">\(O(n^2)\)</span> operations, and the triangular solve that follows costs another <span class="math inline">\(O(n^2)\)</span>.</p>
+</div>
+</div>
+</div>
+<p>Reducing <span class="math inline">\(\bA\)</span> to Hessenberg form with Householder reflectors costs about <span class="math inline">\(\tfrac{10}{3}n^3\)</span> flops when <span class="math inline">\(\bQ\)</span> is kept as a product of reflectors, and this reduction is done once <span class="citation" data-cites="golubvanloan2013">(<a href="../references.html#ref-golubvanloan2013" role="doc-biblioref">Golub and Van Loan 2013</a>)</span>. Applying <span class="math inline">\(\bQ^T\)</span> and <span class="math inline">\(\bQ\)</span> to a vector costs <span class="math inline">\(O(n^2)\)</span> flops. For <span class="math inline">\(N\)</span> shifts, the total cost is therefore about <span class="math inline">\(\tfrac{10}{3}n^3+O(Nn^2)\)</span> flops, compared with about <span class="math inline">\(\tfrac23Nn^3\)</span> for separate factorizations. The reduction pays for itself after five shifts, and with one hundred shifts it reduces the cost by a factor of about twenty.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Contour integrals for the matrix exponential)</strong> The Cauchy integral formula for matrix functions gives <span class="math display">\[
+\begin{align}
+e^{t\bA}\bb=\frac{1}{2\pi\mathrm{i}}\int_\Gamma e^{ts}(s\bI-\bA)^{-1}\bb\,ds,
+\end{align}
+\]</span> where <span class="math inline">\(\Gamma\)</span> is a contour that encloses the spectrum of <span class="math inline">\(\bA\)</span> <span class="citation" data-cites="higham2008">(<a href="../references.html#ref-higham2008" role="doc-biblioref">Higham 2008</a>)</span>. When the spectrum lies in the left half-plane, as for Markov generators and discretized diffusion operators, <span class="math inline">\(\Gamma\)</span> can be chosen to wrap around the negative real axis so that <span class="math inline">\(e^{ts}\)</span> decays along it. After a parametrization of <span class="math inline">\(\Gamma\)</span>, the trapezoid rule with <span class="math inline">\(N\)</span> nodes approximates the integral by a sum of <span class="math inline">\(N\)</span> resolvent applications, each computed by the referenced result. For suitable Talbot-type contours the error decreases geometrically in <span class="math inline">\(N\)</span>, and a few tens of nodes commonly reach double-precision accuracy <span class="citation" data-cites="weidemantrefethen2007">(<a href="../references.html#ref-weidemantrefethen2007" role="doc-biblioref">Weideman and Trefethen 2007</a>)</span>. The geometric convergence is the same mechanism as the spectral accuracy of the trapezoid rule for periodic analytic integrands in the referenced section. For large sparse matrices, the Krylov approximations of the referenced section are usually preferable, because they avoid the dense Hessenberg reduction.</p>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">14.5</span> Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Compute.</strong> <strong>(Observed cubic convergence of RQI)</strong> Apply RQI to a symmetric matrix with distinct eigenvalues, starting from several unit vectors close to the same eigenvector.</p>
+<ol type="1">
+<li><p>Record the angle errors <span class="math inline">\(\theta_k=\angle(\bv^{(k)},\bq_*)\)</span> and the ratios <span class="math inline">\(\sin\theta_{k+1}/\sin^3\theta_k\)</span>.</p></li>
+<li><p>Record the Rayleigh errors and verify the cubic relation in the referenced result before rounding error dominates.</p></li>
+<li><p>Repeat with two nearly repeated eigenvalues and explain how the spectral gap enters the constants in the proof.</p></li>
+</ol></li>
+<li><p><strong>Explore.</strong> <strong>(Failure of unshifted QR on an exchange matrix)</strong> Let <span class="math inline">\(\bP = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\)</span>.</p>
+<ol type="1">
+<li><p>Compute the QR factorization <span class="math inline">\(\bP = \bQ_0 \bR_0\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\(\bP_1 = \bR_0 \bQ_0\)</span> and show that <span class="math inline">\(\bP_1 = \bP\)</span>.</p></li>
+<li><p>Repeat the step with a nonzero shift. Determine which shifts break the cycle, and explain how an eigenvalue shift from the trailing two by two block permits immediate deflation in this example.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>(Givens rotation Hessenberg QR)</strong> Write a Python function that executes one step of shifted QR on an upper Hessenberg matrix <span class="math inline">\(\bH \in \fR^{n \times n}\)</span> using <span class="math inline">\(n-1\)</span> Givens rotations. Verify that your implementation requires <span class="math inline">\(O(n^2)\)</span> flops rather than <span class="math inline">\(O(n^3)\)</span>.</p></li>
+<li><p><strong>Compute.</strong> Perform one Jacobi rotation by hand to zero out the off-diagonal entry of <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} 3 &amp; 2 \\ 2 &amp; 6 \end{pmatrix}.
+\end{align}
+\]</span> Explicitly compute <span class="math inline">\(\tau, t, c, s\)</span>, and the resulting diagonal matrix <span class="math inline">\(\bA'\)</span>.</p></li>
+<li><p><strong>Compute.</strong> Verify that the eigenvalues computed on the diagonal of <span class="math inline">\(\bA'\)</span> match the exact roots of <span class="math inline">\(\det(\bA - \lambda\bI) = 0\)</span>.</p></li>
+<li><p><strong>Derive.</strong> Prove that for an <span class="math inline">\(n \times n\)</span> matrix, if the largest off-diagonal entry is selected at each step (Classical Jacobi), then <span class="math inline">\(\operatorname{off}(\bA^{(k+1)})^2 \leq \left( 1 - \frac{2}{n(n-1)} \right) \operatorname{off}(\bA^{(k)})^2\)</span>.</p></li>
+<li><p><strong>Explore.</strong> <strong>(Many shifted solves)</strong> For a random <span class="math inline">\(200\times200\)</span> matrix, compare the time to solve <span class="math inline">\((s_k\bI-\bA)\bx_k=\bb\)</span> for <span class="math inline">\(k=1,...,N\)</span> by separate LU factorizations and by one Hessenberg reduction followed by the referenced result. Find the value of <span class="math inline">\(N\)</span> at which the two approaches cost the same, and compare it with the flop estimate in the text.</p></li>
+</ol>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-demmel1997" class="csl-entry" role="listitem">
+Demmel, James W. 1997. <em>Applied Numerical Linear Algebra</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9781611971446">https://doi.org/10.1137/1.9781611971446</a>.
+</div>
+<div id="ref-golubvanloan2013" class="csl-entry" role="listitem">
+Golub, Gene H., and Charles F. Van Loan. 2013. <em>Matrix Computations</em>. 4th ed. Johns Hopkins University Press.
+</div>
+<div id="ref-higham2008" class="csl-entry" role="listitem">
+Higham, Nicholas J. 2008. <em>Functions of Matrices: Theory and Computation</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898717778">https://doi.org/10.1137/1.9780898717778</a>.
+</div>
+<div id="ref-weidemantrefethen2007" class="csl-entry" role="listitem">
+Weideman, J. A. C., and Lloyd N. Trefethen. 2007. <span>“Parabolic and Hyperbolic Contours for Computing the <span>Bromwich</span> Integral.”</span> <em>Mathematics of Computation</em> 76 (259): 1341–56.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../eigenvalues/eigenvalues.html" class="pagination-link" aria-label="Eigenvalues, Invariant Subspaces, and Their Sensitivity">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../eigenvalues/svd.html" class="pagination-link" aria-label="The Singular Value Decomposition">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/eigenvalues/eigen-algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>

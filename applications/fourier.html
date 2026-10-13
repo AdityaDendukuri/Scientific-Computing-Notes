@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>21&nbsp; Fourier Analysis as Change of Basis – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../applications/operators.html" rel="next">
+<link href="../numerical-analysis/quadrature.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6453f418aeef366c23116eb9cb0b6816.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-7d9ab679c82f4cdd3315c3a76f2ba6ee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../applications/fourier.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Direct Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Orthogonality and Least Squares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Eigenvalues and the SVD</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Approximation and Integration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">ODEs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-discrete-fourier-transform" id="toc-the-discrete-fourier-transform" class="nav-link active" data-scroll-target="#the-discrete-fourier-transform"><span class="header-section-number">21.1</span> The Discrete Fourier Transform</a></li>
+  <li><a href="#circulant-matrices-and-the-convolution-theorem" id="toc-circulant-matrices-and-the-convolution-theorem" class="nav-link" data-scroll-target="#circulant-matrices-and-the-convolution-theorem"><span class="header-section-number">21.2</span> Circulant Matrices and the Convolution Theorem</a></li>
+  <li><a href="#the-fast-fourier-transform" id="toc-the-fast-fourier-transform" class="nav-link" data-scroll-target="#the-fast-fourier-transform"><span class="header-section-number">21.3</span> The Fast Fourier Transform</a></li>
+  <li><a href="#spectral-differentiation" id="toc-spectral-differentiation" class="nav-link" data-scroll-target="#spectral-differentiation"><span class="header-section-number">21.4</span> Spectral Differentiation</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">21.5</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/fourier.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../applications/fourier.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Fourier analysis provides the mathematical framework for decomposing functions, discrete signals, and linear operators into frequency components. In scientific computing, the Fourier transform diagonalizes shift-invariant operators, accelerates convolution from <span class="math inline">\(O(n^2)\)</span> to <span class="math inline">\(O(n \log n)\)</span> operations, and yields spectral differentiation methods with exponential convergence for smooth periodic solutions.</p>
+<p><strong>(Running example: Poisson matrix)</strong> On a periodic grid, Fourier modes diagonalize the discrete Laplacian. With Dirichlet boundary conditions, sine modes play the same role for the Poisson matrix of the referenced section. Their eigenvalues determine the conditioning of that matrix and the smoothing behavior used by multigrid in the referenced section.</p>
+<section id="the-discrete-fourier-transform" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="the-discrete-fourier-transform"><span class="header-section-number">21.1</span> The Discrete Fourier Transform</h2>
+<p>We consider discrete signals defined on a uniform periodic grid of <span class="math inline">\(n\)</span> points. The Discrete Fourier Transform (DFT) expands a vector in the orthonormal basis of discrete complex exponentials.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Periodic Grid Signal
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A discrete signal <span class="math inline">\(\bx \in \fC^n\)</span> represents samples of a periodic function on the uniform grid <span class="math inline">\(x_j = 2\pi j / n\)</span> for <span class="math inline">\(j = 0, 1, ..., n-1\)</span>, with the periodic index convention <span class="math display">\[
+\begin{align}
+x_{j+n} = x_j \qquad \text{for all } j \in \fZ.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: DFT Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\omega_n = e^{-2\pi i / n}\)</span> denote the primitive <span class="math inline">\(n\)</span>-th root of unity. The Discrete Fourier Transform matrix <span class="math inline">\(\bF \in \fC^{n \times n}\)</span> has entries <span class="math display">\[
+\begin{align}
+F_{jk} = \frac{1}{\sqrt{n}} \omega_n^{jk} = \frac{1}{\sqrt{n}} e^{-2\pi i j k / n}, \qquad 0 \leq j, k \leq n-1.
+\end{align}
+\]</span> The forward transform maps a spatial signal <span class="math inline">\(\bx \in \fC^n\)</span> to its frequency representation <span class="math inline">\(\hat{\bx} = \bF\bx\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Unitarity of the DFT Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The normalized DFT matrix <span class="math inline">\(\bF\)</span> is unitary: <span class="math display">\[
+\begin{align}
+\bF^* \bF = \bF \bF^* = \bI_n.
+\end{align}
+\]</span> Consequently, the inverse transform is given by the conjugate transpose: <span class="math inline">\(\bF^{-1} = \bF^*\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We evaluate the <span class="math inline">\((j, \ell)\)</span> entry of the Gram matrix product <span class="math inline">\(\bF^* \bF\)</span>. Because <span class="math inline">\((\bF^*)_{jk} = \overline{F_{kj}} = \frac{1}{\sqrt{n}} \omega_n^{-jk}\)</span>, we have <span class="math display">\[
+\begin{align}
+(\bF^* \bF)_{j\ell} = \sum_{k=0}^{n-1} (\bF^*)_{jk} F_{k\ell} = \frac{1}{n} \sum_{k=0}^{n-1} \omega_n^{-jk} \omega_n^{k\ell} = \frac{1}{n} \sum_{k=0}^{n-1} \left( \omega_n^{\ell - j} \right)^k.
+\end{align}
+\]</span> If <span class="math inline">\(j = \ell\)</span>, each term in the summation equals <span class="math inline">\(\omega_n^0 = 1\)</span>, yielding <span class="math inline">\(\frac{1}{n} \sum_{k=0}^{n-1} 1 = 1\)</span>. If <span class="math inline">\(j \neq \ell\)</span>, let <span class="math inline">\(r = \omega_n^{\ell - j}\)</span>. Because <span class="math inline">\(-(n-1) \leq \ell - j \leq n-1\)</span> and <span class="math inline">\(j \neq \ell\)</span>, the base <span class="math inline">\(r \neq 1\)</span>, while <span class="math inline">\(r^n = (\omega_n^n)^{\ell - j} = 1^{\ell - j} = 1\)</span>. The finite geometric series sums to <span class="math display">\[
+\begin{align}
+\sum_{k=0}^{n-1} r^k = \frac{1 - r^n}{1 - r} = \frac{1 - 1}{1 - r} = 0.
+\end{align}
+\]</span> Therefore, <span class="math inline">\((\bF^* \bF)_{j\ell} = \delta_{j\ell}\)</span>, which establishes <span class="math inline">\(\bF^* \bF = \bI_n\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Parseval’s Identity and Isometry
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Discrete Fourier Transform is an isometry on <span class="math inline">\(\fC^n\)</span> with respect to the Euclidean norm: <span class="math display">\[
+\begin{align}
+\|\bF\bx\|_2 = \|\bx\|_2 \qquad \text{for all } \bx \in \fC^n.
+\end{align}
+\]</span> The inner product is likewise preserved: <span class="math inline">\(\langle \bF\bx, \bF\by \rangle = \langle \bx, \by \rangle\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Using the referenced result, the Euclidean norm of the transformed vector satisfies <span class="math display">\[
+\begin{align}
+\|\bF\bx\|_2^2 = (\bF\bx)^* (\bF\bx) = \bx^* \bF^* \bF \bx = \bx^* \bI \bx = \bx^* \bx = \|\bx\|_2^2.
+\end{align}
+\]</span> Taking positive square roots proves the claim. For general vectors, <span class="math inline">\(\langle \bF\bx, \bF\by \rangle = (\bF\bx)^* (\bF\by) = \bx^* \bF^* \bF \by = \bx^* \by = \langle \bx, \by \rangle\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Frequency Bins and Nyquist Limit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a signal sampled on <span class="math inline">\(n\)</span> points with uniform spacing <span class="math inline">\(h = 2\pi / n\)</span>, integer frequency index <span class="math inline">\(k\)</span> corresponds to the continuous Fourier mode <span class="math inline">\(e^{ikx}\)</span>. The distinct resolvable frequencies are ordered as <span class="math display">\[
+\begin{align}
+0, 1, 2, ..., \lfloor n/2 \rfloor, -\lfloor (n-1)/2 \rfloor, ..., -1.
+\end{align}
+\]</span> The maximum resolvable frequency is the Nyquist frequency <span class="math inline">\(k_{\text{Nyq}} = \lfloor n/2 \rfloor\)</span>. Any continuous mode with frequency <span class="math inline">\(|k| &gt; k_{\text{Nyq}}\)</span> aliases to a lower grid frequency satisfying <span class="math inline">\(k' \equiv k \pmod n\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Normalization convention)</strong> Numerical libraries such as NumPy’s <code>np.fft.fft</code> define the forward transform without the factor <span class="math inline">\(1/\sqrt{n}\)</span>, so that <span class="math inline">\(\hat{\bx}_{\text{numpy}} = \sum_{j=0}^{n-1} x_j \omega_n^{jk}\)</span>, and place the full factor <span class="math inline">\(1/n\)</span> in the inverse transform <code>np.fft.ifft</code>. This choice scales the entries by <span class="math inline">\(\sqrt{n}\)</span> relative to the unitary operator <span class="math inline">\(\bF\)</span> defined here.</p>
+</div>
+</div>
+</section>
+<section id="circulant-matrices-and-the-convolution-theorem" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="circulant-matrices-and-the-convolution-theorem"><span class="header-section-number">21.2</span> Circulant Matrices and the Convolution Theorem</h2>
+<p>A linear system or filtering operation that commutes with spatial translation is represented by a circulant matrix. The Discrete Fourier Transform diagonalizes every circulant matrix.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Circulant Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bc = (c_0, c_1, ..., c_{n-1})^T \in \fC^n\)</span>. The circulant matrix <span class="math inline">\(\mathbf{C} = \operatorname{circ}(\bc) \in \fC^{n \times n}\)</span> has entries <span class="math inline">\(C_{jk} = c_{(j - k) \pmod n}\)</span>: <span class="math display">\[
+\begin{align}
+\mathbf{C} = \begin{pmatrix}
+        c_0 &amp; c_{n-1} &amp; c_{n-2} &amp; ... &amp; c_1 \\
+        c_1 &amp; c_0 &amp; c_{n-1} &amp; ... &amp; c_2 \\
+        c_2 &amp; c_1 &amp; c_0 &amp; ... &amp; c_3 \\
+        \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+        c_{n-1} &amp; c_{n-2} &amp; c_{n-3} &amp; ... &amp; c_0
+    \end{pmatrix}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Diagonalization of Circulant Matrices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every circulant matrix <span class="math inline">\(\mathbf{C} = \operatorname{circ}(\bc)\)</span> is diagonalized by the unitary DFT matrix: <span class="math display">\[
+\begin{align}
+\mathbf{C} = \bF^* \boldsymbol{\Lambda} \bF,
+\end{align}
+\]</span> where the diagonal eigenvalue matrix <span class="math inline">\(\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_0, ..., \lambda_{n-1})\)</span> has entries equal to the unnormalized DFT coefficients of the first column: <span class="math display">\[
+\begin{align}
+\lambda_k = \sqrt{n} (\bF\bc)_k = \sum_{j=0}^{n-1} c_j \omega_n^{jk}.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\mathbf{S} = \operatorname{circ}(\be_2) \in \fR^{n \times n}\)</span> be the cyclic permutation matrix that shifts coordinate indices forward by one: <span class="math inline">\(\mathbf{S}\bx = (x_{n-1}, x_0, x_1, ..., x_{n-2})^T\)</span>. Powers of <span class="math inline">\(\mathbf{S}\)</span> shift indices by <span class="math inline">\(j\)</span> positions, satisfying <span class="math inline">\(\mathbf{S}^n = \bI\)</span>. Every circulant matrix is a polynomial in <span class="math inline">\(\mathbf{S}\)</span>: <span class="math display">\[
+\begin{align}
+\mathbf{C} = \sum_{j=0}^{n-1} c_j \mathbf{S}^j.
+\end{align}
+\]</span> Let <span class="math inline">\(\bv_k\)</span> denote the <span class="math inline">\(k\)</span>-th column of <span class="math inline">\(\bF^*\)</span>, with entries <span class="math inline">\((\bv_k)_j = \frac{1}{\sqrt{n}} \omega_n^{-jk}\)</span>. Multiplying by the shift matrix gives <span class="math display">\[
+\begin{align}
+(\mathbf{S}\bv_k)_j = (\bv_k)_{(j-1) \pmod n} = \frac{1}{\sqrt{n}} \omega_n^{-(j-1)k} = \omega_n^k \left( \frac{1}{\sqrt{n}} \omega_n^{-jk} \right) = \omega_n^k (\bv_k)_j.
+\end{align}
+\]</span> Thus <span class="math inline">\(\bv_k\)</span> is an eigenvector of <span class="math inline">\(\mathbf{S}\)</span> with eigenvalue <span class="math inline">\(\omega_n^k\)</span>. Applying the polynomial representation of <span class="math inline">\(\mathbf{C}\)</span> to <span class="math inline">\(\bv_k\)</span> yields <span class="math display">\[
+\begin{align}
+\mathbf{C}\bv_k = \sum_{j=0}^{n-1} c_j \mathbf{S}^j \bv_k = \sum_{j=0}^{n-1} c_j (\omega_n^k)^j \bv_k = \left( \sum_{j=0}^{n-1} c_j \omega_n^{jk} \right) \bv_k = \lambda_k \bv_k.
+\end{align}
+\]</span> Collecting all <span class="math inline">\(n\)</span> eigenvector equations in matrix form gives <span class="math inline">\(\mathbf{C}\bF^* = \bF^* \boldsymbol{\Lambda}\)</span>. Multiplying on the right by <span class="math inline">\(\bF\)</span> yields <span class="math inline">\(\mathbf{C} = \bF^* \boldsymbol{\Lambda} \bF\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Discrete Convolution Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bc, \bx \in \fC^n\)</span>. The circular convolution <span class="math inline">\(\bz = \bc * \bx\)</span> has components <span class="math display">\[
+\begin{align}
+z_j = \sum_{k=0}^{n-1} c_k x_{(j - k) \pmod n} = (\mathbf{C}\bx)_j, \qquad \mathbf{C} = \operatorname{circ}(\bc).
+\end{align}
+\]</span> Applying the Discrete Fourier Transform converts convolution to entrywise multiplication: <span class="math display">\[
+\begin{align}
+\bF(\bc * \bx) = \sqrt{n} (\bF\bc) \odot (\bF\bx),
+\end{align}
+\]</span> where <span class="math inline">\(\odot\)</span> denotes the Hadamard (entrywise) vector product.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(\bz = \mathbf{C}\bx\)</span> and <span class="math inline">\(\mathbf{C} = \bF^* \boldsymbol{\Lambda} \bF\)</span> by the referenced result, we have <span class="math display">\[
+\begin{align}
+\bF\bz = \bF(\mathbf{C}\bx) = \bF(\bF^* \boldsymbol{\Lambda} \bF \bx) = \boldsymbol{\Lambda}(\bF\bx).
+\end{align}
+\]</span> Because <span class="math inline">\(\boldsymbol{\Lambda}\)</span> is diagonal with entries <span class="math inline">\(\lambda_k = \sqrt{n}(\bF\bc)_k\)</span>, matrix-vector multiplication by <span class="math inline">\(\boldsymbol{\Lambda}\)</span> scales each component of <span class="math inline">\(\bF\bx\)</span> by <span class="math inline">\(\sqrt{n}(\bF\bc)_k\)</span>: <span class="math display">\[
+\begin{align}
+(\bF\bz)_k = \lambda_k (\bF\bx)_k = \sqrt{n}(\bF\bc)_k (\bF\bx)_k.
+\end{align}
+\]</span> Writing this component identity in vector form yields <span class="math inline">\(\bF(\bc * \bx) = \sqrt{n} (\bF\bc) \odot (\bF\bx)\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-fast-fourier-transform" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="the-fast-fourier-transform"><span class="header-section-number">21.3</span> The Fast Fourier Transform</h2>
+<p>Computing a matrix-vector product with a general dense <span class="math inline">\(n \times n\)</span> matrix requires <span class="math inline">\(2n^2\)</span> flops. The Cooley–Tukey Fast Fourier Transform (FFT) factors the DFT matrix into sparse structured factors, reducing the complexity to <span class="math inline">\(O(n \log n)\)</span> operations.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Radix-2 Cooley–Tukey Decomposition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(n\)</span> be an even integer, and let <span class="math inline">\(\bx \in \fC^n\)</span>. Partition <span class="math inline">\(\bx\)</span> into even-indexed and odd-indexed subvectors <span class="math inline">\(\bx_E, \bx_O \in \fC^{n/2}\)</span> defined by <span class="math inline">\((\bx_E)_j = x_{2j}\)</span> and <span class="math inline">\((\bx_O)_j = x_{2j+1}\)</span> for <span class="math inline">\(j = 0, ..., n/2 - 1\)</span>. The <span class="math inline">\(n\)</span>-point unnormalized DFT <span class="math inline">\(\hat{x}_k = \sum_{j=0}^{n-1} x_j \omega_n^{jk}\)</span> satisfies the butterfly identity <span class="math display">\[
+\begin{align}
+\hat{x}_k &amp;= (\hat{\bx}_E)_k + \omega_n^k (\hat{\bx}_O)_k, \\
+    \hat{x}_{k + n/2} &amp;= (\hat{\bx}_E)_k - \omega_n^k (\hat{\bx}_O)_k,
+\end{align}
+\]</span> for each <span class="math inline">\(k = 0, 1, ..., n/2 - 1\)</span>, where <span class="math inline">\(\hat{\bx}_E, \hat{\bx}_O\)</span> are the <span class="math inline">\((n/2)\)</span>-point DFTs of <span class="math inline">\(\bx_E\)</span> and <span class="math inline">\(\bx_O\)</span>. When <span class="math inline">\(n = 2^p\)</span>, applying this reduction recursively requires <span class="math inline">\(O(n \log n)\)</span> floating-point operations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Splitting the DFT sum into even and odd indices gives <span class="math display">\[
+\begin{align}
+\hat{x}_k = \sum_{m=0}^{n/2 - 1} x_{2m} \omega_n^{2mk} + \sum_{m=0}^{n/2 - 1} x_{2m+1} \omega_n^{(2m+1)k}.
+\end{align}
+\]</span> Because <span class="math inline">\(\omega_n^2 = e^{-4\pi i / n} = e^{-2\pi i / (n/2)} = \omega_{n/2}\)</span>, the first sum is the <span class="math inline">\((n/2)\)</span>-point transform of <span class="math inline">\(\bx_E\)</span>: <span class="math display">\[
+\begin{align}
+\sum_{m=0}^{n/2 - 1} x_{2m} \omega_{n/2}^{mk} = (\hat{\bx}_E)_k.
+\end{align}
+\]</span> Factoring <span class="math inline">\(\omega_n^k\)</span> out of the second sum gives <span class="math inline">\(\omega_n^k \sum_{m=0}^{n/2 - 1} x_{2m+1} \omega_{n/2}^{mk} = \omega_n^k (\hat{\bx}_O)_k\)</span>. This establishes the first identity: <span class="math display">\[
+\begin{align}
+\hat{x}_k = (\hat{\bx}_E)_k + \omega_n^k (\hat{\bx}_O)_k.
+\end{align}
+\]</span> For the second half of the spectrum <span class="math inline">\(k + n/2\)</span>, the periodicity <span class="math inline">\(\omega_{n/2}^{m(k + n/2)} = \omega_{n/2}^{mk} (\omega_{n/2}^{n/2})^m = \omega_{n/2}^{mk}\)</span> and the half-period phase shift <span class="math display">\[
+\begin{align}
+\omega_n^{k + n/2} = \omega_n^k \omega_n^{n/2} = \omega_n^k e^{-\pi i} = -\omega_n^k
+\end{align}
+\]</span> give the complementary butterfly equation: <span class="math display">\[
+\begin{align}
+\hat{x}_{k + n/2} = (\hat{\bx}_E)_k - \omega_n^k (\hat{\bx}_O)_k.
+\end{align}
+\]</span> In matrix form, introducing the diagonal twiddle matrix <span class="math inline">\(\boldsymbol{\Omega}_{n/2} = \operatorname{diag}(1, \omega_n, ..., \omega_n^{n/2-1})\)</span> and the even–odd permutation matrix <span class="math inline">\(\bP_n\)</span>: <span class="math display">\[
+\begin{align}
+\hat{\bx} = \begin{pmatrix} \bI_{n/2} &amp; \boldsymbol{\Omega}_{n/2} \\ \bI_{n/2} &amp; -\boldsymbol{\Omega}_{n/2} \end{pmatrix} \begin{pmatrix} \hat{\bx}_E \\ \hat{\bx}_O \end{pmatrix} = \begin{pmatrix} \bI_{n/2} &amp; \boldsymbol{\Omega}_{n/2} \\ \bI_{n/2} &amp; -\boldsymbol{\Omega}_{n/2} \end{pmatrix} \begin{pmatrix} \mathbf{W}_{n/2} &amp; \bzero \\ \bzero &amp; \mathbf{W}_{n/2} \end{pmatrix} \bP_n \bx.
+\end{align}
+\]</span> At each recursion stage, the butterfly recombination performs <span class="math inline">\(n/2\)</span> complex multiplications and <span class="math inline">\(n\)</span> additions. The arithmetic complexity satisfies the recurrence <span class="math display">\[
+\begin{align}
+T(n) = 2 T(n/2) + c n.
+\end{align}
+\]</span> For <span class="math inline">\(n = 2^p\)</span>, the depth of the recursion tree is <span class="math inline">\(\log_2 n\)</span>, yielding total cost <span class="math inline">\(T(n) = c n \log_2 n = O(n \log n)\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="spectral-differentiation" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="spectral-differentiation"><span class="header-section-number">21.4</span> Spectral Differentiation</h2>
+<p>For smooth periodic functions, differentiation in the Fourier domain replaces finite-difference stencils with exact multiplication in frequency.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Differentiation of Periodic Functions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(u: \fR \to \fC\)</span> be a <span class="math inline">\(2\pi\)</span>-periodic function with continuous derivatives through order <span class="math inline">\(m\)</span>. Representing <span class="math inline">\(u\)</span> by its Fourier series <span class="math inline">\(u(x) = \sum_{k=-\infty}^\infty \hat{u}_k e^{ikx}\)</span>, the derivative has Fourier coefficients <span class="math display">\[
+\begin{align}
+\widehat{(u')}_k = ik \hat{u}_k.
+\end{align}
+\]</span> If <span class="math inline">\(u\)</span> is analytic in a strip <span class="math inline">\(\{z \in \fC : |\operatorname{Im}(z)| &lt; d\}\)</span>, the truncation error of the discrete spectral derivative converges geometrically to zero: <span class="math display">\[
+\begin{align}
+\max_{x_j} |u'(x_j) - (D_n \bu)_j| = O(e^{-d n/2}).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Differentiating the series term by term gives <span class="math inline">\(\frac{d}{dx} \sum_{k} \hat{u}_k e^{ikx} = \sum_{k} (ik \hat{u}_k) e^{ikx}\)</span>, which proves the coefficient formula. If <span class="math inline">\(u\)</span> is analytic in the strip of half-width <span class="math inline">\(d\)</span>, shifting the contour of integration in <span class="math inline">\(\hat{u}_k = \frac{1}{2\pi} \int_0^{2\pi} u(x) e^{-ikx} dx\)</span> to <span class="math inline">\(x - i \operatorname{sign}(k) d\)</span> yields the bound <span class="math inline">\(|\hat{u}_k| \leq M e^{-d |k|}\)</span>. The aliased grid modes satisfy <span class="math inline">\(|k| \geq n/2\)</span>. Summing the tail of the neglected high-frequency modes gives <span class="math inline">\(\sum_{|k| \geq n/2} |k| |\hat{u}_k| \leq 2M \sum_{k=n/2}^\infty k e^{-d k} = O(e^{-d n/2})\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="21.5">
+<h2 data-number="21.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">21.5</span> Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Check.</strong> <strong>Unitary coordinates and geometric sums.</strong> Let <span class="math inline">\(\bF \in \fC^{4 \times 4}\)</span> be the 4-point DFT matrix. Write out its sixteen numerical entries explicitly using powers of <span class="math inline">\(\omega_4 = -i\)</span>. Verify directly that columns 0 and 2 are orthogonal, and confirm that <span class="math inline">\(\bF^* \bF = \bI_4\)</span>.</p></li>
+<li><p><strong>Derive.</strong> <strong>Circulant spectral inversion for the periodic Poisson problem.</strong> Consider the discrete periodic Poisson equation <span class="math inline">\(-\frac{u_{j-1} - 2u_j + u_{j+1}}{h^2} = f_j\)</span> on <span class="math inline">\(n\)</span> points with periodic boundary conditions.</p>
+<ol type="1">
+<li><p>Express the coefficient matrix as a circulant matrix <span class="math inline">\(\mathbf{C} = \operatorname{circ}(\bc)\)</span> and identify the entries of <span class="math inline">\(\bc\)</span>.</p></li>
+<li><p>Compute the eigenvalues <span class="math inline">\(\lambda_k\)</span> of <span class="math inline">\(\mathbf{C}\)</span> using the referenced result. Show that <span class="math inline">\(\lambda_0 = 0\)</span> and <span class="math inline">\(\lambda_k &gt; 0\)</span> for <span class="math inline">\(k = 1, ..., n-1\)</span>.</p></li>
+<li><p>Explain why the system is solvable if and only if <span class="math inline">\(\sum_{j=0}^{n-1} f_j = 0\)</span>, and formulate an <span class="math inline">\(O(n \log n)\)</span> solver using the FFT.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Fast linear convolution via zero padding.</strong> Let <span class="math inline">\(\bx \in \fR^p\)</span> and <span class="math inline">\(\by \in \fR^q\)</span> be two discrete sequences. Their linear convolution has length <span class="math inline">\(m = p + q - 1\)</span>.</p>
+<ol type="1">
+<li><p>Explain how zero-padding <span class="math inline">\(\bx\)</span> and <span class="math inline">\(\by\)</span> to length <span class="math inline">\(N \geq p + q - 1\)</span> prevents periodic wraparound in circular convolution.</p></li>
+<li><p>Compare the arithmetic operation count of direct linear convolution (<span class="math inline">\(2pq\)</span> flops) against FFT-based circular convolution (<span class="math inline">\(O(N \log N)\)</span> flops).</p></li>
+<li><p>For <span class="math inline">\(p = q = 10^5\)</span>, estimate the speedup obtained by the FFT algorithm.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Cooley–Tukey butterfly and bit-reversal permutation.</strong> Consider the radix-2 FFT algorithm with <span class="math inline">\(n = 8\)</span>.</p>
+<ol type="1">
+<li><p>Write the indices <span class="math inline">\(0, 1, ..., 7\)</span> in 3-bit binary notation (<span class="math inline">\(b_2 b_1 b_0\)</span>).</p></li>
+<li><p>Reverse the bits (<span class="math inline">\(b_0 b_1 b_2\)</span>) to construct the bit-reversal permutation vector <span class="math inline">\(\mathbf{p}\)</span>.</p></li>
+<li><p>Show that sorting the input by <span class="math inline">\(\mathbf{p}\)</span> allows the recursive Cooley–Tukey butterflies to be evaluated in place without allocating auxiliary arrays.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Spectral differentiation and the Runge phenomenon.</strong> Implement the Fourier spectral differentiation matrix for <span class="math inline">\(n = 16, 32, 64\)</span> points on <span class="math inline">\([0, 2\pi)\)</span>.</p>
+<ol type="1">
+<li><p>Apply the spectral derivative to <span class="math inline">\(u(x) = \sin(x)\)</span> and measure the maximum pointwise error against <span class="math inline">\(\cos(x)\)</span>. Confirm that error reaches machine precision for small <span class="math inline">\(n\)</span>.</p></li>
+<li><p>Apply the spectral derivative to <span class="math inline">\(v(x) = \frac{1}{2 + \cos(x)}\)</span>. Estimate the decay constant <span class="math inline">\(d\)</span> from the referenced result and confirm geometric convergence.</p></li>
+<li><p>Explain why applying Fourier differentiation to a non-periodic function such as <span class="math inline">\(w(x) = x\)</span> causes Gibbs oscillations and algebraic error decay <span class="math inline">\(O(1/n)\)</span>.</p></li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Cooley–Tukey paper is short and still worth reading as an example of how reorganizing a calculation changes its cost <span class="citation" data-cites="cooleytukey1965">(<a href="../references.html#ref-cooleytukey1965" role="doc-biblioref">Cooley and Tukey 1965</a>)</span>. Trefethen’s approximation text gives a gentle route from polynomial approximation to spectral accuracy <span class="citation" data-cites="trefethen2013">(<a href="../references.html#ref-trefethen2013" role="doc-biblioref">Trefethen 2013</a>)</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-cooleytukey1965" class="csl-entry" role="listitem">
+Cooley, James W., and John W. Tukey. 1965. <span>“An Algorithm for the Machine Calculation of Complex <span>Fourier</span> Series.”</span> <em>Mathematics of Computation</em> 19 (90): 297–301. <a href="https://doi.org/10.1090/S0025-5718-1965-0178586-1">https://doi.org/10.1090/S0025-5718-1965-0178586-1</a>.
+</div>
+<div id="ref-trefethen2013" class="csl-entry" role="listitem">
+Trefethen, Lloyd N. 2013. <em>Approximation Theory and Approximation Practice</em>. <span>Society for Industrial and Applied Mathematics</span>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../numerical-analysis/quadrature.html" class="pagination-link" aria-label="Numerical Quadrature">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../applications/operators.html" class="pagination-link" aria-label="Linear Operators and the Poisson Equation">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/applications/fourier.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>

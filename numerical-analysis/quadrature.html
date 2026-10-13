@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>20&nbsp; Numerical Quadrature – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../applications/fourier.html" rel="next">
+<link href="../numerical-analysis/chebyshev.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6453f418aeef366c23116eb9cb0b6816.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-7d9ab679c82f4cdd3315c3a76f2ba6ee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Direct Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Orthogonality and Least Squares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Eigenvalues and the SVD</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Approximation and Integration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">ODEs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#degree-of-exactness-and-interpolatory-quadrature" id="toc-degree-of-exactness-and-interpolatory-quadrature" class="nav-link active" data-scroll-target="#degree-of-exactness-and-interpolatory-quadrature"><span class="header-section-number">20.1</span> Degree of Exactness and Interpolatory Quadrature</a></li>
+  <li><a href="#newtoncotes-formulas-and-composite-rules" id="toc-newtoncotes-formulas-and-composite-rules" class="nav-link" data-scroll-target="#newtoncotes-formulas-and-composite-rules"><span class="header-section-number">20.2</span> Newton–Cotes Formulas and Composite Rules</a></li>
+  <li><a href="#peano-kernel-error-representation" id="toc-peano-kernel-error-representation" class="nav-link" data-scroll-target="#peano-kernel-error-representation"><span class="header-section-number">20.3</span> Peano Kernel Error Representation</a></li>
+  <li><a href="#gausslegendre-quadrature" id="toc-gausslegendre-quadrature" class="nav-link" data-scroll-target="#gausslegendre-quadrature"><span class="header-section-number">20.4</span> Gauss–Legendre Quadrature</a></li>
+  <li><a href="#richardson-extrapolation-and-romberg-integration" id="toc-richardson-extrapolation-and-romberg-integration" class="nav-link" data-scroll-target="#richardson-extrapolation-and-romberg-integration"><span class="header-section-number">20.5</span> Richardson Extrapolation and Romberg Integration</a></li>
+  <li><a href="#periodic-functions-and-spectral-convergence" id="toc-periodic-functions-and-spectral-convergence" class="nav-link" data-scroll-target="#periodic-functions-and-spectral-convergence"><span class="header-section-number">20.6</span> Periodic Functions and Spectral Convergence</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">20.7</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/numerical-analysis/quadrature.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../numerical-analysis/interpolation.html">Approximation and Integration</a></li><li class="breadcrumb-item"><a href="../numerical-analysis/quadrature.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Numerical quadrature approximates the definite integral of a continuous function <span class="math inline">\(f : [a, b] \to \fR\)</span> by a finite linear combination of sampled function values: <span class="math display">\[
+\begin{align}
+I(f) = \int_a^b f(x)\,dx \approx Q_n(f) = \sum_{i=0}^n w_i f(x_i).
+\end{align}
+\]</span> The points <span class="math inline">\(x_i \in [a, b]\)</span> are the quadrature nodes, and the scalar coefficients <span class="math inline">\(w_i \in \fR\)</span> are the quadrature weights. The design of quadrature rules balances algebraic precision, computational cost, and numerical stability.</p>
+<section id="degree-of-exactness-and-interpolatory-quadrature" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="degree-of-exactness-and-interpolatory-quadrature"><span class="header-section-number">20.1</span> Degree of Exactness and Interpolatory Quadrature</h2>
+<p>The standard criterion for evaluating a quadrature rule is its algebraic precision, defined by the highest degree of polynomials it integrates without error.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Degree of Exactness (Algebraic Precision)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A quadrature rule <span class="math inline">\(Q_n\)</span> has degree of exactness <span class="math inline">\(m\)</span> if <span class="math display">\[
+\begin{align}
+Q_n(p) = \int_a^b p(x)\,dx \qquad \text{for all } p \in \mathcal{P}_m,
+\end{align}
+\]</span> and there exists at least one polynomial <span class="math inline">\(q \in \mathcal{P}_{m+1}\)</span> for which <span class="math inline">\(Q_n(q) \neq \int_a^b q(x)\,dx\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Interpolatory Quadrature Rules
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x_0, x_1, ..., x_n\)</span> be <span class="math inline">\(n+1\)</span> distinct nodes in <span class="math inline">\([a, b]\)</span>. The interpolatory quadrature rule approximates <span class="math inline">\(I(f)\)</span> by integrating the polynomial interpolant <span class="math inline">\(P_n(x) = \sum_{i=0}^n f(x_i) L_i(x)\)</span> in Lagrange form: <span class="math display">\[
+\begin{align}
+Q_n(f) = \int_a^b P_n(x)\,dx = \sum_{i=0}^n w_i f(x_i), \qquad w_i = \int_a^b L_i(x)\,dx.
+\end{align}
+\]</span> Every interpolatory quadrature rule with <span class="math inline">\(n+1\)</span> distinct nodes has degree of exactness at least <span class="math inline">\(n\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(p \in \mathcal{P}_n\)</span>. By the uniqueness of polynomial interpolation (the referenced result), the interpolant of <span class="math inline">\(p\)</span> is identical to <span class="math inline">\(p\)</span> itself: <span class="math inline">\(P_n(x) \equiv p(x)\)</span>. Integrating this identity yields <span class="math display">\[
+\begin{align}
+\int_a^b p(x)\,dx = \int_a^b P_n(x)\,dx = \int_a^b \left( \sum_{i=0}^n p(x_i) L_i(x) \right) dx = \sum_{i=0}^n p(x_i) \int_a^b L_i(x)\,dx = \sum_{i=0}^n w_i p(x_i) = Q_n(p).
+\end{align}
+\]</span> Therefore, <span class="math inline">\(Q_n\)</span> integrates all polynomials of degree at most <span class="math inline">\(n\)</span> exactly.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="newtoncotes-formulas-and-composite-rules" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="newtoncotes-formulas-and-composite-rules"><span class="header-section-number">20.2</span> Newton–Cotes Formulas and Composite Rules</h2>
+<p>Newton–Cotes rules are interpolatory quadrature formulas built on equally spaced nodes. Because high-order single-panel Newton–Cotes rules suffer from negative weights and Runge’s phenomenon, practical computations use composite rules on small subintervals of uniform width <span class="math inline">\(h = (b - a)/N\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Composite Trapezoidal and Simpson’s Rules
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dividing <span class="math inline">\([a, b]\)</span> into <span class="math inline">\(N\)</span> subintervals with uniform width <span class="math inline">\(h = (b - a)/N\)</span> and grid points <span class="math inline">\(x_j = a + jh\)</span>:</p>
+<ol type="1">
+<li><p>The <strong>Composite Trapezoidal Rule</strong> is <span class="math display">\[
+\begin{align}
+T_N(f) = h \left[ \frac{f(a) + f(b)}{2} + \sum_{j=1}^{N-1} f(x_j) \right].
+\end{align}
+\]</span></p></li>
+<li><p>For an even number of panels <span class="math inline">\(N\)</span>, the <strong>Composite Simpson’s Rule</strong> is <span class="math display">\[
+\begin{align}
+S_N(f) = \frac{h}{3} \left[ f(x_0) + 4\sum_{\substack{j=1 \\ j \text{ odd}}}^{N-1} f(x_j) + 2\sum_{\substack{j=2 \\ j \text{ even}}}^{N-2} f(x_j) + f(x_N) \right].
+\end{align}
+\]</span></p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Composite Error Formulas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f \in C^2[a, b]\)</span> for the trapezoidal rule, and let <span class="math inline">\(f \in C^4[a, b]\)</span> for Simpson’s rule.</p>
+<ol type="1">
+<li><p>The composite trapezoidal error satisfies <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -\frac{b - a}{12} h^2 f''(\xi_T), \qquad \xi_T \in (a, b).
+\end{align}
+\]</span></p></li>
+<li><p>The composite Simpson error satisfies <span class="math display">\[
+\begin{align}
+I(f) - S_N(f) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S), \qquad \xi_S \in (a, b).
+\end{align}
+\]</span></p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For the trapezoidal rule on panel <span class="math inline">\([x_j, x_{j+1}]\)</span>, the Cauchy interpolation error formula (the referenced result) gives <span class="math display">\[
+\begin{align}
+f(x) - P_1(x) = \frac{f''(\xi_j(x))}{2}(x - x_j)(x - x_{j+1}).
+\end{align}
+\]</span> Because <span class="math inline">\((x - x_j)(x - x_{j+1}) \leq 0\)</span> on this panel, the Mean Value Theorem for Integrals implies there exists <span class="math inline">\(\mu_j \in (x_j, x_{j+1})\)</span> such that <span class="math display">\[
+\begin{align}
+\int_{x_j}^{x_{j+1}} [f(x) - P_1(x)]\,dx = \frac{f''(\mu_j)}{2} \int_{x_j}^{x_{j+1}} (x - x_j)(x - x_{j+1})\,dx = -\frac{h^3}{12} f''(\mu_j).
+\end{align}
+\]</span> Summing across all <span class="math inline">\(N\)</span> panels and applying the Intermediate Value Theorem to the average <span class="math inline">\(\frac{1}{N}\sum_{j=0}^{N-1} f''(\mu_j) = f''(\xi_T)\)</span> yields the trapezoidal error formula: <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -\frac{h^3}{12} \sum_{j=0}^{N-1} f''(\mu_j) = -\frac{N h^3}{12} f''(\xi_T) = -\frac{b - a}{12} h^2 f''(\xi_T).
+\end{align}
+\]</span> For Simpson’s rule, expand <span class="math inline">\(f(x_{2j+1} + t)\)</span> about the midpoint <span class="math inline">\(c_j = x_{2j+1}\)</span> through fourth order for <span class="math inline">\(t \in [-h, h]\)</span>: <span class="math display">\[
+\begin{align}
+f(c_j + t) = f(c_j) + t f'(c_j) + \frac{t^2}{2} f''(c_j) + \frac{t^3}{6} f'''(c_j) + \frac{t^4}{24} f^{(4)}(c_j) + O(t^5).
+\end{align}
+\]</span> Integrating over <span class="math inline">\([-h, h]\)</span>, odd powers vanish by symmetry: <span class="math display">\[
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx = \int_{-h}^h f(c_j + t)\,dt = 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{60} f^{(4)}(c_j) + O(h^7).
+\end{align}
+\]</span> The Simpson rule on this double-panel evaluates to <span class="math display">\[
+\begin{align}
+S_{\text{panel}} &amp;= \frac{h}{3} \left[ f(c_j - h) + 4 f(c_j) + f(c_j + h) \right] \\
+    &amp;= \frac{h}{3} \left[ 6 f(c_j) + h^2 f''(c_j) + \frac{h^4}{12} f^{(4)}(c_j) + O(h^6) \right] \\
+    &amp;= 2h f(c_j) + \frac{h^3}{3} f''(c_j) + \frac{h^5}{36} f^{(4)}(c_j) + O(h^7).
+\end{align}
+\]</span> Subtracting gives the single-panel error: <span class="math display">\[
+\begin{align}
+\int_{c_j - h}^{c_j + h} f(x)\,dx - S_{\text{panel}} = \left( \frac{1}{60} - \frac{1}{36} \right) h^5 f^{(4)}(\mu_j) = -\frac{h^5}{90} f^{(4)}(\mu_j).
+\end{align}
+\]</span> Summing over all <span class="math inline">\(N/2\)</span> double panels and applying the Intermediate Value Theorem gives <span class="math display">\[
+\begin{align}
+I(f) - S_N(f) = -\frac{h^5}{90} \sum_{j=0}^{N/2 - 1} f^{(4)}(\mu_j) = -\frac{N h^5}{180} f^{(4)}(\xi_S) = -\frac{b - a}{180} h^4 f^{(4)}(\xi_S).
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="peano-kernel-error-representation" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="peano-kernel-error-representation"><span class="header-section-number">20.3</span> Peano Kernel Error Representation</h2>
+<p>The Peano kernel theorem provides a unified framework for representing the error of any quadrature rule with algebraic degree of exactness <span class="math inline">\(m\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Peano Kernel Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(Q\)</span> be a quadrature rule on <span class="math inline">\([a, b]\)</span> with error functional <span class="math inline">\(E(f) = \int_a^b f(x)\,dx - Q(f)\)</span>. If <span class="math inline">\(E(p) = 0\)</span> for all <span class="math inline">\(p \in \mathcal{P}_m\)</span>, then for every <span class="math inline">\(f \in C^{m+1}[a, b]\)</span>, <span class="math display">\[
+\begin{align}
+E(f) = \int_a^b f^{(m+1)}(t) K(t)\,dt,
+\end{align}
+\]</span> where the Peano kernel <span class="math inline">\(K(t)\)</span> is defined by applying the error functional to the truncated power function: <span class="math display">\[
+\begin{align}
+K(t) = \frac{1}{m!} E_x \left( (x - t)_+^m \right), \qquad (x - t)_+ = \max(0, x - t).
+\end{align}
+\]</span> If <span class="math inline">\(K(t)\)</span> does not change sign on <span class="math inline">\([a, b]\)</span>, then there exists <span class="math inline">\(\xi \in (a, b)\)</span> such that <span class="math display">\[
+\begin{align}
+E(f) = \frac{f^{(m+1)}(\xi)}{(m+1)!} E(x^{m+1}).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>By Taylor’s theorem with integral remainder expanded about <span class="math inline">\(a\)</span>: <span class="math display">\[
+\begin{align}
+f(x) = \sum_{k=0}^m \frac{f^{(k)}(a)}{k!} (x - a)^k + \frac{1}{m!} \int_a^x f^{(m+1)}(t) (x - t)^m\,dt.
+\end{align}
+\]</span> Extending the upper integration limit using the truncated power notation <span class="math inline">\((x - t)_+^m\)</span> allows writing the remainder as <span class="math inline">\(\frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt\)</span>. Applying the linear functional <span class="math inline">\(E\)</span> to both sides, the polynomial terms vanish because <span class="math inline">\(E(p) = 0\)</span> for all <span class="math inline">\(p \in \mathcal{P}_m\)</span>. Exchanging the order of integration and the functional gives <span class="math display">\[
+\begin{align}
+E(f) = E_x \left( \frac{1}{m!} \int_a^b f^{(m+1)}(t) (x - t)_+^m\,dt \right) = \int_a^b f^{(m+1)}(t) \left[ \frac{1}{m!} E_x\left( (x - t)_+^m \right) \right] dt = \int_a^b f^{(m+1)}(t) K(t)\,dt.
+\end{align}
+\]</span> If <span class="math inline">\(K(t)\)</span> is of constant sign, the Mean Value Theorem for Integrals implies <span class="math inline">\(E(f) = f^{(m+1)}(\xi) \int_a^b K(t)\,dt\)</span>. Testing the identity with <span class="math inline">\(f(x) = x^{m+1}\)</span>, we have <span class="math inline">\(f^{(m+1)}(x) = (m+1)!\)</span>, which yields <span class="math inline">\(E(x^{m+1}) = (m+1)! \int_a^b K(t)\,dt\)</span>. Substituting this integral proves the claim.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="gausslegendre-quadrature" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="gausslegendre-quadrature"><span class="header-section-number">20.4</span> Gauss–Legendre Quadrature</h2>
+<p>Newton–Cotes rules fix equispaced nodes and optimize only the weights. Gaussian quadrature optimizes both the nodes <span class="math inline">\(x_1, ..., x_p\)</span> and the weights <span class="math inline">\(w_1, ..., w_p\)</span>, providing <span class="math inline">\(2p\)</span> degrees of freedom to maximize the degree of exactness.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Roots of Orthogonal Polynomials
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(P_p(x)\)</span> be the degree-<span class="math inline">\(p\)</span> Legendre polynomial orthogonal on <span class="math inline">\([-1, 1]\)</span> with respect to weight <span class="math inline">\(w(x) \equiv 1\)</span>: <span class="math display">\[
+\begin{align}
+\int_{-1}^1 P_p(x) q(x)\,dx = 0 \qquad \text{for all } q \in \mathcal{P}_{p-1}.
+\end{align}
+\]</span> Then <span class="math inline">\(P_p(x)\)</span> has exactly <span class="math inline">\(p\)</span> distinct, real roots, and all roots lie in the open interval <span class="math inline">\((-1, 1)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x_1, ..., x_k\)</span> denote the points in <span class="math inline">\((-1, 1)\)</span> where <span class="math inline">\(P_p(x)\)</span> changes sign. Because <span class="math inline">\(P_p\)</span> is continuous and orthogonal to the constant polynomial <span class="math inline">\(q(x) = 1\)</span>, we have <span class="math inline">\(\int_{-1}^1 P_p(x)\,dx = 0\)</span>, so <span class="math inline">\(P_p\)</span> must change sign at least once in <span class="math inline">\((-1, 1)\)</span>, meaning <span class="math inline">\(k \geq 1\)</span>. Suppose for contradiction that <span class="math inline">\(k &lt; p\)</span>. Construct the polynomial <span class="math inline">\(q(x) = \prod_{j=1}^k (x - x_j) \in \mathcal{P}_k\)</span>. By construction, <span class="math inline">\(P_p(x)\)</span> and <span class="math inline">\(q(x)\)</span> change sign at identical points in <span class="math inline">\((-1, 1)\)</span>, so their product <span class="math inline">\(P_p(x) q(x)\)</span> has constant sign on <span class="math inline">\([-1, 1]\)</span> and is not identically zero. Consequently, <span class="math display">\[
+\begin{align}
+\int_{-1}^1 P_p(x) q(x)\,dx \neq 0.
+\end{align}
+\]</span> However, because <span class="math inline">\(\deg(q) = k &lt; p\)</span>, orthogonality requires <span class="math inline">\(\int_{-1}^1 P_p(x) q(x)\,dx = 0\)</span>, producing a contradiction. Therefore, <span class="math inline">\(k = p\)</span>, proving that <span class="math inline">\(P_p\)</span> has <span class="math inline">\(p\)</span> distinct real roots in <span class="math inline">\((-1, 1)\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Fundamental Theorem of Gaussian Quadrature
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x_1, ..., x_p\)</span> be the roots of the degree-<span class="math inline">\(p\)</span> Legendre polynomial <span class="math inline">\(P_p(x)\)</span> on <span class="math inline">\([-1, 1]\)</span>, and let <span class="math inline">\(w_i = \int_{-1}^1 L_i(x)\,dx\)</span>. The <span class="math inline">\(p\)</span>-point Gauss–Legendre quadrature rule <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^p w_i f(x_i)
+\end{align}
+\]</span> has degree of exactness <span class="math inline">\(2p - 1\)</span>. No <span class="math inline">\(p\)</span>-point quadrature rule can achieve a degree of exactness higher than <span class="math inline">\(2p - 1\)</span>. Furthermore, all weights are strictly positive: <span class="math inline">\(w_i &gt; 0\)</span> for all <span class="math inline">\(i = 1, ..., p\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f \in \mathcal{P}_{2p-1}\)</span>. Polynomial long division of <span class="math inline">\(f(x)\)</span> by <span class="math inline">\(P_p(x)\)</span> yields <span class="math display">\[
+\begin{align}
+f(x) = q(x) P_p(x) + r(x), \qquad \deg(q) \leq p - 1, \quad \deg(r) \leq p - 1.
+\end{align}
+\]</span> Integrating both sides over <span class="math inline">\([-1, 1]\)</span>: <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 q(x) P_p(x)\,dx + \int_{-1}^1 r(x)\,dx.
+\end{align}
+\]</span> Because <span class="math inline">\(\deg(q) \leq p - 1\)</span>, orthogonality of <span class="math inline">\(P_p\)</span> against <span class="math inline">\(\mathcal{P}_{p-1}\)</span> implies <span class="math inline">\(\int_{-1}^1 q(x) P_p(x)\,dx = 0\)</span>, giving <span class="math display">\[
+\begin{align}
+\int_{-1}^1 f(x)\,dx = \int_{-1}^1 r(x)\,dx.
+\end{align}
+\]</span> Applying the <span class="math inline">\(p\)</span>-point quadrature sum at the Legendre roots <span class="math inline">\(\{x_i\}_{i=1}^p\)</span> where <span class="math inline">\(P_p(x_i) = 0\)</span>: <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i f(x_i) &amp;= \sum_{i=1}^p w_i \left[ q(x_i) P_p(x_i) + r(x_i) \right] \\
+    &amp;= \sum_{i=1}^p w_i \left[ 0 + r(x_i) \right] = \sum_{i=1}^p w_i r(x_i).
+\end{align}
+\]</span> Because <span class="math inline">\(\deg(r) \leq p - 1\)</span>, interpolatory quadrature on <span class="math inline">\(p\)</span> distinct nodes integrates <span class="math inline">\(r(x)\)</span> exactly by the referenced result: <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i r(x_i) = \int_{-1}^1 r(x)\,dx = \int_{-1}^1 f(x)\,dx.
+\end{align}
+\]</span> Thus <span class="math inline">\(\sum_{i=1}^p w_i f(x_i) = \int_{-1}^1 f(x)\,dx\)</span> for all <span class="math inline">\(f \in \mathcal{P}_{2p-1}\)</span>. To prove that <span class="math inline">\(2p - 1\)</span> is the maximal degree, define the nodal polynomial <span class="math display">\[
+\begin{align}
+g(x) = \prod_{i=1}^p (x - x_i)^2 \in \mathcal{P}_{2p}.
+\end{align}
+\]</span> Because <span class="math inline">\(g(x) \geq 0\)</span> and vanishes only at isolated points, its integral is strictly positive: <span class="math display">\[
+\begin{align}
+\int_{-1}^1 g(x)\,dx &gt; 0.
+\end{align}
+\]</span> However, evaluating the quadrature sum yields <span class="math display">\[
+\begin{align}
+\sum_{i=1}^p w_i g(x_i) = \sum_{i=1}^p w_i \cdot 0 = 0 \neq \int_{-1}^1 g(x)\,dx.
+\end{align}
+\]</span> Therefore no <span class="math inline">\(p\)</span>-point quadrature rule can integrate all degree-<span class="math inline">\(2p\)</span> polynomials. For weight positivity, let <span class="math inline">\(L_i \in \mathcal{P}_{p-1}\)</span> be the <span class="math inline">\(i\)</span>-th Lagrange basis polynomial. The square satisfies <span class="math inline">\(\deg(L_i^2) = 2p - 2 \leq 2p - 1\)</span>. The rule integrates <span class="math inline">\(L_i^2\)</span> exactly: <span class="math display">\[
+\begin{align}
+0 &lt; \int_{-1}^1 L_i^2(x)\,dx = \sum_{j=1}^p w_j L_i^2(x_j) = \sum_{j=1}^p w_j \delta_{ij} = w_i.
+\end{align}
+\]</span> Every weight <span class="math inline">\(w_i\)</span> is strictly positive.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="richardson-extrapolation-and-romberg-integration" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="richardson-extrapolation-and-romberg-integration"><span class="header-section-number">20.5</span> Richardson Extrapolation and Romberg Integration</h2>
+<p>When the error of a numerical method admits an asymptotic expansion in powers of <span class="math inline">\(h\)</span>, Richardson extrapolation algebraically cancels the leading error terms.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Euler–Maclaurin Summation and Romberg Integration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f \in C^{2m+2}[a, b]\)</span>. The composite trapezoidal rule satisfies the asymptotic expansion <span class="math display">\[
+\begin{align}
+T(h) = I(f) + c_2 h^2 + c_4 h^4 + c_6 h^6 + ... + c_{2m} h^{2m} + O(h^{2m+2}),
+\end{align}
+\]</span> where <span class="math inline">\(c_{2k} = \frac{B_{2k}}{(2k)!}[f^{(2k-1)}(b) - f^{(2k-1)}(a)]\)</span> depend on the Bernoulli numbers <span class="math inline">\(B_{2k}\)</span>. Romberg integration systematically eliminates powers of <span class="math inline">\(h^2\)</span> via the tableau recurrence <span class="math display">\[
+\begin{align}
+R(k, 0) = T(h_k), \qquad R(k, j) = \frac{4^j R(k, j-1) - R(k-1, j-1)}{4^j - 1} \quad (1 \leq j \leq k),
+\end{align}
+\]</span> where <span class="math inline">\(h_k = (b - a)/2^k\)</span>. Column <span class="math inline">\(j\)</span> achieves order <span class="math inline">\(O(h^{2j+2})\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>At column 1, <span class="math inline">\(R(k, 0) = I(f) + c_2 h_k^2 + O(h_k^4)\)</span> and <span class="math inline">\(R(k-1, 0) = I(f) + c_2 (2h_k)^2 + O(h_k^4) = I(f) + 4 c_2 h_k^2 + O(h_k^4)\)</span>. Forming the linear combination <span class="math display">\[
+\begin{align}
+\frac{4 R(k, 0) - R(k-1, 0)}{3} = \frac{4(I(f) + c_2 h_k^2) - (I(f) + 4 c_2 h_k^2)}{3} + O(h_k^4) = I(f) + O(h_k^4)
+\end{align}
+\]</span> cancels the <span class="math inline">\(h^2\)</span> error term. Induction on <span class="math inline">\(j\)</span> shows that combining step sizes differing by a factor of 2 cancels the leading <span class="math inline">\(h^{2j}\)</span> error term with weights <span class="math inline">\(\frac{4^j}{4^j - 1}\)</span> and <span class="math inline">\(-\frac{1}{4^j - 1}\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="periodic-functions-and-spectral-convergence" class="level2" data-number="20.6">
+<h2 data-number="20.6" class="anchored" data-anchor-id="periodic-functions-and-spectral-convergence"><span class="header-section-number">20.6</span> Periodic Functions and Spectral Convergence</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Spectral Accuracy of the Trapezoidal Rule on Periodic Domains
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f\)</span> be a smooth, <span class="math inline">\(2\pi\)</span>-periodic function on <span class="math inline">\(\fR\)</span>. All endpoint derivatives in the Euler–Maclaurin expansion cancel identically: <span class="math display">\[
+\begin{align}
+f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0 \qquad \text{for all } k \geq 1.
+\end{align}
+\]</span> Consequently, all algebraic error coefficients <span class="math inline">\(c_2, c_4, c_6, ...\)</span> vanish. If <span class="math inline">\(f\)</span> is analytic in a strip <span class="math inline">\(\{z \in \fC : |\operatorname{Im}(z)| &lt; d\}\)</span>, the composite trapezoidal rule converges exponentially fast: <span class="math display">\[
+\begin{align}
+|I(f) - T_N(f)| \leq C e^{-d N}.
+\end{align}
+\]</span> On smooth periodic domains, the composite trapezoidal rule achieves spectral accuracy.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because <span class="math inline">\(f\)</span> is periodic and smooth, <span class="math inline">\(f^{(m)}(2\pi) = f^{(m)}(0)\)</span> for all <span class="math inline">\(m \geq 0\)</span>. Every term <span class="math inline">\(c_{2k}\)</span> in the Euler–Maclaurin formula is proportional to <span class="math inline">\(f^{(2k-1)}(2\pi) - f^{(2k-1)}(0) = 0\)</span>, so the error decays faster than any power of <span class="math inline">\(h = 2\pi / N\)</span>. To quantify the exponential rate, expand <span class="math inline">\(f(x)\)</span> in its Fourier series: <span class="math display">\[
+\begin{align}
+f(x) = \sum_{k=-\infty}^\infty \hat{f}_k e^{ikx}, \qquad \hat{f}_k = \frac{1}{2\pi} \int_0^{2\pi} f(x) e^{-ikx}\,dx.
+\end{align}
+\]</span> The exact integral is <span class="math inline">\(I(f) = \int_0^{2\pi} f(x)\,dx = 2\pi \hat{f}_0\)</span>. The composite trapezoidal rule with <span class="math inline">\(h = 2\pi / N\)</span> and nodes <span class="math inline">\(x_j = 2\pi j / N\)</span> for <span class="math inline">\(j = 0, ..., N - 1\)</span> gives <span class="math display">\[
+\begin{align}
+T_N(f) = \frac{2\pi}{N} \sum_{j=0}^{N-1} f(x_j) &amp;= \frac{2\pi}{N} \sum_{j=0}^{N-1} \sum_{k=-\infty}^\infty \hat{f}_k e^{2\pi i j k / N} \\
+    &amp;= 2\pi \sum_{k=-\infty}^\infty \hat{f}_k \left( \frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} \right).
+\end{align}
+\]</span> The inner sum satisfies discrete orthogonality: <span class="math display">\[
+\begin{align}
+\frac{1}{N} \sum_{j=0}^{N-1} e^{2\pi i j k / N} = \begin{cases}
+        1, &amp; k = mN \text{ for some } m \in \fZ, \\
+        0, &amp; k \not\equiv 0 \pmod N.
+    \end{cases}
+\end{align}
+\]</span> Substituting this indicator isolates the aliased modes: <span class="math display">\[
+\begin{align}
+T_N(f) = 2\pi \sum_{m=-\infty}^\infty \hat{f}_{mN} = 2\pi \hat{f}_0 + 2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+\]</span> The quadrature error is therefore the tail sum: <span class="math display">\[
+\begin{align}
+I(f) - T_N(f) = -2\pi \sum_{m \neq 0} \hat{f}_{mN}.
+\end{align}
+\]</span> Because <span class="math inline">\(f\)</span> is analytic and bounded by <span class="math inline">\(M_0\)</span> in the strip <span class="math inline">\(|\operatorname{Im}(z)| &lt; d\)</span>, shifting the integration path in the definition of <span class="math inline">\(\hat{f}_k\)</span> gives the geometric decay <span class="math inline">\(|\hat{f}_k| \leq M e^{-d|k|}\)</span>. Applying this bound: <span class="math display">\[
+\begin{align}
+|I(f) - T_N(f)| \leq 2\pi M \sum_{m \neq 0} e^{-d|m|N} = 4\pi M \sum_{m=1}^\infty (e^{-dN})^m = 4\pi M \frac{e^{-dN}}{1 - e^{-dN}} = O(e^{-dN}).
+\end{align}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="20.7">
+<h2 data-number="20.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">20.7</span> Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Derive.</strong> <strong>Method of undetermined coefficients.</strong> Find the nodes and weights for a symmetric 3-point rule on <span class="math inline">\([-1, 1]\)</span> of the form <span class="math inline">\(\int_{-1}^1 f(x)\,dx \approx w_0 f(-\alpha) + w_1 f(0) + w_2 f(\alpha)\)</span>.</p>
+<ol type="1">
+<li><p>For fixed <span class="math inline">\(\alpha = 1\)</span>, enforce exactness for <span class="math inline">\(f(x) = 1, x, x^2\)</span> to derive the weights of Simpson’s rule: <span class="math inline">\(w_0 = 1/3, w_1 = 4/3, w_2 = 1/3\)</span>.</p></li>
+<li><p>Let <span class="math inline">\(\alpha\)</span> be a free parameter. Enforce exactness for <span class="math inline">\(f(x) = 1, x^2, x^4\)</span> to derive the Gauss–Legendre parameter <span class="math inline">\(\alpha = 1/\sqrt{3}\)</span> and weights <span class="math inline">\(w_0 = w_2 = 1, w_1 = 0\)</span>.</p></li>
+<li><p>Compare the degree of exactness of both rules.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Romberg tableau construction.</strong> Approximate the integral <span class="math inline">\(I = \int_0^1 e^{-x^2}\,dx\)</span>.</p>
+<ol type="1">
+<li><p>Compute <span class="math inline">\(T(h)\)</span> for <span class="math inline">\(h = 1, 1/2, 1/4\)</span> using the composite trapezoidal rule.</p></li>
+<li><p>Construct the first three rows of the Romberg tableau to evaluate <span class="math inline">\(R(1, 1), R(2, 1)\)</span>, and <span class="math inline">\(R(2, 2)\)</span>.</p></li>
+<li><p>Confirm that <span class="math inline">\(R(1, 1)\)</span> matches composite Simpson’s rule with <span class="math inline">\(N = 2\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Change of interval and Gaussian quadrature.</strong> Let <span class="math inline">\(\int_a^b f(t)\,dt\)</span> be an integral on an arbitrary interval <span class="math inline">\([a, b]\)</span>.</p>
+<ol type="1">
+<li><p>Derive the affine substitution <span class="math inline">\(t(x) = \frac{b - a}{2}x + \frac{a + b}{2}\)</span> mapping <span class="math inline">\(x \in [-1, 1]\)</span> to <span class="math inline">\(t \in [a, b]\)</span>.</p></li>
+<li><p>Transform the 2-point Gauss–Legendre rule to <span class="math inline">\([0, 3]\)</span> and approximate <span class="math inline">\(\int_0^3 \sqrt{1 + t^3}\,dt\)</span>.</p></li>
+<li><p>Compare the result with Simpson’s rule using the same number of function evaluations.</p></li>
+</ol></li>
+<li><p><strong>Derive.</strong> <strong>Peano kernel of the trapezoidal rule.</strong> Consider the single-panel trapezoidal rule on <span class="math inline">\([0, h]\)</span> with error functional <span class="math inline">\(E(f) = \int_0^h f(x)\,dx - \frac{h}{2}[f(0) + f(h)]\)</span>.</p>
+<ol type="1">
+<li><p>Show that <span class="math inline">\(E(1) = 0\)</span> and <span class="math inline">\(E(x) = 0\)</span>, so <span class="math inline">\(m = 1\)</span>.</p></li>
+<li><p>Evaluate the Peano kernel <span class="math inline">\(K(t) = E_x((x - t)_+) = \int_0^h (x - t)_+\,dx - \frac{h}{2}[(0 - t)_+ + (h - t)_+]\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(K(t) = \frac{1}{2}t(t - h) \leq 0\)</span> for all <span class="math inline">\(t \in [0, h]\)</span>.</p></li>
+<li><p>Apply the referenced result to compute <span class="math inline">\(\int_0^h K(t)\,dt = -\frac{h^3}{12}\)</span> and recover the exact error term <span class="math inline">\(-\frac{h^3}{12} f''(\xi)\)</span>.</p></li>
+</ol></li>
+<li><p><strong>Compute.</strong> <strong>Spectral accuracy on periodic integrals.</strong> Consider the integral <span class="math inline">\(I = \int_0^{2\pi} \frac{dx}{2 + \cos x} = \frac{2\pi}{\sqrt{3}}\)</span>.</p>
+<ol type="1">
+<li><p>Identify the complex poles of <span class="math inline">\(f(z) = \frac{1}{2 + \cos z}\)</span> by solving <span class="math inline">\(\cos z = -2\)</span>.</p></li>
+<li><p>Determine the half-width <span class="math inline">\(d\)</span> of the strip of analyticity around the real axis.</p></li>
+<li><p>Evaluate <span class="math inline">\(T_N(f)\)</span> for <span class="math inline">\(N = 4, 8, 16\)</span>. Confirm that <span class="math inline">\(|I - T_N(f)|\)</span> decays as <span class="math inline">\(e^{-d N}\)</span>.</p></li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stoer and Bulirsch give a classical numerical-analysis treatment of interpolation and quadrature <span class="citation" data-cites="stoerbulirsch2002">(<a href="../references.html#ref-stoerbulirsch2002" role="doc-biblioref">Stoer and Bulirsch 2002</a>)</span>. Trefethen is especially useful for polynomial approximation, and de Boor for splines <span class="citation" data-cites="trefethen2013 deboor2001">(<a href="../references.html#ref-trefethen2013" role="doc-biblioref">Trefethen 2013</a>; <a href="../references.html#ref-deboor2001" role="doc-biblioref">Boor 2001</a>)</span>. The short paper by Clenshaw and Curtis is a good example of an algorithmic quadrature paper that remains approachable <span class="citation" data-cites="clenshawcurtis1960">(<a href="../references.html#ref-clenshawcurtis1960" role="doc-biblioref">Clenshaw and Curtis 1960</a>)</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-deboor2001" class="csl-entry" role="listitem">
+Boor, Carl de. 2001. <em>A Practical Guide to Splines</em>. Revised. Springer. <a href="https://doi.org/10.1007/978-1-4612-6333-3">https://doi.org/10.1007/978-1-4612-6333-3</a>.
+</div>
+<div id="ref-clenshawcurtis1960" class="csl-entry" role="listitem">
+Clenshaw, C. W., and A. R. Curtis. 1960. <span>“A Method for Numerical Integration on an Automatic Computer.”</span> <em>Numerische Mathematik</em> 2: 197–205. <a href="https://doi.org/10.1007/BF01386223">https://doi.org/10.1007/BF01386223</a>.
+</div>
+<div id="ref-stoerbulirsch2002" class="csl-entry" role="listitem">
+Stoer, Josef, and Roland Bulirsch. 2002. <em>Introduction to Numerical Analysis</em>. 3rd ed. Springer. <a href="https://doi.org/10.1007/978-0-387-21738-3">https://doi.org/10.1007/978-0-387-21738-3</a>.
+</div>
+<div id="ref-trefethen2013" class="csl-entry" role="listitem">
+Trefethen, Lloyd N. 2013. <em>Approximation Theory and Approximation Practice</em>. <span>Society for Industrial and Applied Mathematics</span>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../numerical-analysis/chebyshev.html" class="pagination-link" aria-label="Chebyshev Polynomials and Minimax Approximation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../applications/fourier.html" class="pagination-link" aria-label="Fourier Analysis as Change of Basis">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/numerical-analysis/quadrature.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>

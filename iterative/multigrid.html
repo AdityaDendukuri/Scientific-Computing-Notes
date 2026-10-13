@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>27&nbsp; Multigrid Methods – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../iterative/randomized.html" rel="next">
+<link href="../iterative/gmres.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6453f418aeef366c23116eb9cb0b6816.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-7d9ab679c82f4cdd3315c3a76f2ba6ee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-dd157536389f267748d037d870f1af0d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/multigrid.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Operator Norms and Matrix Geometry</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Direct Methods for Linear Systems</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Reusing Factorizations after Structured Changes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Orthogonality and Least Squares</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Least Squares as Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Eigenvalues and the SVD</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Approximation and Integration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis as Change of Basis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sparse Systems and Iterative Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">ODEs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Applications and Research Bridges</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix: Notation and Software</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#oscillating-error-and-the-smoothing-property" id="toc-oscillating-error-and-the-smoothing-property" class="nav-link active" data-scroll-target="#oscillating-error-and-the-smoothing-property"><span class="header-section-number">27.1</span> Oscillating Error and the Smoothing Property</a></li>
+  <li><a href="#the-two-grid-correction-scheme" id="toc-the-two-grid-correction-scheme" class="nav-link" data-scroll-target="#the-two-grid-correction-scheme"><span class="header-section-number">27.2</span> The Two-Grid Correction Scheme</a></li>
+  <li><a href="#the-multigrid-v-cycle" id="toc-the-multigrid-v-cycle" class="nav-link" data-scroll-target="#the-multigrid-v-cycle"><span class="header-section-number">27.3</span> The Multigrid V-Cycle</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/multigrid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../applications/operators.html">Sparse Systems and Iterative Methods</a></li><li class="breadcrumb-item"><a href="../iterative/multigrid.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>(Running example: Poisson matrix)</strong> We again use the Poisson matrix, now together with the hierarchy of grids from which it arose. Stationary iteration exposed the slow modes, whereas multigrid succeeds by changing the scale on which those modes are represented.</p>
+<section id="oscillating-error-and-the-smoothing-property" class="level2" data-number="27.1">
+<h2 data-number="27.1" class="anchored" data-anchor-id="oscillating-error-and-the-smoothing-property"><span class="header-section-number">27.1</span> Oscillating Error and the Smoothing Property</h2>
+<p>Classical stationary iterations such as Jacobi and Gauss–Seidel converge slowly because the <em>smooth</em> (low-frequency) error components decay slowly. High-frequency, oscillatory components decay within a few sweeps. A Fourier analysis of the error makes this asymmetry precise, and multigrid is built on it. The smoother removes the oscillatory error components, and the remaining smooth error is passed to a coarser grid, where it becomes oscillatory and cheap to resolve.</p>
+<p><strong>Frequency-Dependent Error Decay in Jacobi Iteration</strong> For the 1D model problem, the Jacobi update reads <span class="math display">\[
+\begin{align}
+x_i^{(k+1)} = \tfrac{1}{2}\bigl(x_{i-1}^{(k)} + x_{i+1}^{(k)}\bigr) + \tfrac{1}{2}b_i.
+\end{align}
+\]</span> Each new value is the <em>average of its two neighbors</em> plus a source term. Consider two extreme error profiles at some iteration:</p>
+<ul>
+<li><p><em>Oscillatory error</em>: neighboring values often have opposite signs, so averaging damps many high-frequency modes rapidly. The exact alternating mode is an exception for unweighted Jacobi: its sign flips without shrinking. Weighted Jacobi or Gauss–Seidel supplies the smoothing used in multigrid.</p></li>
+<li><p><em>Smooth error</em> (<span class="math inline">\(e_i \propto \sin(j\pi h)\)</span> for small <span class="math inline">\(j\)</span>, slowly varying): neighbors of node <span class="math inline">\(i\)</span> carry nearly the same value as <span class="math inline">\(e_i\)</span> itself, so their average barely moves things. The error barely changes per sweep.</p></li>
+</ul>
+<p>Jacobi acts as a local <em>averaging filter</em> that pulls each value toward the mean of its neighbors. Oscillations cancel in that average, whereas smooth trends do not. Starting from a random initial guess, the error spans all frequencies. After a handful of sweeps the oscillatory components are gone, but the smooth residual remains, requiring a coarser grid for resolution.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Choosing a solver)</strong> The structure of the coefficient matrix determines the method. The following summary collects the recommendations of the preceding sections.</p>
+<ol type="1">
+<li><p><strong>Dense symmetric positive definite.</strong> Cholesky factorization (the referenced result), with <span class="math inline">\(n^3/3\)</span> flops and no pivoting.</p></li>
+<li><p><strong>Large sparse symmetric positive definite.</strong> Preconditioned conjugate gradients (the referenced section) or multigrid, with <span class="math inline">\(O(\operatorname{nnz}(\bA))\)</span> work per iteration.</p></li>
+<li><p><strong>Dense general square.</strong> Gaussian elimination with partial pivoting (the referenced result), with <span class="math inline">\(2n^3/3\)</span> flops and the backward error of the referenced result.</p></li>
+<li><p><strong>Large sparse general square.</strong> Preconditioned GMRES (the referenced section).</p></li>
+<li><p><strong>Overdetermined with full column rank.</strong> Householder QR (the referenced result), which avoids the squared condition number of the normal equations.</p></li>
+<li><p><strong>Rank-deficient or nearly rank-deficient.</strong> The SVD (the referenced result), which determines the numerical rank and the minimum-norm solution.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Explore.</strong> <strong>(Observing oscillating error)</strong> Set <span class="math inline">\(n = 63\)</span>, <span class="math inline">\(\bb = \bzero\)</span>, and <span class="math inline">\(\bx^* = \bzero\)</span>, so the error equals the iterate exactly. Run Jacobi and Gauss–Seidel from the same random initial vector <span class="math inline">\(\bx^{(0)} \sim \mathcal{N}(0, \bI)\)</span>.</p>
+<ol type="1">
+<li><p>Plot the error profile <span class="math inline">\(\be^{(k)} = \bx^{(k)}\)</span> at iterations <span class="math inline">\(k = 0, 1, 3, 10, 20\)</span>. Describe how the spectral composition of the error changes. Observe the behavior of the high-frequency components.</p></li>
+<li><p>Decompose <span class="math inline">\(\be^{(k)}\)</span> into Fourier mode amplitudes <span class="math inline">\(\hat{e}_j^{(k)} = \langle \be^{(k)}, \phi^{(j)}\rangle / \|\phi^{(j)}\|^2\)</span> and plot <span class="math inline">\(|\hat{e}_j^{(k)}|\)</span> vs.&nbsp;<span class="math inline">\(j\)</span> at the same iterations. Which modes decay fast, which persist?</p></li>
+<li><p>The Jacobi iteration matrix has eigenvalues <span class="math inline">\(\mu_j = \cos(j\pi h)\)</span>. Use this to predict the amplitude of mode <span class="math inline">\(j\)</span> after <span class="math inline">\(k\)</span> sweeps as a function of the initial amplitude <span class="math inline">\(|\hat{e}_j^{(0)}|\)</span>. Does your plot match the prediction?</p></li>
+<li><p>After 20 sweeps, what does the remaining error look like? Argue, using the eigenvalue formula, why no fine-grid iteration alone can efficiently eliminate it, necessitating a coarse-grid correction.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Fourier Modes on a Uniform Grid
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider the 1D model problem with the <span class="math inline">\(n \times n\)</span> tridiagonal matrix <span class="math inline">\(\bA\)</span> having <span class="math inline">\(2\)</span> on the main diagonal and <span class="math inline">\(-1\)</span> on the off-diagonals (the finite-difference discretization of <span class="math inline">\(-u'' = f\)</span> on <span class="math inline">\([0,1]\)</span> scaled by <span class="math inline">\(h^2\)</span>). Let <span class="math inline">\(h = 1/(n+1)\)</span>. The <em>Fourier modes</em> are the vectors <span class="math display">\[
+\begin{align}
+\phi^{(k)}_j = \sin(kj\pi h), \quad j = 1,...,n, \quad k = 1,...,n.
+\end{align}
+\]</span> These form an orthogonal basis for <span class="math inline">\(\fR^n\)</span> (by discrete sine orthogonality) and diagonalize <span class="math inline">\(\bA\)</span>: <span class="math display">\[
+\begin{align}
+\bA\phi^{(k)} = \lambda_k\,\phi^{(k)}, \qquad \lambda_k = 2 - 2\cos(k\pi h) = 4\sin^2\!\Bigl(\frac{k\pi h}{2}\Bigr).
+\end{align}
+\]</span> Small <span class="math inline">\(k\)</span> yields long-wavelength (smooth) modes, while large <span class="math inline">\(k\)</span> yields short-wavelength (oscillatory) modes.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Eigenvalues of the Jacobi Iteration Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the 1D model problem, the Jacobi iteration matrix <span class="math inline">\(\bT_J = \bI - \tfrac{1}{2}\bA\)</span> has eigenvalues <span class="math display">\[
+\begin{align}
+\mu_k = \cos(k\pi h), \quad k = 1, ..., n,
+\end{align}
+\]</span> with eigenvectors <span class="math inline">\(\phi^{(k)}\)</span>. After <span class="math inline">\(\nu\)</span> Jacobi sweeps, mode <span class="math inline">\(k\)</span> of the error is scaled by <span class="math inline">\(\mu_k^\nu = \cos^\nu(k\pi h)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Since <span class="math inline">\(\bD = 2\bI\)</span>, the Jacobi iteration matrix is <span class="math inline">\(\bT_J = \bI - \frac{1}{2}\bA\)</span>. Applying <span class="math inline">\(\bT_J\)</span> to the eigenvector <span class="math inline">\(\phi^{(k)}\)</span>: <span class="math display">\[
+\begin{align}
+\bT_J\phi^{(k)}
+  &amp;= \left(\bI - \frac{1}{2}\bA\right)\phi^{(k)}
+  = \phi^{(k)} - \frac{1}{2}\bA\phi^{(k)} \\
+  &amp;= \phi^{(k)} - \frac{1}{2}\lambda_k\phi^{(k)}
+  = \left(1 - \frac{\lambda_k}{2}\right)\phi^{(k)}.
+\end{align}
+\]</span> Substituting <span class="math inline">\(\lambda_k = 2 - 2\cos(k\pi h)\)</span> yields <span class="math display">\[
+\begin{align}
+1 - \frac{\lambda_k}{2}
+  = 1 - (1 - \cos(k\pi h))
+  = \cos(k\pi h).
+\end{align}
+\]</span> Therefore <span class="math inline">\(\bT_J\phi^{(k)} = \cos(k\pi h)\phi^{(k)}\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Low- and High-Frequency Modes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>With respect to a grid of mesh size <span class="math inline">\(h = 1/(n+1)\)</span>, partition the <span class="math inline">\(n\)</span> Fourier modes by frequency:</p>
+<ul>
+<li><p><em>Low-frequency (smooth) modes</em>: <span class="math inline">\(k = 1, ..., \lfloor n/2 \rfloor\)</span>, where <span class="math inline">\(k\pi h \in (0, \pi/2)\)</span>. These satisfy <span class="math inline">\(\mu_k = \cos(k\pi h) \in (0,1)\)</span>, and for small <span class="math inline">\(k\)</span>, <span class="math inline">\(\mu_k \approx 1 - (k\pi h)^2/2 \approx 1\)</span>, so these modes decay slowly.</p></li>
+<li><p><em>High-frequency (oscillatory) modes</em>: <span class="math inline">\(k = \lfloor n/2 \rfloor + 1, ..., n\)</span>, where <span class="math inline">\(k\pi h \in (\pi/2, \pi)\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Standard Jacobi (<span class="math inline">\(\omega = 1\)</span>) is a poor smoother, because the highest-frequency mode (<span class="math inline">\(k = n\)</span>) satisfies <span class="math inline">\(\mu_n = \cos(n\pi h) = \cos(\pi n/(n+1)) \approx -1\)</span>, so the iterate oscillates in sign rather than decaying. <em>Weighted (damped) Jacobi</em> with <span class="math inline">\(\omega = 2/3\)</span> fixes this by controlling the entire high-frequency band.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Weighted Jacobi Iteration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>weighted Jacobi</em> method introduces a damping parameter <span class="math inline">\(\omega \in (0,1)\)</span>: <span class="math display">\[
+\begin{align}
+\bx^{(k+1)} = \bx^{(k)} + \omega\bD^{-1}\bigl(\bb - \bA\bx^{(k)}\bigr),
+\end{align}
+\]</span> with iteration matrix <span class="math inline">\(\bT_\omega = \bI - \omega\bD^{-1}\bA\)</span> and eigenvalues <span class="math display">\[
+\begin{align}
+\mu_k(\omega) = 1 - \omega(1 - \cos(k\pi h)).
+\end{align}
+\]</span> The standard multigrid choice is <span class="math inline">\(\omega = 2/3\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Smoothing Property of Weighted Jacobi
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the 1D model problem with <span class="math inline">\(\omega = 2/3\)</span>, the <em>smoothing factor</em> <span class="math display">\[
+\begin{align}
+\bar{\mu} = \max_{\lfloor n/2\rfloor &lt; k \leq n}\,|\mu_k(2/3)| = \frac{1}{3}.
+\end{align}
+\]</span> That is, every high-frequency component of the error is reduced by at least <span class="math inline">\(2/3\)</span> in a single weighted Jacobi step.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(k &gt; n/2\)</span>, we have <span class="math inline">\(k\pi h \in (\pi/2, \pi)\)</span>, so <span class="math inline">\(1 - \cos(k\pi h) \in (1, 2)\)</span>. With <span class="math inline">\(\omega = 2/3\)</span>: <span class="math display">\[
+\begin{align}
+\mu_k(2/3) = 1 - \tfrac{2}{3}(1 - \cos(k\pi h)) \in \Bigl(1 - \tfrac{4}{3},\; 1 - \tfrac{2}{3}\Bigr) = \Bigl(-\tfrac{1}{3},\; \tfrac{1}{3}\Bigr).
+\end{align}
+\]</span> Hence <span class="math inline">\(|\mu_k| &lt; 1/3\)</span> for all high-frequency modes. The supremum <span class="math inline">\(1/3\)</span> is approached as <span class="math inline">\(k \to \lfloor n/2\rfloor^+\)</span> (where <span class="math inline">\(\cos(k\pi h) \to 0^-\)</span>).</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After <span class="math inline">\(\nu\)</span> weighted Jacobi sweeps, every high-frequency error component is reduced by <span class="math inline">\((1/3)^\nu\)</span>. The remaining error is dominated by <em>smooth</em> modes, which are nearly constant on the scale of <span class="math inline">\(h\)</span>. This smooth, slowly-varying error is the target of the coarse-grid correction in multigrid.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Eigenvalue spectrum of <span class="math inline">\(\bT_{2/3}\)</span> for <span class="math inline">\(n = 15\)</span>, <span class="math inline">\(h = 1/16\)</span>.</strong></p>
+<p>The eigenvalues <span class="math inline">\(\mu_k = 1 - \tfrac{2}{3}(1 - \cos(k\pi/16))\)</span> for selected <span class="math inline">\(k\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(k = 1\)</span> (smoothest): <span class="math inline">\(\mu_1 \approx 0.981\)</span> (minimal decay per sweep).</p></li>
+<li><p><span class="math inline">\(k = 4\)</span>: <span class="math inline">\(\mu_4 = 1 - \tfrac{2}{3}(1 - \cos(\pi/4)) \approx 0.804\)</span> (slow decay).</p></li>
+<li><p><span class="math inline">\(k = 8\)</span>: <span class="math inline">\(\mu_8 = 1 - \tfrac{2}{3}(1 - \cos(\pi/2)) = 1/3 \approx 0.333\)</span>.</p></li>
+<li><p><span class="math inline">\(k = 12\)</span>: <span class="math inline">\(\mu_{12} = 1 - \tfrac{2}{3}(1 - \cos(3\pi/4)) \approx -0.138\)</span> (rapid decay).</p></li>
+<li><p><span class="math inline">\(k = 15\)</span> (most oscillatory): <span class="math inline">\(\mu_{15} \approx -0.330\)</span> (magnitude bounded by <span class="math inline">\(1/3\)</span>).</p></li>
+</ul>
+<p>Modes <span class="math inline">\(k \geq 8\)</span> all satisfy <span class="math inline">\(|\mu_k| \leq 1/3\)</span>, confirming the smoothing property. Modes <span class="math inline">\(k \leq 7\)</span> range from <span class="math inline">\(0.63\)</span> to <span class="math inline">\(0.98\)</span> and are essentially untouched by the smoother.</p>
+</div>
+</div>
+</section>
+<section id="the-two-grid-correction-scheme" class="level2" data-number="27.2">
+<h2 data-number="27.2" class="anchored" data-anchor-id="the-two-grid-correction-scheme"><span class="header-section-number">27.2</span> The Two-Grid Correction Scheme</h2>
+<p>A smooth error on a fine grid of mesh size <span class="math inline">\(h\)</span> looks <em>oscillatory</em> on a coarser grid of mesh size <span class="math inline">\(2h\)</span>. More precisely, the smooth fine-grid modes (<span class="math inline">\(k &lt; n/2\)</span>) oscillate at wavelength <span class="math inline">\(&gt; 2h\)</span> and are well-represented on the coarse grid. Once the high-frequency components have been attenuated by the smoother, the remaining error lives in a low-dimensional smooth subspace that a direct solve on a coarse grid of size <span class="math inline">\(n/2\)</span> can eliminate efficiently.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Prolongation Operator
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>prolongation</em> (or interpolation) operator <span class="math inline">\(\bP: \fR^{m} \to \fR^{n}\)</span> (where <span class="math inline">\(m = (n-1)/2\)</span> for grids satisfying <span class="math inline">\(n = 2m+1\)</span>) transfers a coarse-grid vector to the fine grid by <em>linear interpolation</em>. For a coarse-grid vector <span class="math inline">\(\bv \in \fR^m\)</span>, the fine-grid vector <span class="math inline">\(\bP\bv \in \fR^n\)</span> is defined by <span class="math display">\[
+\begin{align}
+(\bP\bv)_{2j} = v_j, \qquad (\bP\bv)_{2j-1} = \tfrac{1}{2}(v_{j-1} + v_j), \quad j = 1, ..., m,
+\end{align}
+\]</span> with boundary conventions <span class="math inline">\(v_0 = v_{m+1} = 0\)</span>. In matrix form, <span class="math inline">\(\bP\)</span> is <span class="math inline">\(n \times m\)</span> with entries <span class="math inline">\(1\)</span> at coarse-grid points and <span class="math inline">\(\tfrac{1}{2}\)</span> weights at fine-grid midpoints.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Restriction Operator
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>restriction</em> operator <span class="math inline">\(\bR: \fR^{n} \to \fR^{m}\)</span> transfers a fine-grid vector to the coarse grid. The standard <em>full-weighting restriction</em> averages each coarse point with its fine-grid neighbors: <span class="math display">\[
+\begin{align}
+(\bR\bw)_j = \tfrac{1}{4}w_{2j-1} + \tfrac{1}{2}w_{2j} + \tfrac{1}{4}w_{2j+1}, \quad j = 1, ..., m.
+\end{align}
+\]</span> In matrix form, <span class="math inline">\(\bR = \tfrac{1}{2}\bP^T\)</span>. This choice ensures that the Galerkin coarse-grid operator <span class="math inline">\(\bA_c = \bR\bA\bP\)</span> is SPD whenever <span class="math inline">\(\bA\)</span> is SPD.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The relationship <span class="math inline">\(\bR = \tfrac{1}{2}\bP^T\)</span> is called the <em>variational principle</em> and guarantees that <span class="math inline">\(\bA_c = \bR\bA\bP\)</span> is a consistent, spectrally equivalent discretization on the coarse grid. For the 1D model problem, <span class="math inline">\(\bA_c\)</span> equals the natural finite-difference matrix on the <span class="math inline">\(2h\)</span>-grid exactly. This special property simplifies analysis but does not hold in general for variable-coefficient or higher-dimensional problems.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Two-Grid Correction Scheme
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Given <span class="math inline">\(\bA\bx = \bb\)</span> on the fine grid, one step of the <em>two-grid (TG) method</em> from an iterate <span class="math inline">\(\bx^{(0)}\)</span> is:</p>
+<ol type="1">
+<li><p><strong>Pre-smoothing:</strong> Apply <span class="math inline">\(\nu_1 \geq 0\)</span> smoother steps to get <span class="math inline">\(\tilde{\bx}\)</span>.</p></li>
+<li><p><strong>Residual:</strong> Compute <span class="math inline">\(\br = \bb - \bA\tilde{\bx}\)</span>.</p></li>
+<li><p><strong>Restrict:</strong> Form the coarse residual <span class="math inline">\(\br_c = \bR\br \in \fR^m\)</span>.</p></li>
+<li><p><strong>Coarse solve:</strong> Solve <span class="math inline">\(\bA_c\be_c = \br_c\)</span> exactly for <span class="math inline">\(\be_c \in \fR^m\)</span>.</p></li>
+<li><p><strong>Prolong and correct:</strong> Set <span class="math inline">\(\hat{\bx} = \tilde{\bx} + \bP\be_c\)</span>.</p></li>
+<li><p><strong>Post-smoothing:</strong> Apply <span class="math inline">\(\nu_2 \geq 0\)</span> smoother steps to <span class="math inline">\(\hat{\bx}\)</span> to get <span class="math inline">\(\bx^{(1)}\)</span>.</p></li>
+</ol>
+<p>The coarse-grid system <span class="math inline">\(\bA_c\be_c = \br_c\)</span> solves the <em>residual equation</em>: if <span class="math inline">\(\bx^* - \tilde{\bx}\)</span> is smooth and lies in the range of <span class="math inline">\(\bP\)</span>, this recovers the error exactly.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Ideal Coarse-Grid Correction
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the error <span class="math inline">\(\boldsymbol{\epsilon} = \bx^* - \tilde{\bx}\)</span> lies in the range of <span class="math inline">\(\bP\)</span> (i.e., <span class="math inline">\(\boldsymbol{\epsilon} = \bP\boldsymbol{\delta}\)</span> for some <span class="math inline">\(\boldsymbol{\delta} \in \fR^m\)</span>), then the two-grid correction recovers the exact solution: <span class="math inline">\(\hat{\bx} = \bx^*\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\boldsymbol{\epsilon} = \bx^* - \tilde{\bx} = \bP\boldsymbol{\delta}\)</span> for some <span class="math inline">\(\boldsymbol{\delta} \in \fR^m\)</span>. The residual vector is <span class="math display">\[
+\begin{align}
+\br = \bb - \bA\tilde{\bx} = \bA(\bx^* - \tilde{\bx}) = \bA\boldsymbol{\epsilon} = \bA\bP\boldsymbol{\delta}.
+\end{align}
+\]</span> Applying the restriction operator <span class="math inline">\(\bR\)</span>: <span class="math display">\[
+\begin{align}
+\br_c = \bR\br = \bR\bA\bP\boldsymbol{\delta} = \bA_c\boldsymbol{\delta}.
+\end{align}
+\]</span> Since <span class="math inline">\(\bA_c\)</span> is nonsingular, solving the coarse problem <span class="math inline">\(\bA_c\be_c = \br_c\)</span> yields <span class="math display">\[
+\begin{align}
+\be_c = \bA_c^{-1}\br_c = \bA_c^{-1}\bA_c\boldsymbol{\delta} = \boldsymbol{\delta}.
+\end{align}
+\]</span> Prolongating the coarse correction and updating gives <span class="math display">\[
+\begin{align}
+\hat{\bx} = \tilde{\bx} + \bP\be_c = \tilde{\bx} + \bP\boldsymbol{\delta} = \tilde{\bx} + \boldsymbol{\epsilon} = \bx^*.
+\end{align}
+\]</span> Thus the coarse-grid correction eliminates the error exactly.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Two-grid correction on the 1D model problem (<span class="math inline">\(n = 7\)</span>, <span class="math inline">\(h = 1/8\)</span>).</strong></p>
+<p>Take <span class="math inline">\(\bA\)</span> the <span class="math inline">\(7 \times 7\)</span> tridiagonal matrix with <span class="math inline">\(2/-1\)</span>, <span class="math inline">\(\bb = \mathbf{1}\)</span>, <span class="math inline">\(\bx^{(0)} = \bzero\)</span>. After <span class="math inline">\(\nu_1 = 2\)</span> weighted Jacobi sweeps the residual norm is <span class="math inline">\(\|\br\| \approx 0.82\)</span>, and after 20 Jacobi sweeps it is <span class="math inline">\(\approx 0.32\)</span>. By contrast, a single two-grid step with <span class="math inline">\(\nu_1 = \nu_2 = 2\)</span> reduces the residual to <span class="math inline">\(\approx 0.08\)</span>, which is roughly a <span class="math inline">\(10\times\)</span> improvement over pure smoothing at equal cost, because the coarse-grid solve resolves the smooth error components that the smoother leaves behind.</p>
+</div>
+</div>
+</section>
+<section id="the-multigrid-v-cycle" class="level2" data-number="27.3">
+<h2 data-number="27.3" class="anchored" data-anchor-id="the-multigrid-v-cycle"><span class="header-section-number">27.3</span> The Multigrid V-Cycle</h2>
+<p>The two-grid method replaces the fine-grid iteration matrix with one that damps all error components, at the cost of an exact coarse-grid solve. For large problems the coarse grid may itself be large. Multigrid applies the idea recursively. Instead of solving the coarse-grid problem exactly, it applies the two-grid scheme again at the coarser level, and so on, until the coarsest grid is trivially small (a single unknown). This gives the <em>V-cycle</em>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Multigrid Grid Hierarchy
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(n = 2^L - 1\)</span>, define <span class="math inline">\(L\)</span> nested grids with mesh sizes <span class="math inline">\(h_\ell = 2^{-\ell}\)</span>, giving <span class="math inline">\(n_\ell = 2^\ell - 1\)</span> interior points at level <span class="math inline">\(\ell = 1, ..., L\)</span>. The finest grid is <span class="math inline">\(\ell = L\)</span> (mesh size <span class="math inline">\(h\)</span>) and the coarsest is <span class="math inline">\(\ell = 1\)</span> (a single point). At each level <span class="math inline">\(\ell\)</span> we have a system matrix <span class="math inline">\(\bA_\ell\)</span> (built via Galerkin: <span class="math inline">\(\bA_{\ell-1} = \bR_\ell\bA_\ell\bP_\ell\)</span>), restriction <span class="math inline">\(\bR_\ell: \fR^{n_\ell} \to \fR^{n_{\ell-1}}\)</span>, and prolongation <span class="math inline">\(\bP_\ell: \fR^{n_{\ell-1}} \to \fR^{n_\ell}\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Multigrid V-Cycle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathtt{MG}(\ell,\, \bx,\, \bb)\)</span>: one multigrid V-cycle at level <span class="math inline">\(\ell\)</span>, returning an improved approximation to <span class="math inline">\(\bA_\ell\bx = \bb\)</span>:</p>
+<ol type="1">
+<li><p><strong>Base case</strong> (<span class="math inline">\(\ell = 1\)</span>): return <span class="math inline">\(\bA_1^{-1}\bb\)</span> (exact solve on a <span class="math inline">\(1 \times 1\)</span> system).</p></li>
+<li><p><strong>Pre-smoothing:</strong> <span class="math inline">\(\bx \leftarrow S_\ell^{\nu_1}(\bx,\,\bb)\)</span> (<span class="math inline">\(\nu_1\)</span> steps of the smoother at level <span class="math inline">\(\ell\)</span>).</p></li>
+<li><p><strong>Restrict residual:</strong> <span class="math inline">\(\br_{\ell-1} \leftarrow \bR_\ell(\bb - \bA_\ell\bx)\)</span>.</p></li>
+<li><p><strong>Coarse-grid correction:</strong> <span class="math inline">\(\be_{\ell-1} \leftarrow \mathtt{MG}(\ell-1,\,\bzero,\,\br_{\ell-1})\)</span>.</p></li>
+<li><p><strong>Correct:</strong> <span class="math inline">\(\bx \leftarrow \bx + \bP_\ell\be_{\ell-1}\)</span>.</p></li>
+<li><p><strong>Post-smoothing:</strong> <span class="math inline">\(\bx \leftarrow S_\ell^{\nu_2}(\bx,\,\bb)\)</span> (<span class="math inline">\(\nu_2\)</span> steps of the smoother).</p></li>
+<li><p>Return <span class="math inline">\(\bx\)</span>.</p></li>
+</ol>
+<p>Calling <span class="math inline">\(\mathtt{MG}\)</span> once as the coarse-grid solver in step 4 gives the V-cycle. Calling it twice gives the <em>W-cycle</em>, which is more robust on difficult problems at higher cost.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A single V-cycle descends from the finest level <span class="math inline">\(L\)</span> to the coarsest level <span class="math inline">\(1\)</span> (the <code>down stroke'') applying pre-smoothing and restriction, then ascends back (the</code>up stroke’’) applying prolongation and post-smoothing. Typical choices are <span class="math inline">\(\nu_1 = \nu_2 = 1\)</span> or <span class="math inline">\(2\)</span>. The W-cycle replaces the single recursive call in step 4 with two calls, more aggressively correcting smooth error at the cost of roughly <span class="math inline">\(\log n\)</span> extra work.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Mesh-Independent Convergence Principle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider a family of SPD discretizations with grid-independent smoothing and approximation constants. If the chosen smoother damps the components not represented on the coarse grid and the transfer operators approximate the remaining smooth components uniformly in <span class="math inline">\(h\)</span>, then the two-grid error-propagation operator satisfies <span class="math display">\[
+\begin{align}
+\|\be^{(k+1)}\|_{\bA} \leq \rho\,\|\be^{(k)}\|_{\bA},
+\end{align}
+\]</span> where <span class="math inline">\(\rho&lt;1\)</span> is independent of the mesh size. The same conclusion extends to a V-cycle when the recursive coarse solve preserves these uniform estimates. For the uniform-grid Poisson problem, weighted Jacobi or Gauss–Seidel with standard interpolation and restriction satisfies these hypotheses.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The complete proof depends on the discretization and transfer operators. Its structure combines two estimates:</p>
+<ul>
+<li><p><strong>Smoothing property:</strong> After <span class="math inline">\(\nu\)</span> smoother steps, the high-frequency components of the error satisfy <span class="math inline">\(\|\bT_\omega^\nu\be\|_{\bA} \leq \eta(\nu)\|\be\|_{\bA}\)</span> where <span class="math inline">\(\eta(\nu) \to 0\)</span> as <span class="math inline">\(\nu \to \infty\)</span>, uniformly in <span class="math inline">\(h\)</span>.</p></li>
+<li><p><strong>Approximation property:</strong> The coarse-grid correction resolves the smooth components: <span class="math inline">\(\|(I - \bP\bA_c^{-1}\bR\bA)\be\|_{\bA} \leq C h^2 \|\bA\be\|\)</span> for a constant <span class="math inline">\(C\)</span> independent of <span class="math inline">\(h\)</span>.</p></li>
+</ul>
+<p>The smoother first removes error that cannot be represented accurately on the coarse grid. The coarse-grid correction then approximates the remaining component. Uniform constants in these two estimates give a contraction factor independent of <span class="math inline">\(h\)</span>. This argument is a proof outline. A numerical value of <span class="math inline">\(\rho\)</span> requires the precise smoother, boundary conditions, and transfer operators.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For classical iterations on the 1D Poisson problem, <span class="math inline">\(\rho(\bT_J) = \cos(\pi h) \approx 1 - \pi^2h^2/2 \to 1\)</span> as <span class="math inline">\(h \to 0\)</span>, requiring <span class="math inline">\(O(h^{-2}) = O(n)\)</span> Jacobi iterations. With the V-cycle, the number of iterations to reach a fixed tolerance is bounded by a constant independent of <span class="math inline">\(n\)</span>. The cost per V-cycle is <span class="math inline">\(O(n)\)</span> (geometric series over levels), making the total cost <span class="math inline">\(O(n)\)</span>, which is the optimal asymptotic complexity for this class of problems.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: <span class="math inline">\(O(n)\)</span> Complexity of the V-Cycle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(L\)</span>-level multigrid on a problem with <span class="math inline">\(n = n_L\)</span> unknowns at the finest level, each V-cycle requires <span class="math inline">\(O(n)\)</span> floating-point operations, independent of the number of levels <span class="math inline">\(L\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-27-contents" aria-controls="callout-27" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-27" class="callout-27-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(W_\ell\)</span> denote the work at level <span class="math inline">\(\ell\)</span> per V-cycle. At each level, the smoother and residual computation cost <span class="math inline">\(O(n_\ell)\)</span>, and <span class="math inline">\(n_\ell = n_{L}/2^{L-\ell}\)</span>. The total work is <span class="math display">\[
+\begin{align}
+W = \sum_{\ell=1}^{L} O(n_\ell) = O\!\left(\sum_{\ell=1}^{L} \frac{n}{2^{L-\ell}}\right) = O(n)\sum_{j=0}^{L-1}\frac{1}{2^j} &lt; O(2n) = O(n).
+\end{align}
+\]</span> The geometric series converges regardless of <span class="math inline">\(L\)</span>, giving <span class="math inline">\(O(n)\)</span> total.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Multigrid vs.&nbsp;classical iterations on the 2D Poisson problem.</strong></p>
+<p>Discretize <span class="math inline">\(-\Delta u = f\)</span> on the unit square with an <span class="math inline">\(n \times n\)</span> grid (<span class="math inline">\(h = 1/(n+1)\)</span>), giving <span class="math inline">\(N = n^2\)</span> unknowns. Approximate iteration counts to reduce the residual by <span class="math inline">\(10^{-8}\)</span>, and total work in units of <span class="math inline">\(N\)</span> multiplications:</p>
+<p>For <span class="math inline">\(n = 100\)</span> (<span class="math inline">\(N = 10^4\)</span>): multigrid requires <span class="math inline">\(\approx 10\)</span> V-cycles while Gauss-Seidel requires <span class="math inline">\(\approx 4000\)</span> iterations. At <span class="math inline">\(n = 1000\)</span> (<span class="math inline">\(N = 10^6\)</span>): multigrid still requires <span class="math inline">\(\approx 10\)</span> V-cycles, demonstrating mesh-independence, while Gauss-Seidel requires <span class="math inline">\(\approx 400{,}000\)</span> iterations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Compute.</strong> <strong>(Smoothing property)</strong> For the <span class="math inline">\(n = 15\)</span> 1D model problem:</p>
+<ol type="1">
+<li><p>Compute the eigenvalues <span class="math inline">\(\mu_k\)</span> of the standard Jacobi (<span class="math inline">\(\omega = 1\)</span>) and weighted Jacobi (<span class="math inline">\(\omega = 2/3\)</span>) iteration matrices. Plot <span class="math inline">\(|\mu_k|\)</span> as a function of <span class="math inline">\(k\)</span> on a single figure.</p></li>
+<li><p>Starting from a random initial error <span class="math inline">\(\be^{(0)} \in \fR^{15}\)</span>, apply 3 steps of each method. Plot the initial and final errors, and describe qualitatively how each method reshapes the error.</p></li>
+<li><p>Identify the ``worst-case’’ mode (largest <span class="math inline">\(|\mu_k|\)</span>) for each method over the high-frequency range <span class="math inline">\(k &gt; 7\)</span>. Why is the standard Jacobi smoother inadequate for multigrid?</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Compute.</strong> <strong>(Two-grid implementation)</strong> Implement the two-grid correction scheme for the 1D model problem with <span class="math inline">\(n = 2^m - 1\)</span> interior points.</p>
+<ol type="1">
+<li><p>Write <code>restrict(r)</code> using the full-weighting formula and <code>prolongate(e)</code> using linear interpolation for transferring between a fine grid and the next coarser grid.</p></li>
+<li><p>Implement <code>two\_grid(A, b, x0, nu1, nu2)</code> with <span class="math inline">\(\nu_1\)</span> pre-smoothing and <span class="math inline">\(\nu_2\)</span> post-smoothing steps of weighted Jacobi (<span class="math inline">\(\omega = 2/3\)</span>) and an exact coarse-grid solve via <code>np.linalg.solve</code>.</p></li>
+<li><p>For <span class="math inline">\(m = 6\)</span> (<span class="math inline">\(n = 63\)</span>), plot residual norm versus iteration count for: (a) weighted Jacobi alone, (b) repeated two-grid cycling. Use a semi-log scale. Estimate the per-cycle convergence factor <span class="math inline">\(\rho\)</span> for the two-grid method.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Compute.</strong> <strong>(Multigrid V-cycle)</strong> Extend the two-grid implementation to a full V-cycle.</p>
+<ol type="1">
+<li><p>Implement <code>vcycle(x, b, A\_list, level, nu1, nu2)</code> recursively. At level 1 (a single unknown), solve exactly. Test first on the two-grid case to verify it matches your Part 2 implementation.</p></li>
+<li><p>Run the V-cycle on the 1D Poisson problem with <span class="math inline">\(n = 2^{10} - 1 = 1023\)</span> and <span class="math inline">\(\nu_1 = \nu_2 = 1\)</span>. Measure the empirical convergence factor <span class="math inline">\(\rho_k = \|\br^{(k)}\| / \|\br^{(k-1)}\|\)</span> for <span class="math inline">\(k = 1, ..., 15\)</span>. Is it approximately constant (mesh-independent)?</p></li>
+<li><p>Repeat for <span class="math inline">\(n = 2^{12} - 1 = 4095\)</span>. Compare the convergence factors. Then vary <span class="math inline">\(\nu_1 = \nu_2 \in \{1, 2, 3\}\)</span> and report the convergence factor versus the extra cost per cycle.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Saad and Greenbaum give complementary treatments of Krylov methods and preconditioning <span class="citation" data-cites="saad2003 greenbaum1997">(<a href="../references.html#ref-saad2003" role="doc-biblioref">Saad 2003</a>; <a href="../references.html#ref-greenbaum1997" role="doc-biblioref">Greenbaum 1997</a>)</span>. The original conjugate-gradient and GMRES papers remain readable <span class="citation" data-cites="hestenesstiefel1952 saadschultz1986">(<a href="../references.html#ref-hestenesstiefel1952" role="doc-biblioref">Hestenes and Stiefel 1952</a>; <a href="../references.html#ref-saadschultz1986" role="doc-biblioref">Saad and Schultz 1986</a>)</span>. For multigrid, the tutorial by Briggs, Henson, and McCormick is a natural next step <span class="citation" data-cites="briggshensonmccormick2000">(<a href="../references.html#ref-briggshensonmccormick2000" role="doc-biblioref">Briggs et al. 2000</a>)</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-briggshensonmccormick2000" class="csl-entry" role="listitem">
+Briggs, William L., Van Emden Henson, and Steve F. McCormick. 2000. <em>A Multigrid Tutorial</em>. 2nd ed. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898719505">https://doi.org/10.1137/1.9780898719505</a>.
+</div>
+<div id="ref-greenbaum1997" class="csl-entry" role="listitem">
+Greenbaum, Anne. 1997. <em>Iterative Methods for Solving Linear Systems</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9781611970937">https://doi.org/10.1137/1.9781611970937</a>.
+</div>
+<div id="ref-hestenesstiefel1952" class="csl-entry" role="listitem">
+Hestenes, Magnus R., and Eduard Stiefel. 1952. <span>“Methods of Conjugate Gradients for Solving Linear Systems.”</span> <em>Journal of Research of the National Bureau of Standards</em> 49 (6): 409–36. <a href="https://doi.org/10.6028/jres.049.044">https://doi.org/10.6028/jres.049.044</a>.
+</div>
+<div id="ref-saad2003" class="csl-entry" role="listitem">
+Saad, Yousef. 2003. <em>Iterative Methods for Sparse Linear Systems</em>. 2nd ed. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898718003">https://doi.org/10.1137/1.9780898718003</a>.
+</div>
+<div id="ref-saadschultz1986" class="csl-entry" role="listitem">
+Saad, Yousef, and Martin H. Schultz. 1986. <span>“<span>GMRES</span>: A Generalized Minimal Residual Algorithm for Solving Nonsymmetric Linear Systems.”</span> <em>SIAM Journal on Scientific and Statistical Computing</em> 7 (3): 856–69. <a href="https://doi.org/10.1137/0907058">https://doi.org/10.1137/0907058</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../iterative/gmres.html" class="pagination-link" aria-label="The Generalized Minimal Residual (GMRES) Method">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../iterative/randomized.html" class="pagination-link" aria-label="Randomized Methods in Linear Algebra">
+        <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/iterative/multigrid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>
