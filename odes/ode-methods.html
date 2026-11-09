@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>29&nbsp; Numerical Methods for Ordinary Differential Equations – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../applications/pca.html" rel="next">
+<link href="../iterative/randomized.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5de16f5e46225c21e2daa90d340bf64f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3218d7d29a29f08bc4fdf3802c3e3ca5.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5de16f5e46225c21e2daa90d340bf64f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3607916519cf67b813e8ffed77a1c536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-71b6201ca03046a2144629b9c7df8fe5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-3607916519cf67b813e8ffed77a1c536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../odes/ode-methods.html">ODEs</a></li><li class="breadcrumb-item"><a href="../odes/ode-methods.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Site">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Fundamentals</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Direct Methods for Linear Systems</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Orthogonality and Least Squares</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Eigenvalues and the SVD</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Approximation and Integration</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-controls="quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-6-label">Sparse Systems and Iterative Methods</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-6" aria-labelledby="quarto-sidebar-section-6-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-controls="quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-7-label">ODEs</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-7" aria-labelledby="quarto-sidebar-section-7-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-controls="quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-8-label">Applications and Research Bridges</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-8" aria-labelledby="quarto-sidebar-section-8-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-controls="quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-9-label">Appendix: Notation and Software</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-9" aria-labelledby="quarto-sidebar-section-9-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#initial-value-problems-and-well-posedness" id="toc-initial-value-problems-and-well-posedness" class="nav-link active" data-scroll-target="#initial-value-problems-and-well-posedness"><span class="header-section-number">29.1</span> Initial Value Problems and Well-Posedness</a></li>
+  <li><a href="#time-stepping-methods" id="toc-time-stepping-methods" class="nav-link" data-scroll-target="#time-stepping-methods"><span class="header-section-number">29.2</span> Time-Stepping Methods</a></li>
+  <li><a href="#consistency-stability-and-the-discrete-gronwall-lemma" id="toc-consistency-stability-and-the-discrete-gronwall-lemma" class="nav-link" data-scroll-target="#consistency-stability-and-the-discrete-gronwall-lemma"><span class="header-section-number">29.3</span> Consistency, Stability, and the Discrete Gronwall Lemma</a></li>
+  <li><a href="#euler-methods-and-stability-functions" id="toc-euler-methods-and-stability-functions" class="nav-link" data-scroll-target="#euler-methods-and-stability-functions"><span class="header-section-number">29.4</span> Euler Methods and Stability Functions</a></li>
+  <li><a href="#rungekutta-methods" id="toc-rungekutta-methods" class="nav-link" data-scroll-target="#rungekutta-methods"><span class="header-section-number">29.5</span> Runge–Kutta Methods</a></li>
+  <li><a href="#symplectic-integrators-and-geometric-mechanics" id="toc-symplectic-integrators-and-geometric-mechanics" class="nav-link" data-scroll-target="#symplectic-integrators-and-geometric-mechanics"><span class="header-section-number">29.6</span> Symplectic Integrators and Geometric Mechanics</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">29.7</span> Further Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/odes/ode-methods.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../odes/ode-methods.html">ODEs</a></li><li class="breadcrumb-item"><a href="../odes/ode-methods.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>A differential equation gives the rate of change of a state. To compute a trajectory, we must turn that rate into a finite step. We begin with the simplest construction, then distinguish the error made in one step from the error accumulated over an interval.</p>
+<p>Accuracy as the step size tends to zero does not settle how large a step we can use. A numerical solution can grow even when the exact solution decays. We study this restriction through a scalar test equation, then consider higher-order methods and the behavior of oscillating mechanical systems.</p>
+<section id="initial-value-problems-and-well-posedness" class="level2" data-number="29.1">
+<h2 data-number="29.1" class="anchored" data-anchor-id="initial-value-problems-and-well-posedness"><span class="header-section-number">29.1</span> Initial Value Problems and Well-Posedness</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Initial Value Problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An initial value problem (IVP) for a system of ordinary differential equations has the form <span class="math display">\[
+\begin{align}
+\by'(t) = \boldsymbol{f}(t, \by(t)), \qquad \by(t_0) = \by_0,
+\end{align}
+\]</span> where <span class="math inline">\(t \in [t_0, T]\)</span> and <span class="math inline">\(\by(t) \in \fR^m\)</span>. The function <span class="math inline">\(\boldsymbol{f}: [t_0, T] \times \fR^m \to \fR^m\)</span> is the vector field.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(y'=-y\)</span> and <span class="math inline">\(y(0)=1\)</span>, the exact solution is <span class="math inline">\(y(t)=e^{-t}\)</span>. At time <span class="math inline">\(t_n\)</span>, the derivative suggests the linear approximation <span class="math inline">\(y(t_n+h)\approx y(t_n)+hy'(t_n)\)</span>. Replacing the exact value by the current approximation gives <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n-hy_n=(1-h)y_n.
+\end{align}
+\]</span> This is forward Euler. Repeating the step gives <span class="math inline">\(y_n=(1-h)^n\)</span>. We can already ask two different questions: does it approach <span class="math inline">\(e^{-t_n}\)</span> as <span class="math inline">\(h\)</span> decreases, and does it decay for a fixed <span class="math inline">\(h\)</span>?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Compute four Euler steps with <span class="math inline">\(h=1/2\)</span> and compare with <span class="math inline">\(e^{-2}\)</span>. Repeat with <span class="math inline">\(h=2\)</span> and <span class="math inline">\(h=3\)</span>. When does the numerical sequence alternate in sign? When does its magnitude grow? Explain why the differential equation itself has none of this growth.</p>
+</div>
+</div>
+<p>Before analyzing a method, we need an exact solution to compare it with. The next theorem gives a sufficient existence and uniqueness condition. Its global Lipschitz assumption is stronger than the local assumptions often used in ODE theory, but guarantees a solution throughout the stated finite interval.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Picard–Lindelöf Existence and Uniqueness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\boldsymbol{f}(t, \by)\)</span> be continuous in <span class="math inline">\(t\)</span> and uniformly Lipschitz continuous in <span class="math inline">\(\by\)</span> on the domain <span class="math inline">\([t_0, T] \times \fR^m\)</span>: <span class="math display">\[
+\begin{align}
+\|\boldsymbol{f}(t, \bu) - \boldsymbol{f}(t, \bv)\| \leq L \|\bu - \bv\| \qquad \text{for all } \bu, \bv \in \fR^m,
+\end{align}
+\]</span> where <span class="math inline">\(L &lt; \infty\)</span> is the Lipschitz constant. Then the IVP has a unique continuous solution <span class="math inline">\(\by(t)\)</span> on <span class="math inline">\([t_0, T]\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Integrate the differential equation to obtain <span class="math display">\[
+\begin{align}
+\by(t)=\by_0+\int_{t_0}^t\boldsymbol f(s,\by(s))\,ds.
+\end{align}
+\]</span> On an interval of length <span class="math inline">\(\Delta\)</span> with <span class="math inline">\(L\Delta&lt;1\)</span>, define <span class="math inline">\(\mathcal T\bu\)</span> by the right-hand side with <span class="math inline">\(\bu\)</span> in the integrand. In the supremum norm, <span class="math display">\[
+\begin{align}
+\|\mathcal T\bu-\mathcal T\bv\|_\infty
+\leq L\Delta\,\|\bu-\bv\|_\infty.
+\end{align}
+\]</span> Thus applying <span class="math inline">\(\mathcal T\)</span> repeatedly contracts differences by the factor <span class="math inline">\(L\Delta\)</span>. Choose any initial continuous function <span class="math inline">\(\bu_0\)</span> and define <span class="math inline">\(\bu_{j+1}=\mathcal T\bu_j\)</span>. With <span class="math inline">\(q=L\Delta&lt;1\)</span>, the contraction estimate implies <span class="math display">\[
+\begin{align}
+\|\bu_{j+1}-\bu_j\|_\infty\leq q^j\|\bu_1-\bu_0\|_\infty.
+\end{align}
+\]</span> For <span class="math inline">\(r\geq1\)</span>, the triangle inequality gives <span class="math display">\[
+\begin{align}
+\|\bu_{j+r}-\bu_j\|_\infty
+\leq\sum_{l=j}^{j+r-1}q^l\|\bu_1-\bu_0\|_\infty
+\leq\frac{q^j}{1-q}\|\bu_1-\bu_0\|_\infty.
+\end{align}
+\]</span> This tends to zero independently of <span class="math inline">\(r\)</span>. Completeness of the space of continuous functions in the supremum norm gives a uniform limit <span class="math inline">\(\by\)</span>.</p>
+<p>Starting with a continuous function, the successive differences are bounded by a geometric series. The iterates converge uniformly to a continuous function. Uniform convergence and the Lipschitz estimate bound the difference of the integrands uniformly by <span class="math inline">\(L\|\bu_j-\by\|_\infty\)</span>. The difference of their integrals is therefore at most <span class="math inline">\(L\Delta\|\bu_j-\by\|_\infty\)</span>, which tends to zero. Hence passing to the limit in the integral gives a fixed point and hence a solution. If there were two fixed points, the same inequality would force their distance to be zero.</p>
+<p>Use the endpoint value as initial data on the next interval of length at most <span class="math inline">\(\Delta\)</span>. The global Lipschitz assumption gives the same contraction factor on every interval. Finitely many intervals cover <span class="math inline">\([t_0,T]\)</span> and give the unique solution. If <span class="math inline">\(L=0\)</span>, the map is independent of its argument and the conclusion follows directly.</p>
+<p>The integral of the continuous function <span class="math inline">\(\boldsymbol f(s,\by(s))\)</span> is continuously differentiable by the fundamental theorem of calculus. Thus the fixed point satisfies the original differential equation, not just its integral version. The finite-interval continuation is valid because the Lipschitz condition is global in the state variable.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(q=L\Delta&lt;1\)</span> and <span class="math inline">\(\bu_{j+1}=\mathcal T\bu_j\)</span>. Prove <span class="math inline">\(\|\bu_{j+1}-\bu_j\|_\infty\leq q^j\|\bu_1-\bu_0\|_\infty\)</span> and bound <span class="math inline">\(\|\bu_{j+r}-\bu_j\|_\infty\)</span> by the tail of a geometric series. Explain how this establishes convergence and why the limit satisfies the integral equation. This is the contraction argument used in the proof.</p>
+</div>
+</div>
+</section>
+<section id="time-stepping-methods" class="level2" data-number="29.2">
+<h2 data-number="29.2" class="anchored" data-anchor-id="time-stepping-methods"><span class="header-section-number">29.2</span> Time-Stepping Methods</h2>
+<p>The exact increment satisfies <span class="math inline">\(\by(t_{n+1})-\by(t_n)=\int_{t_n}^{t_{n+1}}\boldsymbol f(t,\by(t))\,dt\)</span>. Approximating this integral by its left endpoint, right endpoint, or trapezoidal rule gives three basic methods. The right-endpoint methods contain the unknown new state on both sides, so each step requires solving equations.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Forward Euler, Backward Euler, and Trapezoidal Methods
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For time step <span class="math inline">\(h = t_{n+1} - t_n\)</span>:</p>
+<ol type="1">
+<li><p><strong>Forward Euler (explicit):</strong> <span class="math inline">\(\by_{n+1} = \by_n + h \boldsymbol{f}(t_n, \by_n)\)</span>.</p></li>
+<li><p><strong>Backward Euler (implicit):</strong> <span class="math inline">\(\by_{n+1} = \by_n + h \boldsymbol{f}(t_{n+1}, \by_{n+1})\)</span>.</p></li>
+<li><p><strong>Trapezoidal Rule (implicit Crank–Nicolson):</strong> <span class="math display">\[
+\begin{align}
+\by_{n+1} = \by_n + \frac{h}{2} \left[ \boldsymbol{f}(t_n, \by_n) + \boldsymbol{f}(t_{n+1}, \by_{n+1}) \right].
+\end{align}
+\]</span></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="consistency-stability-and-the-discrete-gronwall-lemma" class="level2" data-number="29.3">
+<h2 data-number="29.3" class="anchored" data-anchor-id="consistency-stability-and-the-discrete-gronwall-lemma"><span class="header-section-number">29.3</span> Consistency, Stability, and the Discrete Gronwall Lemma</h2>
+<p>A numerical time-stepping method is convergent if the computed trajectory approaches the exact trajectory as the step size <span class="math inline">\(h \to 0\)</span>. We quantify error at each step and track its accumulation over a finite time interval.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Local Truncation Error and One-Step Defect
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\by_{n+1} = \Phi_h(t_n, \by_n)\)</span> denote an autonomous or non-autonomous one-step method. The local truncation error is the defect of the exact solution: <span class="math display">\[
+\begin{align}
+\boldsymbol{\tau}_{n+1} = \frac{\by(t_{n+1}) - \Phi_h(t_n, \by(t_n))}{h}.
+\end{align}
+\]</span> The method is <strong>consistent of order <span class="math inline">\(p\)</span></strong> if <span class="math inline">\(\|\boldsymbol{\tau}_{n+1}\| = O(h^p)\)</span> as <span class="math inline">\(h \to 0\)</span> for all sufficiently smooth solutions.</p>
+</div>
+</div>
+<p>There are two common error conventions. The unnormalized one-step defect is the numerator in this definition and is <span class="math inline">\(h\boldsymbol\tau_{n+1}\)</span>. Our local truncation error divides it by <span class="math inline">\(h\)</span>. For forward Euler, Taylor expansion gives a defect of order <span class="math inline">\(h^2\)</span> and a local truncation error of order <span class="math inline">\(h\)</span>. Both statements describe the same calculation.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lemma: Discrete Gronwall Lemma
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\{e_n\}_{n=0}^N\)</span> be a sequence of non-negative real numbers satisfying the linear recurrence <span class="math display">\[
+\begin{align}
+e_{n+1} \leq (1 + \alpha) e_n + \beta, \qquad n = 0, 1, ..., N-1,
+\end{align}
+\]</span> where <span class="math inline">\(\alpha, \beta \geq 0\)</span>. For <span class="math inline">\(\alpha&gt;0\)</span>, <span class="math display">\[
+\begin{align}
+e_n \leq e^{n \alpha} e_0 + \beta \frac{e^{n \alpha} - 1}{\alpha}.
+\end{align}
+\]</span> For <span class="math inline">\(\alpha=0\)</span>, the corresponding bound is <span class="math inline">\(e_n\leq e_0+n\beta\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>First let <span class="math inline">\(\alpha&gt;0\)</span>. Apply the recurrence twice to see the pattern: <span class="math display">\[
+\begin{align}
+e_1&amp;\leq(1+\alpha)e_0+\beta,\\
+e_2&amp;\leq(1+\alpha)^2e_0+\beta[(1+\alpha)+1].
+\end{align}
+\]</span> Induction gives <span class="math display">\[
+\begin{align}
+e_n\leq(1+\alpha)^ne_0+\beta\sum_{j=0}^{n-1}(1+\alpha)^j.
+\end{align}
+\]</span> Indeed, multiplying the bound at step <span class="math inline">\(n\)</span> by <span class="math inline">\(1+\alpha\)</span> shifts all powers up by one, and adding <span class="math inline">\(\beta\)</span> supplies the missing power zero. This is exactly the same formula for <span class="math inline">\(n+1\)</span>.</p>
+<p>The finite geometric sum is <span class="math inline">\([(1+\alpha)^n-1]/\alpha\)</span>, because its ratio differs from one by <span class="math inline">\(\alpha\)</span>. The elementary inequality <span class="math inline">\(1+\alpha\leq e^\alpha\)</span> implies <span class="math inline">\((1+\alpha)^n\leq e^{n\alpha}\)</span>. Since <span class="math inline">\(e_0,\beta\)</span> are nonnegative, replacing the powers by this upper bound preserves the inequality: <span class="math display">\[
+\begin{align}
+e_n\leq e^{n\alpha}e_0+\beta\frac{e^{n\alpha}-1}{\alpha}.
+\end{align}
+\]</span> For <span class="math inline">\(\alpha=0\)</span>, no division by <span class="math inline">\(\alpha\)</span> is allowed. The recurrence reduces to <span class="math inline">\(e_{n+1}\leq e_n+\beta\)</span>. Applying it <span class="math inline">\(n\)</span> times gives <span class="math inline">\(e_n\leq e_0+n\beta\)</span>. Thus the separate zero case agrees with the limiting formula.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Fundamental Theorem of One-Step Convergence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\Phi_h\)</span> be a consistent one-step method of order <span class="math inline">\(p\)</span> applied to an IVP whose vector field <span class="math inline">\(\boldsymbol{f}\)</span> is Lipschitz continuous with constant <span class="math inline">\(L\)</span>. Suppose the numerical increment function satisfies <span class="math inline">\(\|\Phi_h(t, \bu) - \Phi_h(t, \bv)\| \leq (1 + \Lambda h) \|\bu - \bv\|\)</span> for some constant <span class="math inline">\(\Lambda \geq 0\)</span>. Then on the fixed interval <span class="math inline">\([t_0, T]\)</span> with <span class="math inline">\(Nh = T - t_0\)</span>, the global error <span class="math inline">\(\be_n = \by(t_n) - \by_n\)</span> satisfies <span class="math display">\[
+\begin{align}
+\max_{0 \leq n \leq N} \|\be_n\| \leq e^{\Lambda(T - t_0)} \|\be_0\| + \frac{e^{\Lambda(T - t_0)} - 1}{\Lambda} \max_k \|\boldsymbol{\tau}_k\|,
+\end{align}
+\]</span> where the quotient is interpreted as <span class="math inline">\(T-t_0\)</span> when <span class="math inline">\(\Lambda=0\)</span>. Consequently, when the numerical and exact solutions use the same initial value, a one-step defect of order <span class="math inline">\(O(h^{p+1})\)</span> yields a global error of order <span class="math inline">\(O(h^p)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Express the error at step <span class="math inline">\(n+1\)</span> by subtracting the numerical update from the exact solution: <span class="math display">\[
+\begin{align}
+\be_{n+1} &amp;= \by(t_{n+1}) - \by_{n+1} \\
+    &amp;= \left[ \Phi_h(t_n, \by(t_n)) + h \boldsymbol{\tau}_{n+1} \right] - \Phi_h(t_n, \by_n) \\
+    &amp;= \left[ \Phi_h(t_n, \by(t_n)) - \Phi_h(t_n, \by_n) \right] + h \boldsymbol{\tau}_{n+1}.
+\end{align}
+\]</span> Taking norms and applying the triangle inequality yields <span class="math display">\[
+\begin{align}
+\|\be_{n+1}\| \leq (1 + \Lambda h) \|\be_n\| + h \max_k \|\boldsymbol{\tau}_k\|.
+\end{align}
+\]</span> The first bracket compares two numerical steps starting from different states. The second term is the defect of a step starting from the exact state. Keeping these contributions separate explains why one is controlled by the step map’s Lipschitz constant and the other by consistency.</p>
+<p>Applying the Discrete Gronwall Lemma (the referenced result) with <span class="math inline">\(\alpha = \Lambda h\)</span> and <span class="math inline">\(\beta = h \max_k \|\boldsymbol{\tau}_k\|\)</span> gives <span class="math display">\[
+\begin{align}
+\|\be_n\| \leq e^{n \Lambda h} \|\be_0\| + h \max_k \|\boldsymbol{\tau}_k\| \frac{e^{n \Lambda h} - 1}{\Lambda h} = e^{\Lambda(t_n - t_0)} \|\be_0\| + \frac{e^{\Lambda(t_n - t_0)} - 1}{\Lambda} \max_k \|\boldsymbol{\tau}_k\|.
+\end{align}
+\]</span> Since <span class="math inline">\(t_n - t_0 \leq T - t_0\)</span> and <span class="math inline">\(\max_k \|\boldsymbol{\tau}_k\| = O(h^p)\)</span>, the global error is bounded by <span class="math inline">\(O(h^p)\)</span> when initial data are exact (<span class="math inline">\(\be_0 = \bzero\)</span>).</p>
+<p>If <span class="math inline">\(\Lambda=0\)</span>, use the zero-parameter case of the lemma directly: after <span class="math inline">\(n\)</span> steps the added defect is at most <span class="math inline">\(nh\max_k\|\boldsymbol\tau_k\|\leq(T-t_0)\max_k\|\boldsymbol\tau_k\|\)</span>. This justifies the quotient convention without dividing by zero. For fixed <span class="math inline">\(T-t_0\)</span>, the exponential constants do not change as <span class="math inline">\(h\to0\)</span>, so a uniform <span class="math inline">\(O(h^p)\)</span> local truncation bound gives the stated global order.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="euler-methods-and-stability-functions" class="level2" data-number="29.4">
+<h2 data-number="29.4" class="anchored" data-anchor-id="euler-methods-and-stability-functions"><span class="header-section-number">29.4</span> Euler Methods and Stability Functions</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Stability Functions for Linear Test Equations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Applied to the Dahlquist test equation <span class="math inline">\(y' = \lambda y\)</span> with <span class="math inline">\(z = h\lambda \in \fC\)</span>, the numerical update satisfies <span class="math inline">\(y_{n+1} = R(z) y_n\)</span>. The stability functions are: <span class="math display">\[
+\begin{align}
+R_{\mathrm{FE}}(z) = 1 + z, \qquad
+    R_{\mathrm{BE}}(z) = \frac{1}{1 - z}, \qquad
+    R_{\mathrm{TR}}(z) = \frac{1 + z/2}{1 - z/2}.
+\end{align}
+\]</span> The region of absolute stability is <span class="math inline">\(\mathcal{S} = \{z \in \fC : |R(z)| \leq 1\}\)</span>. Backward Euler and the Trapezoidal Rule are A-stable: <span class="math inline">\(\fC^- = \{z \in \fC : \operatorname{Re}(z) \leq 0\} \subseteq \mathcal{S}\)</span>. Backward Euler is additionally L-stable: <span class="math inline">\(\lim_{z \to -\infty} R_{\mathrm{BE}}(z) = 0\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(z=h\lambda\)</span>. Forward Euler substitutes the old value into the derivative: <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n+h\lambda y_n=(1+z)y_n.
+\end{align}
+\]</span> Thus its multiplier is <span class="math inline">\(R_{\rm FE}(z)=1+z\)</span>.</p>
+<p>For backward Euler, the derivative uses the new value. Move its term to the left before dividing: <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n+zy_{n+1},\qquad
+(1-z)y_{n+1}=y_n.
+\end{align}
+\]</span> Whenever <span class="math inline">\(1-z\neq0\)</span>, the multiplier is <span class="math inline">\(1/(1-z)\)</span>. Similarly the trapezoidal update gives <span class="math display">\[
+\begin{align}
+y_{n+1}=y_n+\tfrac z2(y_n+y_{n+1}),\qquad
+(1-z/2)y_{n+1}=(1+z/2)y_n,
+\end{align}
+\]</span> so its multiplier is <span class="math inline">\((1+z/2)/(1-z/2)\)</span> when defined.</p>
+<p>To prove the stability assertions, write <span class="math inline">\(z=x+iy\)</span> with <span class="math inline">\(x\leq0\)</span>. Then <span class="math display">\[
+\begin{align}
+|1-z|^2=(1-x)^2+y^2\geq1.
+\end{align}
+\]</span> The denominator of backward Euler is therefore nonzero and <span class="math inline">\(|R_{\rm BE}(z)|\leq1\)</span>. For the trapezoidal rule, <span class="math display">\[
+\begin{align}
+|1-z/2|^2-|1+z/2|^2
+&amp;=[(1-x/2)^2+(y/2)^2]\\
+&amp;\quad-[(1+x/2)^2+(y/2)^2]=-2x\geq0.
+\end{align}
+\]</span> Its denominator is also nonzero on this half-plane, so <span class="math inline">\(|R_{\rm TR}(z)|\leq1\)</span>. This proves A-stability for both implicit methods.</p>
+<p>Along the negative real axis, <span class="math inline">\(1/(1-z)\to0\)</span> as <span class="math inline">\(z\to-\infty\)</span>, whereas the trapezoidal multiplier tends to <span class="math inline">\(-1\)</span> after dividing numerator and denominator by <span class="math inline">\(z\)</span>. Thus backward Euler has the additional L-stability property and the trapezoidal rule does not. See <span class="citation" data-cites="hairer1993">Hairer et al. (<a href="../references.html#ref-hairer1993" role="doc-biblioref">1993</a>)</span> for these stability notions.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Derive <span class="math inline">\(R_{\mathrm{TR}}(z)\)</span> from the trapezoidal update. Write <span class="math inline">\(z=x+iy\)</span> and compute <span class="math inline">\(|1-z/2|^2-|1+z/2|^2\)</span>. Use its sign to prove A-stability and to locate the points where <span class="math inline">\(|R_{\mathrm{TR}}(z)|=1\)</span>. Take the limit along the negative real axis to show that the method is not L-stable. Finally, apply both implicit methods to <span class="math inline">\(y'=-1000y\)</span> with <span class="math inline">\(h=0.1\)</span>. Compare their first three values with the exact decay. Preservation of the magnitude of an oscillation does not imply exact phase: determine the trapezoidal phase change when <span class="math inline">\(z=i\omega h\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="rungekutta-methods" class="level2" data-number="29.5">
+<h2 data-number="29.5" class="anchored" data-anchor-id="rungekutta-methods"><span class="header-section-number">29.5</span> Runge–Kutta Methods</h2>
+<p>Runge–Kutta methods achieve high orders of accuracy without storing historical steps by evaluating intermediate stages within each time step.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A first improvement on Euler is to estimate the derivative halfway through the step. Form the provisional value <span class="math inline">\(\by_{n+1/2}=\by_n+(h/2)\boldsymbol f(\by_n)\)</span> and then set <span class="math inline">\(\by_{n+1}=\by_n+h\boldsymbol f(\by_{n+1/2})\)</span>. For a smooth autonomous vector field, expand this update to order <span class="math inline">\(h^2\)</span> and compare it with the exact Taylor expansion. What is its one-step defect? This two-stage construction illustrates why intermediate stages can improve the order.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Classical Fourth-Order Runge–Kutta Method (RK4)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For an autonomous ODE <span class="math inline">\(\by' = \boldsymbol{f}(\by)\)</span>, the classical RK4 method computes four stages: <span class="math display">\[
+\begin{align}
+\boldsymbol{k}_1 &amp;= \boldsymbol{f}(\by_n), \\
+    \boldsymbol{k}_2 &amp;= \boldsymbol{f}\left( \by_n + \frac{h}{2}\boldsymbol{k}_1 \right), \\
+    \boldsymbol{k}_3 &amp;= \boldsymbol{f}\left( \by_n + \frac{h}{2}\boldsymbol{k}_2 \right), \\
+    \boldsymbol{k}_4 &amp;= \boldsymbol{f}\left( \by_n + h\boldsymbol{k}_3 \right),
+\end{align}
+\]</span> and sets the update <span class="math display">\[
+\begin{align}
+\by_{n+1} = \by_n + \frac{h}{6} \left( \boldsymbol{k}_1 + 2\boldsymbol{k}_2 + 2\boldsymbol{k}_3 + \boldsymbol{k}_4 \right).
+\end{align}
+\]</span> The one-step defect is <span class="math inline">\(O(h^5)\)</span>. With the normalization in the referenced result, the local truncation error and the global error are both <span class="math inline">\(O(h^4)\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: RK4 Stability Polynomial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Applied to the scalar linear test equation <span class="math inline">\(y' = \lambda y\)</span>, the stability function of RK4 is <span class="math display">\[
+\begin{align}
+R(z) = 1 + z + \frac{z^2}{2} + \frac{z^3}{6} + \frac{z^4}{24} = \sum_{k=0}^4 \frac{z^k}{k!}, \qquad z = h\lambda.
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Substitute <span class="math inline">\(f(y)=\lambda y\)</span> into the four stages. Express each stage as <span class="math inline">\(\lambda y_n\)</span> times a polynomial in <span class="math inline">\(z=h\lambda\)</span>, and collect terms in the update. Why does matching the exponential on this scalar test problem alone not prove order four for a nonlinear ODE?</p>
+</div>
+</div>
+</section>
+<section id="symplectic-integrators-and-geometric-mechanics" class="level2" data-number="29.6">
+<h2 data-number="29.6" class="anchored" data-anchor-id="symplectic-integrators-and-geometric-mechanics"><span class="header-section-number">29.6</span> Symplectic Integrators and Geometric Mechanics</h2>
+<p>For the oscillator <span class="math inline">\(q'=v\)</span>, <span class="math inline">\(v'=-q\)</span>, the exact energy <span class="math inline">\(H=(q^2+v^2)/2\)</span> is constant. Forward Euler instead multiplies this energy by <span class="math inline">\(1+h^2\)</span> at every step. A small local error can therefore accumulate into a qualitatively wrong orbit over many periods. We now construct an update from simple motions that preserve the geometry of position and momentum. The matrix identity below defines precisely the property called symplecticity.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Velocity Verlet Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a potential <span class="math inline">\(V\)</span> with continuous second derivatives and a separable Hamiltonian <span class="math inline">\(H(\bq, \bv) = \frac{1}{2}\|\bv\|_2^2 + V(\bq)\)</span> with equations of motion <span class="math inline">\(\bq' = \bv\)</span> and <span class="math inline">\(\bv' = \bF(\bq) = -\nabla V(\bq)\)</span>, the Velocity Verlet method is: <span class="math display">\[
+\begin{align}
+\bv_{n+1/2} &amp;= \bv_n + \frac{h}{2} \bF(\bq_n), \\
+    \bq_{n+1} &amp;= \bq_n + h \bv_{n+1/2}, \\
+    \bv_{n+1} &amp;= \bv_{n+1/2} + \frac{h}{2} \bF(\bq_{n+1}).
+\end{align}
+\]</span></p>
+</div>
+</div>
+<p>Velocity Verlet first changes velocity with position held fixed, then changes position with velocity held fixed, and finally completes the velocity change. In one position dimension these are shears of the <span class="math inline">\((q,v)\)</span> plane. Each preserves area. In higher dimensions, symplecticity requires the stronger matrix identity <span class="math inline">\(\bJ^T\boldsymbol\Omega\bJ=\boldsymbol\Omega\)</span>, where <span class="math inline">\(\boldsymbol\Omega\)</span> pairs positions with their corresponding momenta. Volume preservation alone would not establish it.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Symplecticity and Area Preservation of Velocity Verlet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The one-step Velocity Verlet map <span class="math inline">\(\Psi_h: (\bq_n, \bv_n) \mapsto (\bq_{n+1}, \bv_{n+1})\)</span> preserves the canonical symplectic structure. In particular, the Jacobian matrix <span class="math inline">\(\bJ = \frac{\partial(\bq_{n+1}, \bv_{n+1})}{\partial(\bq_n, \bv_n)}\)</span> satisfies <span class="math display">\[
+\begin{align}
+\det(\bJ) = 1.
+\end{align}
+\]</span> The full symplectic assertion is that its Jacobian satisfies <span class="math inline">\(\bJ^T\boldsymbol{\Omega}\bJ=\boldsymbol{\Omega}\)</span> for the canonical symplectic matrix <span class="math inline">\(\boldsymbol{\Omega}\)</span>. Symplecticity implies <span class="math inline">\(\det(\bJ)=1\)</span>, so Velocity Verlet also preserves phase-space volume.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Decompose the Velocity Verlet step into the composition of three elementary shears: <span class="math display">\[
+\begin{align}
+\Psi_h = \psi_3 \circ \psi_2 \circ \psi_1,
+\end{align}
+\]</span> where: <span class="math display">\[
+\begin{align}
+\psi_1(\bq, \bv) &amp;= \left( \bq,\, \bv + \frac{h}{2}\bF(\bq) \right), \\
+    \psi_2(\bq, \bv) &amp;= (\bq + h\bv,\, \bv), \\
+    \psi_3(\bq, \bv) &amp;= \left( \bq,\, \bv + \frac{h}{2}\bF(\bq) \right).
+\end{align}
+\]</span> Evaluating the Jacobian of each shear map: <span class="math display">\[
+\begin{align}
+\bJ_1 = \begin{pmatrix} \bI &amp; \bzero \\ \frac{h}{2}\nabla\bF(\bq) &amp; \bI \end{pmatrix}, \qquad
+    \bJ_2 = \begin{pmatrix} \bI &amp; h\bI \\ \bzero &amp; \bI \end{pmatrix}, \qquad
+    \bJ_3 = \begin{pmatrix} \bI &amp; \bzero \\ \frac{h}{2}\nabla\bF(\bq_{n+1}) &amp; \bI \end{pmatrix}.
+\end{align}
+\]</span> Here <span class="math inline">\(\nabla\bF\)</span> denotes the Jacobian of the force, the matrix of its first partial derivatives. Since the force is the negative gradient of a potential with continuous second derivatives, that Jacobian is the negative Hessian of <span class="math inline">\(V\)</span>. Equality of mixed partial derivatives makes it symmetric. This symmetry is essential for the symplectic calculation.</p>
+<p>Because <span class="math inline">\(\bF=-\nabla V\)</span>, the Hessian block <span class="math inline">\(\bS = \frac{h}{2}\nabla\bF = -\frac{h}{2}\nabla^2V\)</span> is symmetric (<span class="math inline">\(\bS^T = \bS\)</span>). With canonical symplectic matrix <span class="math inline">\(\boldsymbol{\Omega} = \begin{pmatrix} \bzero &amp; \bI \\ -\bI &amp; \bzero \end{pmatrix}\)</span>, evaluating the quadratic form for <span class="math inline">\(\bJ_1\)</span>: <span class="math display">\[
+\begin{align}
+\bJ_1^T \boldsymbol{\Omega} \bJ_1 &amp;= \begin{pmatrix} \bI &amp; \bS \\ \bzero &amp; \bI \end{pmatrix} \begin{pmatrix} \bzero &amp; \bI \\ -\bI &amp; \bzero \end{pmatrix} \begin{pmatrix} \bI &amp; \bzero \\ \bS &amp; \bI \end{pmatrix} \\
+    &amp;= \begin{pmatrix} -\bS &amp; \bI \\ -\bI &amp; \bzero \end{pmatrix} \begin{pmatrix} \bI &amp; \bzero \\ \bS &amp; \bI \end{pmatrix} = \begin{pmatrix} -\bS + \bS &amp; \bI \\ -\bI &amp; \bzero \end{pmatrix} = \boldsymbol{\Omega}.
+\end{align}
+\]</span> Similarly, for the translation shear <span class="math inline">\(\bJ_2\)</span>: <span class="math display">\[
+\begin{align}
+\bJ_2^T \boldsymbol{\Omega} \bJ_2 &amp;= \begin{pmatrix} \bI &amp; \bzero \\ h\bI &amp; \bI \end{pmatrix} \begin{pmatrix} \bzero &amp; \bI \\ -\bI &amp; \bzero \end{pmatrix} \begin{pmatrix} \bI &amp; h\bI \\ \bzero &amp; \bI \end{pmatrix} \\
+    &amp;= \begin{pmatrix} \bzero &amp; \bI \\ -\bI &amp; h\bI \end{pmatrix} \begin{pmatrix} \bI &amp; h\bI \\ \bzero &amp; \bI \end{pmatrix} = \begin{pmatrix} \bzero &amp; \bI \\ -\bI &amp; -h\bI + h\bI \end{pmatrix} = \boldsymbol{\Omega}.
+\end{align}
+\]</span> The third shear <span class="math inline">\(\bJ_3\)</span> has the same form as <span class="math inline">\(\bJ_1\)</span> and satisfies <span class="math inline">\(\bJ_3^T \boldsymbol{\Omega} \bJ_3 = \boldsymbol{\Omega}\)</span>. The canonical matrix <span class="math inline">\(\boldsymbol\Omega\)</span> records the pairing of each position coordinate with its corresponding momentum coordinate. The displayed calculations verify the full symplectic matrix identity for each individual shear, rather than checking its determinant alone.</p>
+<p>By the chain rule, <span class="math inline">\(\bJ = \bJ_3 \bJ_2 \bJ_1\)</span>, so <span class="math display">\[
+\begin{align}
+\bJ^T \boldsymbol{\Omega} \bJ = \bJ_1^T \bJ_2^T \left( \bJ_3^T \boldsymbol{\Omega} \bJ_3 \right) \bJ_2 \bJ_1 = \bJ_1^T \left( \bJ_2^T \boldsymbol{\Omega} \bJ_2 \right) \bJ_1 = \bJ_1^T \boldsymbol{\Omega} \bJ_1 = \boldsymbol{\Omega}.
+\end{align}
+\]</span> Each shear has unit determinant: <span class="math inline">\(\det(\bJ_1) = \det(\bJ_2) = \det(\bJ_3) = 1\)</span>. Therefore <span class="math display">\[
+\begin{align}
+\det(\bJ) = \det(\bJ_3)\det(\bJ_2)\det(\bJ_1) = 1 \cdot 1 \cdot 1 = 1.
+\end{align}
+\]</span></p>
+<p>The product in the chain rule evaluates each Jacobian at the corresponding intermediate state. The identity for each factor holds at every such state, so the cancellations remain valid even for nonlinear forces. A unit determinant follows separately from their triangular block forms. This establishes both claims in the theorem.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Symplectic geometry of the harmonic oscillator.</strong> Consider the harmonic oscillator <span class="math inline">\(q' = v\)</span>, <span class="math inline">\(v' = -q\)</span> with exact energy <span class="math inline">\(E(q, v) = \frac{1}{2}(q^2 + v^2)\)</span>.</p>
+<ol type="1">
+<li><p>Compute the one-step update matrix <span class="math inline">\(\mathbf{M}_{\mathrm{FE}}\)</span> for Forward Euler and show that <span class="math inline">\(\det(\mathbf{M}_{\mathrm{FE}}) = 1 + h^2 &gt; 1\)</span>.</p></li>
+<li><p>Compute the one-step update matrix <span class="math inline">\(\mathbf{M}_{\mathrm{Verlet}}\)</span> for Velocity Verlet. Confirm that <span class="math inline">\(\det(\mathbf{M}_{\mathrm{Verlet}}) = 1\)</span>.</p></li>
+<li><p>For <span class="math inline">\(0&lt;h&lt;2\)</span>, show that Velocity Verlet conserves the positive definite quadratic form <span class="math inline">\(\tilde{H}(q, v) = \frac{1}{2}(q^2 + v^2) - \frac{h^2}{8}q^2 = H(q, v) + O(h^2)\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="further-exercises" class="level2" data-number="29.7">
+<h2 data-number="29.7" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">29.7</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The discrete Gronwall lemma and Forward Euler convergence.</strong></p>
+<ol type="1">
+<li><p>Let <span class="math inline">\(\by(t)\)</span> solve <span class="math inline">\(\by' = \boldsymbol{f}(t, \by)\)</span> with <span class="math inline">\(\|\boldsymbol{f}(t, \bu) - \boldsymbol{f}(t, \bv)\| \leq L\|\bu - \bv\|\)</span>. Use Taylor’s theorem to show that the one-step defect of Forward Euler satisfies <span class="math inline">\(\|\by(t_{n+1}) - (\by(t_n) + h\boldsymbol{f}(t_n, \by(t_n)))\| \leq \frac{h^2}{2} M_2\)</span>, where <span class="math inline">\(M_2 = \max \|\by''(t)\|\)</span>.</p></li>
+<li><p>Derive the error recurrence <span class="math inline">\(\|\be_{n+1}\| \leq (1 + Lh)\|\be_n\| + \frac{h^2}{2}M_2\)</span>.</p></li>
+<li><p>Apply the referenced result to establish the rigorous global error bound <span class="math inline">\(\|\be_n\| \leq \frac{M_2}{2L}(e^{L(t_n - t_0)} - 1)h\)</span>.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Adaptive step size control via embedded Runge–Kutta pairs.</strong></p>
+<ol type="1">
+<li><p>An embedded pair computes a lower-order approximation <span class="math inline">\(\by_{n+1}^{[p]}\)</span> and a higher-order approximation <span class="math inline">\(\by_{n+1}^{[p+1]}\)</span> sharing stages. Show that the difference <span class="math inline">\(\be_{n+1} = \by_{n+1}^{[p+1]} - \by_{n+1}^{[p]}\)</span> satisfies <span class="math inline">\(\|\be_{n+1}\| = C h^{p+1} + O(h^{p+2})\)</span>.</p></li>
+<li><p>Given error tolerance <span class="math inline">\(\varepsilon\)</span> and current step size <span class="math inline">\(h_{\mathrm{old}}\)</span>, derive the optimal step size formula <span class="math inline">\(h_{\mathrm{new}} = s h_{\mathrm{old}} (\varepsilon / \|\be_{n+1}\|)^{1/(p+1)}\)</span> with safety factor <span class="math inline">\(s \in (0, 1)\)</span>.</p></li>
+<li><p>Explain why adaptive solvers reject a step and repeat with smaller <span class="math inline">\(h\)</span> when <span class="math inline">\(\|\be_{n+1}\| &gt; \varepsilon\)</span>, and why an implementation may cap the growth factor, for example by <span class="math inline">\(h_{\mathrm{new}}\leq5h_{\mathrm{old}}\)</span>. Explain why the numerical cap is a design choice.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Stiffness in chemical cascades and BDF methods.</strong> Consider the singularly perturbed initial value problem <span class="math inline">\(\varepsilon y' = -y + \cos(t)\)</span> with <span class="math inline">\(y(0) = 0\)</span> and <span class="math inline">\(\varepsilon = 10^{-4}\)</span>.</p>
+<ol type="1">
+<li><p>Find the exact solution and identify the fast boundary layer transient <span class="math inline">\(e^{-t/\varepsilon}\)</span> and the slow quasi-steady state <span class="math inline">\(\cos(t) + \varepsilon \sin(t)\)</span>.</p></li>
+<li><p>Explain why explicit RK4 requires <span class="math inline">\(h \lesssim 2.8 \times 10^{-4}\)</span> throughout the entire simulation, even after the transient has decayed to zero.</p></li>
+<li><p>Formulate the BDF2 update <span class="math inline">\(\frac{3\by_{n+1} - 4\by_n + \by_{n-1}}{2h} = \boldsymbol{f}(t_{n+1}, \by_{n+1})\)</span> and show that it allows time steps <span class="math inline">\(h = 0.1\)</span> in the smooth regime.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Hairer, N{}rsett, and Wanner give a careful account of ODE methods and their analysis <span class="citation" data-cites="hairer1993">(<a href="../references.html#ref-hairer1993" role="doc-biblioref">Hairer et al. 1993</a>)</span>. Dahlquist’s paper is the classical source for the stability barrier for linear multistep methods <span class="citation" data-cites="dahlquist1963">(<a href="../references.html#ref-dahlquist1963" role="doc-biblioref">Dahlquist 1963</a>)</span>. Quarteroni, Sacco, and Saleri provide a broader numerical-analysis reference <span class="citation" data-cites="quarteroni2007">(<a href="../references.html#ref-quarteroni2007" role="doc-biblioref">Quarteroni et al. 2007</a>)</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-dahlquist1963" class="csl-entry" role="listitem">
+Dahlquist, Germund G. 1963. <span>“A Special Stability Problem for Linear Multistep Methods.”</span> <em>BIT Numerical Mathematics</em> 3: 27–43. <a href="https://doi.org/10.1007/BF01963532">https://doi.org/10.1007/BF01963532</a>.
+</div>
+<div id="ref-hairer1993" class="csl-entry" role="listitem">
+Hairer, Ernst, Syvert P. Nørsett, and Gerhard Wanner. 1993. <em>Solving Ordinary Differential Equations i: Nonstiff Problems</em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/978-3-540-78862-1">https://doi.org/10.1007/978-3-540-78862-1</a>.
+</div>
+<div id="ref-quarteroni2007" class="csl-entry" role="listitem">
+Quarteroni, Alfio, Riccardo Sacco, and Fausto Saleri. 2007. <em>Numerical Mathematics</em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/b98885">https://doi.org/10.1007/b98885</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="../iterative/randomized.html" class="pagination-link" aria-label="Randomized Methods in Linear Algebra">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../applications/pca.html" class="pagination-link" aria-label="Principal Component Analysis (PCA)">
+        <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/odes/ode-methods.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>

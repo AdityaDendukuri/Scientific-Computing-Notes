@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Symmetric Positive Definite Matrices – Scientific Computing</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../direct-methods/structured-solvers.html" rel="next">
+<link href="../direct-methods/lu.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5de16f5e46225c21e2daa90d340bf64f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-3218d7d29a29f08bc4fdf3802c3e3ca5.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5de16f5e46225c21e2daa90d340bf64f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3607916519cf67b813e8ffed77a1c536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-71b6201ca03046a2144629b9c7df8fe5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-3607916519cf67b813e8ffed77a1c536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    macros: {
+      fR: ["\\mathbb{R}"],
+      fC: ["\\mathbb{C}"],
+      fZ: ["\\mathbb{Z}"],
+      bx: ["\\boldsymbol{x}"],
+      by: ["\\boldsymbol{y}"],
+      bz: ["\\boldsymbol{z}"],
+      bv: ["\\boldsymbol{v}"],
+      bw: ["\\boldsymbol{w}"],
+      bu: ["\\boldsymbol{u}"],
+      ba: ["\\boldsymbol{a}"],
+      bb: ["\\boldsymbol{b}"],
+      bc: ["\\boldsymbol{c}"],
+      bd: ["\\boldsymbol{d}"],
+      be: ["\\boldsymbol{e}"],
+      bg: ["\\boldsymbol{g}"],
+      bp: ["\\boldsymbol{p}"],
+      bq: ["\\boldsymbol{q}"],
+      br: ["\\boldsymbol{r}"],
+      bs: ["\\boldsymbol{s}"],
+      bA: ["\\mathbf{A}"],
+      bB: ["\\mathbf{B}"],
+      bC: ["\\mathbf{C}"],
+      bD: ["\\mathbf{D}"],
+      bE: ["\\mathbf{E}"],
+      bF: ["\\mathbf{F}"],
+      bG: ["\\mathbf{G}"],
+      bH: ["\\mathbf{H}"],
+      bI: ["\\mathbf{I}"],
+      bJ: ["\\mathbf{J}"],
+      bK: ["\\mathbf{K}"],
+      bL: ["\\mathbf{L}"],
+      bM: ["\\mathbf{M}"],
+      bP: ["\\mathbf{P}"],
+      bQ: ["\\mathbf{Q}"],
+      bR: ["\\mathbf{R}"],
+      bS: ["\\mathbf{S}"],
+      bT: ["\\mathbf{T}"],
+      bU: ["\\mathbf{U}"],
+      bV: ["\\mathbf{V}"],
+      bW: ["\\mathbf{W}"],
+      bX: ["\\mathbf{X}"],
+      bY: ["\\mathbf{Y}"],
+      bZ: ["\\mathbf{Z}"],
+      bsigma: ["\\mathbf{\\Sigma}"],
+      bzero: ["\\mathbf{0}"],
+      bnu: ["\\boldsymbol{\\nu}"],
+      blambda: ["\\boldsymbol{\\lambda}"],
+      bmu: ["\\boldsymbol{\\mu}"],
+      calA: ["\\mathcal{A}"],
+      calK: ["\\mathcal{K}"],
+      calM: ["\\mathcal{M}"],
+      calF: ["\\mathcal{F}"],
+      calP: ["\\mathcal{P}"],
+      btheta: ["\\boldsymbol{\\theta}"],
+      argmin: ["\\operatorname{arg\\,min}"],
+      argmax: ["\\operatorname{arg\\,max}"],
+      printmatsq: ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{n1} & \\cdots & #1_{nn} \\end{pmatrix}", 1],
+      printmat:   ["\\begin{pmatrix} #1_{11} & \\cdots & #1_{1n} \\\\ \\vdots & \\ddots & \\vdots \\\\ #1_{m1} & \\cdots & #1_{mn} \\end{pmatrix}", 1],
+      printrowvec: ["\\begin{pmatrix} #1_1 & \\cdots & #1_n \\end{pmatrix}", 1],
+      printcolvec: ["\\begin{pmatrix} #1_1 \\\\ \\vdots \\\\ #1_n \\end{pmatrix}", 1],
+      printmatrow: ["\\begin{pmatrix} \\cdots & \\boldsymbol{#1}_1 & \\cdots \\\\ & \\vdots & \\\\ \\cdots & \\boldsymbol{#1}_n & \\cdots \\end{pmatrix}", 1],
+      printmatcol: ["\\begin{pmatrix} \\vdots & & \\vdots \\\\ \\boldsymbol{#1}_1 & \\cdots & \\boldsymbol{#1}_n \\\\ \\vdots & & \\vdots \\end{pmatrix}", 1]
+    }
+  }
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Site">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Scientific Computing</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Fundamentals</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/vectors-matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors, Coordinates, and Linear Maps</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inner Products, Geometry, and Norms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/norms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Norms and Condition Numbers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/floating-point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Floating Point Arithmetic</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/complexity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cost Models and Sparse Storage</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Direct Methods for Linear Systems</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/linear-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Linearity and Fundamental Subspaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conditioning and Numerical Stability</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/lu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/spd.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../direct-methods/structured-solvers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Orthogonality and Least Squares</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/orthogonal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Orthogonal Transformations and the QR Factorization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../orthogonality/least-squares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Linear Least Squares</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Eigenvalues and the SVD</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Eigenvalues, Invariant Subspaces, and Their Sensitivity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/eigen-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Vector Iterations and the QR Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/svd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">The Singular Value Decomposition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/arnoldi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Krylov Subspaces and the Arnoldi Process</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../eigenvalues/lanczos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">The Lanczos Algorithm</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Approximation and Integration</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/interpolation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Polynomial and Spline Interpolation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/chebyshev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Chebyshev Polynomials and Minimax Approximation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../numerical-analysis/quadrature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Numerical Quadrature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Fourier Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-controls="quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-6-label">Sparse Systems and Iterative Methods</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-6" aria-labelledby="quarto-sidebar-section-6-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Linear Operators and the Poisson Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Iterative Methods for Linear Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/jacobi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Jacobi, Gauss-Seidel, and SOR Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/conjugate-gradient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">The Conjugate Gradient Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/gmres.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">The Generalized Minimal Residual (GMRES) Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/multigrid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Multigrid Methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../iterative/randomized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Randomized Methods in Linear Algebra</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-controls="quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-7-label">ODEs</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-7" aria-labelledby="quarto-sidebar-section-7-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../odes/ode-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Numerical Methods for Ordinary Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-controls="quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-8-label">Applications and Research Bridges</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-8" aria-labelledby="quarto-sidebar-section-8-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Principal Component Analysis (PCA)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/graphs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Spectral Graph Theory, Diffusion Maps, and Graph Laplacians</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/matrix-exponential.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Matrix Exponentials and Krylov Subspace Actions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/markov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Markov Chains, Continuous Generators, and the CME</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications/koopman.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Koopman Theory, EDMD, and Continuous Generators</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-controls="quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-9-label">Appendix: Notation and Software</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-9" aria-labelledby="quarto-sidebar-section-9-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/math-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Mathematical Notation and Proof Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fundamentals/numpy-primer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Python and NumPy Primer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#positive-quadratic-energy" id="toc-positive-quadratic-energy" class="nav-link active" data-scroll-target="#positive-quadratic-energy"><span class="header-section-number">9.1</span> Positive Quadratic Energy</a></li>
+  <li><a href="#cholesky-factorization" id="toc-cholesky-factorization" class="nav-link" data-scroll-target="#cholesky-factorization"><span class="header-section-number">9.2</span> Cholesky Factorization</a></li>
+  <li><a href="#the-cholesky-algorithm" id="toc-the-cholesky-algorithm" class="nav-link" data-scroll-target="#the-cholesky-algorithm"><span class="header-section-number">9.3</span> The Cholesky Algorithm</a></li>
+  <li><a href="#cost-and-stability" id="toc-cost-and-stability" class="nav-link" data-scroll-target="#cost-and-stability"><span class="header-section-number">9.4</span> Cost and Stability</a></li>
+  <li><a href="#sparse-cholesky-and-the-elimination-graph" id="toc-sparse-cholesky-and-the-elimination-graph" class="nav-link" data-scroll-target="#sparse-cholesky-and-the-elimination-graph"><span class="header-section-number">9.5</span> Sparse Cholesky and the Elimination Graph</a></li>
+  <li><a href="#further-exercises" id="toc-further-exercises" class="nav-link" data-scroll-target="#further-exercises"><span class="header-section-number">9.6</span> Further Exercises</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/direct-methods/spd.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../direct-methods/linear-systems.html">Direct Methods for Linear Systems</a></li><li class="breadcrumb-item"><a href="../direct-methods/spd.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Symmetric Positive Definite Matrices</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>For some symmetric matrices, the scalar <span class="math inline">\(\bx^T\bA\bx\)</span> is positive for every nonzero vector. This property will permit a factorization with only one triangular factor and no row interchanges. We first examine what the scalar measures, then construct the factorization by eliminating one variable at a time.</p>
+<section id="positive-quadratic-energy" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="positive-quadratic-energy"><span class="header-section-number">9.1</span> Positive Quadratic Energy</h2>
+<p>The expression <span class="math inline">\(\bx^T\bA\bx\)</span> is called a <em>quadratic form</em>. For a symmetric matrix of order two, it is <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx=a_{11}x_1^2+2a_{12}x_1x_2+a_{22}x_2^2.
+\end{align}
+\]</span> Positive diagonal entries alone do not ensure positivity of this expression, because the mixed term can have either sign. We require positivity in every direction.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expand the quadratic forms for <span class="math inline">\(\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span> and <span class="math inline">\(\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}\)</span>. For the first, express the result as a sum of positive multiples of squares. For the second, find a vector that makes the result negative. Both matrices have positive diagonal entries. What distinguishes them?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Symmetric Positive Definite Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A real matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> is <strong>symmetric positive definite</strong>, abbreviated SPD, if <span class="math inline">\(\bA=\bA^T\)</span> and <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx&gt;0
+    \qquad\text{for every }\bx\neq\bzero.
+\end{align}
+\]</span> It is <strong>symmetric positive semidefinite</strong> if the strict inequality is replaced by <span class="math inline">\(\bx^T\bA\bx\geq0\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: First Consequences of Positive Definiteness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bA\)</span> is SPD, then every diagonal entry is positive, every principal submatrix is SPD, and <span class="math inline">\(\bA\)</span> is nonsingular.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We test positive definiteness with vectors chosen to isolate the desired entries.</p>
+<ol type="1">
+<li><p>The coordinate vector <span class="math inline">\(\be_i\)</span> is nonzero. Therefore <span class="math display">\[
+\begin{align}
+a_{ii}=\be_i^T\bA\be_i&gt;0.
+\end{align}
+\]</span></p></li>
+<li><p>Let <span class="math inline">\(I=(i_1,...,i_k)\)</span> be a set of selected indices, and let <span class="math inline">\(\bB=\bA_{I,I}\)</span>. Given nonzero <span class="math inline">\(\by\in\fR^k\)</span>, form <span class="math inline">\(\bx\in\fR^n\)</span> by placing <span class="math inline">\(y_j\)</span> in position <span class="math inline">\(i_j\)</span> and zeros in all other positions. This <span class="math inline">\(\bx\)</span> is nonzero. Expanding both quadratic forms shows <span class="math display">\[
+\begin{align}
+\by^T\bB\by
+  =\sum_{p,q=1}^k y_p a_{i_pi_q}y_q
+  =\bx^T\bA\bx&gt;0.
+\end{align}
+\]</span> The submatrix is symmetric because <span class="math inline">\(a_{i_pi_q}=a_{i_qi_p}\)</span>. It is therefore SPD.</p></li>
+<li><p>If <span class="math inline">\(\bA\bx=\bzero\)</span> for some nonzero <span class="math inline">\(\bx\)</span>, then <span class="math inline">\(\bx^T\bA\bx=0\)</span>, contradicting positive definiteness. Thus the null space is trivial, and the square matrix is nonsingular.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be SPD and let <span class="math inline">\(\bP\)</span> be a permutation matrix. Prove directly that <span class="math inline">\(\bP\bA\bP^T\)</span> is SPD. Then consider <span class="math inline">\(\bD\bA\bD\)</span> for a nonsingular diagonal matrix <span class="math inline">\(\bD\)</span>. Explain why changing the order or scale of the unknowns in this way preserves positive definiteness.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: The <span class="math inline">\(\bA\)</span>-Inner Product and Energy Norm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\bA\)</span> is SPD, then <span class="math display">\[
+\begin{align}
+\langle\bx,\by\rangle_{\bA}=\bx^T\bA\by,
+    \qquad
+    \|\bx\|_{\bA}=\sqrt{\bx^T\bA\bx}
+\end{align}
+\]</span> define an inner product and its induced norm. The scalar <span class="math inline">\(\bx^T\bA\bx\)</span> is often called the <strong>energy</strong> of <span class="math inline">\(\bx\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Verify the inner-product axioms directly, identifying the use of symmetry and of positive definiteness. Then obtain the triangle inequality from the inner-product result proved earlier. What fails if <span class="math inline">\(\bA\)</span> is only positive semidefinite?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;0\\0&amp;1\end{pmatrix},
+\end{align}
+\]</span> the unit-energy curve is <span class="math inline">\(4x_1^2+x_2^2=1\)</span>. A displacement in the first coordinate costs four times as much energy as the same displacement in the second. A norm chosen this way also expresses which errors matter in the model.</p>
+</div>
+</div>
+</section>
+<section id="cholesky-factorization" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="cholesky-factorization"><span class="header-section-number">9.2</span> Cholesky Factorization</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Cholesky Factorization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every SPD matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> has a unique factorization <span class="math display">\[
+\begin{align}
+\bA=\bL\bL^T,
+\end{align}
+\]</span> where <span class="math inline">\(\bL\)</span> is lower triangular with positive diagonal entries.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We construct the factor one block at a time. In addition to existence, the positive choice of diagonal will determine each new block uniquely.</p>
+<p>We proceed by induction on <span class="math inline">\(n\)</span>. For <span class="math inline">\(n=1\)</span>, <span class="math inline">\(\bA = (\alpha)\)</span> with <span class="math inline">\(\alpha &gt; 0\)</span>, so <span class="math inline">\(\bL = (\sqrt{\alpha})\)</span> is the unique positive square root. For the induction step, partition <span class="math inline">\(\bA \in \fR^{n \times n}\)</span> as <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}.
+\end{align}
+\]</span> Since <span class="math inline">\(\bA\)</span> is SPD, <span class="math inline">\(\alpha = \be_1^T\bA\be_1 &gt; 0\)</span>. Set <span class="math inline">\(\ell_{11} = \sqrt{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\ell} = \br / \ell_{11}\)</span>. The first diagonal entry <span class="math inline">\(\alpha\)</span> is positive by testing the quadratic form with the first coordinate vector. Thus its positive square root and all divisions by it are defined.</p>
+<p>Form the Schur complement <span class="math display">\[
+\begin{align}
+\bS = \bB - \boldsymbol{\ell}\boldsymbol{\ell}^T = \bB - \frac{\br\br^T}{\alpha}.
+\end{align}
+\]</span> For any nonzero <span class="math inline">\(\by \in \fR^{n-1}\)</span>, choose <span class="math inline">\(\bx = (-\boldsymbol{\ell}^T\by / \ell_{11}, \by^T)^T \in \fR^n\)</span>. Expanding the quadratic form: <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx
+    &amp;= \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix}^T
+       \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}
+       \begin{pmatrix} -\frac{\boldsymbol{\ell}^T\by}{\ell_{11}} \\ \by \end{pmatrix} \\
+    &amp;= \alpha\left(\frac{\boldsymbol{\ell}^T\by}{\ell_{11}}\right)^2 - 2\frac{(\boldsymbol{\ell}^T\by)(\br^T\by)}{\ell_{11}} + \by^T\bB\by \\
+    &amp;= (\boldsymbol{\ell}^T\by)^2 - 2(\boldsymbol{\ell}^T\by)^2 + \by^T\bB\by \\
+    &amp;= \by^T(\bB - \boldsymbol{\ell}\boldsymbol{\ell}^T)\by = \by^T\bS\by.
+\end{align}
+\]</span> Since <span class="math inline">\(\by \neq \bzero\)</span>, the vector <span class="math inline">\(\bx\)</span> is nonzero, so <span class="math inline">\(\by^T\bS\by = \bx^T\bA\bx &gt; 0\)</span>. Hence <span class="math inline">\(\bS\)</span> is SPD. By induction, <span class="math inline">\(\bS = \bK\bK^T\)</span> for a unique lower triangular <span class="math inline">\(\bK\)</span> with positive diagonal entries. Block multiplication gives <span class="math display">\[
+\begin{align}
+\bA = \begin{pmatrix} \ell_{11} &amp; \bzero^T \\ \boldsymbol{\ell} &amp; \bK \end{pmatrix}
+          \begin{pmatrix} \ell_{11} &amp; \boldsymbol{\ell}^T \\ \bzero &amp; \bK^T \end{pmatrix}
+        = \begin{pmatrix} \ell_{11}^2 &amp; \ell_{11}\boldsymbol{\ell}^T \\ \ell_{11}\boldsymbol{\ell} &amp; \boldsymbol{\ell}\boldsymbol{\ell}^T + \bK\bK^T \end{pmatrix}
+        = \begin{pmatrix} \alpha &amp; \br^T \\ \br &amp; \bB \end{pmatrix}.
+\end{align}
+\]</span> The positivity of the diagonal requires <span class="math inline">\(\ell_{11} = \sqrt{\alpha}\)</span>, which uniquely fixes <span class="math inline">\(\boldsymbol{\ell} = \br / \ell_{11}\)</span>, and uniqueness of <span class="math inline">\(\bK\)</span> makes the entire factor <span class="math inline">\(\bL\)</span> unique.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Complete the block calculation in the proof of the referenced result: verify exactly that <span class="math inline">\(\bx^T\bA\bx=\by^T\bS\by\)</span>. Then prove the converse statement that if <span class="math inline">\(\alpha&gt;0\)</span> and <span class="math inline">\(\bS\)</span> is SPD, the block matrix <span class="math inline">\(\bA\)</span> is SPD.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Equivalent Characterizations of Positive Definiteness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a real symmetric matrix <span class="math inline">\(\bA\)</span>, the following statements are equivalent.</p>
+<ol type="1">
+<li><p><span class="math inline">\(\bx^T\bA\bx&gt;0\)</span> for every nonzero <span class="math inline">\(\bx\)</span>.</p></li>
+<li><p><span class="math inline">\(\bA=\bL\bL^T\)</span> for a lower triangular <span class="math inline">\(\bL\)</span> with positive diagonal.</p></li>
+<li><p><span class="math inline">\(\bA=\bW^T\bW\)</span> for a nonsingular matrix <span class="math inline">\(\bW\)</span>.</p></li>
+<li><p>Every leading principal minor is positive.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We prove the first three equivalences, then connect them to the leading principal minors.</p>
+<p>If <span class="math inline">\(\bA\)</span> is SPD, the Cholesky theorem supplies <span class="math inline">\(\bA=\bL\bL^T\)</span> with positive diagonal entries. A triangular matrix with nonzero diagonal is nonsingular. Taking <span class="math inline">\(\bW=\bL^T\)</span> gives the third representation, <span class="math inline">\(\bA=\bW^T\bW\)</span>.</p>
+<p>Conversely, suppose <span class="math inline">\(\bA=\bW^T\bW\)</span> with <span class="math inline">\(\bW\)</span> nonsingular. A nonzero <span class="math inline">\(\bx\)</span> cannot have <span class="math inline">\(\bW\bx=\bzero\)</span>. Therefore <span class="math display">\[
+\begin{align}
+\bx^T\bA\bx=(\bW\bx)^T(\bW\bx)=\|\bW\bx\|_2^2&gt;0.
+\end{align}
+\]</span> This proves positive definiteness and completes the equivalence of statements (1), (2), and (3).</p>
+<p>Next suppose <span class="math inline">\(\bA\)</span> is SPD. Every leading principal block <span class="math inline">\(\bA_j\)</span> is SPD by the referenced result. Its Cholesky factor has positive diagonal, so <span class="math display">\[
+\begin{align}
+\det(\bA_j)=\det(\bL_j)\det(\bL_j^T)
+=\prod_{i=1}^j\ell_{ii}^2&gt;0.
+\end{align}
+\]</span> Thus (1) implies (4).</p>
+<p>For the converse, assume every leading principal minor is positive. We use induction on the dimension. For dimension one, this is exactly the positive-definiteness condition. In a larger dimension, write <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}\alpha&amp;\br^T\\\br&amp;\bB\end{pmatrix},
+\qquad \bS=\bB-\br\br^T/\alpha.
+\end{align}
+\]</span> The first leading minor is <span class="math inline">\(\alpha&gt;0\)</span>. For a leading block of size <span class="math inline">\(j\)</span> in <span class="math inline">\(\bS\)</span>, subtracting <span class="math inline">\(r_i/\alpha\)</span> times the first row from each lower row of <span class="math inline">\(\bA_{j+1}\)</span> gives a block upper triangular matrix with diagonal blocks <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\bS_j\)</span>. These row subtractions leave the determinant unchanged, so <span class="math display">\[
+\begin{align}
+\det(\bS_j)=\frac{\det(\bA_{j+1})}{\alpha}&gt;0.
+\end{align}
+\]</span> The Schur complement is symmetric and has positive leading minors. The induction hypothesis makes it SPD.</p>
+<p>Finally complete the square for an arbitrary vector <span class="math inline">\((s,\by^T)^T\)</span>: <span class="math display">\[
+\begin{align}
+\begin{pmatrix}s\\\by\end{pmatrix}^T\bA\begin{pmatrix}s\\\by\end{pmatrix}
+&amp;=\alpha s^2+2s\br^T\by+\by^T\bB\by\\
+&amp;=\alpha\left(s+\frac{\br^T\by}{\alpha}\right)^2+\by^T\bS\by.
+\end{align}
+\]</span> If <span class="math inline">\(\by\neq\bzero\)</span>, the second term is positive. If <span class="math inline">\(\by=\bzero\)</span> and the full vector is nonzero, then <span class="math inline">\(s\neq0\)</span> and the first term is positive. Thus <span class="math inline">\(\bA\)</span> is SPD, proving (4) implies (1). This is Sylvester’s criterion <span class="citation" data-cites="meyer2000 hornjohnson2012">(<a href="../references.html#ref-meyer2000" role="doc-biblioref">Meyer 2000</a>; <a href="../references.html#ref-hornjohnson2012" role="doc-biblioref">Horn and Johnson 2012</a>)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bX\in\fR^{m\times n}\)</span> with <span class="math inline">\(m\geq n\)</span>. Prove that <span class="math inline">\(\bX^T\bX\)</span> is SPD exactly when the columns of <span class="math inline">\(\bX\)</span> are linearly independent. State what remains true when they are dependent.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After the spectral theorem is available, one more characterization follows directly. A real symmetric matrix is SPD exactly when all its eigenvalues are positive. The Cholesky argument does not need this fact, so we postpone it and keep the present argument self-contained.</p>
+</div>
+</div>
+</section>
+<section id="the-cholesky-algorithm" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="the-cholesky-algorithm"><span class="header-section-number">9.3</span> The Cholesky Algorithm</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: The Cholesky Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The entries of the factor in <span class="math inline">\(\bA=\bL\bL^T\)</span> are computed column by column: <span class="math display">\[
+\begin{align}
+\ell_{jj}
+    &amp;=\sqrt{a_{jj}-\sum_{k=1}^{j-1}\ell_{jk}^2},\\
+    \ell_{ij}
+    &amp;=\frac{a_{ij}-\sum_{k=1}^{j-1}\ell_{ik}\ell_{jk}}{\ell_{jj}},
+    \qquad i=j+1,...,n.
+\end{align}
+\]</span> For an SPD matrix every expression under a square root is positive. A nonpositive pivot signals that the input is not positive definite, apart from the effects of rounding.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We derive one column at a time from the identity <span class="math inline">\(\bA=\bL\bL^T\)</span>.</p>
+<ol type="1">
+<li><p>For <span class="math inline">\(i\geq j\)</span>, triangularity gives <span class="math display">\[
+\begin{align}
+a_{ij}=(\bL\bL^T)_{ij}
+  =\sum_{k=1}^n\ell_{ik}\ell_{jk}
+  =\sum_{k=1}^{j}\ell_{ik}\ell_{jk}.
+\end{align}
+\]</span> Terms with <span class="math inline">\(k&gt;j\)</span> vanish because <span class="math inline">\(\ell_{jk}=0\)</span>.</p></li>
+<li><p>Put <span class="math inline">\(i=j\)</span> and separate the last term: <span class="math display">\[
+\begin{align}
+a_{jj}=\sum_{k=1}^{j-1}\ell_{jk}^2+\ell_{jj}^2.
+\end{align}
+\]</span> The Cholesky convention chooses the positive square root, so <span class="math display">\[
+\begin{align}
+\ell_{jj}=\sqrt{a_{jj}-\sum_{k=1}^{j-1}\ell_{jk}^2}.
+\end{align}
+\]</span> Existence of the Cholesky factor for an SPD matrix ensures that the radicand is strictly positive in exact arithmetic.</p></li>
+<li><p>For <span class="math inline">\(i&gt;j\)</span>, move the known terms to the other side: <span class="math display">\[
+\begin{align}
+a_{ij}-\sum_{k=1}^{j-1}\ell_{ik}\ell_{jk}=\ell_{ij}\ell_{jj}.
+\end{align}
+\]</span> Division by <span class="math inline">\(\ell_{jj}&gt;0\)</span> gives the stated update. All quantities on its right side come from preceding columns or from the diagonal entry just computed.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}4&amp;2&amp;-2\\2&amp;10&amp;2\\-2&amp;2&amp;6\end{pmatrix},
+\end{align}
+\]</span> the algorithm gives <span class="math display">\[
+\begin{align}
+\ell_{11}=2,&amp;\quad \ell_{21}=1,\quad \ell_{31}=-1,\\
+    \ell_{22}=3,&amp;\quad \ell_{32}=1,\quad \ell_{33}=2.
+\end{align}
+\]</span> Thus <span class="math display">\[
+\begin{align}
+\bL=\begin{pmatrix}2&amp;0&amp;0\\1&amp;3&amp;0\\-1&amp;1&amp;2\end{pmatrix},
+    \qquad \bL\bL^T=\bA.
+\end{align}
+\]</span> To solve <span class="math inline">\(\bA\bx=\bb\)</span>, first solve <span class="math inline">\(\bL\by=\bb\)</span> and then <span class="math inline">\(\bL^T\bx=\by\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="cost-and-stability" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="cost-and-stability"><span class="header-section-number">9.4</span> Cost and Stability</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Flop Count and Storage
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dense Cholesky factorization requires <span class="math inline">\(n^3/3+O(n^2)\)</span> floating-point operations. Only one triangular half of the matrix and factor need be stored. The two triangular solves for one right-hand side require <span class="math inline">\(2n^2+O(n)\)</span> further operations.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In column <span class="math inline">\(j\)</span>, there are <span class="math inline">\(n-j+1\)</span> entries on and below the diagonal. Each uses a sum with <span class="math inline">\(j-1\)</span> products. Counting a multiplication and addition as two operations, the leading inner-product work is <span class="math display">\[
+\begin{align}
+2\sum_{j=1}^n(n-j+1)(j-1).
+\end{align}
+\]</span> Set <span class="math inline">\(k=j-1\)</span>. Then <span class="math inline">\(n-j+1=n-k\)</span>, so the sum becomes <span class="math display">\[
+\begin{align}
+2\sum_{k=0}^{n-1}(n-k)k
+&amp;=2n\sum_{k=0}^{n-1}k-2\sum_{k=0}^{n-1}k^2\\
+&amp;=2n\frac{n(n-1)}2-2\frac{(n-1)n(2n-1)}6\\
+&amp;=\frac{n^3-n}{3}.
+\end{align}
+\]</span> There are at most <span class="math inline">\(n(n-1)/2\)</span> divisions, <span class="math inline">\(n\)</span> square roots, and <span class="math inline">\(O(n^2)\)</span> additional scalar operations. They do not change the cubic leading term. Hence the total is <span class="math inline">\(n^3/3+O(n^2)\)</span> flops under the usual convention of counting each scalar operation once.</p>
+<p>Only the lower triangle of the factor needs to be stored. It contains <span class="math inline">\(1+2+\cdots+n=n(n+1)/2\)</span> entries.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cholesky needs no pivoting for an SPD matrix. Moreover, the identity <span class="math display">\[
+\begin{align}
+a_{ii}=\sum_{k=1}^i\ell_{ik}^2
+\end{align}
+\]</span> implies <span class="math inline">\(|\ell_{ik}|\leq\sqrt{a_{ii}}\)</span>, so the factor cannot exhibit the element growth possible in general elimination. In standard floating-point arithmetic, and absent overflow or underflow, the computed factor is the exact Cholesky factor of a nearby symmetric matrix. This is the appropriate backward-stability statement. It does not say that an ill-conditioned system has an accurate forward solution.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Once singular values are available, the referenced result gives <span class="math display">\[
+\begin{align}
+\kappa_2(\bA)=\frac{\lambda_{\max}(\bA)}{\lambda_{\min}(\bA)},
+    \qquad
+    \kappa_2(\bL)=\sqrt{\kappa_2(\bA)}.
+\end{align}
+\]</span> These are spectral interpretations of structure already visible in the energy and the factorization.</p>
+</div>
+</div>
+</section>
+<section id="sparse-cholesky-and-the-elimination-graph" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="sparse-cholesky-and-the-elimination-graph"><span class="header-section-number">9.5</span> Sparse Cholesky and the Elimination Graph</h2>
+<p>For a sparse SPD matrix, the Cholesky factor can have many more nonzero entries than the matrix itself. These new entries are called <strong>fill</strong>. Fill determines the memory and the arithmetic of a sparse factorization, and it depends strongly on the order in which the unknowns are eliminated. A graph associated with the matrix predicts the fill before any arithmetic is done.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Definition: Graph of a Symmetric Matrix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The graph of a symmetric matrix <span class="math inline">\(\bA\in\fR^{n\times n}\)</span> has vertices <span class="math inline">\(1,...,n\)</span> and an edge <span class="math inline">\(\{i,j\}\)</span> for each pair <span class="math inline">\(i\neq j\)</span> with <span class="math inline">\(a_{ij}\neq0\)</span>. The neighbors of a vertex <span class="math inline">\(v\)</span> are the vertices joined to <span class="math inline">\(v\)</span> by an edge, and the degree of <span class="math inline">\(v\)</span> is the number of its neighbors.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Theorem: Elimination as a Graph Operation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\bA\)</span> be SPD with graph <span class="math inline">\(G\)</span>, and partition <span class="math inline">\(\bA\)</span> as in the proof of the referenced result, with first column <span class="math inline">\((\alpha,\br^T)^T\)</span> and trailing block <span class="math inline">\(\bB\)</span>. The first column of <span class="math inline">\(\bL\)</span> is nonzero exactly in the rows of the neighbors of vertex <span class="math inline">\(1\)</span>. Apart from exact numerical cancellation, the graph of the Schur complement <span class="math inline">\(\bS=\bB-\br\br^T/\alpha\)</span> is obtained from <span class="math inline">\(G\)</span> by deleting vertex <span class="math inline">\(1\)</span> and joining every pair of its neighbors by an edge.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Partition the matrix around the first variable as <span class="math inline">\(\bA=\begin{pmatrix}\alpha&amp;\br^T\\\br&amp;\bB\end{pmatrix}\)</span>. In its Cholesky factor, the first entry is <span class="math inline">\(\sqrt\alpha\)</span>, and the remaining first-column entries satisfy <span class="math inline">\(\ell_{i1}\sqrt\alpha=r_i\)</span>. Hence <span class="math display">\[
+\begin{align}
+\ell_{i1}=r_i/\sqrt\alpha.
+\end{align}
+\]</span> Since <span class="math inline">\(\alpha&gt;0\)</span>, this entry is nonzero precisely when <span class="math inline">\(r_i\)</span> is nonzero. Those positions are the neighbors of the eliminated vertex in the matrix graph.</p>
+<p>The remaining factorization acts on the Schur complement <span class="math display">\[
+\begin{align}
+\bS=\bB-\frac{\br\br^T}{\alpha},\qquad
+s_{ij}=b_{ij}-\frac{r_ir_j}{\alpha}.
+\end{align}
+\]</span> If <span class="math inline">\(i,j\)</span> are both neighbors, then <span class="math inline">\(r_ir_j\neq0\)</span>. Even when <span class="math inline">\(b_{ij}=0\)</span>, the update introduces a nonzero entry at that position. Thus elimination can connect every pair of neighbors, forming a clique in the structural graph.</p>
+<p>If one of the two vertices is not a neighbor, the corresponding factor <span class="math inline">\(r_i\)</span> or <span class="math inline">\(r_j\)</span> is zero and no entry is introduced by this elimination step. Existing nonzero entries may occasionally cancel numerically, so the graph statement concerns the pattern predicted in the absence of cancellation. Repeating this local rule explains fill in the Cholesky factor <span class="citation" data-cites="davis2006">(<a href="../references.html#ref-davis2006" role="doc-biblioref">Davis 2006</a>)</span>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider an SPD matrix of order five whose only off-diagonal nonzeros lie in its first row and column. Its graph is a star. Draw the elimination graphs with the center first and with the center last; count the nonzeros of <span class="math inline">\(\bL\)</span> in each case, assuming no cancellation.</p>
+</div>
+</div>
+<p>Applying the referenced result repeatedly describes the whole factorization. Eliminating a vertex turns its remaining neighbors into a clique, and the nonzero pattern of column <span class="math inline">\(k\)</span> of <span class="math inline">\(\bL\)</span> is the set of neighbors of vertex <span class="math inline">\(k\)</span> at the moment it is eliminated. Reordering the unknowns by a permutation <span class="math inline">\(\bP\)</span> and factoring <span class="math inline">\(\bP\bA\bP^T\)</span> changes the elimination order and therefore the fill, without changing the solution.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(An arrow matrix)</strong> Let <span class="math inline">\(\bA\)</span> be SPD with nonzero entries only on the diagonal and in the first row and column. Its graph is a star with center <span class="math inline">\(1\)</span>. If the center is eliminated first, its <span class="math inline">\(n-1\)</span> neighbors become a clique, the Schur complement is full, and <span class="math inline">\(\bL\)</span> has about <span class="math inline">\(n^2/2\)</span> nonzero entries. If the center is eliminated last, every leaf has the center as its only neighbor, no edges are added, and <span class="math inline">\(\bL\)</span> has <span class="math inline">\(2n-1\)</span> nonzero entries. The two orders give the same solution at costs of <span class="math inline">\(O(n^3)\)</span> and <span class="math inline">\(O(n)\)</span> flops.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(Fill-reducing orderings)</strong> Finding the ordering with the least fill is NP-complete <span class="citation" data-cites="yannakakis1981">(<a href="../references.html#ref-yannakakis1981" role="doc-biblioref">Yannakakis 1981</a>)</span>, so practical codes use heuristics. The <strong>minimum degree</strong> heuristic always eliminates a vertex of smallest current degree, which bounds the fill created at each step by the square of that degree. The degrees change after every elimination, and an efficient implementation stores the vertices in a bucket queue, with one doubly linked list of vertices for each degree. Moving a vertex to a new bucket then takes constant time, and the next vertex is found by scanning upward from the lowest nonempty bucket <span class="citation" data-cites="davis2006">(<a href="../references.html#ref-davis2006" role="doc-biblioref">Davis 2006</a>)</span>. <strong>Nested dissection</strong> instead removes a small set of vertices that separates the graph into two parts, orders the separator last, and recurses on the parts.</p>
+</div>
+</div>
+<p>Nested dissection determines the cost of sparse Cholesky for the Poisson problem. On an <span class="math inline">\(N\times N\)</span> grid with <span class="math inline">\(n=N^2\)</span> unknowns, the natural row-by-row order gives a factor with bandwidth <span class="math inline">\(N\)</span>, so <span class="math inline">\(\bL\)</span> has about <span class="math inline">\(n^{3/2}\)</span> nonzero entries and the factorization costs about <span class="math inline">\(n^2\)</span> flops. Nested dissection with grid lines as separators reduces these to <span class="math inline">\(O(n\log n)\)</span> nonzero entries and <span class="math inline">\(O(n^{3/2})\)</span> flops <span class="citation" data-cites="george1973">(<a href="../references.html#ref-george1973" role="doc-biblioref">George 1973</a>)</span>. On an <span class="math inline">\(N\times N\times N\)</span> grid, separators are planes with <span class="math inline">\(n^{2/3}\)</span> vertices, and nested dissection leaves <span class="math inline">\(O(n^{4/3})\)</span> nonzero entries and <span class="math inline">\(O(n^2)\)</span> flops. The growth of the factor with <span class="math inline">\(n\)</span> is the reason that large three-dimensional problems are solved by the iterative methods of the referenced section.</p>
+</section>
+<section id="further-exercises" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="further-exercises"><span class="header-section-number">9.6</span> Further Exercises</h2>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Compute the Cholesky factor of <span class="math display">\[
+\begin{align}
+\bA=\begin{pmatrix}9&amp;3&amp;-6\\3&amp;26&amp;-7\\-6&amp;-7&amp;9\end{pmatrix}
+\end{align}
+\]</span> by hand, then use it to solve <span class="math inline">\(\bA\bx=(6,44,2)^T\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prove that the largest entry of an SPD matrix in absolute value lies on the main diagonal. Begin with a two by two principal submatrix and choose a useful vector, or use its positive determinant.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the referenced result to prove that, apart from cancellation, <span class="math inline">\(\ell_{ij}\neq0\)</span> for <span class="math inline">\(i&gt;j\)</span> exactly when <span class="math inline">\(G\)</span> contains a path from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> whose interior vertices all precede <span class="math inline">\(j\)</span> in the elimination order.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assemble the five-point Poisson matrix on an <span class="math inline">\(N\times N\)</span> grid for <span class="math inline">\(N=20,40,80\)</span>. Factor it with a sparse direct solver using the natural order and a minimum degree order, and report the number of nonzero entries in the factors and the factorization times.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Show that <span class="math inline">\(\|\bx\|_{\bA}=\|\bL^T\bx\|_2\)</span>. Use this identity to interpret the <span class="math inline">\(\bA\)</span>-unit sphere as the inverse image of the Euclidean unit sphere, without mentioning eigenvalues.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-davis2006" class="csl-entry" role="listitem">
+Davis, Timothy A. 2006. <em>Direct Methods for Sparse Linear Systems</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898718881">https://doi.org/10.1137/1.9780898718881</a>.
+</div>
+<div id="ref-george1973" class="csl-entry" role="listitem">
+George, Alan. 1973. <span>“Nested Dissection of a Regular Finite Element Mesh.”</span> <em>SIAM Journal on Numerical Analysis</em> 10 (2): 345–63.
+</div>
+<div id="ref-hornjohnson2012" class="csl-entry" role="listitem">
+Horn, Roger A., and Charles R. Johnson. 2012. <em>Matrix Analysis</em>. 2nd ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139020411">https://doi.org/10.1017/CBO9781139020411</a>.
+</div>
+<div id="ref-meyer2000" class="csl-entry" role="listitem">
+Meyer, Carl D. 2000. <em>Matrix Analysis and Applied Linear Algebra</em>. <span>Society for Industrial and Applied Mathematics</span>. <a href="https://doi.org/10.1137/1.9780898719512">https://doi.org/10.1137/1.9780898719512</a>.
+</div>
+<div id="ref-yannakakis1981" class="csl-entry" role="listitem">
+Yannakakis, Mihalis. 1981. <span>“Computing the Minimum Fill-in Is <span>NP</span>-Complete.”</span> <em>SIAM Journal on Algebraic and Discrete Methods</em> 2 (1): 77–79.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="../direct-methods/lu.html" class="pagination-link" aria-label="LU Factorization">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">LU Factorization</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../direct-methods/structured-solvers.html" class="pagination-link" aria-label="Factorization Updates">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Factorization Updates</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/edit/main/direct-methods/spd.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><a href="https://github.com/AdityaDendukuri/cs111-scientific-computing-notes/raw/main/main.pdf" title="Download PDF" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+          background:rgba(255,255,255,0.85);border:1px solid #ccc;
+          border-radius:50%;width:2.4rem;height:2.4rem;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 6px rgba(0,0,0,.15);
+          text-decoration:none;color:#555;font-size:1rem;
+          backdrop-filter:blur(4px);">
+  <i class="bi bi-file-earmark-pdf"></i>
+</a>
+
+
+
+
+</body></html>
